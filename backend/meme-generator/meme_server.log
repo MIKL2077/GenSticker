@@ -1,0 +1,36 @@
+Fontconfig warning: "/usr/share/fontconfig/conf.avail/05-reset-dirs-sample.conf", line 6: unknown element "reset-dirs"
+09-19 07:56:36 [INFO] meme_generator.log | Config file path: /home/devbox/.config/meme_generator/config.toml
+09-19 07:56:37 [INFO] logging | Started server process [452]
+09-19 07:56:37 [INFO] logging | Waiting for application startup.
+09-19 07:56:37 [INFO] logging | Application startup complete.
+09-19 07:56:37 [INFO] logging | Uvicorn running on http://0.0.0.0:3001 (Press CTRL+C to quit)
+09-19 07:56:38 [INFO] logging | 172.16.0.2:20112 - "GET / HTTP/1.1" 404
+09-19 07:56:39 [INFO] logging | 172.16.0.8:50002 - "GET / HTTP/1.1" 404
+09-19 08:02:00 [INFO] logging | 172.16.0.7:26962 - "GET / HTTP/1.1" 404
+09-19 08:02:01 [INFO] logging | 172.16.0.9:50002 - "GET / HTTP/1.1" 404
+09-19 08:02:03 [INFO] logging | 172.16.0.7:26962 - "GET / HTTP/1.1" 404
+09-19 08:02:07 [INFO] logging | 172.16.0.20:50002 - "GET / HTTP/1.1" 404
+09-19 08:02:15 [INFO] logging | 172.16.0.20:50004 - "GET / HTTP/1.1" 404
+09-19 08:10:01 [INFO] logging | 172.16.0.17:16200 - "GET / HTTP/1.1" 404
+09-19 08:10:02 [INFO] logging | 172.16.0.18:13376 - "GET / HTTP/1.1" 404
+09-19 08:10:04 [INFO] logging | 172.16.0.18:13376 - "GET / HTTP/1.1" 404
+09-19 08:10:04 [INFO] logging | 172.16.0.12:50002 - "GET / HTTP/1.1" 404
+09-19 08:10:04 [INFO] logging | 172.16.0.12:50002 - "GET /favicon.ico HTTP/1.1" 404
+09-19 08:10:07 [INFO] logging | 172.16.0.12:50002 - "GET / HTTP/1.1" 404
+09-19 08:10:08 [INFO] logging | 172.16.0.18:13376 - "GET / HTTP/1.1" 404
+09-19 08:10:15 [INFO] logging | 172.16.0.8:50002 - "GET / HTTP/1.1" 404
+09-19 08:10:15 [INFO] logging | 172.16.0.5:5210 - "GET / HTTP/1.1" 404
+09-19 08:10:24 [INFO] logging | 172.16.0.4:29794 - "GET / HTTP/1.1" 404
+09-19 08:10:47 [INFO] logging | 172.16.0.18:2606 - "GET / HTTP/1.1" 404
+09-19 08:10:47 [INFO] logging | 172.16.0.6:50002 - "GET / HTTP/1.1" 404
+09-19 08:10:56 [INFO] logging | 172.16.0.17:60348 - "GET / HTTP/1.1" 404
+09-19 08:11:19 [INFO] logging | 172.16.0.18:50002 - "GET / HTTP/1.1" 404
+09-19 08:11:19 [INFO] logging | 172.16.0.18:50002 - "GET / HTTP/1.1" 404
+09-19 08:11:28 [INFO] logging | 172.16.0.5:1786 - "GET / HTTP/1.1" 404
+09-19 08:11:51 [INFO] logging | 172.16.0.19:62138 - "GET / HTTP/1.1" 404
+09-19 08:11:52 [INFO] logging | 172.16.0.11:28410 - "GET / HTTP/1.1" 404
+09-19 08:12:00 [INFO] logging | 172.16.0.8:5202 - "GET / HTTP/1.1" 404
+09-19 08:17:32 [INFO] logging | Shutting down
+09-19 08:17:32 [INFO] logging | Waiting for application shutdown.
+09-19 08:17:32 [INFO] logging | Application shutdown complete.
+09-19 08:17:32 [INFO] logging | Finished server process [452]
