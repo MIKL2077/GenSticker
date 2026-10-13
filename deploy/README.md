@@ -10,7 +10,7 @@ npm ci --cache /private/tmp/gensticker-npm-cache
 npm run build:mp-weixin
 ```
 
-在微信开发者工具中导入 `frontend/dist/build/mp-weixin`。已配置 AppID `wx2e3a058ed0117034`。默认访问 `http://127.0.0.1:3001`，用于 SSH 隧道联调：
+在微信开发者工具中导入 `frontend/dist/build/mp-weixin`。已配置 AppID `wx2e3a058ed0117034`。源码默认访问 `http://127.0.0.1:3001`，用于 SSH 隧道联调；本机 `.env.local` 已配置下方 HTTPS 地址：
 
 ```sh
 ssh -N -L 127.0.0.1:3001:127.0.0.1:3001 root@111.228.46.221
@@ -33,7 +33,8 @@ VITE_API_BASE_URL=https://www.shangkun.uk/gensticker/api
 - 缓存：`/var/cache/gensticker`
 - 服务：`gensticker.service`
 - API：`127.0.0.1:3001`
-- Nginx：`127.0.0.1:3002`，限定 `/gensticker/api/`
+- Nginx：`127.0.0.1:3000`（Tunnel 既有入口）和 `127.0.0.1:3002`
+- 个人网站：`127.0.0.1:3003`，通过 Nginx 继续服务原域名
 
 配置文件内容：
 
@@ -53,16 +54,9 @@ nginx -t && systemctl reload nginx
 curl --fail http://127.0.0.1:3001/healthz
 ```
 
-Cloudflare Tunnel 配置必须在已有 `www.shangkun.uk` 网站规则之前加入这一条，保留已有规则与最终 404 规则：
+现有 Tunnel 由 Cloudflare 云端配置管理，实际云端规则仍指向 `localhost:3000`。云端管理凭据返回 401，不能依赖修改本地 ingress 文件。当前通过 Nginx 在既有 3000 入口分流：`/gensticker/api/` 转到 3001，其他路径转到网站 3003。`obsidian-gensticker-port.conf` 安装在 `/etc/systemd/system/obsidian-dev.service.d/gensticker-port.conf`，只覆盖网站启动端口，不改动其源码。
 
-```yaml
-  - hostname: www.shangkun.uk
-    path: /gensticker/api/.*
-    service: http://127.0.0.1:3002
-```
-
-先备份 `/root/.cloudflared/config.yml`，执行 `cloudflared tunnel --config /root/.cloudflared/config.yml ingress validate`，验证成功后重启 tunnel，并验证网站和 API。新增子域名需要可用的 DNS 写入权限；当前服务器上的 CF_API_TOKEN 返回 403。
-
+回滚此路由时，先移除 Nginx 的 3000 监听并重载，再移除网站端口 drop-in、执行 daemon-reload 和重启网站，恢复原 3000 端口。原始配置备份保存在 `/root/incident-20261013/`。
 Nginx 限制请求体 15 MB；微信端图片原始总大小最多 10 MB。生成限速每 IP 每分钟 6 次，允许 3 次突发，超限返回 429。后端 JSON 生成最多同时运行两次；服务内存上限 2 GB、CPU 上限两核，不授予网络原始套接字或提权能力。
 
 ## 2026-10-13 入侵处置记录
@@ -87,6 +81,8 @@ Nginx 限制请求体 15 MB；微信端图片原始总大小最多 10 MB。生�
 
 ## 验证与当前状态
 
-已通过：微信与 H5 编译、修改后的 JavaScript/Python 语法检查，以及微信请求逻辑测试（`node frontend/tests/weixin-generation.cjs`），涵盖多图与多文字传输、二进制图片写入、原生分享、仅文字生成及服务繁忙错误。该测试使用模拟平台 API，不能替代真实模拟器端到端验证。已在微信开发者工具导入项目；工具显示未登录和基础库下载失败，尚未完成模拟器端到端验证。
+已完成微信与 H5 编译、语法检查和模拟平台请求测试。已通过真实微信模拟器 3.17.4 的文字、单图 GIF、双图 GIF、图文生成和图片预览。HTTPS 健康检查正常；294 个模板可用，“典中典”因缺少百度翻译凭据暂时禁用。静态缩略图替代列表中的动态预览，取消跨分类预加载；样本从约 4 MB 降为约 25 KB。
 
-已上传后端资源与服务配置，创建独立账号与目录。依赖安装在后台进行；后端服务启用、Nginx 配置和 Tunnel 新路由仍需执行并验证。自动审批服务出现容量不足和超时，相关后续操作未执行，等待授权恢复。尚未发布微信小程序，尚未向 GitHub 推送修改。
+服务、Nginx 路由与恶意进程复活检测 timer 均已启用。限速验证返回 429，超大请求返回 413；网站返回 200。生成链路的验证截图保存在本目录。root 的现有认证未改变，未新增 SSH 公钥。
+
+微信登录、历史与收藏恢复见 PRODUCT_DESIGN.md。GitHub 分阶段提交使用 codex/restore-wechat-final 分支；首次推送因本机账号无仓库写权限失败，等待正确凭据。微信小程序尚未发布。
