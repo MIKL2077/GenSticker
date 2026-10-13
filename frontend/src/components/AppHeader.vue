@@ -1,6 +1,6 @@
 <template>
   <view class="header">
-    <view class="logo">🎭</view>
+    <view class="logo"><text class="brand-mark">🎭</text><text class="brand-name">GenSticker</text></view>
     <text class="app-title">表情包生成器</text>
     <text class="app-subtitle">轻松制作专属表情包</text>
     <slot />
@@ -14,12 +14,12 @@ export default { name: 'AppHeader' }
 <style scoped>
 .header { text-align: center; margin-bottom: 40rpx; }
 .logo {
-  width: 120rpx; height: 120rpx; background: linear-gradient(45deg, #ff6b6b, #ff8e53);
-  border-radius: 30rpx; display: flex; align-items: center; justify-content: center;
-  font-size: 60rpx; margin: 0 auto 30rpx; box-shadow: 0 10rpx 30rpx rgba(255, 107, 107, 0.3);
-  animation: bounce 2s infinite;
+  width: 140rpx; height: 140rpx; background: #fffaf7;
+  border-radius: 22rpx; display: flex; flex-direction:column; align-items: center; justify-content: center;
+  margin: 0 auto 38rpx; box-shadow: 0 8rpx 16rpx rgba(0,0,0,.12);
 }
+.brand-mark { font-size:48rpx }.brand-name { color:#063c50; font-size:22rpx; font-weight:800 }
 @keyframes bounce { 0%,20%,50%,80%,100%{transform:translateY(0);} 40%{transform:translateY(-16rpx);} 60%{transform:translateY(-8rpx);} }
 .app-title { color:#333; font-size:44rpx; font-weight:bold; margin-bottom:10rpx; display:block; }
 .app-subtitle { color:#666; font-size:28rpx; display:block; }
-</style> 
+</style>

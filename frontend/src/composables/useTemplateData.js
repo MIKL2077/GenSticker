@@ -4,6 +4,7 @@ import { getCategories, getTemplateInfo, getTemplatePreviewData } from '@/servic
 
 export function useTemplateData(showStatusMessage) {
   const isLoadingTemplates = ref(false)
+  const loadError = ref('')
   const templateDetails = ref(new Map())
   const previewImageCache = ref(new Map())
   const loadingStates = ref(new Map())
@@ -55,6 +56,7 @@ export function useTemplateData(showStatusMessage) {
   const fetchMemeCategories = async () => {
     try {
       isLoadingTemplates.value = true
+      loadError.value = ''
       const data = await getCategories()
       categoryKeys.value = {
         all: Array.isArray(data.all) ? data.all : [],
@@ -69,6 +71,7 @@ export function useTemplateData(showStatusMessage) {
       })
     } catch (error) {
       console.error('获取分类失败:', error)
+      loadError.value = '模板暂时无法加载，请检查网络后重试'
       showStatusMessage && showStatusMessage(`获取分类失败: ${error.message}`)
     } finally {
       isLoadingTemplates.value = false
@@ -84,7 +87,7 @@ export function useTemplateData(showStatusMessage) {
       const info = await getTemplateInfo(key)
       const existingDetail = templateDetails.value.get(key) || { key }
       existingDetail.key = info.key
-      existingDetail.name = info.key
+      existingDetail.name = info.keywords?.[0] || info.key
       existingDetail.keywords = info.keywords || []
       existingDetail.tags = info.tags || []
       existingDetail.imageCount = `${info.params_type?.min_images || 0}-${info.params_type?.max_images || 0}`
@@ -192,6 +195,7 @@ export function useTemplateData(showStatusMessage) {
   return {
     // state
     isLoadingTemplates,
+    loadError,
     templateDetails,
     previewImageCache,
     loadingStates,

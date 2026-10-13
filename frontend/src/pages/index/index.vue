@@ -19,16 +19,24 @@
       </view>
 
       <category-tabs :categories="categories" :selected-category="selectedCategory" @select="onSelectCategory" />
+      <view v-if="loadError" class="load-error"><text>{{ loadError }}</text><button @click="retryTemplates">重试</button></view>
 
       <template-grid
+        v-if="!loadError"
         :templates="currentPageTemplates"
         :selected-template="selectedTemplate"
         :current-page="currentPage"
         :total-pages="totalPages"
+        :loading="isLoadingTemplates"
         @select="onSelectTemplate"
         @prev="prevPage"
         @next="nextPage"
       />
+      <view v-if="!loadError" class="page-numbers">
+        <button v-if="currentPage > 1" class="page-button" @click="prevPage">‹</button>
+        <button v-for="number in pageNumbers" :key="number" class="page-button" :class="{ active: number === currentPage }" @click="currentPage = number">{{ number }}</button>
+        <button v-if="currentPage < totalPages" class="page-button" @click="nextPage">›</button>
+      </view>
     </view>
 
     <template-detail-modal
@@ -43,6 +51,8 @@
       :get-text-placeholder="getTextPlaceholder"
       :get-text-max-length="getTextMaxLength"
       :can-generate="isTemplateInputValid()"
+      :favorite="isFavorite(selectedTemplate)"
+      @favorite="favoriteTemplate"
       @chooseImages="chooseImagesForTemplate"
       @removeImage="removeTemplateImage"
       @generate="onGenerate"
@@ -59,17 +69,21 @@
     />
 
     <status-message :message="statusMessage" :show="showStatus" />
+    <bottom-tabs active="home" />
   </view>
 </template>
 
 <script>
-import { onMounted, watch, ref } from 'vue'
+import { onMounted, watch, ref, computed } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
 import AppHeader from '@/components/AppHeader.vue'
 import CategoryTabs from '@/components/CategoryTabs.vue'
 import TemplateGrid from '@/components/TemplateGrid.vue'
 import TemplateDetailModal from '@/components/TemplateDetailModal.vue'
 import PreviewModal from '@/components/PreviewModal.vue'
 import StatusMessage from '@/components/StatusMessage.vue'
+import BottomTabs from '@/components/BottomTabs.vue'
+import { useLibrary } from '@/composables/useLibrary'
 
 import { useStatusMessage } from '@/composables/useStatusMessage'
 import { useTemplateData } from '@/composables/useTemplateData'
@@ -78,12 +92,14 @@ import { useMemeGeneration } from '@/composables/useMemeGeneration'
 
 export default {
   name: 'Index',
-  components: { AppHeader, CategoryTabs, TemplateGrid, TemplateDetailModal, PreviewModal, StatusMessage },
+  components: { AppHeader, CategoryTabs, TemplateGrid, TemplateDetailModal, PreviewModal, StatusMessage, BottomTabs },
   setup() {
     const { statusMessage, showStatus, showStatusMessage } = useStatusMessage()
+    const account = useLibrary()
 
     const {
       isLoadingTemplates,
+      loadError,
       selectedCategory,
       categories,
       currentPage,
@@ -114,6 +130,8 @@ export default {
       await fetchMemeInfo(key)
       const detail = (await fetchMemeInfo(key)) || null
       if (detail && !detail.previewImage) fetchMemePreview(key)
+      if (!detail) { showStatusMessage('模板暂时不可用，请稍后重试'); return }
+      account.recordVisit(key)
       selectedTemplateDetail.value = detail
       initializeTemplateInputs(detail)
       showTemplateDetail.value = true
@@ -137,6 +155,21 @@ export default {
       resetInputs()
     }
 
+    const favoriteTemplate = () => {
+      try { showStatusMessage(account.toggleFavorite(selectedTemplate.value) ? '已收藏模板' : '已取消收藏') }
+      catch (e) { showStatusMessage(e.message) }
+    }
+    const pageNumbers = computed(() => {
+      const start = Math.max(1, Math.min(currentPage.value - 2, totalPages.value - 4))
+      return Array.from({ length: Math.min(5, totalPages.value) }, (_, i) => start + i)
+    })
+    const retryTemplates = async () => { await fetchMemeCategories(); await ensurePageLoaded(selectedCategory.value, currentPage.value) }
+    onShow(() => {
+      uni.hideTabBar({ animation: false, fail: () => {} })
+      const key = uni.getStorageSync('gensticker.open-template')
+      if (key) { uni.removeStorageSync('gensticker.open-template'); onSelectTemplate(key) }
+    })
+
     watch([selectedCategory, currentPage], async ([cat, page]) => {
       await ensurePageLoaded(cat, page)
       ensurePageLoaded(cat, page + 1)
@@ -157,6 +190,11 @@ export default {
       showStatus,
       // 分类/分页
       isLoadingTemplates,
+      loadError,
+      pageNumbers,
+      retryTemplates,
+      favoriteTemplate,
+      isFavorite: account.isFavorite,
       selectedCategory,
       categories,
       currentPage,
@@ -204,10 +242,14 @@ export default {
   position: relative;
   overflow: hidden;
   padding-top: calc(40rpx + constant(safe-area-inset-top));
-  padding-top: calc(40rpx + env(safe-area-inset-top));
+  padding-top: calc(120rpx + env(safe-area-inset-top));
   padding-bottom: calc(30rpx + constant(safe-area-inset-bottom));
-  padding-bottom: calc(30rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
 }
+.page-numbers { display:flex; justify-content:center; align-items:center; gap:12rpx; margin:32rpx 0 }
+.page-button { margin:0; width:54rpx; height:54rpx; border-radius:18rpx; background:#fff7f2; color:#777; font-size:24rpx; line-height:54rpx; padding:0 }
+.page-button.active { background:#ff7373; color:white; border:6rpx solid #fff7f2; box-sizing:content-box }
+.load-error { background:#fff8f5; border-radius:24rpx; padding:38rpx; text-align:center; color:#777; font-size:24rpx }.load-error button { margin-top:20rpx; color:#ff6868 }
 
 .header { text-align: center; margin-bottom: 40rpx; }
 .logo { width: 120rpx; height: 120rpx; background: linear-gradient(45deg, #ff6b6b, #ff8e53); border-radius: 30rpx; display: flex; align-items: center; justify-content: center; font-size: 60rpx; margin: 0 auto 30rpx; box-shadow: 0 10rpx 30rpx rgba(255, 107, 107, 0.3); animation: bounce 2s infinite; }

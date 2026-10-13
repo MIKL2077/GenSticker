@@ -10,7 +10,7 @@ npm ci --cache /private/tmp/gensticker-npm-cache
 npm run build:mp-weixin
 ```
 
-在微信开发者工具中导入 `frontend/dist/build/mp-weixin`。已配置 AppID `wx2e3a058ed0117034`。源码默认访问 `http://127.0.0.1:3001`，用于 SSH 隧道联调；本机 `.env.local` 已配置下方 HTTPS 地址：
+在微信开发者工具中导入 `frontend/dist/build/mp-weixin`。已配置 AppID `wx2e3a058ed0117034`。微信端默认访问下方 HTTPS 地址；如需 SSH 隧道联调，可在 `.env.local` 覆盖为 `http://127.0.0.1:3001`：
 
 ```sh
 ssh -N -L 127.0.0.1:3001:127.0.0.1:3001 root@111.228.46.221
@@ -85,4 +85,8 @@ Nginx 限制请求体 15 MB；微信端图片原始总大小最多 10 MB。生�
 
 服务、Nginx 路由与恶意进程复活检测 timer 均已启用。限速验证返回 429，超大请求返回 413；网站返回 200。生成链路的验证截图保存在本目录。root 的现有认证未改变，未新增 SSH 公钥。
 
-微信登录、历史与收藏恢复见 PRODUCT_DESIGN.md。GitHub 分阶段提交使用 codex/restore-wechat-final 分支；首次推送因本机账号无仓库写权限失败，等待正确凭据。微信小程序尚未发布。
+微信登录、历史与收藏恢复见 PRODUCT_DESIGN.md。真实微信登录、收藏同步、浏览历史及从收藏重新打开模板均已通过模拟器验证。`backend/meme-generator/tests/test_account.py` 使用隔离数据库和模拟微信提供方验证未登录拒绝、用户隔离、幂等、记录数量限制、过期及撤销；`frontend/tests/library.cjs` 验证游客记录、迁移和退出后的缓存隔离。
+
+AppSecret 保存在服务器 `/etc/gensticker.env`，权限 600，只由 systemd 读取，不能提交 Git。账户数据库是 `/var/lib/gensticker/accounts.sqlite3`，备份业务数据时包含数据库及 WAL 文件，最好暂停此独立服务后备份。新的环境应安装 `config.toml` 并按需配置 `WX_APPID`、`WX_APP_SECRET`、`GENSTICKER_STATE_DIR`。服务即使没有微信密钥也能运行生成和游客功能。
+
+GitHub 分阶段提交使用 codex/restore-wechat-final 分支，已通过仓库专用 SSH 部署公钥恢复推送。微信小程序尚未发布；发布前需在平台配置 request 合法域名、隐私说明，并完成扫码真机验证。

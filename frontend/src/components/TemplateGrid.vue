@@ -1,9 +1,12 @@
 <template>
   <view class="template-container">
     <button v-if="currentPage > 1" class="nav-btn nav-left" @click="$emit('prev')">‹</button>
-    <view class="template-grid">
-      <view 
-        v-for="template in templates" 
+    <view v-if="loading && !templates.some(t => t.previewImage)" class="template-grid">
+      <view v-for="n in 9" :key="n" class="template-item skeleton"><view class="skeleton-image" /><view class="skeleton-text" /></view>
+    </view>
+    <view v-else class="template-grid">
+      <view
+        v-for="template in templates"
         :key="template.key"
         class="template-item"
         :class="{ 'selected': selectedTemplate === template.key }"
@@ -24,6 +27,7 @@ export default {
   props: {
     templates: { type: Array, required: true },
     selectedTemplate: { type: String, default: '' },
+    loading: { type: Boolean, default: false },
     currentPage: { type: Number, required: true },
     totalPages: { type: Number, required: true },
   },
@@ -42,4 +46,5 @@ export default {
 .template-preview { width:60rpx; height:60rpx; border-radius:8rpx; margin-bottom:16rpx }
 .template-emoji { font-size:48rpx; margin-bottom:16rpx; display:block }
 .template-name { font-size:24rpx; color:#666; font-weight:500; display:block; word-break: break-all }
-</style> 
+.skeleton { min-height:120rpx }.skeleton-image { width:56rpx; height:56rpx; border-radius:10rpx; background:#f7f7f7; margin-bottom:16rpx }.skeleton-text { width:110rpx; height:16rpx; border-radius:12rpx; background:#f7f7f7 }
+</style>

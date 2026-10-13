@@ -7,11 +7,16 @@ export async function apiRequest(url, options = {}, retries = 3) {
         url: `${API_BASE_URL}${url}`,
         method: options.method || 'GET',
         data: options.data,
-        header: options.header || {},
+        header: {
+          ...((url.startsWith('/account/') || url.startsWith('/auth/')) && options.auth !== false && uni.getStorageSync('gensticker.session.v1')?.access_token
+            ? { Authorization: `Bearer ${uni.getStorageSync('gensticker.session.v1').access_token}` } : {}),
+          ...options.header,
+        },
         timeout: options.timeout || 10000,
       })
 
-      if (response.statusCode === 200) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        if (response.statusCode === 204) return null
         if (typeof response.data === 'string') {
           const text = response.data.trim()
           if (text.startsWith('<!DOCTYPE') || text.startsWith('<html')) {
@@ -28,10 +33,12 @@ export async function apiRequest(url, options = {}, retries = 3) {
         await new Promise(r => setTimeout(r, 1000 * (i + 1)))
         continue
       } else {
-        throw new Error(`API请求失败: ${response.statusCode}`)
+        const error = new Error(typeof response.data?.detail === 'string' ? response.data.detail : `请求失败: ${response.statusCode}`)
+        error.statusCode = response.statusCode
+        throw error
       }
     } catch (error) {
-      if (i === retries - 1) throw error
+      if (i === retries - 1 || (error.statusCode >= 400 && error.statusCode < 500)) throw error
       await new Promise(r => setTimeout(r, 1000 * (i + 1)))
     }
   }
@@ -61,4 +68,4 @@ export async function apiImageRequest(url, options = {}, retries = 3) {
       await new Promise(r => setTimeout(r, 1000 * (i + 1)))
     }
   }
-} 
+}

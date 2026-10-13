@@ -8,7 +8,8 @@
       <view class="detail-body">
         <view class="example-section">
           <text class="detail-label">示例图</text>
-          <image :src="detail?.previewImage || '/static/placeholder.png'" class="example-image" mode="aspectFit" />
+          <image v-if="detail?.previewImage" :src="detail.previewImage" class="example-image" mode="aspectFit" />
+          <text v-else class="requirement-text">预览正在加载，仍可填写并生成</text>
         </view>
         <view class="template-info-section">
           <text class="detail-label">模板信息</text>
@@ -45,6 +46,7 @@
             </view>
           </view>
         </view>
+        <button class="btn btn-secondary favorite-btn" @click="$emit('favorite')">{{ favorite ? '⭐ 已收藏' : '☆ 收藏模板' }}</button>
         <view class="detail-actions">
           <button class="btn btn-primary" :disabled="!canGenerate" @click="$emit('generate')">生成表情包</button>
           <button class="btn btn-secondary" @click="$emit('close')">取消</button>
@@ -69,8 +71,9 @@ export default {
     getTextPlaceholder: { type: Function, required: true },
     getTextMaxLength: { type: Function, required: true },
     canGenerate: { type: Boolean, default: false },
+    favorite: { type: Boolean, default: false },
   },
-  emits: ['close', 'chooseImages', 'removeImage', 'generate']
+  emits: ['close', 'chooseImages', 'removeImage', 'generate', 'favorite']
 }
 </script>
 
@@ -104,4 +107,4 @@ export default {
 .btn { flex:1; padding:24rpx; border:none; border-radius:40rpx; font-size:28rpx; font-weight:bold; transition:all .3s ease }
 .btn-primary { background:linear-gradient(45deg, #ff6b6b, #ff8e53); color:#fff }
 .btn-secondary { background:#f8f9fa; color:#666; border:2rpx solid #ddd }
-</style> 
+</style>
