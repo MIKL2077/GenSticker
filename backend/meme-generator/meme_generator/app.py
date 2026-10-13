@@ -25,8 +25,10 @@ from meme_generator.manager import get_meme, get_meme_keys, get_memes
 from meme_generator.meme import CommandShortcut, Meme, MemeArgsModel, ParserOption
 from meme_generator.utils import MemeProperties, render_meme_list, run_sync
 from meme_generator.version import __version__
+from meme_generator.account import router as account_router
 
 app = FastAPI()
+app.include_router(account_router)
 generation_slots = asyncio.Semaphore(2)
 
 
