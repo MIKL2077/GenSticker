@@ -1,0 +1,7 @@
+[meme]
+# Requires Baidu translation credentials; enable after those are configured.
+meme_disabled_list = ["dianzhongdian"]
+
+[server]
+host = "127.0.0.1"
+port = 3001

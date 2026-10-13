@@ -146,10 +146,6 @@ export default {
       try {
         await fetchMemeCategories()
         await ensurePageLoaded(selectedCategory.value, 1)
-        setTimeout(() => {
-          ensurePageLoaded('all', 2)
-          ;['text', 'image', 'mixed'].forEach((c) => ensurePageLoaded(c, 1))
-        }, 0)
       } catch (e) {
         showStatusMessage('初始化失败，请刷新页面重试')
       }

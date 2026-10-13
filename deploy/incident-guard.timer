@@ -1,0 +1,9 @@
+[Unit]
+Description=Check for known malicious scanner recurrence
+
+[Timer]
+OnBootSec=30s
+OnUnitActiveSec=60s
+
+[Install]
+WantedBy=timers.target

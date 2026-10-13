@@ -1,11 +1,17 @@
 import json
+import base64
+import binascii
+import asyncio
+from functools import lru_cache
+from io import BytesIO
 from datetime import datetime
 from typing import Any, Literal, Optional
 from pathlib import Path
 
 import filetype
+from PIL import Image
 from fastapi import Depends, FastAPI, Form, HTTPException, Response, UploadFile
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, Field, ValidationError
 
 from meme_generator.compat import model_dump, model_json_schema, type_validate_python
 from meme_generator.config import meme_config
@@ -21,6 +27,49 @@ from meme_generator.utils import MemeProperties, render_meme_list, run_sync
 from meme_generator.version import __version__
 
 app = FastAPI()
+generation_slots = asyncio.Semaphore(2)
+
+
+class GenerateRequest(BaseModel):
+    images: list[str] = Field(default_factory=list, max_length=10)
+    texts: list[str] = Field(default_factory=list, max_length=20)
+    args: dict[str, Any] = Field(default_factory=dict)
+
+
+@app.get('/healthz')
+def healthz():
+    return {'status': 'ok', 'templates': len(get_meme_keys())}
+
+
+@app.post('/memes/{key}/generate')
+async def generate_json(key: str, params: GenerateRequest):
+    """WeChat uses JSON for multiple images and receives a binary image response."""
+    try:
+        meme = get_meme(key)
+    except NoSuchMeme as e:
+        raise HTTPException(status_code=404, detail=e.message)
+    if any(len(text) > 2000 for text in params.texts):
+        raise HTTPException(status_code=413, detail='文字过长')
+    if sum(len(image) for image in params.images) > 14 * 1024 * 1024:
+        raise HTTPException(status_code=413, detail='图片总大小不能超过 10 MB')
+    try:
+        images = [base64.b64decode(image, validate=True) for image in params.images]
+    except (ValueError, binascii.Error):
+        raise HTTPException(status_code=422, detail='图片必须为有效的 base64')
+    args_model = meme.params_type.args_type.args_model if meme.params_type.args_type else MemeArgsModel
+    try:
+        args = type_validate_python(args_model, params.args)
+    except ValidationError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+    if generation_slots.locked():
+        raise HTTPException(status_code=503, detail='生成队列已满，请稍后重试')
+    async with generation_slots:
+        try:
+            result = await run_sync(meme)(images=images, texts=params.texts, args=model_dump(args))
+        except MemeGeneratorException as e:
+            raise HTTPException(status_code=e.status_code, detail=e.message)
+    content = result.getvalue()
+    return Response(content=content, media_type=filetype.guess_mime(content) or 'application/octet-stream')
 
 
 class MemeArgsResponse(BaseModel):
@@ -188,6 +237,28 @@ def register_routers():
         media_type = str(filetype.guess_mime(content)) or "text/plain"
         return Response(content=content, media_type=media_type)
 
+    @lru_cache(maxsize=128)
+    def thumbnail(key: str) -> bytes:
+        meme = get_meme(key)
+        directory = Path(__file__).parent / 'memes' / key
+        example = next((directory / ('example' + ext) for ext in ['.gif', '.jpg', '.jpeg', '.png'] if (directory / ('example' + ext)).is_file()), None)
+        source = example if example else meme.generate_preview()
+        with Image.open(source) as image:
+            image.seek(0)
+            image = image.convert('RGBA')
+            image.thumbnail((256, 256))
+            output = BytesIO()
+            image.save(output, format='PNG', optimize=True)
+            return output.getvalue()
+
+    @app.get('/memes/{key}/thumbnail')
+    async def get_thumbnail(key: str):
+        try:
+            content = await run_sync(thumbnail)(key)
+        except MemeGeneratorException as e:
+            raise HTTPException(status_code=e.status_code, detail=e.message)
+        return Response(content=content, media_type='image/png', headers={'Cache-Control': 'public, max-age=86400'})
+
     @app.get("/memes/{key}/example")
     def _(key: str):
         """获取表情模版的示例图片"""
@@ -277,13 +348,15 @@ def register_routers():
 def run_server():
     import uvicorn
 
-    register_routers()
     uvicorn.run(
         app,
         host=meme_config.server.host,
         port=meme_config.server.port,
         log_config=LOGGING_CONFIG,
     )
+
+
+register_routers()
 
 
 if __name__ == "__main__":

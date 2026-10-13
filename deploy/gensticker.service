@@ -1,0 +1,30 @@
+[Unit]
+Description=GenSticker meme API
+After=network.target
+
+[Service]
+User=gensticker
+Group=gensticker
+WorkingDirectory=/opt/gensticker/meme-generator
+Environment=HOME=/var/lib/gensticker
+Environment=XDG_CONFIG_HOME=/var/lib/gensticker/.config
+Environment=XDG_CACHE_HOME=/var/cache/gensticker
+Environment=FONTCONFIG_FILE=/opt/gensticker/fonts.conf
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/opt/gensticker-venv/bin/uvicorn meme_generator.app:app --host 127.0.0.1 --port 3001 --workers 1 --limit-concurrency 24
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/gensticker /var/cache/gensticker
+CapabilityBoundingSet=
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+MemoryMax=2G
+CPUQuota=200%
+TasksMax=64
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

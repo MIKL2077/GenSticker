@@ -12,3 +12,5 @@ result.jpg
 result.gif
 avatar.jpg
 output/
+.env.local
+.env.*.local

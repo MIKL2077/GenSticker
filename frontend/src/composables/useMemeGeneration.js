@@ -7,6 +7,7 @@ export function useMemeGeneration(showStatusMessage) {
   const showPreview = ref(false)
   const isGenerating = ref(false)
   const generatedMeme = ref('')
+  let lastGeneratedFile = ''
 
   const h5UploadMultipart = async (url, localPaths, extra) => {
     const form = new FormData()
@@ -48,6 +49,36 @@ export function useMemeGeneration(showStatusMessage) {
     }
   }
 
+  const weixinGenerate = async (templateKey, localPaths, texts, args) => {
+    const fs = uni.getFileSystemManager()
+    const images = []
+    let totalSize = 0
+    for (const filePath of localPaths) {
+      const info = await new Promise((resolve, reject) => fs.stat({ path: filePath, success: resolve, fail: reject }))
+      totalSize += info.stats.size
+      if (totalSize > 10 * 1024 * 1024) throw new Error('图片总大小不能超过 10 MB')
+      const image = await new Promise((resolve, reject) => fs.readFile({ filePath, encoding: 'base64', success: r => resolve(r.data), fail: reject }))
+      images.push(image)
+    }
+    const response = await uni.request({
+      url: `${API_BASE_URL}/memes/${encodeURIComponent(templateKey)}/generate`,
+      method: 'POST',
+      data: { images, texts, args },
+      header: { 'Content-Type': 'application/json' },
+      timeout: 60000,
+      responseType: 'arraybuffer',
+    })
+    const ct = response.header?.['Content-Type'] || response.header?.['content-type'] || ''
+    if (response.statusCode !== 200 || !ct.startsWith('image/')) {
+      throw new Error(response.statusCode === 503 ? '服务繁忙，请稍后重试' : `生成请求失败: ${response.statusCode}`)
+    }
+    const filePath = `${uni.env.USER_DATA_PATH}/generated_meme_${Date.now()}.${getFileExtensionFromContentType(ct)}`
+    await new Promise((resolve, reject) => fs.writeFile({ filePath, data: response.data, success: resolve, fail: reject }))
+    if (lastGeneratedFile) fs.unlink({ filePath: lastGeneratedFile, fail: () => {} })
+    lastGeneratedFile = filePath
+    return filePath
+  }
+
   const generateFromTemplate = async (templateKey, imagesToUpload, texts = [], args = {}) => {
     showPreview.value = true
     isGenerating.value = true
@@ -60,69 +91,14 @@ export function useMemeGeneration(showStatusMessage) {
           const dataUri = await h5UploadMultipart(targetUrl, imagesToUpload, { args, texts })
           generatedMeme.value = dataUri
         } else {
-          const files = imagesToUpload.map((imagePath) => ({ name: 'images', filePath: imagePath }))
-          const formData = {}
-          if (Object.keys(args).length > 0) formData.args = JSON.stringify(args)
-          if (texts.length > 0) formData.texts = JSON.stringify(texts)
-          const uploadRes = await new Promise((resolve, reject) => {
-            uni.uploadFile({
-              url: targetUrl,
-              files,
-              formData,
-              header: {},
-              timeout: 60000,
-              success: (res) => resolve(res),
-              fail: (err) => reject(err),
-            })
-          })
-          if (uploadRes.statusCode === 200) {
-            const contentType = uploadRes.header?.['Content-Type'] || uploadRes.header?.['content-type'] || ''
-            const data = uploadRes.data
-            if (typeof data === 'string') {
-              try {
-                const parsed = JSON.parse(data)
-                const maybeBase64 = parsed?.data || parsed?.image || parsed?.base64
-                const ct = parsed?.content_type || contentType
-                if (maybeBase64) generatedMeme.value = toDataUri(maybeBase64, ct)
-                else if (parsed?.dataUri) generatedMeme.value = parsed.dataUri
-                else generatedMeme.value = data.startsWith('data:image/') ? data : toDataUri(data, contentType)
-              } catch (_) {
-                generatedMeme.value = data.startsWith('data:image/') ? data : toDataUri(data, contentType)
-              }
-            } else if (data) {
-              if (typeof data === 'string') {
-                generatedMeme.value = data.startsWith('data:image/') ? data : toDataUri(data, contentType)
-              } else {
-                generatedMeme.value = toDataUri(uni.arrayBufferToBase64(data), contentType)
-              }
-            } else {
-              throw new Error('服务器返回数据为空')
-            }
-          } else {
-            throw new Error(`上传失败: ${uploadRes.statusCode}`)
-          }
+          generatedMeme.value = await weixinGenerate(templateKey, imagesToUpload, texts, args)
         }
       } else {
         if (isH5) {
           const dataUri = await h5UploadMultipart(targetUrl, [], { args, texts })
           generatedMeme.value = dataUri
         } else {
-          const response = await uni.request({
-            url: targetUrl,
-            method: 'POST',
-            data: { texts, args },
-            header: { 'Content-Type': 'application/json' },
-            timeout: 30000,
-            responseType: 'arraybuffer',
-          })
-          if (response.statusCode === 200) {
-            const contentType = response.header?.['Content-Type'] || response.header?.['content-type'] || 'image/gif'
-            const data = response.data
-            if (typeof data === 'string') generatedMeme.value = data.startsWith('data:image/') ? data : toDataUri(data, contentType)
-            else generatedMeme.value = arrayBufferToDataUri(data, contentType)
-          } else {
-            throw new Error(`请求失败: ${response.statusCode}`)
-          }
+          generatedMeme.value = await weixinGenerate(templateKey, [], texts, args)
         }
       }
       isGenerating.value = false
@@ -217,6 +193,14 @@ export function useMemeGeneration(showStatusMessage) {
 
   const shareMeme = () => {
     if (generatedMeme.value) {
+      // #ifdef MP-WEIXIN
+      uni.showShareImageMenu({
+        path: generatedMeme.value,
+        fail: () => showStatusMessage && showStatusMessage('请先保存到相册，再从微信发送图片'),
+      })
+      return
+      // #endif
+      // #ifndef MP-WEIXIN
       uni.share({
         provider: 'weixin',
         scene: 'WXSceneSession',
@@ -225,8 +209,9 @@ export function useMemeGeneration(showStatusMessage) {
         success: () => showStatusMessage && showStatusMessage('分享成功！'),
         fail: () => showStatusMessage && showStatusMessage('分享失败，请重试'),
       })
+      // #endif
     }
   }
 
   return { showPreview, isGenerating, generatedMeme, generateFromTemplate, closePreview, saveMeme, shareMeme }
-} 
+}

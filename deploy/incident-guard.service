@@ -1,0 +1,7 @@
+[Unit]
+Description=Contain known SSH scanning suite from 2026-10-13 incident
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /usr/local/sbin/gensticker-incident-guard.py
+Nice=19

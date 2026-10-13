@@ -117,7 +117,7 @@ export function useTemplateData(showStatusMessage) {
       loadingStates.value.set(key, true)
       const imageData = await getTemplatePreviewData(key)
       const base64 = uni.arrayBufferToBase64(imageData)
-      const previewImage = `data:image/gif;base64,${base64}`
+      const previewImage = `data:image/png;base64,${base64}`
       previewImageCache.value.set(key, previewImage)
       const detail = templateDetails.value.get(key)
       if (detail) {
@@ -209,4 +209,4 @@ export function useTemplateData(showStatusMessage) {
     prevPage,
     nextPage,
   }
-} 
+}
