@@ -113,3 +113,37 @@ def render(spec, images, texts=None):
     output = BytesIO()
     canvas.convert("RGB").save(output, "JPEG", quality=90)
     return output
+
+
+def add_attribution(output, metadata):
+    if not metadata.get("source_url"):
+        return output
+    with Image.open(output) as original:
+        image = original.convert("RGB")
+    credits = [
+        metadata.get("author", "")[:80] + " · " + metadata.get("license", ""),
+        metadata["source_url"],
+        metadata.get("license_url", ""),
+    ]
+    width = max(image.width, 512)
+    face = font(12)
+    measure = ImageDraw.Draw(image)
+    lines = []
+    for credit in credits:
+        current = ""
+        for char in credit:
+            if measure.textlength(current + char, font=face) > width - 12:
+                lines.append(current)
+                current = char
+            else:
+                current += char
+        if current:
+            lines.append(current)
+    frame = Image.new("RGB", (width, image.height + len(lines) * 16 + 12), "white")
+    frame.paste(image, ((width - image.width) // 2, 0))
+    ImageDraw.Draw(frame).multiline_text(
+        (6, image.height + 5), "\n".join(lines), font=face, fill="#666666", spacing=4
+    )
+    result = BytesIO()
+    frame.save(result, "JPEG", quality=90)
+    return result

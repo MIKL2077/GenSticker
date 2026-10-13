@@ -86,6 +86,9 @@ export function useTemplateData(showStatusMessage) {
       }
       const info = await getTemplateInfo(key)
       const existingDetail = templateDetails.value.get(key) || { key }
+      existingDetail.templateId = info.template_id
+      existingDetail.version = info.version
+      existingDetail.attribution = info.attribution || {}
       existingDetail.metadataLoaded = true
       existingDetail.key = info.key
       existingDetail.name = info.keywords?.[0] || info.key

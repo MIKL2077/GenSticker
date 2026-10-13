@@ -5,6 +5,7 @@ import html
 import json
 import re
 import time
+import subprocess
 from urllib.parse import urlparse
 from io import BytesIO
 import httpx
@@ -32,19 +33,36 @@ def download(url, client, max_bytes=2 * 1024 * 1024):
     )
     if parsed.scheme != "https" or not allowed:
         raise ValueError("untrusted image host")
-    with client.stream("GET", url, follow_redirects=False) as response:
-        response.raise_for_status()
-        parts = []
-        total = 0
-        started = time.monotonic()
-        for chunk in response.iter_bytes():
-            total += len(chunk)
-            if time.monotonic() - started > 20:
-                raise ValueError("download time budget exceeded")
-            if total > max_bytes:
-                raise ValueError("image too large")
-            parts.append(chunk)
-        return b"".join(parts)
+    # curl's IPv4/TLS transport works on this host where Python TLS stalls.
+    # Argument arrays, verified hosts and a bounded response; never shell code.
+    try:
+        response = subprocess.run(
+            [
+                "curl",
+                "-4",
+                "--fail",
+                "--silent",
+                "--show-error",
+                "--connect-timeout",
+                "3",
+                "--max-time",
+                "15",
+                "--max-filesize",
+                str(max_bytes),
+                "--proto",
+                "=https",
+                url,
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            timeout=20,
+            check=True,
+        )
+    except (subprocess.SubprocessError, OSError):
+        raise ValueError("source download unavailable")
+    if len(response.stdout) > max_bytes:
+        raise ValueError("image too large")
+    return response.stdout
 
 
 def convert(raw, metadata):

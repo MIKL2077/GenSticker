@@ -8,8 +8,8 @@ from io import BytesIO
 from PIL import Image
 from .store import connect, root
 from .catalog import bootstrap, refresh, rows
-from .declarative import font
-from .vision import warmup, process
+from .declarative import render, add_attribution
+from .vision import warmup, process, PROCESSOR_VERSION
 from ..manager import get_meme
 
 
@@ -117,10 +117,33 @@ def candidates(job, analysis):
         )
         available.append((score, row))
     ordered = [r for _, r in sorted(available, key=lambda pair: pair[0], reverse=True)]
-    main = ordered[:6]
-    others = ordered[6:]
-    random.Random(job["id"]).shuffle(others)
-    return main + others[:3]
+    chosen = []
+    counts = {}
+
+    def take(row):
+        metadata = json.loads(row["metadata"])
+        family = (
+            "emoji-frame-v1"
+            if metadata.get("conversion") == "emoji-frame-v1"
+            else row["key"]
+        )
+        if counts.get(family, 0) >= 2:
+            return False
+        counts[family] = counts.get(family, 0) + 1
+        chosen.append(row)
+        return True
+
+    for row in ordered:
+        take(row)
+        if len(chosen) == 6:
+            break
+    remaining = [r for r in ordered if r not in chosen]
+    random.Random(job["id"]).shuffle(remaining)
+    for row in remaining:
+        take(row)
+        if len(chosen) == 9:
+            break
+    return chosen
 
 
 def run_job(job):
@@ -134,9 +157,15 @@ def run_job(job):
             raise ValueError("asset unavailable")
         processed = Path(asset["path"]).with_suffix(".subject.png")
         analysis_file = Path(asset["path"]).with_suffix(".analysis.json")
-        if processed.is_file() and analysis_file.is_file():
+        cached_analysis = (
+            json.loads(analysis_file.read_text()) if analysis_file.is_file() else {}
+        )
+        if (
+            processed.is_file()
+            and cached_analysis.get("processor_version") == PROCESSOR_VERSION
+        ):
             subject = Image.open(processed).convert("RGBA")
-            analysis = json.loads(analysis_file.read_text())
+            analysis = cached_analysis
         else:
             subject, analysis = process(asset["path"])
             subject.save(processed, "PNG")
@@ -161,34 +190,20 @@ def run_job(job):
 
         def render_one(slot, row):
             metadata = json.loads(row["metadata"])
-            output = get_meme(row["key"])(
-                images=[raw], texts=metadata.get("default_texts", [])
-            ).getvalue()
-            with Image.open(BytesIO(output)) as original:
+            if row["spec"]:
+                output = render(
+                    json.loads(row["spec"]),
+                    [subject],
+                    metadata.get("default_texts", []),
+                )
+            else:
+                output = get_meme(row["key"])(
+                    images=[raw], texts=metadata.get("default_texts", [])
+                )
+            output = add_attribution(output, metadata)
+            with Image.open(output) as original:
                 frame = original.convert("RGB")
                 frame.thumbnail((1024, 1024))
-                if metadata.get("source_url"):
-                    from PIL import ImageDraw
-
-                    caption = (
-                        metadata.get("author", "")[:40]
-                        + " · "
-                        + metadata.get("license", "")
-                        + "\n"
-                        + metadata["source_url"]
-                    )
-                    credited = Image.new(
-                        "RGB", (max(frame.width, 512), frame.height + 90), "white"
-                    )
-                    credited.paste(frame, ((credited.width - frame.width) // 2, 0))
-                    ImageDraw.Draw(credited).multiline_text(
-                        (6, frame.height + 5),
-                        caption,
-                        font=font(12),
-                        fill="#666666",
-                        spacing=4,
-                    )
-                    frame = credited
                 path = directory / f"{slot}.jpg"
                 frame.save(path, "JPEG", quality=88)
                 frame.thumbnail((256, 256))
@@ -309,14 +324,38 @@ def maintenance():
                     for v in r
                 )
                 db.execute("DELETE FROM results WHERE job_id=?", (job["id"],))
-                db.execute("DELETE FROM events WHERE job_id=?", (job["id"],))
+
                 db.execute("DELETE FROM jobs WHERE id=?", (job["id"],))
             db.execute("DELETE FROM events WHERE created<?", (stamp - 90 * 86400,))
-            # Preference uses only the last chosen set per task; all-selection gives no strong tag signal.
+            db.execute(
+                "DELETE FROM feedback_history WHERE created<?", (stamp - 90 * 86400,)
+            )
+            exposures = [0] * 9
+            choices = [0] * 9
+            for event in db.execute(
+                "SELECT data FROM events WHERE type='exposure' AND created>?",
+                (stamp - 90 * 86400,),
+            ):
+                for slot in json.loads(event["data"]):
+                    if 0 <= slot < 9:
+                        exposures[slot] += 1
+            for snapshot in db.execute(
+                "SELECT selected FROM feedback_history WHERE created>?",
+                (stamp - 90 * 86400,),
+            ):
+                selected = json.loads(snapshot["selected"])
+                if len(selected) >= 9:
+                    continue
+                for slot in selected:
+                    if 0 <= slot < 9:
+                        choices[slot] += 1
+            rates = [(choices[i] + 1) / (exposures[i] + 4) for i in range(9)]
+            mean = sum(rates) / 9
+            correction = [max(0.5, min(2, mean / r)) for r in rates]
             users = {
                 r["user_id"]
                 for r in db.execute(
-                    "SELECT DISTINCT user_id FROM jobs WHERE selection!='[]'"
+                    "SELECT DISTINCT user_id FROM feedback_history WHERE selected!='[]'"
                 )
             }
             for user in users:
@@ -327,22 +366,20 @@ def maintenance():
                     continue
                 weights = {}
                 for job in db.execute(
-                    "SELECT * FROM jobs WHERE user_id=? AND selection!='[]' AND created>?",
+                    "SELECT * FROM feedback_history WHERE user_id=? AND selected!='[]' AND created>?",
                     (user, stamp - 90 * 86400),
                 ):
-                    selection = json.loads(job["selection"])
-                    results = list(
-                        db.execute("SELECT * FROM results WHERE job_id=?", (job["id"],))
-                    )
+                    selection = json.loads(job["selected"])
+                    results = json.loads(job["results"])
                     if len(selection) == len(results):
                         continue
                     decay = 0.5 ** ((stamp - job["created"]) / (30 * 86400))
                     for result in results:
                         if result["slot"] in selection:
-                            for tag in json.loads(result["tags"]):
-                                weights[tag] = weights.get(tag, 0) + decay / max(
-                                    1, len(selection)
-                                )
+                            for tag in result["tags"]:
+                                weights[tag] = weights.get(tag, 0) + correction[
+                                    result["slot"]
+                                ] * decay / max(1, len(selection))
                 weights = {k: min(2, v / 5) for k, v in weights.items()}
                 db.execute(
                     "INSERT INTO preferences(user_id,weights,updated) VALUES(?,?,?) ON CONFLICT(user_id) DO UPDATE SET weights=excluded.weights,updated=excluded.updated",

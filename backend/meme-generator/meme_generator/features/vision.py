@@ -7,6 +7,7 @@ from .store import root
 
 _session = None
 _emotion = None
+PROCESSOR_VERSION = "u2netp-largest-v1-ferplus-v1"
 
 
 def warmup():
@@ -76,6 +77,7 @@ def process(path):
     with Image.open(path) as original:
         image = ImageOps.exif_transpose(original).convert("RGBA")
     analysis = {
+        "processor_version": PROCESSOR_VERSION,
         "subject": "unknown",
         "expression": "general",
         "confidence": 0.0,
@@ -86,8 +88,27 @@ def process(path):
     if _session is not None:
         try:
             cutout = extract(image)
+            import cv2
+            import numpy as np
+
             alpha = cutout.getchannel("A")
-            box = alpha.getbbox()
+            mask = (np.asarray(alpha) > 100).astype("uint8")
+            number, labels, stats, _ = cv2.connectedComponentsWithStats(mask, connectivity=8)
+            box = None
+            if number > 1:
+                largest = 1 + int(stats[1:, cv2.CC_STAT_AREA].argmax())
+                x, y, w, h = stats[largest, :4]
+                box = (
+                    max(0, int(x) - 4),
+                    max(0, int(y) - 4),
+                    min(image.width, int(x + w) + 4),
+                    min(image.height, int(y + h) + 4),
+                )
+                keep = cv2.dilate(
+                    (labels == largest).astype("uint8"), np.ones((9, 9), dtype="uint8")
+                )
+                clean = (np.asarray(alpha) * keep).astype("uint8")
+                cutout.putalpha(Image.fromarray(clean))
             if box:
                 coverage = sum(v > 100 for v in alpha.resize((64, 64)).getdata()) / 4096
                 if 0.02 < coverage < 0.98:

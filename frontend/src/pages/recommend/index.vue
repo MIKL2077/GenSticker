@@ -12,7 +12,7 @@
       <view v-if="job?.analysis?.warnings?.length" class="hint">{{ job.analysis.warnings.filter(t => !t.includes('真实情绪')).join('；') }}</view>
       <view v-if="job" class="results">
         <view v-for="slot in 9" :key="slot" class="result" :class="{selected:selected.includes(slot-1)}" @click="toggle(slot-1)">
-          <image v-if="previews[slot-1]" :src="previews[slot-1]" mode="aspectFit" class="result-image" />
+          <image v-if="previews[slot-1]" :src="previews[slot-1]" :data-slot="slot-1" mode="aspectFit" class="result-image" />
           <text v-else class="placeholder">{{ finished ? '暂无结果' : '准备中' }}</text>
           <text v-if="selected.includes(slot-1)" class="check">✓</text>
         </view>
@@ -27,7 +27,7 @@
   </view>
 </template>
 <script>
-import { ref,computed } from 'vue'
+import { ref,computed,watch,nextTick,getCurrentInstance } from 'vue'
 import { onShow,onHide,onUnload } from '@dcloudio/uni-app'
 import { useLibrary } from '@/composables/useLibrary'
 import { getQuota,listJobs,getJob,createJob,uploadPhoto,downloadResult,selectResults,removeJob,setPersonalization } from '@/services/recommendService'
@@ -36,6 +36,24 @@ export default {
     const {session}=useLibrary(), quota=ref({limit:3,remaining:0,personalization:true}),photo=ref(''),job=ref(null),previews=ref({}),selected=ref([]),error=ref(''),uploading=ref(false),saving=ref(false),history=ref([]),activeId=ref('')
     let timer=null, visible=true, polling=false, failures=0, requestKey='', generation=0
     const inflight=new Set(), exposed=new Set()
+    const instance=getCurrentInstance()
+    let observer=null
+    const disconnectObserver=()=>{if(observer)observer.disconnect();observer=null}
+    const observeVisible=()=>{nextTick(()=>{
+      disconnectObserver()
+      if(!visible || !activeId.value || !Object.keys(previews.value).length || !uni.createIntersectionObserver)return
+      const id=activeId.value
+      try {
+        observer=uni.createIntersectionObserver(instance.proxy,{observeAll:true,thresholds:[0.5]})
+        observer.relativeToViewport().observe('.result-image',event=>{
+          const slot=Number(event.dataset?.slot)
+          if(quota.value.personalization && id===activeId.value && event.intersectionRatio>=0.5 && Number.isInteger(slot) && !exposed.has(slot)){
+            exposed.add(slot);selectResults(id,[slot],'exposure').catch(()=>{})
+          }
+        })
+      }catch(_){disconnectObserver()}
+    })}
+    watch(previews,observeVisible,{deep:true})
     const activeKey=()=>`gensticker.recommend.active.${session.value?.profile.id || 'guest'}`
     const finished=computed(()=>['completed','failed'].includes(job.value?.status))
     const busy=computed(()=>uploading.value || !!job.value && !finished.value)
@@ -53,7 +71,7 @@ export default {
         for(const result of data.results) {
           if(previews.value[result.slot] || inflight.has(result.slot) || inflight.size>=3)continue
           inflight.add(result.slot)
-          downloadResult(result.preview_url).then(path=>{if(id===activeId.value && epoch===generation){previews.value[result.slot]=path;if(!exposed.has(result.slot)){exposed.add(result.slot);selectResults(id,[result.slot],'exposure').catch(()=>{})}}}).catch(()=>{}).finally(()=>inflight.delete(result.slot))
+          downloadResult(result.preview_url).then(path=>{if(id===activeId.value && epoch===generation){previews.value[result.slot]=path;}}).catch(()=>{}).finally(()=>inflight.delete(result.slot))
         }
         if(finished.value)await refresh()
       } catch(e){failures++;error.value=e.message||e.errMsg||'网络暂时不可用，任务仍在后台处理';if(e.statusCode===404 || e.statusCode===401){activeId.value='';uni.removeStorageSync(activeKey())}}
@@ -63,8 +81,8 @@ export default {
       }
     }
     const open=async (id,initial=null)=>{stop();generation++;activeId.value=id;job.value=initial;previews.value={};selected.value=[];inflight.clear();exposed.clear();failures=0;uni.setStorageSync(activeKey(),id);if(initial){poll();return}await poll();selected.value=job.value?.selected_slots||[]}
-    onShow(()=>{visible=true;refresh().catch(e=>{error.value=e.message||'暂时无法获取额度'});if(activeId.value)poll();else{const id=uni.getStorageSync(activeKey());if(id && session.value)open(id).catch(()=>{})}})
-    onHide(()=>{visible=false;stop()});onUnload(()=>{visible=false;stop();generation++})
+    onShow(()=>{visible=true;observeVisible();refresh().catch(e=>{error.value=e.message||'暂时无法获取额度'});if(activeId.value)poll();else{const id=uni.getStorageSync(activeKey());if(id && session.value)open(id).catch(()=>{})}})
+    onHide(()=>{visible=false;stop();disconnectObserver()});onUnload(()=>{visible=false;stop();disconnectObserver();generation++})
     const choose=()=>uni.chooseImage({count:1,sizeType:['compressed'],sourceType:['album','camera'],success:r=>{photo.value=r.tempFilePaths[0];requestKey='';error.value=''}})
     let uploadedAsset=null
     const generate=async()=>{
@@ -81,7 +99,7 @@ export default {
     }
     let feedbackQueue=Promise.resolve()
     const feedback=()=>{const id=activeId.value,slots=[...selected.value];if(id)feedbackQueue=feedbackQueue.then(()=>selectResults(id,slots)).catch(()=>{error.value='选择未能同步，请联网后重新选择'})}
-    const toggle=slot=>{if(!job.value?.results.some(r=>r.slot===slot))return;selected.value=selected.value.includes(slot)?selected.value.filter(s=>s!==slot):[...selected.value,slot];feedback()}
+    const toggle=slot=>{if(!previews.value[slot] || !job.value?.results.some(r=>r.slot===slot))return;selected.value=selected.value.includes(slot)?selected.value.filter(s=>s!==slot):[...selected.value,slot];feedback()}
     const selectAll=()=>{selected.value=selected.value.length===job.value.results.length?[]:job.value.results.map(r=>r.slot);feedback()}
     const save=async()=>{
       saving.value=true;let count=0

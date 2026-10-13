@@ -4,7 +4,7 @@ import uuid
 from PIL import Image
 from fastapi import APIRouter, HTTPException, Response
 from .store import connect
-from .declarative import TemplateSpec, render
+from .declarative import TemplateSpec, render, add_attribution
 from ..manager import get_memes, add_meme, get_meme_keys, get_meme
 
 router = APIRouter()
@@ -111,8 +111,10 @@ def refresh():
         spec = json.loads(row["spec"])
         metadata = json.loads(row["metadata"])
 
-        def generate(images, texts, args, spec=spec):
-            return render(spec, [img.image for img in images], texts)
+        def generate(images, texts, args, spec=spec, metadata=metadata):
+            return add_attribution(
+                render(spec, [img.image for img in images], texts), metadata
+            )
 
         if row["key"] in keys:
             meme = get_meme(row["key"])

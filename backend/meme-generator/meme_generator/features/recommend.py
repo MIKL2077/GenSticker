@@ -165,7 +165,7 @@ def create(params: CreateJob, user=Depends(current_user)):
             ):
                 raise HTTPException(429, "今天服务额度已用完，请明天再试")
             db.execute(
-                "INSERT INTO jobs(id,user_id,idempotency,asset_id,day,status,created,updated) VALUES(?,?,?,?,?,?,?,?)",
+                "INSERT INTO jobs(id,user_id,idempotency,asset_id,day,status,created,updated,algorithm) VALUES(?,?,?,?,?,?,?,?,?)",
                 (
                     identifier,
                     user["id"],
@@ -175,6 +175,7 @@ def create(params: CreateJob, user=Depends(current_user)):
                     "queued",
                     stamp,
                     stamp,
+                    "tags-position-v2",
                 ),
             )
             db.execute(
@@ -319,11 +320,6 @@ def select(identifier: str, params: Selection, user=Depends(current_user)):
                 "SELECT enabled FROM preferences WHERE user_id=?", (user["id"],)
             ).fetchone()
             if preference and not preference["enabled"]:
-                if params.action == "choose":
-                    db.execute(
-                        "UPDATE jobs SET selection=? WHERE id=?",
-                        (json.dumps(slots), identifier),
-                    )
                 return {"saved": True, "personalization": False}
             if (
                 db.execute(
@@ -349,6 +345,29 @@ def select(identifier: str, params: Selection, user=Depends(current_user)):
                     "UPDATE jobs SET selection=? WHERE id=?",
                     (json.dumps(slots), identifier),
                 )
+                descriptors = [
+                    {
+                        "slot": r["slot"],
+                        "template_id": r["template_id"],
+                        "version": r["version"],
+                        "tags": json.loads(r["tags"]),
+                    }
+                    for r in db.execute(
+                        "SELECT * FROM results WHERE job_id=?", (identifier,)
+                    )
+                ]
+                db.execute(
+                    "INSERT INTO feedback_history VALUES(?,?,?,?,?,?) ON CONFLICT(job_id) DO UPDATE SET selected=excluded.selected,results=excluded.results",
+                    (
+                        identifier,
+                        user["id"],
+                        owned(db, identifier, user)["created"],
+                        json.dumps(slots),
+                        json.dumps(descriptors),
+                        owned(db, identifier, user)["algorithm"],
+                    ),
+                )
+
         return {"saved": True}
     finally:
         db.close()
@@ -369,6 +388,12 @@ def preferences(params: Preference, user=Depends(current_user)):
             )
             if not params.enabled:
                 db.execute("DELETE FROM events WHERE user_id=?", (user["id"],))
+                db.execute(
+                    "DELETE FROM feedback_history WHERE user_id=?", (user["id"],)
+                )
+                db.execute(
+                    "UPDATE jobs SET selection='[]' WHERE user_id=?", (user["id"],)
+                )
         return {"enabled": params.enabled}
     finally:
         db.close()
@@ -396,6 +421,7 @@ def delete(identifier: str, user=Depends(current_user)):
             ).fetchone()
             # Retain quota tombstones so deleting history cannot reset today's allowance.
             db.execute("DELETE FROM events WHERE job_id=?", (identifier,))
+            db.execute("DELETE FROM feedback_history WHERE job_id=?", (identifier,))
             db.execute("DELETE FROM results WHERE job_id=?", (identifier,))
             db.execute("DELETE FROM jobs WHERE id=?", (identifier,))
             if (

@@ -108,3 +108,9 @@ Nginx 已增加请求总耗时、上游耗时、接收及发送字节日志，�
 服务端资料接口与 Nginx 已部署，网站200，API健康检查294模板，gensticker/nginx/cloudflared/obsidian-dev均active。前端在本地开发者工具已构建验证，尚未上传或发布微信小程序。
 
 新需求设计见 [NEXT_FEATURES_DESIGN.md](NEXT_FEATURES_DESIGN.md)，仅设计，未创建采集任务或启用模型/API。
+
+## 2026年10月14日 自动模板与九宫格开发版
+
+新入口、CPU抠图与表情匹配、持久化九图任务、每日配额、私有结果下载、选择反馈、个性化关闭及定期排序已部署。首批9个许可明确的基础模板已自动入库，总计303模板；采集timer每6小时执行。普通Wikimedia meme来源当前服务器连接超时，定期重试，不宣称已覆盖全网热门。付费AI始终关闭。
+
+详细验收、已实现范围、模型/来源许可、数据留存和回滚见 [FEATURES_ACCEPTANCE.md](FEATURES_ACCEPTANCE.md)。已通过6项新功能测试、5项账户测试、4组前端测试、微信/H5构建以及真实微信模拟器九图和新增模板原入口生成验证。最终验收样例算法tags-position-v2，9张结果与私有预览成功，全选反馈成功，今日完整3次额度已恢复。截图见 nine-image-acceptance.png、openmoji-template-acceptance.png。

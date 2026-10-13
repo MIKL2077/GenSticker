@@ -6,6 +6,7 @@
         <button class="close-btn" @click="$emit('close')">✕</button>
       </view>
       <view class="detail-body">
+        <view v-if="detail?.attribution?.source_url" class="source-credit">素材：{{ detail.attribution.author }} · {{ detail.attribution.license }}</view>
         <view class="example-section">
           <text class="detail-label">示例图</text>
           <image v-if="detail?.previewImage" :src="detail.previewImage" class="example-image" mode="aspectFit" />
@@ -107,4 +108,5 @@ export default {
 .btn { flex:1; padding:24rpx; border:none; border-radius:40rpx; font-size:28rpx; font-weight:bold; transition:all .3s ease }
 .btn-primary { background:linear-gradient(45deg, #ff6b6b, #ff8e53); color:#fff }
 .btn-secondary { background:#f8f9fa; color:#666; border:2rpx solid #ddd }
+.source-credit {font-size:20rpx;color:#9b897a;line-height:1.6;margin-bottom:18rpx}
 </style>

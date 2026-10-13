@@ -95,6 +95,7 @@ class MemeInfoResponse(BaseModel):
     key: str
     template_id: str = ''
     version: int = 1
+    attribution: dict[str,str] = Field(default_factory=dict)
     params_type: MemeParamsResponse
     keywords: list[str]
     shortcuts: list[CommandShortcut]
@@ -218,12 +219,13 @@ def register_routers():
 
         from meme_generator.features.store import connect
         db=connect()
-        try: catalog_entry=db.execute('SELECT id,version FROM templates WHERE key=?',(key,)).fetchone()
+        try: catalog_entry=db.execute('SELECT id,version,metadata FROM templates WHERE key=?',(key,)).fetchone()
         finally: db.close()
         return MemeInfoResponse(
             key=meme.key,
             template_id=catalog_entry['id'] if catalog_entry else '',
             version=catalog_entry['version'] if catalog_entry else 1,
+            attribution={k:json.loads(catalog_entry['metadata']).get(k,'') for k in ['author','license','source_url','license_url']} if catalog_entry else {},
             params_type=MemeParamsResponse(
                 min_images=meme.params_type.min_images,
                 max_images=meme.params_type.max_images,

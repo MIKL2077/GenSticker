@@ -217,6 +217,35 @@ class FeatureTests(unittest.TestCase):
         )
         self.assertEqual(self.client.get("/recommend/quota").json()["remaining"], 3)
 
+    def test_licensed_source_and_opt_out(self):
+        from meme_generator.features.ingest import download, run_openmoji
+
+        with patch("meme_generator.features.ingest.subprocess.run") as transport:
+            with self.assertRaises(ValueError):
+                download("http://127.0.0.1/private", None)
+            transport.assert_not_called()
+        with patch("meme_generator.features.ingest.download", return_value=self.photo):
+            first = run_openmoji(limit=1)
+            second = run_openmoji(limit=1)
+        self.assertEqual(first["published"], 1)
+        self.assertEqual(second["published"], 0)
+        identifier = self.create(self.upload()).json()["job_id"]
+        self.finish()
+        self.client.put("/recommend/preferences", json={"enabled": False})
+        self.client.post(
+            f"/recommend/jobs/{identifier}/selections",
+            json={"event_id": "opt-out-event", "slots": [0]},
+        )
+        db = connect()
+        self.assertEqual(db.execute("SELECT COUNT(*) FROM events").fetchone()[0], 0)
+        self.assertEqual(
+            db.execute(
+                "SELECT selection FROM jobs WHERE id=?", (identifier,)
+            ).fetchone()[0],
+            "[]",
+        )
+        db.close()
+
     def test_lease_recovery(self):
         self.create(self.upload())
         worker.claim()
