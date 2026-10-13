@@ -46,6 +46,8 @@ def healthz():
 @app.post('/memes/{key}/generate')
 async def generate_json(key: str, params: GenerateRequest):
     """WeChat uses JSON for multiple images and receives a binary image response."""
+    from meme_generator.features.catalog import refresh
+    refresh()
     try:
         meme = get_meme(key)
     except NoSuchMeme as e:
@@ -91,6 +93,8 @@ class MemeParamsResponse(BaseModel):
 
 class MemeInfoResponse(BaseModel):
     key: str
+    template_id: str = ''
+    version: int = 1
     params_type: MemeParamsResponse
     keywords: list[str]
     shortcuts: list[CommandShortcut]
@@ -194,6 +198,8 @@ def register_routers():
 
     @app.get("/memes/{key}/info")
     def _(key: str):
+        from meme_generator.features.catalog import refresh
+        refresh()
         try:
             meme = get_meme(key)
         except NoSuchMeme as e:
@@ -210,8 +216,14 @@ def register_routers():
                 parser_options=args_type.parser_options,
             )
 
+        from meme_generator.features.store import connect
+        db=connect()
+        try: catalog_entry=db.execute('SELECT id,version FROM templates WHERE key=?',(key,)).fetchone()
+        finally: db.close()
         return MemeInfoResponse(
             key=meme.key,
+            template_id=catalog_entry['id'] if catalog_entry else '',
+            version=catalog_entry['version'] if catalog_entry else 1,
             params_type=MemeParamsResponse(
                 min_images=meme.params_type.min_images,
                 max_images=meme.params_type.max_images,
@@ -255,6 +267,9 @@ def register_routers():
 
     @app.get('/memes/{key}/thumbnail')
     async def get_thumbnail(key: str):
+        if key.startswith('auto_'):
+            from meme_generator.features.catalog import thumbnail as declared_thumbnail
+            return await run_sync(declared_thumbnail)(key)
         try:
             content = await run_sync(thumbnail)(key)
         except MemeGeneratorException as e:
@@ -321,6 +336,8 @@ def register_routers():
         - 全部: 所有表情
         其他（既不需要图片也不需要文字）仅计入“全部”。
         """
+        from meme_generator.features.catalog import refresh
+        refresh()
         all_keys: list[str] = []
         text_only: list[str] = []
         image_only: list[str] = []
@@ -359,6 +376,12 @@ def run_server():
 
 
 register_routers()
+from meme_generator.features.catalog import router as catalog_router, bootstrap, refresh
+from meme_generator.features.recommend import router as recommend_router
+bootstrap()
+refresh()
+app.include_router(catalog_router)
+app.include_router(recommend_router)
 
 
 if __name__ == "__main__":

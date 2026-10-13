@@ -1,0 +1,36 @@
+[Unit]
+Description=GenSticker licensed template ingestion
+After=network.target
+
+[Service]
+User=gensticker
+Group=gensticker
+WorkingDirectory=/opt/gensticker/meme-generator
+Environment=HOME=/var/lib/gensticker
+Environment=XDG_CONFIG_HOME=/var/lib/gensticker/.config
+Environment=XDG_CACHE_HOME=/var/cache/gensticker
+Environment=FONTCONFIG_FILE=/opt/gensticker/fonts.conf
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=GENSTICKER_STATE_DIR=/var/lib/gensticker
+Environment=WX_APPID=wx2e3a058ed0117034
+EnvironmentFile=-/etc/gensticker.env
+Environment=U2NET_HOME=/var/cache/gensticker/models
+Environment=OPENBLAS_NUM_THREADS=2
+Environment=OMP_NUM_THREADS=2
+Type=oneshot
+ExecStart=/opt/gensticker-worker-venv/bin/python -m meme_generator.features.ingest
+TimeoutStartSec=240
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/gensticker /var/cache/gensticker
+CapabilityBoundingSet=
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+MemoryMax=2G
+CPUQuota=100%
+TasksMax=64
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target
