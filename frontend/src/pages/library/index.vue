@@ -17,7 +17,7 @@
 import { ref, computed, watch } from 'vue'
 import { onLoad, onShow } from '@dcloudio/uni-app'
 import { useLibrary } from '@/composables/useLibrary'
-import { getTemplateInfo, getTemplatePreviewData } from '@/services/memeService'
+import { getTemplateInfo, getTemplatePreviewPath } from '@/services/memeService'
 export default {
   setup() {
     const account = useLibrary(), mode = ref('history'), details = ref({}), limit = ref(20)
@@ -31,7 +31,7 @@ export default {
         try {
           const info = await getTemplateInfo(r.key)
           details.value[r.key] = { name: info.keywords?.[0] || info.key }
-          try { const data = await getTemplatePreviewData(r.key); details.value[r.key].previewImage = `data:image/png;base64,${uni.arrayBufferToBase64(data)}` } catch (_) {}
+          try { details.value[r.key].previewImage = await getTemplatePreviewPath(r.key) } catch (_) {}
         }
         catch (_) { details.value[r.key] = { name: r.key, unavailable: true } }
       }))

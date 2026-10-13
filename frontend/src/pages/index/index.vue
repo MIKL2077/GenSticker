@@ -127,7 +127,6 @@ export default {
 
     const onSelectTemplate = async (key) => {
       selectedTemplate.value = key
-      await fetchMemeInfo(key)
       const detail = (await fetchMemeInfo(key)) || null
       if (detail && !detail.previewImage) fetchMemePreview(key)
       if (!detail) { showStatusMessage('模板暂时不可用，请稍后重试'); return }

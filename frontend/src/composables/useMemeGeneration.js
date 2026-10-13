@@ -53,7 +53,16 @@ export function useMemeGeneration(showStatusMessage) {
     const fs = uni.getFileSystemManager()
     const images = []
     let totalSize = 0
-    for (const filePath of localPaths) {
+    for (const originalPath of localPaths) {
+      let filePath = originalPath
+      // Downsize camera photos before JSON upload; preserve animated/transparent inputs.
+      if (uni.getImageInfo && uni.compressImage) {
+        const info = await new Promise(resolve => uni.getImageInfo({ src: originalPath, success: resolve, fail: () => resolve(null) }))
+        if (info && /^(jpeg|jpg)$/i.test(info.type || '') && (info.width > 1280 || info.height > 1280)) {
+          const scale = Math.min(1280 / info.width, 1280 / info.height)
+          filePath = await new Promise((resolve, reject) => uni.compressImage({ src: originalPath, quality: 82, compressedWidth: Math.round(info.width * scale), compressedHeight: Math.round(info.height * scale), success: r => resolve(r.tempFilePath), fail: reject }))
+        }
+      }
       const info = await new Promise((resolve, reject) => fs.stat({ path: filePath, success: resolve, fail: reject }))
       totalSize += info.stats.size
       if (totalSize > 10 * 1024 * 1024) throw new Error('图片总大小不能超过 10 MB')
@@ -70,7 +79,9 @@ export function useMemeGeneration(showStatusMessage) {
     })
     const ct = response.header?.['Content-Type'] || response.header?.['content-type'] || ''
     if (response.statusCode !== 200 || !ct.startsWith('image/')) {
-      throw new Error(response.statusCode === 503 ? '服务繁忙，请稍后重试' : `生成请求失败: ${response.statusCode}`)
+      let detail = ''
+      try { detail = JSON.parse(decodeURIComponent(Array.from(new Uint8Array(response.data).slice(0, 8192), b => '%' + b.toString(16).padStart(2, '0')).join(''))).detail || '' } catch (_) {}
+      throw new Error(response.statusCode === 503 ? '服务繁忙，请稍后重试' : response.statusCode === 429 ? '操作太频繁，请稍后再生成' : detail || `生成请求失败: ${response.statusCode}`)
     }
     const filePath = `${uni.env.USER_DATA_PATH}/generated_meme_${Date.now()}.${getFileExtensionFromContentType(ct)}`
     await new Promise((resolve, reject) => fs.writeFile({ filePath, data: response.data, success: resolve, fail: reject }))
@@ -80,6 +91,7 @@ export function useMemeGeneration(showStatusMessage) {
   }
 
   const generateFromTemplate = async (templateKey, imagesToUpload, texts = [], args = {}) => {
+    if (isGenerating.value) return
     showPreview.value = true
     isGenerating.value = true
     generatedMeme.value = ''
@@ -106,7 +118,8 @@ export function useMemeGeneration(showStatusMessage) {
     } catch (error) {
       console.error('生成表情包失败:', error)
       isGenerating.value = false
-      showStatusMessage && showStatusMessage(`生成失败: ${error.message}`)
+      const message = /timeout/i.test(error.errMsg || error.message || '') ? '网络传输超时，请检查连接后重试；大图会自动压缩' : error.message || error.errMsg || '请稍后重试'
+      showStatusMessage && showStatusMessage(`生成失败: ${message}`)
     }
   }
 

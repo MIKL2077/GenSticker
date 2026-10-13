@@ -53,6 +53,21 @@ async function verify() {
   assert.equal(app.isGenerating.value, false)
   assert.equal(app.generatedMeme.value, '')
   assert.match(statuses.at(-1), /服务繁忙/)
+  context.uni.request = async o => { requests.push(o); return { statusCode: 200, header: { 'content-type': 'image/png' }, data: new ArrayBuffer(8) } }
+  const compressions = []
+  context.uni.getImageInfo = o => o.success({ width: 4000, height: 3000, type: 'jpeg' })
+  context.uni.compressImage = o => { compressions.push(o); o.success({ tempFilePath: '/compressed.jpg' }) }
+  await app.generateFromTemplate('single', ['/camera.jpg'])
+  assert.equal(compressions[0].compressedWidth, 1280)
+  assert.equal(compressions[0].compressedHeight, 960)
+  assert.equal(requests.at(-1).data.images[0], Buffer.from('/compressed.jpg').toString('base64'))
+  context.uni.request = async () => { throw { errMsg: 'request:fail timeout' } }
+  await app.generateFromTemplate('single', [])
+  assert.match(statuses.at(-1), /网络传输超时/)
+  assert.doesNotMatch(statuses.at(-1), /undefined/)
+  context.uni.request = async () => ({ statusCode: 429, header: {}, data: new ArrayBuffer(0) })
+  await app.generateFromTemplate('single', [])
+  assert.match(statuses.at(-1), /操作太频繁/)
   console.log('PASS: multiple images, texts, binary image, native share, text-only generation, busy server')
 }
 verify().catch(e => { console.error(e); process.exitCode = 1 })

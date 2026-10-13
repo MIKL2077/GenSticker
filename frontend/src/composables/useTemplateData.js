@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { PAGINATION, CATEGORY_UI_TO_API } from '@/constants'
-import { getCategories, getTemplateInfo, getTemplatePreviewData } from '@/services/memeService'
+import { getCategories, getTemplateInfo, getTemplatePreviewPath } from '@/services/memeService'
 
 export function useTemplateData(showStatusMessage) {
   const isLoadingTemplates = ref(false)
@@ -82,10 +82,11 @@ export function useTemplateData(showStatusMessage) {
     try {
       if (templateDetails.value.has(key)) {
         const existing = templateDetails.value.get(key)
-        if (existing && (existing.textCount !== '0-0' || existing.imageCount !== '0-0')) return existing
+        if (existing?.metadataLoaded) return existing
       }
       const info = await getTemplateInfo(key)
       const existingDetail = templateDetails.value.get(key) || { key }
+      existingDetail.metadataLoaded = true
       existingDetail.key = info.key
       existingDetail.name = info.keywords?.[0] || info.key
       existingDetail.keywords = info.keywords || []
@@ -118,9 +119,7 @@ export function useTemplateData(showStatusMessage) {
       }
       if (loadingStates.value.get(key)) return null
       loadingStates.value.set(key, true)
-      const imageData = await getTemplatePreviewData(key)
-      const base64 = uni.arrayBufferToBase64(imageData)
-      const previewImage = `data:image/png;base64,${base64}`
+      const previewImage = await getTemplatePreviewPath(key)
       previewImageCache.value.set(key, previewImage)
       const detail = templateDetails.value.get(key)
       if (detail) {
@@ -174,7 +173,7 @@ export function useTemplateData(showStatusMessage) {
         Promise.allSettled(detailPromises),
         Promise.allSettled(previewPromises),
       ])
-      loadedSet.add(pageNumber)
+      if (pageKeys.every(key => templateDetails.value.get(key)?.metadataLoaded && previewImageCache.value.has(key))) loadedSet.add(pageNumber)
     } catch (e) {
       console.error('分页加载失败:', e)
     } finally {
