@@ -8,7 +8,7 @@ export async function apiRequest(url, options = {}, retries = 3) {
         method: options.method || 'GET',
         data: options.data,
         header: {
-          ...((url.startsWith('/account/') || url.startsWith('/auth/')) && options.auth !== false && uni.getStorageSync('gensticker.session.v1')?.access_token
+          ...((url.startsWith('/account/') || url.startsWith('/auth/') || url.startsWith('/recommend/')) && options.auth !== false && uni.getStorageSync('gensticker.session.v1')?.access_token
             ? { Authorization: `Bearer ${uni.getStorageSync('gensticker.session.v1').access_token}` } : {}),
           ...options.header,
         },

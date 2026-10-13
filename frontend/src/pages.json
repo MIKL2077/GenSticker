@@ -21,6 +21,14 @@
         "navigationBarTitleText": "我的模板",
         "navigationBarTextStyle": "black"
       }
+    },
+    {
+      "path": "pages/recommend/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "照片一键配表情",
+        "navigationBarTextStyle": "black"
+      }
     }
   ],
   "globalStyle": {

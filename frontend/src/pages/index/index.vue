@@ -7,6 +7,7 @@
       <view class="floating-emoji" style="bottom: 20%; right: 10%; animation-delay: 0.5s;">😍</view>
     </app-header>
 
+    <view class="recommend-entry" @click="openRecommend"><view><text class="recommend-title">照片一键配表情</text><text class="recommend-copy">自动提取主体，挑选你的九宫格</text></view><text class="recommend-arrow">›</text></view>
     <view class="meme-templates">
       <view class="template-header">
         <text class="section-title">🎭 选择表情模板</text>
@@ -190,6 +191,7 @@ export default {
       // 分类/分页
       isLoadingTemplates,
       loadError,
+      openRecommend: () => uni.navigateTo({ url: '/pages/recommend/index' }),
       pageNumbers,
       retryTemplates,
       favoriteTemplate,
@@ -344,4 +346,5 @@ export default {
 
 .close-btn::after, .btn::after { content: none !important; display: none !important; }
 .detail-body { position: relative; z-index: 1; }
+.recommend-entry{display:flex;align-items:center;justify-content:space-between;background:#fff8ef;border-radius:26rpx;padding:24rpx 28rpx;margin:28rpx 0;color:#713f2c}.recommend-title{display:block;font-size:29rpx;font-weight:700}.recommend-copy{display:block;font-size:22rpx;color:#a47761;margin-top:8rpx}.recommend-arrow{font-size:44rpx}
 </style>

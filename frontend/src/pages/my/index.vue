@@ -45,11 +45,11 @@ export default {
   components: { BottomTabs },
   setup() {
     const account = useLibrary()
-    onShow(() => { uni.hideTabBar({ animation: false }); account.syncLibrary(); if (!account.session.value) account.prefetchLogin().catch(() => {}) })
+    onShow(() => { uni.hideTabBar({ animation: false }); account.syncLibrary(); if (!account.session.value) account.prefetchLogin().catch(() => {}); if (uni.getStorageSync('gensticker.open-recommend')) { if (account.session.value) { uni.removeStorageSync('gensticker.open-recommend'); uni.navigateTo({url:'/pages/recommend/index'}) } else showLogin() } })
     const loginVisible = ref(false), nickname = ref(''), chosenAvatar = ref(''), loginError = ref(''), submitting = ref(false)
     let nextLibrary = ''
     const showLogin = () => { nickname.value = account.session.value?.profile.name || ''; chosenAvatar.value = ''; loginError.value = ''; loginVisible.value = true }
-    const closeLogin = () => { if (!submitting.value) { loginVisible.value = false; nextLibrary = '' } }
+    const closeLogin = () => { if (!submitting.value) { loginVisible.value = false; nextLibrary = ''; uni.removeStorageSync('gensticker.open-recommend') } }
     const openLibrary = mode => {
       if (!account.session.value) { nextLibrary = mode; showLogin(); return }
       uni.navigateTo({ url: `/pages/library/index?mode=${mode}` })
@@ -65,7 +65,7 @@ export default {
         loginVisible.value = false
         uni.showToast({ title: '已完成', icon: 'success' })
         const mode = nextLibrary; nextLibrary = ''
-        if (mode) openLibrary(mode)
+        if (uni.getStorageSync('gensticker.open-recommend')) { uni.removeStorageSync('gensticker.open-recommend'); uni.navigateTo({url:'/pages/recommend/index'}) } else if (mode) openLibrary(mode)
       } catch (e) { loginError.value = e.message || e.errMsg || '登录失败，请重试' }
       finally { submitting.value = false }
     }
