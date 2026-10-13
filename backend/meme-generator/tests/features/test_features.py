@@ -15,7 +15,13 @@ from meme_generator.features.declarative import TemplateSpec, render
 class FeatureTests(unittest.TestCase):
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()
-        self.env = patch.dict(os.environ, {"GENSTICKER_STATE_DIR": self.directory.name})
+        self.env = patch.dict(
+            os.environ,
+            {
+                "GENSTICKER_STATE_DIR": self.directory.name,
+                "GENSTICKER_BOOTSTRAP_SEEDS": "0",
+            },
+        )
         self.env.start()
         catalog.bootstrap()
         db = connect()
@@ -245,6 +251,14 @@ class FeatureTests(unittest.TestCase):
             "[]",
         )
         db.close()
+
+    def test_reviewed_seed_restore_is_idempotent(self):
+        from meme_generator.features.seed import restore
+
+        before = len(catalog.rows())
+        self.assertEqual(restore(), 10)
+        self.assertEqual(len(catalog.rows()), before + 10)
+        self.assertEqual(restore(), 0)
 
     def test_lease_recovery(self):
         self.create(self.upload())

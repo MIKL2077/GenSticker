@@ -1,3 +1,4 @@
+import os
 import hashlib
 import json
 import uuid
@@ -90,6 +91,10 @@ def bootstrap():
                 "slot_aspect": 1.0,
             },
         )
+    if os.getenv("GENSTICKER_BOOTSTRAP_SEEDS", "1") == "1":
+        from .seed import restore
+
+        restore()
 
 
 def rows():

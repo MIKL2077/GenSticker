@@ -1,0 +1,65 @@
+"""Restore only the reviewed, openly licensed template fixtures shipped with code."""
+
+import base64
+import hashlib
+import json
+from pathlib import Path
+from .store import connect, root
+from .declarative import TemplateSpec
+
+
+def restore():
+    from .catalog import publish
+
+    manifest = json.loads(Path(__file__).with_name("template_seed.json").read_text())
+    db = connect()
+    restored = 0
+    try:
+        for item in manifest["templates"]:
+            metadata = item["metadata"]
+            if metadata["license"] not in {"CC BY-SA 4.0", "Public domain"}:
+                raise ValueError("unreviewed seed license")
+            if metadata["origin"] == "openmoji":
+                if not metadata["source_url"].startswith(
+                    "https://github.com/hfg-gmuend/openmoji/blob/master/color/72x72/"
+                ):
+                    raise ValueError("unreviewed seed origin")
+            elif (
+                metadata["source_url"]
+                != "https://commons.wikimedia.org/wiki/File:LEGO_%22Y_U_NO_%22_meme_(Free_to_use).jpg"
+            ):
+                raise ValueError("unreviewed seed origin")
+            if db.execute(
+                "SELECT 1 FROM templates WHERE key=?", (item["key"],)
+            ).fetchone():
+                continue
+            spec = TemplateSpec.model_validate(item["spec"]).model_dump()
+            for layer in spec["layers"]:
+                if layer["type"] == "asset":
+                    digest = layer["value"]
+                    raw = base64.b64decode(manifest["assets"][digest], validate=True)
+                    if hashlib.sha256(raw).hexdigest() != digest:
+                        raise ValueError("seed asset checksum mismatch")
+                    directory = root() / "template_assets"
+                    directory.mkdir(exist_ok=True)
+                    (directory / (digest + ".png")).write_bytes(raw)
+            publish(item["key"], metadata, spec)
+            with db:
+                db.execute(
+                    "INSERT OR IGNORE INTO candidates VALUES(?,?,?,?,?)",
+                    (
+                        metadata["original_hash"],
+                        metadata["source_url"],
+                        "published",
+                        "restored reviewed public seed",
+                        metadata.get("collected_at", 0),
+                    ),
+                )
+            restored += 1
+        return restored
+    finally:
+        db.close()
+
+
+if __name__ == "__main__":
+    print("restored", restore())
