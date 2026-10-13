@@ -22,6 +22,16 @@ const syncError = ref('')
 const loggingIn = ref(false)
 let syncing = null
 let sequence = 0
+let lastSyncedAt = 0
+let accountConfig = null
+let accountConfigAt = 0
+function prefetchLogin() {
+  if (!accountConfig || Date.now() - accountConfigAt > 60000) {
+    accountConfigAt = Date.now()
+    accountConfig = apiRequest('/account/config', { auth: false }).catch(e => { accountConfig = null; throw e })
+  }
+  return accountConfig
+}
 const persist = () => uni.setStorageSync(storageKey(owner()), JSON.parse(JSON.stringify(library.value)))
 const enqueue = op => {
   if (!session.value) return
@@ -48,9 +58,10 @@ async function flush() {
   }
 }
 
-function syncLibrary() {
+function syncLibrary(force = false) {
   if (!session.value) return Promise.resolve()
   if (syncing) return syncing
+  if (!force && !syncError.value && !library.value.pending.length && Date.now() - lastSyncedAt < 30000) return Promise.resolve()
   const id = owner()
   syncing = (async () => {
     try {
@@ -59,6 +70,7 @@ function syncLibrary() {
       const data = await apiRequest('/account/library')
       // Do not overwrite new optimistic edits made during the fetch.
       if (owner() === id && !library.value.pending.length) { library.value = { ...empty(), ...data }; persist() }
+      lastSyncedAt = Date.now()
       syncError.value = ''
     } catch (e) {
       syncError.value = e.statusCode === 401 ? '登录已过期，请重新登录；本机记录已保留' : '记录已保存在本机，联网后可重试同步'
@@ -89,7 +101,7 @@ async function loginWeChat() {
   if (loggingIn.value) return
   loggingIn.value = true
   try {
-    const config = await apiRequest('/account/config', { auth: false })
+    const config = await prefetchLogin()
     if (!config.login_enabled) throw new Error('微信登录尚未配置；历史与收藏仍可在本机使用')
     // #ifndef MP-WEIXIN
     throw new Error('请在微信小程序中登录')
@@ -99,7 +111,9 @@ async function loginWeChat() {
     if (!credentials.code) throw new Error('未获得微信登录凭证，请重试')
     const account = await apiRequest('/auth/wechat', { method: 'POST', data: { code: credentials.code }, auth: false }, 1)
     const guest = load('guest')
+    account.profile = await localProfile(account.profile)
     session.value = account; uni.setStorageSync(SESSION_KEY, account)
+    lastSyncedAt = 0
     library.value = load(owner())
     if (guest.favorite_keys.length || guest.history.length) {
       library.value.favorite_keys = [...new Set([...library.value.favorite_keys, ...guest.favorite_keys])].slice(0, 100)
@@ -109,9 +123,33 @@ async function loginWeChat() {
       enqueue({ type: 'merge', data: { favorite_keys: guest.favorite_keys, history: guest.history } })
       persist()
     }
-    await syncLibrary()
+    syncLibrary()
     // #endif
   } finally { loggingIn.value = false }
+}
+
+async function localProfile(profile) {
+  const result = { ...profile }
+  if (result.avatar) {
+    const fs = uni.getFileSystemManager()
+    const filePath = `${uni.env.USER_DATA_PATH}/avatar_${result.id}.jpg`
+    await new Promise((resolve, reject) => fs.writeFile({ filePath, data: result.avatar, encoding: 'base64', success: resolve, fail: reject }))
+    result.avatarPath = filePath
+  }
+  delete result.avatar
+  return result
+}
+
+async function saveProfile(name, avatarPath) {
+  let avatar
+  if (avatarPath) {
+    const fs = uni.getFileSystemManager()
+    avatar = await new Promise((resolve, reject) => fs.readFile({ filePath: avatarPath, encoding: 'base64', success: r => resolve(r.data), fail: reject }))
+    if (avatar.length > 350000) throw new Error('头像过大，请选择较小的图片')
+  }
+  const data = await apiRequest('/account/profile', { method: 'PUT', data: { name, ...(avatar ? { avatar } : {}) } }, 1)
+  const updated = await localProfile(data)
+  if (session.value?.profile.id === updated.id) { session.value.profile = updated; uni.setStorageSync(SESSION_KEY, session.value) }
 }
 
 async function logout() {
@@ -120,11 +158,11 @@ async function logout() {
     try { await apiRequest('/auth/session', { method: 'DELETE' }) }
     catch (e) { if (e.statusCode && e.statusCode !== 401) throw e }
   }
-  session.value = null; uni.removeStorageSync(SESSION_KEY); library.value = load('guest'); syncError.value = ''
+  session.value = null; uni.removeStorageSync(SESSION_KEY); library.value = load('guest'); syncError.value = ''; lastSyncedAt = 0
 }
 
 export function useLibrary() {
-  return { session, library, syncError, loggingIn, loginWeChat, logout, syncLibrary, recordVisit, toggleFavorite, clearHistory,
+  return { session, library, syncError, loggingIn, loginWeChat, prefetchLogin, saveProfile, logout, syncLibrary, recordVisit, toggleFavorite, clearHistory,
     favoritesCount: computed(() => library.value.favorite_keys.length), historyCount: computed(() => library.value.history.length),
     isFavorite: key => library.value.favorite_keys.includes(key) }
 }

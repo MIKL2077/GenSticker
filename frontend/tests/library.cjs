@@ -30,6 +30,7 @@ vm.createContext(context); vm.runInContext(source, context)
   assert.equal(a.historyCount.value, 100)
   await a.loginWeChat()
   assert.equal(a.session.value.profile.id, 'user-a')
+  await a.syncLibrary() // Login returns immediately; migration completes in the background.
   assert.equal(remote.favorite_keys[0], 'two')
   assert.equal(remote.history.length, 100)
   assert.equal(storage.has('gensticker.library.guest.v1'), false)

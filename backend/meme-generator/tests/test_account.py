@@ -42,6 +42,23 @@ class AccountTests(unittest.TestCase):
         self.assertNotIn('must-not-leak', result.text)
         return {'Authorization': 'Bearer ' + result.json()['access_token']}
 
+    def test_profile_validation_and_isolation(self):
+        import base64
+        from io import BytesIO
+        from PIL import Image
+        a, b = self.login('a'), self.login('b')
+        output = BytesIO()
+        Image.new('RGB', (512, 512), 'red').save(output, 'PNG')
+        result = self.client.put('/account/profile', headers=a, json={'name': '小红', 'avatar': base64.b64encode(output.getvalue()).decode()})
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(result.json()['name'], '小红')
+        image = Image.open(BytesIO(base64.b64decode(result.json()['avatar'])))
+        self.assertEqual(image.size, (128, 128))
+        self.assertEqual(self.client.get('/auth/me', headers=b).json()['name'], '微信用户')
+        self.assertEqual(self.client.put('/account/profile', headers=a, json={'name': ' ', 'avatar': 'abc'}).status_code, 422)
+        self.assertEqual(self.client.put('/account/profile', headers=a, json={'name': '小红', 'avatar': 'abc'}).status_code, 422)
+        self.assertEqual(self.client.get('/auth/me', headers=a).json()['name'], '小红')
+
     def test_missing_config_and_auth(self):
         self.assertEqual(self.client.get('/account/library').status_code, 401)
         with patch.dict(os.environ, {'WX_APP_SECRET': ''}):

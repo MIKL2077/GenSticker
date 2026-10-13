@@ -1,4 +1,8 @@
 """WeChat identity and a user-scoped template library. No uploaded images are stored."""
+import base64
+import binascii
+from io import BytesIO
+from PIL import Image, UnidentifiedImageError
 import hashlib
 import os
 from pathlib import Path
@@ -34,6 +38,11 @@ def connection():
         CREATE TABLE IF NOT EXISTS favorites (user_id TEXT NOT NULL REFERENCES users(id), key TEXT NOT NULL, added_at INTEGER NOT NULL, PRIMARY KEY(user_id,key));
         CREATE TABLE IF NOT EXISTS history (user_id TEXT NOT NULL REFERENCES users(id), key TEXT NOT NULL, visited_at INTEGER NOT NULL, PRIMARY KEY(user_id,key));
     ''')
+    columns = {r[1] for r in db.execute("PRAGMA table_info(users)")}
+    for column in ("name", "avatar"):
+        if column not in columns:
+            db.execute(f"ALTER TABLE users ADD COLUMN {column} TEXT")
+    db.commit()
     return db
 
 
@@ -111,14 +120,55 @@ async def login(params: LoginRequest):
             user_id = db.execute('SELECT id FROM users WHERE openid=?', (openid,)).fetchone()['id']
             db.execute('DELETE FROM sessions WHERE expires<=?', (int(time.time()),))
             db.execute('INSERT INTO sessions VALUES (?,?,?)', (hashlib.sha256(token.encode()).hexdigest(), user_id, expires))
-        return {'access_token': token, 'expires_at': expires, 'profile': {'id': user_id, 'name': '微信用户'}}
+        return {'access_token': token, 'expires_at': expires, 'profile': profile(user_id, db)}
     finally:
         db.close()
 
 
 @router.get('/auth/me')
 def me(user=Depends(current_user)):
-    return {'id': user['id'], 'name': '微信用户'}
+    db = connection()
+    try:
+        return profile(user['id'], db)
+    finally:
+        db.close()
+
+
+def profile(user_id, db):
+    row = db.execute('SELECT name,avatar FROM users WHERE id=?', (user_id,)).fetchone()
+    return {'id': user_id, 'name': row['name'] or '微信用户', 'avatar': row['avatar'] or ''}
+
+
+class ProfileRequest(BaseModel):
+    name: str = Field(min_length=1, max_length=32)
+    avatar: str | None = Field(default=None, max_length=350000)
+
+
+@router.put('/account/profile')
+def update_profile(params: ProfileRequest, user=Depends(current_user)):
+    name = params.name.strip()
+    if not name:
+        raise HTTPException(422, '请输入昵称')
+    avatar = None
+    if params.avatar is not None:
+        try:
+            raw = base64.b64decode(params.avatar, validate=True)
+            with Image.open(BytesIO(raw)) as image:
+                if image.width * image.height > 16000000:
+                    raise ValueError('image too large')
+                image.thumbnail((128, 128))
+                output = BytesIO()
+                image.convert('RGB').save(output, format='JPEG', quality=80)
+                avatar = base64.b64encode(output.getvalue()).decode()
+        except (ValueError, binascii.Error, UnidentifiedImageError, OSError, Image.DecompressionBombError):
+            raise HTTPException(422, '头像无效，请重新选择')
+    db = connection()
+    try:
+        with db:
+            db.execute('UPDATE users SET name=?,avatar=COALESCE(?,avatar) WHERE id=?', (name, avatar, user['id']))
+        return profile(user['id'], db)
+    finally:
+        db.close()
 
 
 @router.delete('/auth/session', status_code=204)

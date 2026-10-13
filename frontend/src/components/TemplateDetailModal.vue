@@ -78,11 +78,11 @@ export default {
 </script>
 
 <style scoped>
-.template-detail-modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.8); display:flex; align-items:center; justify-content:center; z-index:2000 }
-.detail-content { background:#fff; border-radius:20rpx; width:90%; max-width:700rpx; max-height:80%; overflow:hidden; position:relative }
+.template-detail-modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(30,25,23,.55); display:flex; align-items:center; justify-content:center; z-index:2000 }
+.detail-content { background:#fff; border-radius:32rpx; width:90%; max-width:700rpx; max-height:80%; overflow:hidden; position:relative }
 .detail-header { display:flex; justify-content:center; align-items:center; padding:30rpx; border-bottom:2rpx solid #eee }
 .detail-title { font-size:32rpx; font-weight:bold; color:#333 }
-.close-btn { position:absolute; top:16rpx; right:16rpx; width:72rpx; height:48rpx; background:#c62828; color:#fff; border:none; border-radius:12rpx; font-size:28rpx; display:flex; align-items:center; justify-content:center; box-shadow:0 2rpx 10rpx rgba(198,40,40,.3); z-index:10 }
+.close-btn { position:absolute; top:16rpx; right:16rpx; width:72rpx; height:48rpx; background:#f5f1ed; color:#77685e; border:none; border-radius:12rpx; font-size:28rpx; display:flex; align-items:center; justify-content:center;  z-index:10 }
 .detail-body { padding:30rpx; max-height:600rpx; overflow-y:auto; position:relative; z-index:1 }
 .example-section { margin-bottom:40rpx; text-align:center }
 .detail-label { font-size:28rpx; font-weight:bold; color:#333; margin-bottom:20rpx; display:block }
