@@ -1,6 +1,8 @@
 # 自动模板与九宫格验收
 
-2026年10月14日开发版。开发分支为 `codex/restore-wechat-final`；微信小程序尚未上传发布。
+2026年10月14日开发版。开发分支为 `codex/restore-wechat-final`；微信小程序已生成私有开发预览，尚未提交审核或发布生产版本。
+
+临时微信预览二维码已生成在本机 `/private/tmp/gensticker-preview-20261014.png`，只供扫码验收，不提交Git；失效时可用微信CLI preview重新生成。预览包355.2KB。
 
 ## 本地打开
 
@@ -22,13 +24,15 @@
 
 ## 模板入库
 
-已登记原有294个可用模板，新增9个OpenMoji基础表情模板，共303个。每个模板有稳定 UUID、独立版本，已有 key 继续作为兼容别名。通过 `/templates` 可查看来源、许可、分类标签和版本。
+已登记原有294个可用模板，新增9个OpenMoji基础表情模板及1个普通meme转换样例，共304个。每个模板有稳定 UUID、独立版本，已有 key 继续作为兼容别名。通过 `/templates` 可查看来源、许可、分类标签和版本。
 
 `gensticker-ingest.timer` 每6小时加随机延迟执行。采集流程限定来源、预算与字节数，去重，生成声明式图层，再试渲染后发布；低置信度留待处理，不执行模型生成的任意代码。转换 Skill 位于 `skills/meme-to-template/SKILL.md`，执行器为 `meme_generator.features.ingest`。
 
-当前两个来源：OpenMoji 已自动采集发布且重复运行不重复入库；Wikimedia 的已许可 meme 图片适配器已实现，但当前服务器访问超时，会在下一轮重试。OpenMoji 是基础表情素材，不是全网热门榜。不能把这303个模板描述为已覆盖全网最新热门表情包；当前阶段已具备受控来源的采集、转换、版本化和发布能力，复杂遮挡/动画仍不自动发布。
+当前两个来源：OpenMoji 已自动采集发布且重复运行不重复入库；Wikimedia 的已许可 meme 图片适配器已实现，但当前服务器访问超时，会在下一轮重试。OpenMoji 是基础表情素材，不是全网热门榜。不能把这304个模板描述为已覆盖全网最新热门表情包；当前阶段已具备受控来源的采集、转换、版本化和发布能力，复杂遮挡/动画仍不自动发布。
 
 OpenMoji 采用 CC BY-SA 4.0，输出保留作者、来源与许可；模板详情也显示署名。来源调研发现部分“CC0表情包仓库”同时说明图片仍可能侵权，或尚未实际分发图片，未自动接入。官方依据：[OpenMoji 许可](https://github.com/hfg-gmuend/openmoji#license)、[Wikimedia 机器可读许可](https://commons.wikimedia.org/wiki/Commons:Machine-readable_data)。
+
+普通meme样例：[LEGO Y U NO](https://commons.wikimedia.org/wiki/File:LEGO_%22Y_U_NO_%22_meme_(Free_to_use).jpg)，Wikimedia元数据标注Public domain、作者Ochre Jelly。由于服务器访问Wikimedia超时，本次从本地获取已许可样例并交给服务器执行器验证；约1.41秒完成主体槽位转换，2个声明式图层，试渲染通过并入库。此样例证明普通图片转换链路，不代表全网热门排名或复杂图片均可转换。
 
 ## 推荐与运行
 
