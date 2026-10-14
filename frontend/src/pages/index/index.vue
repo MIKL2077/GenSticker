@@ -49,8 +49,11 @@
       :text-inputs="textInputs"
       :image-input-count="getImageInputCount()"
       :image-upload-text="getImageUploadText()"
-      :extract-subject="extractSubject"
-      @changeExtraction="extractSubject = $event"
+      :active-image-index="activeImageIndex"
+      :editor-open="showImageEditor"
+      :editor-busy="editorBusy"
+      :editor-error="editorError"
+      :editor-can-undo="editorCanUndo"
       :text-range="getTextInputRange()"
       :text-max="getTextInputMax()"
       :get-text-placeholder="getTextPlaceholder"
@@ -60,7 +63,11 @@
       @favorite="favoriteTemplate"
       @chooseImages="chooseImagesForTemplate"
       @removeImage="removeTemplateImage"
-      @cropImage="cropTemplateImage"
+      @editImage="openImageEditor"
+      @closeEditor="closeImageEditor"
+      @applyEdit="applyImageEdit"
+      @undoEdit="undoImageEdit"
+      @restoreImage="restoreImage"
       @generate="onGenerate"
       @close="closeTemplateDetail"
     />
@@ -80,7 +87,7 @@
 </template>
 
 <script>
-import { onMounted, watch, ref, computed } from 'vue'
+import { onMounted, onUnmounted, watch, ref, computed } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import AppHeader from '@/components/AppHeader.vue'
 import CategoryTabs from '@/components/CategoryTabs.vue'
@@ -126,7 +133,8 @@ export default {
       fetchMemePreview,
     } = useTemplateData(showStatusMessage)
 
-    const { templateImages, textInputs, extractSubject, selectedTemplateDetail, getImageInputCount, getImageUploadText, getTextInputRange, getTextInputMax, getTextPlaceholder, getTextMaxLength, initializeTemplateInputs, isTemplateInputValid, chooseImagesForTemplate, removeTemplateImage, cropTemplateImage, resetInputs } = useTemplateInput()
+    const { templateImages, textInputs, extractSubject, selectedTemplateDetail, getImageInputCount, getImageUploadText, getTextInputRange, getTextInputMax, getTextPlaceholder, getTextMaxLength, initializeTemplateInputs, isTemplateInputValid, chooseImagesForTemplate, removeTemplateImage, activeImageIndex, showImageEditor, editorBusy, editorError, editorCanUndo, openImageEditor, closeImageEditor, applyImageEdit, undoImageEdit, restoreImage, resetInputs } = useTemplateInput()
+    onUnmounted(resetInputs)
 
     const { showPreview, isGenerating, generatedMeme, generateFromTemplate, closePreview, saveMeme, shareMeme } = useMemeGeneration(showStatusMessage)
 
@@ -244,7 +252,8 @@ export default {
       isTemplateInputValid,
       chooseImagesForTemplate,
       removeTemplateImage,
-      cropTemplateImage,
+      activeImageIndex, showImageEditor, editorBusy, editorError, editorCanUndo,
+      openImageEditor, closeImageEditor, applyImageEdit, undoImageEdit, restoreImage,
       // 生成/预览
       showPreview,
       isGenerating,

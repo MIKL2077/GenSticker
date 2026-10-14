@@ -29,18 +29,20 @@
         </view>
         <view v-if="imageInputCount > 0" class="image-input-section">
           <text class="detail-label">图片上传</text>
-          <view class="extraction-choice"><view><text class="extraction-title">提取图片主体</text><text class="extraction-hint">{{ extractSubject ? '生成前去除背景；透明图片会直接复用' : '直接使用图片，保留原背景' }}</text></view><switch :checked="extractSubject" color="#ff8453" @change="$emit('changeExtraction', $event.detail.value)" /></view>
-          <view class="image-upload-area" @click="$emit('chooseImages')">
+          <view v-if="!templateImages.length" class="image-upload-area" @click="$emit('chooseImages')">
             <view class="upload-icon">📷</view>
             <text class="upload-text">{{ imageUploadText }}</text>
           </view>
+          <view v-else class="uploaded-preview" @click="$emit('editImage',activeImageIndex)"><image :src="templateImages[activeImageIndex] || templateImages[0]" class="uploaded-photo" mode="aspectFit"/><view class="preview-edit-hint"><text>✦ 点击编辑图片</text><text>裁剪 · 翻转 · 去背景</text></view></view>
           <view v-if="templateImages.length > 0" class="template-images-grid">
             <view v-for="(image, index) in templateImages" :key="`template-image-${index}`" class="template-image-item">
-              <image :src="image" class="template-image" mode="aspectFill" />
-              <button class="crop-image-btn" @click.stop="$emit('cropImage', index)">裁剪区域</button>
+              <image :src="image" class="template-image" mode="aspectFill" @click="$emit('editImage',index)" />
+              <button class="crop-image-btn" @click.stop="$emit('editImage', index)">编辑图片</button>
               <button class="remove-image-btn" @click.stop="$emit('removeImage', index)">✕</button>
             </view>
           </view>
+          <button v-if="templateImages.length && templateImages.length < imageInputCount" class="add-images-btn" @click="$emit('chooseImages')">＋ {{ imageUploadText }}</button>
+          <text class="editing-note">编辑后立即预览，去背景保留主要主体；原图可随时还原</text>
         </view>
         <view v-if="textMax > 0" class="text-input-section">
           <text class="detail-label">文本输入（至少{{ textRange.min }}个，至多{{ textRange.max }}个）</text>
@@ -57,12 +59,15 @@
         <view v-if="detail?.attribution?.source_url" class="source-credit"><text>来源：{{ detail.attribution.author || '原作者' }} · {{ detail.attribution.license }}</text><text class="source-url" selectable>{{ detail.attribution.source_url }}</text></view>
       </view>
     </view>
+    <image-editor v-if="editorOpen && templateImages[activeImageIndex]" :src="templateImages[activeImageIndex]" :images="templateImages" :active-index="activeImageIndex" :busy="editorBusy" :error="editorError" :can-undo="editorCanUndo" @close="$emit('closeEditor')" @select="$emit('editImage',$event)" @edit="$emit('applyEdit',$event)" @undo="$emit('undoEdit')" @restore="$emit('restoreImage')"/>
   </view>
 </template>
 
 <script>
+import ImageEditor from '@/components/ImageEditor.vue'
 export default {
   name: 'TemplateDetailModal',
+  components: { ImageEditor },
   props: {
     show: { type: Boolean, required: true },
     detail: { type: Object, default: null },
@@ -76,13 +81,15 @@ export default {
     getTextMaxLength: { type: Function, required: true },
     canGenerate: { type: Boolean, default: false },
     favorite: { type: Boolean, default: false },
-    extractSubject: { type: Boolean, default: false },
+    activeImageIndex: { type:Number, default:0 },
+    editorOpen:Boolean, editorBusy:Boolean, editorError:String, editorCanUndo:Boolean,
   },
-  emits: ['close', 'chooseImages', 'removeImage', 'generate', 'favorite', 'changeExtraction', 'cropImage']
+  emits: ['close', 'chooseImages', 'removeImage', 'generate', 'favorite', 'editImage', 'closeEditor', 'applyEdit', 'undoEdit', 'restoreImage']
 }
 </script>
 
 <style scoped>
+.uploaded-preview{position:relative;background-color:#fff;background-image:linear-gradient(45deg,#efe8df 25%,transparent 25%),linear-gradient(-45deg,#efe8df 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#efe8df 75%),linear-gradient(-45deg,transparent 75%,#efe8df 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0;border-radius:22rpx;overflow:hidden}.uploaded-photo{display:block;width:100%;height:350rpx}.preview-edit-hint{display:flex;justify-content:space-between;background:rgba(255,246,235,.95);padding:16rpx;color:#9c6b50;font-size:23rpx}.preview-edit-hint text:last-child{font-size:21rpx;color:#b3917a}.add-images-btn{background:#fff1e5;color:#a77d61;font-size:23rpx;border-radius:16rpx;margin:18rpx 0 0;line-height:1.7;padding:12rpx}.editing-note{display:block;color:#b29a88;font-size:21rpx;line-height:1.7;margin-top:14rpx}
 .crop-image-btn{position:absolute;bottom:0;left:0;right:0;width:100%;margin:0;background:rgba(64,40,27,.65);color:white;font-size:21rpx;border-radius:0;line-height:1.8;padding:5rpx}
 .extraction-choice{display:flex;align-items:center;justify-content:space-between;gap:16rpx;padding:22rpx;background:#fff5ec;border-radius:18rpx;margin-bottom:20rpx}.extraction-title{display:block;color:#674739;font-size:25rpx;font-weight:600}.extraction-hint{display:block;color:#ad8370;font-size:21rpx;line-height:1.5;margin-top:6rpx}
 .local-note{display:block;color:#8b699e;background:#faf5ff;border-radius:14rpx;padding:14rpx 18rpx;font-size:21rpx;line-height:1.6;margin:12rpx 0 20rpx}
