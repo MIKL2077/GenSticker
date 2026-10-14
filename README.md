@@ -167,6 +167,8 @@ python -m meme_generator.features.worker
 
 当前 HTTPS API 前缀：`https://www.shangkun.uk/gensticker/api`。微信小程序构建固定使用该公网地址，不受本地 H5 的环境变量覆盖。主要接口如下（路径相对此前缀）：
 
+微信后台「开发管理 → 开发设置 → 服务器域名」中，`request`、`uploadFile`、`downloadFile` 合法域名均需包含 `https://www.shangkun.uk`（只填域名，不含 API 路径；已有地址用英文分号分隔后保留）。可设置 DNS 预解析为 `www.shangkun.uk`、预连接为 `https://www.shangkun.uk`；当前无需 socket / UDP / TCP 域名。开发者工具请求成功不代表真机域名配置已生效，保存后应退出小程序并重新扫码验证。真机网络排查记录见 [本次验收](deploy/MOBILE_NETWORK_ACCEPTANCE.md)。
+
 - 健康与模板：`GET /healthz`、`GET /memes/categories`、`GET /templates`、`GET /memes/{key}/info`、`GET /memes/{key}/thumbnail`。
 - 热度与端侧模板：`GET /templates/popularity`、`POST /templates/events`、`GET /memes/{key}/client-template`、`GET /template-assets/{hash}.png`；来源状态：`GET /templates/sources`。
 - 图片去背景预览：`POST /images/subject`，单张 Base64 静态图片，最多 4 MB；返回私有透明 PNG，与生成共用两个处理并发槽及 Nginx 生成限速。
@@ -199,6 +201,7 @@ node frontend/tests/recommend-service.cjs
 node frontend/tests/client-renderer.cjs
 node frontend/tests/template-paging.cjs
 node frontend/tests/image-editing.cjs
+node frontend/tests/network-errors.cjs
 npm --prefix frontend run build:mp-weixin
 npm --prefix frontend run build:h5
 ```
@@ -211,7 +214,7 @@ python -m unittest discover -s tests -p test_account.py
 python -m unittest discover -s tests/features -p 'test_*.py'
 ```
 
-当前已通过七组前端测试、五项账户测试和二十七项功能测试（服务器功能测试与五项账户测试同样通过），覆盖缓存与同步隔离、平台图片生成、模板版本与 DSL 边界、任务归属、幂等、额度退款、私有下载、反馈删除、任务恢复和测试模板恢复。微信与 H5 构建通过；微信模拟器验证了手动文字 / 单图 / 多图 / 图文生成、登录同步和照片九图。
+当前已通过八组前端测试、五项账户测试和二十七项功能测试（服务器功能测试与五项账户测试同样通过），覆盖缓存与同步隔离、平台图片生成、模板版本与 DSL 边界、任务归属、幂等、额度退款、私有下载、反馈删除、任务恢复和测试模板恢复。微信与 H5 构建通过；微信模拟器验证了手动文字 / 单图 / 多图 / 图文生成、登录同步和照片九图。
 
 缓存翻页实测九张预览立即就绪；预载后的一个声明式模板本机合成约 32 毫秒，均为单次模拟器样例。一次真实样例的主体与表情处理约 0.52 秒，首组九图服务端完成约 6.8 秒；这是单次观测，不是并发压测或响应时间保证。真机相册授权、保存和域名配置仍需实际扫码验收。临时私有预览二维码不提交仓库。主体提取开关新版已在模拟器真实验证：一次开启生成约 5.01 秒，一次关闭并使用裁剪照片约 2.68 秒，包含网络、资源准备与渲染，样本不同，不能视作严格性能对照。旧版开关记录见 [主体提取验收](deploy/SUBJECT_EXTRACTION_ACCEPTANCE.md)；当前交互见 [图片编辑验收](deploy/IMAGE_EDITOR_ACCEPTANCE.md)。
 
