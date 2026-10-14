@@ -13,6 +13,12 @@ loaded_versions = {}
 NAMESPACE = uuid.UUID("bcd6c8b6-6ffb-409c-92c0-69238a97c80c")
 
 
+@router.get('/templates/sources')
+def sources():
+    from .discovery import SOURCES
+    return SOURCES
+
+
 def emotion_tags(name):
     groups = {
         "happy": ["笑", "开心", "摸", "亲", "爱", "喜"],

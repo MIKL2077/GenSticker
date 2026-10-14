@@ -66,6 +66,17 @@ def download(url, client, max_bytes=2 * 1024 * 1024):
 
 
 def convert(raw, metadata):
+    required=('name','source_url','author','license','license_url')
+    if any(not metadata.get(k) for k in required) or metadata['license'] not in LICENSES:
+        raise ValueError('source attribution or derivative license missing')
+    from .quality import convert_caption
+    # Replacing the whole expressive subject can erase a meme's joke. Newly
+    # ingested ordinary memes keep the original scene and edit safe captions.
+    # Hard foreground/animation cases remain pending instead of mispublishing.
+    return convert_caption(raw,metadata)
+
+
+def convert_foreground_legacy(raw, metadata):
     """Extract a foreground replacement slot when the local model is confident."""
     from . import vision
     import numpy as np
@@ -177,9 +188,6 @@ def convert(raw, metadata):
 
 
 def run_commons(limit=20):
-    from .vision import warmup
-
-    warmup()
     db = connect()
     stats = {"published": 0, "skipped": 0, "downloaded": 0}
     try:
@@ -393,6 +401,11 @@ def run_openmoji(limit=9):
 
 def run(limit=20):
     stats = {"openmoji": run_openmoji(min(9, limit))}
+    try:
+        from .discovery import discover
+        stats['discovery'] = discover(limit)
+    except (ValueError, OSError, subprocess.SubprocessError):
+        stats['discovery'] = {'status':'metadata-source-unavailable','retry':'next scheduled run','images_downloaded':0}
     try:
         stats["commons"] = run_commons(limit)
     except (httpx.HTTPError, ValueError):
