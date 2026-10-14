@@ -4,6 +4,17 @@ import uni from '@dcloudio/vite-plugin-uni'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    {
+      name: 'gensticker-custom-navigation',
+      enforce: 'pre',
+      transform(code, id) {
+        // All pages use custom navigation. uni-app's native shadow preloader
+        // constructs a malformed relative HTTPS path in this pinned runtime.
+        // Remove only that optional preloader, keeping wx.preloadAssets intact.
+        if (!id.includes('/uni-mp-weixin/dist/uni.mp.esm.js')) return
+        return code.replace(/if \(!\(process\.env\.NODE_ENV !== 'production'\)[\s\S]*?const protocol = 'https';[\s\S]*?src: protocol \+ __UNI_PRELOAD_SHADOW_IMAGE__[\s\S]*?\}, 3000\);\s*\}/, '')
+      },
+    },
     uni(),
   ],
   server: {
