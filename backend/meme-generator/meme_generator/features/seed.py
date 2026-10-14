@@ -12,19 +12,26 @@ def restore():
     from .catalog import publish
 
     manifest = json.loads(Path(__file__).with_name("template_seed.json").read_text())
+    retired = set(json.loads(Path(__file__).with_name("template_policy.json").read_text())["retired_keys"])
     db = connect()
     restored = 0
     try:
+        with db:
+            for key in retired:
+                db.execute("UPDATE templates SET status='withdrawn' WHERE key=?", (key,))
         for item in manifest["templates"]:
+            if item['key'] in retired:
+                continue
             metadata = item["metadata"]
-            if metadata["license"] not in {"CC BY-SA 4.0", "Public domain"}:
+            user_test = metadata.get('origin') == 'user-provided' and metadata.get('review', {}).get('explicit_user_request') is True
+            if not user_test and metadata["license"] not in {"CC BY-SA 4.0", "Public domain"}:
                 raise ValueError("unreviewed seed license")
             if metadata["origin"] == "openmoji":
                 if not metadata["source_url"].startswith(
                     "https://github.com/hfg-gmuend/openmoji/blob/master/color/72x72/"
                 ):
                     raise ValueError("unreviewed seed origin")
-            elif (
+            elif not user_test and (
                 metadata["source_url"]
                 != "https://commons.wikimedia.org/wiki/File:LEGO_%22Y_U_NO_%22_meme_(Free_to_use).jpg"
             ):

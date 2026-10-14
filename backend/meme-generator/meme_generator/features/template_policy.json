@@ -1,0 +1,15 @@
+{
+  "retired_keys": [
+    "auto_9b60f69f4a84cb1e46a425e8",
+    "auto_openmoji_1f602",
+    "auto_openmoji_1f60d",
+    "auto_openmoji_1f60e",
+    "auto_openmoji_1f621",
+    "auto_openmoji_1f62d",
+    "auto_openmoji_1f632",
+    "auto_openmoji_1f634",
+    "auto_openmoji_1f914",
+    "auto_openmoji_1f973"
+  ],
+  "reason": "用户验收拒绝通用框架模板和旧主体替换样例"
+}

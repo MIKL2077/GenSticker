@@ -17,6 +17,10 @@ class Layer(BaseModel):
     color: str = Field(default="#222222", pattern=r"^#[0-9a-fA-F]{6}$")
     font_size: int = Field(default=32, ge=10, le=100)
     fit: Literal["contain", "cover"] = "contain"
+    align: Literal["left", "center", "right"] = "left"
+    weight: Literal["normal", "bold"] = "normal"
+    stroke_color: str = Field(default="#000000", pattern=r"^#[0-9a-fA-F]{6}$")
+    stroke_width: int = Field(default=0, ge=0, le=4)
 
 
 class TemplateSpec(BaseModel):
@@ -46,7 +50,11 @@ class TemplateSpec(BaseModel):
         return self
 
 
-def font(size):
+def font(size, bold=False):
+    if bold:
+        for path in [root().parent / "fonts/NotoSansSC-Bold.ttf", Path("/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc"), Path("/System/Library/Fonts/STHeiti Medium.ttc")]:
+            if path.exists():
+                return ImageFont.truetype(str(path), size)
     for path in [
         root().parent.parent / "fonts/NotoSansSC-Regular.ttf",
         Path("/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc"),
@@ -94,28 +102,33 @@ def render(spec, images, texts=None):
             )[:200]
             draw = ImageDraw.Draw(canvas)
             for size in range(layer.font_size, 9, -1):
-                face = font(size)
+                face = font(size, layer.weight == "bold")
                 lines, current = [], ""
                 for char in value:
-                    if char == "\n" or draw.textlength(current + char, font=face) > w:
+                    if char == "\n" or draw.textlength(current + char, font=face) > w - 2 * layer.stroke_width:
                         lines.append(current)
                         current = "" if char == "\n" else char
                     else:
                         current += char
                 lines.append(current)
-                if len(lines) * (size + 4) <= h:
+                line_height = max(draw.textbbox((0,0), line or " ", font=face, stroke_width=layer.stroke_width)[3] - draw.textbbox((0,0), line or " ", font=face, stroke_width=layer.stroke_width)[1] for line in lines)
+                if len(lines) * line_height + (len(lines)-1)*4 <= h:
                     break
-            if len(lines) * (size + 4) > h:
+            if len(lines) * line_height + (len(lines)-1)*4 > h:
                 raise ValueError("text overflows")
-            draw.multiline_text(
-                (x, y), "\n".join(lines), font=face, fill=layer.color, spacing=4
-            )
+            for index, line in enumerate(lines):
+                bbox = draw.textbbox((0,0), line, font=face, stroke_width=layer.stroke_width)
+                length = bbox[2]-bbox[0]
+                left = x + (w-length)/2 if layer.align == "center" else x+w-length if layer.align == "right" else x
+                draw.text((left-bbox[0], y + index*(line_height+4)-bbox[1]), line, font=face, fill=layer.color, stroke_width=layer.stroke_width, stroke_fill=layer.stroke_color)
     output = BytesIO()
     canvas.convert("RGB").save(output, "JPEG", quality=90)
     return output
 
 
 def add_attribution(output, metadata):
+    if metadata.get("origin") == "user-provided":
+        return output
     if not metadata.get("source_url"):
         return output
     with Image.open(output) as original:

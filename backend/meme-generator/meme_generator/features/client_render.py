@@ -70,7 +70,7 @@ def public_recipe(row):
         return None
     if sum((root()/'template_assets'/f'{a}.png').stat().st_size for a in assets)>1024*1024:
         return None
-    return {'supported':True, 'key':row['key'], 'version':row['version'], 'spec':spec.model_dump(), 'assets':{a:f'/template-assets/{a}.png' for a in assets}, 'attribution':{k:metadata.get(k,'') for k in ('author','license','source_url','license_url')}, 'expires':int(time.time())+3600}
+    return {'supported':True, 'key':row['key'], 'version':row['version'], 'spec':spec.model_dump(), 'assets':{a:f'/template-assets/{a}.png' for a in assets}, 'attribution':{k:metadata.get(k,'') for k in ('author','license','source_url','license_url','origin')}, 'expires':int(time.time())+3600}
 
 
 def public_recipes(limit=32):

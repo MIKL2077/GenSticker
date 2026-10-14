@@ -8,7 +8,7 @@ Prefer a clear reaction phrase or recognisable reaction scene, one stable layout
 
 Exclude animations, collages with many caption boxes, text across a face/action, text with uncertain OCR and layouts whose meaning depends on replacing the whole expressive subject. Do not turn every existing meme into the same generic photo frame.
 
-Check individual derivative/reuse permission and preserve the original source page. A repository code license or a platform's searchable catalogue does not establish the rights of each image. Only verified licensed items enter conversion; other sources can contribute metadata candidates.
+Check individual derivative/reuse permission and preserve the original source page. A repository code license or a platform's searchable catalogue does not establish the rights of each image. Only verified licensed web items enter automatic conversion; other sources can contribute metadata candidates. Explicitly user-supplied test images have a separate authorized-local path with honest source metadata.
 
 ## Current automatic gates: caption-preserved-v2
 
@@ -20,7 +20,7 @@ Check individual derivative/reuse permission and preserve the original source pa
 - Difference-hash distance <=4/64 against previously published ordinary conversions rejects near-duplicates. Normalised identical reaction captions also reject repeated intent.
 - Keep the original expression, action and scene as fixed assets. Editable slots are captions; this produces text-only templates, not arbitrary subject-replacement templates.
 
-No numerical gate guarantees semantic fidelity. If a visible joke would be lost, keep the candidate pending even if it passes a low-level reconstruction threshold. Do not modify legacy published templates implicitly when updating this converter.
+Check typography as well as protected pixels: white bold captions with dark outlines must remain readable and aligned. Inspect both default text and changed text against the source; a low whole-image error can hide a badly reconstructed caption. No numerical gate guarantees semantic fidelity. If a visible joke would be lost, keep the candidate pending even if it passes a low-level reconstruction threshold. Do not modify legacy published templates implicitly when updating this converter.
 
 ## Iterate from evidence
 

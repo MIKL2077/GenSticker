@@ -64,6 +64,10 @@ def convert_caption(raw, metadata):
         if len(defaults)>=2:raise ValueError('complex caption layout')
         cv2.rectangle(mask,(x0,y0),(x1-1,y1-1),255,-1)
         layers.append({'type':'text','box':[x0,y0,x1-x0,y1-y0],'slot':len(defaults),'value':caption,'font_size':min(100,max(10,y1-y0-2))})
+        style = metadata.get('review', {}).get('caption_style', {})
+        if style:
+            # A reviewed style is explicit local input, not inferred model code.
+            layers[-1].update({k:style[k] for k in ('color','weight','align','stroke_color','stroke_width','font_size') if k in style})
         defaults.append(caption)
     if not defaults or not REACTIONS.search(' '.join(defaults)):raise ValueError('reaction intent not confidently recoverable')
     if np.mean(mask>0)>.22:raise ValueError('caption removal would change too much of the scene')
@@ -82,7 +86,7 @@ def convert_caption(raw, metadata):
         protected_error=float(np.abs(source.astype('float32')-np.array(background).astype('float32'))[mask==0].mean())
         if protected_error>.1:raise ValueError('protected expression or action changed')
         digest=hashlib.sha256(raw).hexdigest()
-        metadata={**metadata,'name':defaults[0][:40], 'min_images':0,'max_images':0,'min_texts':len(defaults),'max_texts':len(defaults),'default_texts':defaults,'tags':emotion_tags(' '.join(defaults)), 'original_hash':digest,'perceptual_hash':phash,'intent_signature':signature,'conversion':'caption-preserved-v2','intent':{'caption':defaults,'fixed':'original expression, action and scene','replaceable':'edge captions only'},'quality':{'round_trip_mae':round(error,2),'protected_pixel_mae':round(protected_error,3),'ocr_min_confidence':.95,'method':'conservative-local-gates'},'quality_score':round(max(0,1-error/12),3)}
+        metadata={**metadata,'name':defaults[0][:40], 'min_images':0,'max_images':0,'min_texts':len(defaults),'max_texts':len(defaults),'default_texts':defaults,'tags':metadata.get('tags') or emotion_tags(' '.join(defaults)), 'original_hash':digest,'perceptual_hash':phash,'intent_signature':signature,'conversion':'caption-preserved-v2','intent':{'caption':defaults,'fixed':'original expression, action and scene','replaceable':'edge captions only'},'quality':{'round_trip_mae':round(error,2),'protected_pixel_mae':round(protected_error,3),'ocr_min_confidence':.95,'method':'conservative-local-gates'},'quality_score':round(max(0,1-error/12),3)}
         publish('auto_'+digest[:24],metadata,spec)
         return spec
     except Exception:

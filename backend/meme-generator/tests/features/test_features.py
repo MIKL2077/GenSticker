@@ -230,10 +230,12 @@ class FeatureTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 download("http://127.0.0.1/private", None)
             transport.assert_not_called()
-        with patch("meme_generator.features.ingest.download", return_value=self.photo):
+        with patch("meme_generator.features.ingest.download", return_value=self.photo) as fetch:
             first = run_openmoji(limit=1)
             second = run_openmoji(limit=1)
-        self.assertEqual(first["published"], 1)
+        fetch.assert_not_called()
+        self.assertEqual(first["status"], "withdrawn-by-owner")
+        self.assertEqual(first["published"], 0)
         self.assertEqual(second["published"], 0)
         identifier = self.create(self.upload()).json()["job_id"]
         self.finish()
@@ -256,8 +258,8 @@ class FeatureTests(unittest.TestCase):
         from meme_generator.features.seed import restore
 
         before = len(catalog.rows())
-        self.assertEqual(restore(), 10)
-        self.assertEqual(len(catalog.rows()), before + 10)
+        self.assertEqual(restore(), 1)
+        self.assertEqual(len(catalog.rows()), before + 1)
         self.assertEqual(restore(), 0)
 
     def test_lease_recovery(self):

@@ -65,9 +65,10 @@ def download(url, client, max_bytes=2 * 1024 * 1024):
     return response.stdout
 
 
-def convert(raw, metadata):
+def convert(raw, metadata, *, authorized_local=False):
     required=('name','source_url','author','license','license_url')
-    if any(not metadata.get(k) for k in required) or metadata['license'] not in LICENSES:
+    local_test = authorized_local and metadata.get('origin') == 'user-provided' and metadata.get('review', {}).get('explicit_user_request') is True
+    if not local_test and (any(not metadata.get(k) for k in required) or metadata['license'] not in LICENSES):
         raise ValueError('source attribution or derivative license missing')
     from .quality import convert_caption
     # Replacing the whole expressive subject can erase a meme's joke. Newly
@@ -301,102 +302,8 @@ OPENMOJI = [
 
 
 def run_openmoji(limit=9):
-    db = connect()
-    stats = {"published": 0, "skipped": 0, "downloaded": 0}
-    try:
-        with httpx.Client(timeout=15, headers=HEADERS) as client:
-            for code, name, emotion in OPENMOJI[:limit]:
-                source = f"https://github.com/hfg-gmuend/openmoji/blob/master/color/72x72/{code}.png"
-                if db.execute(
-                    "SELECT 1 FROM candidates WHERE source=?", (source,)
-                ).fetchone():
-                    continue
-                with db:
-                    db.execute("BEGIN IMMEDIATE")
-                    db.execute("INSERT OR IGNORE INTO budgets(day) VALUES(?)", (day(),))
-                    budget = db.execute(
-                        "SELECT * FROM budgets WHERE day=?", (day(),)
-                    ).fetchone()
-                    monthly = db.execute(
-                        "SELECT COALESCE(SUM(bytes),0) FROM budgets WHERE day LIKE ?",
-                        (day()[:7] + "%",),
-                    ).fetchone()[0]
-                    if (
-                        budget["candidates"] >= 100
-                        or budget["bytes"] + 2 * 1024 * 1024 > 200 * 1024 * 1024
-                        or monthly + 2 * 1024 * 1024 > 1024 * 1024 * 1024
-                    ):
-                        break
-                    db.execute(
-                        "UPDATE budgets SET bytes=bytes+?,candidates=candidates+1 WHERE day=?",
-                        (2 * 1024 * 1024, day()),
-                    )
-                try:
-                    raw = download(
-                        f"https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/72x72/{code}.png",
-                        client,
-                    )
-                    with db:
-                        db.execute(
-                            "UPDATE budgets SET bytes=bytes-?+? WHERE day=?",
-                            (2 * 1024 * 1024, len(raw), day()),
-                        )
-                    stats["downloaded"] += 1
-                    digest = hashlib.sha256(raw).hexdigest()
-                    with Image.open(BytesIO(raw)) as image:
-                        out = BytesIO()
-                        image.convert("RGBA").save(out, "PNG")
-                    asset = hashlib.sha256(out.getvalue()).hexdigest()
-                    directory = root() / "template_assets"
-                    directory.mkdir(exist_ok=True)
-                    (directory / (asset + ".png")).write_bytes(out.getvalue())
-                    spec = {
-                        "width": 512,
-                        "height": 512,
-                        "defaults": [name + "一下"],
-                        "layers": [
-                            {"type": "subject", "box": [16, 16, 480, 382]},
-                            {"type": "asset", "box": [20, 414, 72, 72], "value": asset},
-                            {
-                                "type": "text",
-                                "box": [112, 424, 380, 68],
-                                "font_size": 42,
-                                "slot": 0,
-                            },
-                        ],
-                    }
-                    metadata = {
-                        "name": name + "配图",
-                        "min_images": 1,
-                        "max_images": 1,
-                        "min_texts": 1,
-                        "max_texts": 1,
-                        "default_texts": [name + "一下"],
-                        "tags": [emotion],
-                        "origin": "openmoji",
-                        "source_url": source,
-                        "author": "OpenMoji contributors",
-                        "license": "CC BY-SA 4.0",
-                        "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
-                        "conversion": "emoji-frame-v1",
-                        "hotness_method": "curated-baseline",
-                        "original_hash": digest,
-                        "collected_at": time.time(),
-                        "subject_types": ["person", "animal", "object", "unknown"],
-                        "slot_aspect": 480 / 382,
-                    }
-                    publish("auto_openmoji_" + code.lower(), metadata, spec)
-                    with db:
-                        db.execute(
-                            "INSERT OR REPLACE INTO candidates VALUES(?,?,?,?,?)",
-                            (digest, source, "published", "", time.time()),
-                        )
-                    stats["published"] += 1
-                except (httpx.HTTPError, ValueError, OSError):
-                    stats["skipped"] += 1
-        return stats
-    finally:
-        db.close()
+    # Withdrawn by the owner: generic emoji/photo frames do not preserve intent.
+    return {"published": 0, "skipped": 0, "downloaded": 0, "status": "withdrawn-by-owner"}
 
 
 def run(limit=20):

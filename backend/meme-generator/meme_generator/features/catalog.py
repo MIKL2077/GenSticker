@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import hashlib
 import json
 import uuid
@@ -32,6 +33,9 @@ def emotion_tags(name):
 
 
 def publish(key, metadata, spec=None):
+    retired=json.loads(Path(__file__).with_name("template_policy.json").read_text())["retired_keys"]
+    if key in retired:
+        raise ValueError("template withdrawn by owner")
     if spec is not None:
         spec = TemplateSpec.model_validate(spec).model_dump()
     metadata = dict(metadata)
