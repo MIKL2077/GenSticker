@@ -21,7 +21,7 @@ export default {
 .icon { font-size:36rpx }.tab.active { color:#ff6868; border-color:#ffd0d0; background:#fff7f7; font-weight:600 }
 .bottom-tabs{align-items:center;background:rgba(255,255,255,.97)}
 .ai-slot{width:132rpx;display:flex;flex-direction:column;align-items:center;position:relative;margin-top:-44rpx;gap:8rpx}
-.ai-orb{width:112rpx;height:112rpx;padding:0;margin:0;line-height:1;background:linear-gradient(145deg,#302449,#6750b9 65%,#f19e93);color:white;border-radius:50%;border:8rpx solid #fff;box-shadow:0 8rpx 28rpx rgba(87,58,136,.28);display:flex;flex-direction:column;align-items:center;justify-content:center;animation:orb-breathe 3.4s ease-in-out infinite;transition:transform .2s}
-.ai-orb:active{transform:scale(.92)}.ai-orb.selected{box-shadow:0 0 0 5rpx #e9ddff,0 8rpx 28rpx rgba(87,58,136,.28)}.spark{font-size:32rpx;line-height:1}.ai-label{font-size:24rpx;font-weight:700;margin-top:4rpx}.ai-copy{font-size:20rpx;color:#695283;font-weight:600}
-@keyframes orb-breathe{0%,100%{box-shadow:0 8rpx 24rpx rgba(87,58,136,.24)}50%{box-shadow:0 8rpx 34rpx rgba(87,58,136,.4)}}
+.ai-orb{width:112rpx;height:112rpx;padding:0;margin:0;line-height:1;background:linear-gradient(145deg,#ff6868,#ff8453 65%,#ffad45);color:white;border-radius:50%;border:8rpx solid #fff;box-shadow:0 8rpx 28rpx rgba(255,112,76,.28);display:flex;flex-direction:column;align-items:center;justify-content:center;animation:orb-breathe 3.4s ease-in-out infinite;transition:transform .2s}
+.ai-orb:active{transform:scale(.92)}.ai-orb.selected{box-shadow:0 0 0 5rpx #ffe0cc,0 8rpx 28rpx rgba(255,112,76,.28)}.spark{font-size:32rpx;line-height:1}.ai-label{font-size:24rpx;font-weight:700;margin-top:4rpx}.ai-copy{font-size:20rpx;color:#d96943;font-weight:600}
+@keyframes orb-breathe{0%,100%{box-shadow:0 8rpx 24rpx rgba(255,112,76,.24)}50%{box-shadow:0 8rpx 34rpx rgba(255,112,76,.4)}}
 </style>
