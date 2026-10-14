@@ -17,6 +17,11 @@ def connect():
     db.execute("PRAGMA foreign_keys=ON")
     db.executescript("""
     CREATE TABLE IF NOT EXISTS worker_state(id INTEGER PRIMARY KEY,updated REAL NOT NULL,model_ready INTEGER NOT NULL);
+    CREATE TABLE IF NOT EXISTS feature_settings(name TEXT PRIMARY KEY,value BLOB NOT NULL);
+    CREATE TABLE IF NOT EXISTS popularity_seen(id TEXT PRIMARY KEY,actor TEXT NOT NULL,created REAL NOT NULL);
+    CREATE INDEX IF NOT EXISTS popularity_actor_time ON popularity_seen(actor,created);
+    CREATE TABLE IF NOT EXISTS popularity_daily(key TEXT NOT NULL,day TEXT NOT NULL,kind TEXT NOT NULL,count INTEGER NOT NULL,PRIMARY KEY(key,day,kind));
+    CREATE TABLE IF NOT EXISTS popularity_totals(key TEXT NOT NULL,kind TEXT NOT NULL,count INTEGER NOT NULL,PRIMARY KEY(key,kind));
     CREATE TABLE IF NOT EXISTS templates(id TEXT PRIMARY KEY,key TEXT UNIQUE NOT NULL,version INTEGER NOT NULL,fingerprint TEXT NOT NULL,metadata TEXT NOT NULL,spec TEXT,status TEXT NOT NULL DEFAULT 'published');
     CREATE TABLE IF NOT EXISTS template_versions(template_id TEXT NOT NULL,version INTEGER NOT NULL,fingerprint TEXT NOT NULL,metadata TEXT NOT NULL,spec TEXT,PRIMARY KEY(template_id,version));
     CREATE TABLE IF NOT EXISTS candidates(hash TEXT PRIMARY KEY,source TEXT NOT NULL,status TEXT NOT NULL,reason TEXT,created REAL NOT NULL);

@@ -227,6 +227,8 @@ def favorite(key: str, user=Depends(current_user)):
             db.execute('INSERT OR IGNORE INTO favorites VALUES (?,?,?)', (user['id'], key, now_ms()))
     finally:
         db.close()
+    from .features.popularity import record
+    record(key, 'user:' + user['id'], 'favorite')
     return {'key': key, 'favorite': True}
 
 

@@ -11,6 +11,7 @@ async function verify() {
   const requests = [], writes = [], shares = [], statuses = []
   const context = {
     ref: value => ({ value }),
+    visitorHeaders: () => ({ 'X-Gensticker-Visitor': 'test-visitor-123456789' }),
     API_BASE_URL: 'https://example.test/api',
     getGenerateUrl: key => `/memes/${key}/`,
     getFileExtensionFromContentType: () => 'png',

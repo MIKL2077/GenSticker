@@ -7,7 +7,7 @@
       <view class="floating-emoji" style="bottom: 20%; right: 10%; animation-delay: 0.5s;">😍</view>
     </app-header>
 
-    <view class="recommend-entry" @click="openRecommend"><view><text class="recommend-title">照片一键配表情</text><text class="recommend-copy">自动提取主体，挑选你的九宫格</text></view><text class="recommend-arrow">›</text></view>
+    <view class="heat-hero"><view class="hero-heading"><view><text class="hero-eyebrow">THE REACTION CLUB</text><text class="hero-title">今日，谁最有梗？</text></view><text class="hero-mark">✦</text></view><text class="hero-sub">大家的点击、收藏与制作，让好玩的表情浮上来</text><view class="spotlight"><view v-for="(item,index) in spotlight" :key="item.key" class="spotlight-card" @click="onSelectTemplate(item.key)"><text class="spotlight-rank">0{{ index+1 }}</text><image v-if="item.previewImage" :src="item.previewImage" mode="aspectFit" class="spotlight-image"/><text class="spotlight-name">{{ item.name }}</text><text class="spotlight-heat">{{ item.heat ? '热力 '+item.heat : '等你点燃' }}</text></view></view></view>
     <view class="meme-templates">
       <view class="template-header">
         <text class="section-title">🎭 选择表情模板</text>
@@ -20,6 +20,7 @@
       </view>
 
       <category-tabs :categories="categories" :selected-category="selectedCategory" @select="onSelectCategory" />
+      <view class="sort-row"><view class="sort-switch"><button :class="{chosen:sortMode==='hot'}" @click="changeSort('hot')">热力榜</button><button :class="{chosen:sortMode==='explore'}" @click="changeSort('explore')">全部探索</button></view><text class="sort-note">{{ sortMode==='hot' ? '近7日热度 · 新鲜反应' : '完整模板库' }}</text></view>
       <view v-if="loadError" class="load-error"><text>{{ loadError }}</text><button @click="retryTemplates">重试</button></view>
 
       <template-grid
@@ -85,6 +86,7 @@ import PreviewModal from '@/components/PreviewModal.vue'
 import StatusMessage from '@/components/StatusMessage.vue'
 import BottomTabs from '@/components/BottomTabs.vue'
 import { useLibrary } from '@/composables/useLibrary'
+import { trackTemplate } from '@/services/popularityService'
 
 import { useStatusMessage } from '@/composables/useStatusMessage'
 import { useTemplateData } from '@/composables/useTemplateData'
@@ -106,6 +108,8 @@ export default {
       currentPage,
       totalPages,
       currentPageTemplates,
+      sortMode,
+      spotlight,
       fetchMemeCategories,
       ensurePageLoaded,
       prefetchAdjacent,
@@ -133,6 +137,7 @@ export default {
       if (detail && !detail.previewImage) fetchMemePreview(key)
       if (!detail) { showStatusMessage('模板暂时不可用，请稍后重试'); return }
       account.recordVisit(key)
+      trackTemplate(key, 'click')
       selectedTemplateDetail.value = detail
       initializeTemplateInputs(detail)
       showTemplateDetail.value = true
@@ -157,7 +162,7 @@ export default {
     }
 
     const favoriteTemplate = () => {
-      try { showStatusMessage(account.toggleFavorite(selectedTemplate.value) ? '已收藏模板' : '已取消收藏') }
+      try { const saved = account.toggleFavorite(selectedTemplate.value); if (saved && !account.session.value) trackTemplate(selectedTemplate.value,'favorite'); showStatusMessage(saved ? '已收藏模板' : '已取消收藏') }
       catch (e) { showStatusMessage(e.message) }
     }
     const pageNumbers = computed(() => {
@@ -171,7 +176,7 @@ export default {
       if (key) { uni.removeStorageSync('gensticker.open-template'); onSelectTemplate(key) }
     })
 
-    watch([selectedCategory, currentPage], async ([cat, page]) => {
+    watch([selectedCategory, currentPage, sortMode], async ([cat, page]) => {
       await ensurePageLoaded(cat, page)
       prefetchAdjacent(cat, page)
     })
@@ -203,6 +208,9 @@ export default {
       currentPage,
       totalPages,
       currentPageTemplates,
+      sortMode,
+      spotlight,
+      changeSort: mode => { sortMode.value = mode; currentPage.value = 1 },
       prevPage,
       nextPage,
       // 模板选择
@@ -238,6 +246,8 @@ export default {
 </script>
 
 <style scoped>
+.heat-hero{background:#fff9f2;border-radius:36rpx;padding:30rpx;margin:0 0 36rpx;box-shadow:0 14rpx 38rpx rgba(101,49,25,.08)}.hero-heading{display:flex;justify-content:space-between;align-items:center}.hero-eyebrow{display:block;font-size:17rpx;letter-spacing:3rpx;color:#a88572}.hero-title{display:block;font-size:38rpx;font-weight:750;color:#3a2c29;margin-top:10rpx}.hero-mark{font-size:64rpx;color:#d97b55}.hero-sub{display:block;color:#9b7e6e;font-size:21rpx;line-height:1.7;margin:16rpx 0 24rpx}.spotlight{display:flex;gap:14rpx}.spotlight-card{flex:1;min-width:0;position:relative;border-radius:24rpx;background:#fff;padding:20rpx 10rpx 16rpx;text-align:center;transition:transform .2s}.spotlight-card:active{transform:scale(.95)}.spotlight-rank{position:absolute;left:12rpx;top:10rpx;font-size:20rpx;color:#bda08d;font-style:italic}.spotlight-image{width:102rpx;height:102rpx;margin:6rpx 0 14rpx}.spotlight-name{display:block;font-size:23rpx;color:#493a34;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.spotlight-heat{display:block;font-size:18rpx;color:#b76c49;margin-top:8rpx}.sort-row{display:flex;align-items:center;justify-content:space-between;margin:24rpx 0}.sort-switch{display:flex;background:rgba(255,255,255,.3);padding:5rpx;border-radius:25rpx}.sort-switch button{margin:0;background:transparent;border:0;font-size:22rpx;padding:0 23rpx;line-height:2.5;color:#6d4635;border-radius:22rpx}.sort-switch .chosen{background:#fffaf6;color:#9c4e35;font-weight:700}.sort-note{font-size:19rpx;color:#73442e}
+
 .container {
   min-height: 100vh;
   background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);

@@ -10,7 +10,7 @@ from pathlib import Path
 
 import filetype
 from PIL import Image
-from fastapi import Depends, FastAPI, Form, HTTPException, Response, UploadFile
+from fastapi import Depends, FastAPI, Form, HTTPException, Response, UploadFile, Request
 from pydantic import BaseModel, Field, ValidationError
 
 from meme_generator.compat import model_dump, model_json_schema, type_validate_python
@@ -44,7 +44,7 @@ def healthz():
 
 
 @app.post('/memes/{key}/generate')
-async def generate_json(key: str, params: GenerateRequest):
+async def generate_json(key: str, params: GenerateRequest, request: Request):
     """WeChat uses JSON for multiple images and receives a binary image response."""
     from meme_generator.features.catalog import refresh
     refresh()
@@ -73,6 +73,8 @@ async def generate_json(key: str, params: GenerateRequest):
         except MemeGeneratorException as e:
             raise HTTPException(status_code=e.status_code, detail=e.message)
     content = result.getvalue()
+    from meme_generator.features.popularity import record, actor
+    record(key, actor(request), 'generate')
     return Response(content=content, media_type=filetype.guess_mime(content) or 'application/octet-stream')
 
 
@@ -124,6 +126,7 @@ def register_router(meme: Meme):
 
     @app.post(f"/memes/{meme.key}/")
     async def _(
+        request: Request,
         images: list[UploadFile] = [],
         texts: list[str] = meme.params_type.default_texts,
         args: args_model = Depends(args_checker),  # type: ignore
@@ -144,6 +147,8 @@ def register_router(meme: Meme):
             raise HTTPException(status_code=e.status_code, detail=e.message)
 
         content = result.getvalue()
+        from meme_generator.features.popularity import record, actor
+        record(meme.key, actor(request), 'generate')
         media_type = str(filetype.guess_mime(content)) or "text/plain"
         return Response(content=content, media_type=media_type)
 
@@ -346,10 +351,12 @@ def register_routers():
         mixed: list[str] = []
         cards = []
 
-        for meme in sorted(get_memes(), key=lambda meme: meme.key):
+        from meme_generator.features.popularity import snapshot
+        popularity = snapshot()
+        for meme in sorted(get_memes(), key=lambda meme: (-popularity.get(meme.key, {}).get('heat', 0), meme.key)):
             all_keys.append(meme.key)
             params = meme.params_type
-            cards.append({'key': meme.key, 'name': (meme.keywords or [meme.key])[0], 'tags': sorted(meme.tags)[:6]})
+            cards.append({'key': meme.key, 'name': (meme.keywords or [meme.key])[0], 'tags': sorted(meme.tags)[:6], **popularity.get(meme.key, {'heat':0, 'counts':{}})})
             if params.min_images == 0 and params.max_images == 0 and params.min_texts >= 1:
                 text_only.append(meme.key)
             elif params.min_texts == 0 and params.max_texts == 0 and params.min_images >= 1:
@@ -387,6 +394,8 @@ bootstrap()
 refresh()
 app.include_router(catalog_router)
 app.include_router(recommend_router)
+from meme_generator.features.popularity import router as popularity_router
+app.include_router(popularity_router)
 
 
 if __name__ == "__main__":

@@ -18,6 +18,7 @@ export function useTemplateData(showStatusMessage) {
   ])
 
   const currentPage = ref(1)
+  const sortMode = ref('hot')
 
   const categoryKeys = ref({ all: [], text_only: [], image_only: [], mixed: [] })
   const categoryLoadedPages = ref(new Map()) // Map<uiCategoryKey, Set<number>>
@@ -28,7 +29,8 @@ export function useTemplateData(showStatusMessage) {
 
   const currentCategoryAllKeys = computed(() => {
     const apiKey = CATEGORY_UI_TO_API[selectedCategory.value]
-    return categoryKeys.value[apiKey] || []
+    const keys = categoryKeys.value[apiKey] || []
+    return sortMode.value === 'explore' ? [...keys].sort((a,b) => a.localeCompare(b)) : keys
     })
 
   const totalPages = computed(() => Math.max(1, Math.ceil(currentCategoryAllKeys.value.length / templatesPerPage)))
@@ -68,7 +70,7 @@ export function useTemplateData(showStatusMessage) {
       }
       for (const card of data.cards || []) {
         const existing = templateDetails.value.get(card.key) || { key: card.key, previewImage: null, isLoadingPreview: true }
-        templateDetails.value.set(card.key, { ...existing, name: card.name, tags: card.tags || [] })
+        templateDetails.value.set(card.key, { ...existing, name: card.name, tags: card.tags || [], heat:card.heat || 0, counts:card.counts || {} })
       }
       categoryLoadedPages.value.clear()
       categories.value = categories.value.map(c => {
@@ -151,7 +153,8 @@ export function useTemplateData(showStatusMessage) {
   }
 
   const ensurePageLoaded = async (uiCategoryKey, pageNumber, background = false) => {
-    const keys = categoryKeys.value[CATEGORY_UI_TO_API[uiCategoryKey]] || []
+    const rawKeys = categoryKeys.value[CATEGORY_UI_TO_API[uiCategoryKey]] || []
+    const keys = sortMode.value === 'explore' ? [...rawKeys].sort((a,b) => a.localeCompare(b)) : rawKeys
     if (pageNumber < 1) return
     const pageKeys = keys.slice((pageNumber - 1) * templatesPerPage, pageNumber * templatesPerPage)
     if (!pageKeys.length || pageKeys.every(key => previewImageCache.value.has(key))) return
@@ -200,6 +203,8 @@ export function useTemplateData(showStatusMessage) {
     currentPage,
     totalPages,
     currentPageTemplates,
+    sortMode,
+    spotlight: computed(() => currentCategoryAllKeys.value.slice(0,3).map(key => templateDetails.value.get(key)).filter(Boolean)),
     // actions
     fetchMemeCategories,
     fetchMemeInfo,

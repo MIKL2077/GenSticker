@@ -340,6 +340,10 @@ def select(identifier: str, params: Selection, user=Depends(current_user)):
                     time.time(),
                 ),
             )
+            from .popularity import record
+            for result in db.execute('SELECT slot,key FROM results WHERE job_id=?', (identifier,)).fetchall():
+                if result['slot'] in slots:
+                    record(result['key'], 'user:' + user['id'], 'ai_' + {'choose':'choose','download':'download','exposure':'exposure'}[params.action], dedup=f"{identifier}:{result['slot']}", db=db)
             if params.action == "choose":
                 db.execute(
                     "UPDATE jobs SET selection=? WHERE id=?",

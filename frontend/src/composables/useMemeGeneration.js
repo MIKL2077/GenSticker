@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+import { visitorHeaders } from '@/services/popularityService'
 import { API_BASE_URL } from '@/constants'
 import { getGenerateUrl } from '@/services/memeService'
 import { toDataUri, arrayBufferToDataUri, h5PathToBlob, downloadDataUriInH5, getFileExtensionFromContentType } from '@/utils/fileUtils'
@@ -23,7 +24,7 @@ export function useMemeGeneration(showStatusMessage) {
     if (extra?.args && Object.keys(extra.args).length > 0) {
       form.append('args', JSON.stringify(extra.args))
     }
-    const resp = await fetch(url, { method: 'POST', body: form })
+    const resp = await fetch(url, { method: 'POST', body: form, headers:visitorHeaders() })
     const ct = resp.headers.get('content-type') || ''
     if (!resp.ok) throw new Error(`上传失败: ${resp.status}`)
     if (ct.startsWith('image/')) {
@@ -73,7 +74,7 @@ export function useMemeGeneration(showStatusMessage) {
       url: `${API_BASE_URL}/memes/${encodeURIComponent(templateKey)}/generate`,
       method: 'POST',
       data: { images, texts, args },
-      header: { 'Content-Type': 'application/json' },
+      header: { 'Content-Type': 'application/json', ...visitorHeaders() },
       timeout: 60000,
       responseType: 'arraybuffer',
     })

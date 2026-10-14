@@ -66,6 +66,8 @@ def candidates(job, analysis):
         )
     finally:
         db.close()
+    from .popularity import snapshot
+    global_heat = snapshot()
     available = []
     # Conservative latency-safe templates from the existing catalog; ingestion extends this set.
     safe = {
@@ -101,6 +103,7 @@ def candidates(job, analysis):
             continue
         tags = m["tags"]
         score = sum(weights.get(t, 0) for t in tags)
+        score += min(.35, global_heat.get(row["key"], {}).get("heat", 0) / 300)
         score += (
             2 if analysis["expression"] in tags and analysis["confidence"] > 0.2 else 0
         )
@@ -221,6 +224,8 @@ def run_job(job):
                 try:
                     slot, row, metadata, path, preview = future.result()
                     with db:
+                        from .popularity import record
+                        record(row['key'], 'user:' + job['user_id'], 'ai_generate', dedup=f"{job['id']}:{slot}", db=db)
                         db.execute(
                             "INSERT OR REPLACE INTO results VALUES(?,?,?,?,?,?,?,?)",
                             (
@@ -296,6 +301,8 @@ def maintenance():
     paths = []
     try:
         with db:
+            from .popularity import maintenance as clean_popularity
+            clean_popularity(db)
             for asset in list(
                 db.execute("SELECT * FROM assets WHERE created<?", (stamp - 86400,))
             ):
