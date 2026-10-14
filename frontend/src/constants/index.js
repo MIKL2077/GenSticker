@@ -1,9 +1,11 @@
 // API 与应用常量
-let defaultBaseUrl = '/api'
+let baseUrl = import.meta.env.VITE_API_BASE_URL || '/api'
 // #ifdef MP-WEIXIN
-defaultBaseUrl = 'https://www.shangkun.uk/gensticker/api'
+// Scan-code previews and real devices always use the public HTTPS backend.
+// A local H5 test environment must not override a mini-program build.
+baseUrl = 'https://www.shangkun.uk/gensticker/api'
 // #endif
-export const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || defaultBaseUrl).replace(/\/$/, '')
+export const API_BASE_URL = baseUrl.replace(/\/$/, '')
 
 export const PAGINATION = {
   templatesPerPage: 9,
