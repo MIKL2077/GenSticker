@@ -1,4 +1,6 @@
-# 人脸槽位与可复用 Skill 验收
+# 人脸槽位与可复用 Skill 验收（v2 历史记录）
+
+> 本页记录此前 v2 的行为；当前 v3 已移除生成时人脸检测，并提供可选主体提取，见 [最新验收](SUBJECT_EXTRACTION_ACCEPTANCE.md)。
 
 2026-10-14，分支 `codex/restore-wechat-final`。同一个“笑不出来”模板 key / UUID 保留，版本升级为 2。线上仍为 295 个模板。
 
