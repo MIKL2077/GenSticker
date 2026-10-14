@@ -1,0 +1,192 @@
+{
+  "canvas": [
+    324,
+    322
+  ],
+  "intent": "用枯花、西装和黑白场景表现无奈；按用户要求把狗头换成上传人脸，底部反应文字继续可编辑",
+  "protected": [
+    {
+      "name": "枯花与花茎",
+      "box": [
+        45,
+        143,
+        40,
+        72
+      ]
+    },
+    {
+      "name": "抓花的爪子",
+      "box": [
+        63,
+        214,
+        33,
+        30
+      ]
+    },
+    {
+      "name": "西装与领带",
+      "box": [
+        126,
+        222,
+        157,
+        32
+      ]
+    },
+    {
+      "name": "路灯",
+      "box": [
+        290,
+        12,
+        26,
+        134
+      ]
+    }
+  ],
+  "slots": [
+    {
+      "type": "face",
+      "box": [
+        69,
+        8,
+        218,
+        204
+      ],
+      "slot": 0,
+      "tone": "grayscale",
+      "feather": 3,
+      "erase_polygon": [
+        [
+          23,
+          17
+        ],
+        [
+          43,
+          5
+        ],
+        [
+          77,
+          0
+        ],
+        [
+          127,
+          4
+        ],
+        [
+          162,
+          14
+        ],
+        [
+          188,
+          35
+        ],
+        [
+          216,
+          67
+        ],
+        [
+          216,
+          106
+        ],
+        [
+          194,
+          128
+        ],
+        [
+          178,
+          132
+        ],
+        [
+          165,
+          161
+        ],
+        [
+          130,
+          190
+        ],
+        [
+          99,
+          199
+        ],
+        [
+          61,
+          185
+        ],
+        [
+          43,
+          171
+        ],
+        [
+          28,
+          143
+        ],
+        [
+          6,
+          117
+        ],
+        [
+          0,
+          83
+        ],
+        [
+          1,
+          52
+        ],
+        [
+          9,
+          30
+        ]
+      ]
+    },
+    {
+      "type": "text",
+      "box": [
+        75,
+        259,
+        175,
+        44
+      ],
+      "slot": 0,
+      "value": "笑不出来",
+      "color": "#ffffff",
+      "font_size": 42,
+      "fit": "contain",
+      "align": "center",
+      "weight": "bold",
+      "stroke_color": "#000000",
+      "stroke_width": 2
+    }
+  ],
+  "metadata": {
+    "name": "笑不出来",
+    "origin": "user-provided",
+    "source_url": "用户提供的图片（2026-10-14）",
+    "author": "原作者未确认",
+    "license": "用户提供测试素材，原始权利未核验",
+    "license_url": "",
+    "tags": [
+      "sad",
+      "awkward",
+      "dog",
+      "reaction"
+    ],
+    "featured_trial": true,
+    "review": {
+      "explicit_user_request": true,
+      "caption_style": {
+        "color": "#ffffff",
+        "weight": "bold",
+        "align": "center",
+        "stroke_color": "#000000",
+        "stroke_width": 2,
+        "font_size": 42
+      },
+      "protected_scene": "保留枯花、爪子、西装与黑白场景；按用户要求替换狗头及底部文字",
+      "explicit_face_replacement": true
+    },
+    "input_hint": "上传一张清晰的单人正面照，自动定位人脸替换狗头；侧脸或遮挡照片请换一张",
+    "subject_types": [
+      "person"
+    ],
+    "slot_aspect": 1.0
+  }
+}
