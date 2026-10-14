@@ -86,6 +86,7 @@ import PreviewModal from '@/components/PreviewModal.vue'
 import StatusMessage from '@/components/StatusMessage.vue'
 import BottomTabs from '@/components/BottomTabs.vue'
 import { useLibrary } from '@/composables/useLibrary'
+import { prefetchClientTemplate } from '@/services/clientRenderer'
 import { trackTemplate } from '@/services/popularityService'
 
 import { useStatusMessage } from '@/composables/useStatusMessage'
@@ -133,6 +134,7 @@ export default {
 
     const onSelectTemplate = async (key) => {
       selectedTemplate.value = key
+      prefetchClientTemplate(key).catch(() => {})
       const detail = (await fetchMemeInfo(key)) || null
       if (detail && !detail.previewImage) fetchMemePreview(key)
       if (!detail) { showStatusMessage('模板暂时不可用，请稍后重试'); return }

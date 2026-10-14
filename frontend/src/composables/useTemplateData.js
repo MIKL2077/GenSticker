@@ -1,6 +1,6 @@
-import { ref, computed } from 'vue'
+import { ref, computed, onUnmounted } from 'vue'
 import { PAGINATION, CATEGORY_UI_TO_API } from '@/constants'
-import { getCategories, getTemplateInfo, getTemplatePreviewPath } from '@/services/memeService'
+import { getCategories, getTemplateInfo, getTemplatePreviewPath, setThumbnailWindow, onThumbnailEvict } from '@/services/memeService'
 
 export function useTemplateData(showStatusMessage) {
   const isLoadingTemplates = ref(false)
@@ -8,6 +8,8 @@ export function useTemplateData(showStatusMessage) {
   const templateDetails = ref(new Map())
   const previewImageCache = ref(new Map())
   const loadingStates = ref(new Map())
+  const stopEvictions = onThumbnailEvict(key => { previewImageCache.value.delete(key); const detail=templateDetails.value.get(key); if(detail) detail.previewImage=null })
+  onUnmounted(stopEvictions)
 
   const selectedCategory = ref('all')
   const categories = ref([
@@ -157,6 +159,7 @@ export function useTemplateData(showStatusMessage) {
     const keys = sortMode.value === 'explore' ? [...rawKeys].sort((a,b) => a.localeCompare(b)) : rawKeys
     if (pageNumber < 1) return
     const pageKeys = keys.slice((pageNumber - 1) * templatesPerPage, pageNumber * templatesPerPage)
+    if (!background) setThumbnailWindow([...pageKeys,...keys.slice(0,3)])
     if (!pageKeys.length || pageKeys.every(key => previewImageCache.value.has(key))) return
     const taskKey = `${uiCategoryKey}:${pageNumber}`
     if (!background) { visibleLoads++; isLoadingTemplates.value = true }

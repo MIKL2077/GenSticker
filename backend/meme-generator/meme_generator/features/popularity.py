@@ -3,6 +3,7 @@ import hashlib
 import math
 import time
 import uuid
+import sqlite3
 from datetime import datetime, timezone
 from fastapi import APIRouter, Request, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials
@@ -10,7 +11,7 @@ from pydantic import BaseModel, Field
 from .store import connect, root
 
 router = APIRouter()
-KINDS = ('click', 'favorite', 'generate', 'ai_generate', 'ai_exposure', 'ai_choose', 'ai_download')
+KINDS = ('click', 'favorite', 'generate', 'ai_generate', 'ai_exposure', 'ai_choose', 'ai_download', 'client_generate')
 _snapshots = {}
 
 
@@ -57,6 +58,9 @@ def record(key, identity, kind, *, dedup=None, db=None):
             db.commit()
         _snapshots.pop(str(root()), None)
         return True
+    except sqlite3.Error:
+        if own: db.rollback()
+        return False  # Analytics must not fail a successful render or account action.
     finally:
         if own:
             db.close()
@@ -79,7 +83,7 @@ def snapshot():
             stats['recent'][row['kind']] = stats['recent'].get(row['kind'], 0) + row['count'] * 2**(-age/3)
         for stats in metrics.values():
             r = stats.pop('recent')
-            usage = .4*r.get('click',0) + 4*r.get('favorite',0) + 3*r.get('generate',0) + .4*r.get('ai_generate',0) + 3*r.get('ai_choose',0) + 4*r.get('ai_download',0)
+            usage = .4*r.get('click',0) + 4*r.get('favorite',0) + 3*(r.get('generate',0)+r.get('client_generate',0)) + .4*r.get('ai_generate',0) + 3*r.get('ai_choose',0) + 4*r.get('ai_download',0)
             # Exposure alone cannot dominate the chart; smoothed conversion is bounded.
             conversion = min(1, (r.get('ai_choose',0)+1)/(r.get('ai_exposure',0)+10))
             stats['heat'] = round(20*math.log1p(usage)*(1+.2*conversion), 1)
@@ -91,13 +95,19 @@ def snapshot():
 
 class Event(BaseModel):
     key: str = Field(min_length=1, max_length=100)
-    kind: str = Field(pattern='^(click|favorite)$')
+    kind: str = Field(pattern='^(click|favorite|client_generate)$')
     receipt: str = Field(default='', max_length=512)
 
 
 @router.post('/templates/events')
 def event(params: Event, request: Request):
     identity = actor(request)
+    if params.kind == 'client_generate':
+        from .client_render import verify_receipt
+        nonce = verify_receipt(params.receipt, params.key, identity)
+        return {'recorded': record(params.key, identity, params.kind, dedup=nonce)}
+    if params.kind == 'favorite' and identity.startswith('user:'):
+        return {'recorded':False}  # Authenticated favorites are measured from account writes.
     return {'recorded': record(params.key, identity, params.kind)}
 
 

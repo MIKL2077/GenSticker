@@ -12,6 +12,7 @@ async function verify() {
   const context = {
     ref: value => ({ value }),
     visitorHeaders: () => ({ 'X-Gensticker-Visitor': 'test-visitor-123456789' }),
+    tryClientRender: async () => null,
     API_BASE_URL: 'https://example.test/api',
     getGenerateUrl: key => `/memes/${key}/`,
     getFileExtensionFromContentType: () => 'png',
@@ -32,6 +33,8 @@ async function verify() {
     },
   }
   vm.createContext(context)
+  const preparation = fs.readFileSync(path.join(__dirname, '../src/services/imagePreparation.js'),'utf8').replace(/export /g,'')
+  vm.runInContext(preparation,context)
   vm.runInContext(source, context)
   const app = context.useMemeGeneration(s => statuses.push(s))
   await app.generateFromTemplate('two_images', ['/a.png', '/b.png'], ['标题', '内容'], { enabled: true })

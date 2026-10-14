@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+import { prepareImages } from '@/services/imagePreparation'
 import { parseRange } from '@/utils/validationUtils'
 
 export function useTemplateInput() {
@@ -84,6 +85,7 @@ export function useTemplateInput() {
       success: (res) => {
         const newImages = [...templateImages.value, ...res.tempFilePaths]
         templateImages.value = newImages
+        prepareImages(res.tempFilePaths).catch(() => {})
       },
     })
   }

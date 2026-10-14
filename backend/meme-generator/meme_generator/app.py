@@ -2,6 +2,8 @@ import json
 import base64
 import binascii
 import asyncio
+import hashlib
+import time
 from functools import lru_cache
 from io import BytesIO
 from datetime import datetime
@@ -30,6 +32,8 @@ from meme_generator.account import router as account_router
 app = FastAPI()
 app.include_router(account_router)
 generation_slots = asyncio.Semaphore(2)
+from meme_generator.features.render_cache import RenderCache
+render_cache = RenderCache()
 
 
 class GenerateRequest(BaseModel):
@@ -46,7 +50,7 @@ def healthz():
 @app.post('/memes/{key}/generate')
 async def generate_json(key: str, params: GenerateRequest, request: Request):
     """WeChat uses JSON for multiple images and receives a binary image response."""
-    from meme_generator.features.catalog import refresh
+    from meme_generator.features.catalog import refresh, loaded_versions
     refresh()
     try:
         meme = get_meme(key)
@@ -65,17 +69,25 @@ async def generate_json(key: str, params: GenerateRequest, request: Request):
         args = type_validate_python(args_model, params.args)
     except ValidationError as e:
         raise HTTPException(status_code=422, detail=str(e))
+    from meme_generator.features.popularity import record, actor
+    identity = actor(request)
+    cache_key = hashlib.sha256(json.dumps([identity, key, loaded_versions.get(key, 1), params.images, params.texts, model_dump(args)],sort_keys=True).encode()).hexdigest()
+    cached = render_cache.get(cache_key)
+    if cached:
+        record(key, identity, 'generate')
+        return Response(content=cached,media_type=filetype.guess_mime(cached) or 'application/octet-stream',headers={'Cache-Control':'private, no-store','X-Gensticker-Cache':'hit'})
     if generation_slots.locked():
         raise HTTPException(status_code=503, detail='生成队列已满，请稍后重试')
+    started = time.perf_counter()
     async with generation_slots:
         try:
             result = await run_sync(meme)(images=images, texts=params.texts, args=model_dump(args))
         except MemeGeneratorException as e:
             raise HTTPException(status_code=e.status_code, detail=e.message)
     content = result.getvalue()
-    from meme_generator.features.popularity import record, actor
-    record(key, actor(request), 'generate')
-    return Response(content=content, media_type=filetype.guess_mime(content) or 'application/octet-stream')
+    render_cache.put(cache_key,content)
+    record(key, identity, 'generate')
+    return Response(content=content, media_type=filetype.guess_mime(content) or 'application/octet-stream',headers={'Cache-Control':'private, no-store','Server-Timing':f'generation;dur={(time.perf_counter()-started)*1000:.1f}'})
 
 
 class MemeArgsResponse(BaseModel):
@@ -396,6 +408,8 @@ app.include_router(catalog_router)
 app.include_router(recommend_router)
 from meme_generator.features.popularity import router as popularity_router
 app.include_router(popularity_router)
+from meme_generator.features.client_render import router as client_render_router
+app.include_router(client_render_router)
 
 
 if __name__ == "__main__":

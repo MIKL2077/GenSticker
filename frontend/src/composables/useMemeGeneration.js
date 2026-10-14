@@ -1,4 +1,6 @@
 import { ref } from 'vue'
+import { prepareImage, prepareImages } from '@/services/imagePreparation'
+import { tryClientRender } from '@/services/clientRenderer'
 import { visitorHeaders } from '@/services/popularityService'
 import { API_BASE_URL } from '@/constants'
 import { getGenerateUrl } from '@/services/memeService'
@@ -55,15 +57,7 @@ export function useMemeGeneration(showStatusMessage) {
     const images = []
     let totalSize = 0
     for (const originalPath of localPaths) {
-      let filePath = originalPath
-      // Downsize camera photos before JSON upload; preserve animated/transparent inputs.
-      if (uni.getImageInfo && uni.compressImage) {
-        const info = await new Promise(resolve => uni.getImageInfo({ src: originalPath, success: resolve, fail: () => resolve(null) }))
-        if (info && /^(jpeg|jpg)$/i.test(info.type || '') && (info.width > 1280 || info.height > 1280)) {
-          const scale = Math.min(1280 / info.width, 1280 / info.height)
-          filePath = await new Promise((resolve, reject) => uni.compressImage({ src: originalPath, quality: 82, compressedWidth: Math.round(info.width * scale), compressedHeight: Math.round(info.height * scale), success: r => resolve(r.tempFilePath), fail: reject }))
-        }
-      }
+      const filePath = await prepareImage(originalPath)
       const info = await new Promise((resolve, reject) => fs.stat({ path: filePath, success: resolve, fail: reject }))
       totalSize += info.stats.size
       if (totalSize > 10 * 1024 * 1024) throw new Error('图片总大小不能超过 10 MB')
@@ -98,6 +92,14 @@ export function useMemeGeneration(showStatusMessage) {
     generatedMeme.value = ''
     try {
       const isH5 = typeof window !== 'undefined' && typeof document !== 'undefined'
+      if (!isH5) {
+        const local = await tryClientRender(templateKey, await prepareImages(imagesToUpload), texts, args)
+        if (local) {
+          if (lastGeneratedFile) uni.getFileSystemManager().unlink({filePath:lastGeneratedFile,fail:()=>{}})
+          lastGeneratedFile = local; generatedMeme.value = local; isGenerating.value = false
+          showStatusMessage && showStatusMessage('表情已在本机生成！'); return
+        }
+      }
       const targetUrl = `${API_BASE_URL}${getGenerateUrl(templateKey)}`
       if (imagesToUpload.length > 0) {
         if (isH5) {
