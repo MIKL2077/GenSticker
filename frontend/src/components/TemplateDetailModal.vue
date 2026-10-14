@@ -2,11 +2,11 @@
   <view v-if="show" class="template-detail-modal">
     <view class="detail-content">
       <view class="detail-header">
+        <button class="favorite-corner" :class="{saved:favorite}" :aria-label="favorite ? '取消收藏' : '收藏模板'" @click="$emit('favorite')">{{ favorite ? '★' : '☆' }}</button>
         <text class="detail-title">模板详情</text>
         <button class="close-btn" @click="$emit('close')">✕</button>
       </view>
       <view class="detail-body">
-        <view v-if="detail?.attribution?.source_url" class="source-credit">素材：{{ detail.attribution.author }} · {{ detail.attribution.license }}</view>
         <view class="example-section">
           <text class="detail-label">示例图</text>
           <image v-if="detail?.previewImage" :src="detail.previewImage" class="example-image" mode="aspectFit" />
@@ -47,11 +47,11 @@
             </view>
           </view>
         </view>
-        <button class="btn btn-secondary favorite-btn" @click="$emit('favorite')">{{ favorite ? '⭐ 已收藏' : '☆ 收藏模板' }}</button>
         <view class="detail-actions">
           <button class="btn btn-primary" :disabled="!canGenerate" @click="$emit('generate')">生成表情包</button>
           <button class="btn btn-secondary" @click="$emit('close')">取消</button>
         </view>
+        <view v-if="detail?.attribution?.source_url" class="source-credit"><text>来源：{{ detail.attribution.author || '原作者' }} · {{ detail.attribution.license }}</text><text class="source-url" selectable>{{ detail.attribution.source_url }}</text></view>
       </view>
     </view>
   </view>
@@ -109,4 +109,7 @@ export default {
 .btn-primary { background:linear-gradient(45deg, #ff6b6b, #ff8e53); color:#fff }
 .btn-secondary { background:#f8f9fa; color:#666; border:2rpx solid #ddd }
 .source-credit {font-size:20rpx;color:#9b897a;line-height:1.6;margin-bottom:18rpx}
+.source-credit{margin:30rpx 0 0;color:#a89b93;font-size:19rpx}.source-url{display:block;word-break:break-all;font-size:18rpx;margin-top:4rpx}
+.favorite-corner{position:absolute;left:18rpx;top:14rpx;width:66rpx;height:60rpx;line-height:60rpx;padding:0;margin:0;border:0;border-radius:18rpx;background:#fff5ed;color:#a59181;font-size:42rpx;transition:transform .2s,color .2s}.favorite-corner.saved{color:#f4a32b}.favorite-corner:active{transform:scale(.85)}
+.detail-content{animation:detail-enter .22s ease-out}.btn:active{transform:scale(.97)}@keyframes detail-enter{from{opacity:0;transform:translateY(24rpx) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 </style>

@@ -24,14 +24,17 @@
       <view v-for="item in history" :key="item.job_id" class="history-row"><view @click="open(item.job_id)"><text>{{ formatTime(item.created_at) }}</text><text class="history-meta">{{ labels[item.status] || item.status }} · {{ item.count }} 张</text></view><button class="link" @click="deleteHistory(item)">删除</button></view>
       <text class="hint footer">原图24小时后清理，结果保留7天。额度用完后仍可在首页手动制作。</text>
     </template>
+    <bottom-tabs active="ai" />
   </view>
 </template>
 <script>
 import { ref,computed,watch,nextTick,getCurrentInstance } from 'vue'
 import { onShow,onHide,onUnload } from '@dcloudio/uni-app'
 import { useLibrary } from '@/composables/useLibrary'
+import BottomTabs from '@/components/BottomTabs.vue'
 import { getQuota,listJobs,getJob,createJob,uploadPhoto,downloadResult,selectResults,removeJob,setPersonalization } from '@/services/recommendService'
 export default {
+  components: { BottomTabs },
   setup() {
     const {session}=useLibrary(), quota=ref({limit:3,remaining:0,personalization:true}),photo=ref(''),job=ref(null),previews=ref({}),selected=ref([]),error=ref(''),uploading=ref(false),saving=ref(false),history=ref([]),activeId=ref('')
     let timer=null, visible=true, polling=false, failures=0, requestKey='', generation=0
@@ -119,5 +122,6 @@ export default {
 }
 </script>
 <style scoped>
+.recommend-page{padding-bottom:calc(200rpx + env(safe-area-inset-bottom))!important}.result-image{animation:preview-in .28s ease-out}.result{transition:border-color .15s,transform .15s}.result:active{transform:scale(.96)}@keyframes preview-in{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
 .recommend-page{min-height:100vh;background:#fffaf7;padding:calc(100rpx + env(safe-area-inset-top)) 28rpx 48rpx;box-sizing:border-box}.page-header{display:flex;align-items:center;gap:20rpx}.back,.link{font-size:24rpx;color:#dd6547;margin:0;padding:8rpx;line-height:1.5;background:transparent}.title{font-size:34rpx;font-weight:700;color:#332e2b}.intro{display:block;margin:24rpx 0;color:#887b73;font-size:25rpx;line-height:1.7}.quota-row,.result-header{display:flex;justify-content:space-between;gap:12rpx;color:#6e5d53;font-size:24rpx;margin:28rpx 0}.privacy{font-size:20rpx;color:#9a8a80}.upload-card{height:260rpx;border:2rpx dashed #edcbb9;background:#fff3eb;border-radius:28rpx;display:flex;align-items:center;justify-content:center;flex-direction:column;font-size:26rpx;color:#a76845;gap:12rpx}.upload-icon{font-size:58rpx}.photo{width:180rpx;height:180rpx}.primary{background:#ff805c;color:white;border-radius:22rpx;font-size:27rpx;margin:22rpx 0 0;line-height:2.5}.primary[disabled]{background:#eaded7;color:#a39389}.secondary{background:white;color:#dd6547;border:2rpx solid #f2d1c2;border-radius:22rpx;font-size:25rpx;line-height:2.5;margin:22rpx 0 0}.results{display:grid;grid-template-columns:repeat(3,1fr);gap:14rpx}.result{height:210rpx;background:white;border-radius:22rpx;position:relative;display:flex;align-items:center;justify-content:center;border:3rpx solid transparent}.result.selected{border-color:#ff805c}.result-image{width:190rpx;height:190rpx}.placeholder{font-size:22rpx;color:#b4a59b}.check{position:absolute;right:8rpx;top:8rpx;background:#ff805c;color:white;border-radius:50%;width:34rpx;height:34rpx;text-align:center;line-height:34rpx;font-size:23rpx}.actions{display:flex;gap:18rpx}.actions button{flex:1}.error{color:#b14533;font-size:24rpx;margin-top:22rpx}.hint{display:block;color:#a28b7c;font-size:22rpx;line-height:1.6;margin:16rpx 0}.preference{display:flex;justify-content:space-between;align-items:center;color:#6d5d53;font-size:25rpx;margin:40rpx 0}.section{display:block;font-size:28rpx;font-weight:600;margin:24rpx 0}.history-row{display:flex;justify-content:space-between;align-items:center;background:white;padding:22rpx;border-radius:20rpx;margin-bottom:12rpx;font-size:23rpx;color:#66564c}.history-meta{display:block;color:#ad998b;font-size:21rpx;margin-top:8rpx}.attribution text{display:block;font-size:20rpx;color:#9b897a;margin-top:10rpx}.login-card{padding:30rpx;background:white;border-radius:24rpx;font-size:26rpx;color:#77655b}.footer{margin-top:32rpx}
 </style>
