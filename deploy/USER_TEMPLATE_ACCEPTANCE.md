@@ -1,5 +1,7 @@
 # 用户图片模板与配色验收
 
+本文件记录文字槽位初版；当前已升级为人脸 + 文字槽位，最新状态见 [FACE_SLOT_ACCEPTANCE.md](FACE_SLOT_ACCEPTANCE.md)。
+
 2026-10-14，开发分支 `codex/restore-wechat-final`。
 
 - 用户拒绝的十个新增模板已从线上目录撤下，保留数据库历史供回滚；种子恢复和采集不再重新发布这些 key。原有 294 个模板保留。
