@@ -2,7 +2,7 @@
   <view class="my-page">
     <view class="profile-panel">
       <view class="profile-header">
-        <button class="avatar" :loading="loggingIn" @click="showLogin" aria-label="微信登录"><image v-if="session?.profile.avatarPath" :src="session.profile.avatarPath" class="profile-avatar" /><text v-else>👤</text></button>
+        <button class="avatar" :loading="loggingIn" @click="showLogin" :aria-label="session ? '编辑资料' : '微信登录'"><image v-if="session?.profile.avatarPath" :src="session.profile.avatarPath" class="profile-avatar" /><text v-else>👤</text></button>
         <text class="name">{{ session ? session.profile.name : '未登录用户' }}</text>
         <text class="hint">{{ session ? '已登录，收藏与历史可跨设备同步' : '点击上方头像登录' }}</text>
         <text v-if="!session" class="guest-note">登录后同步历史与收藏</text>
@@ -18,6 +18,7 @@
       </view>
       <button v-if="syncError" class="sync-message" @click="syncLibrary">{{ syncError }} · 点击重试</button>
       <button v-if="session" class="logout" @click="signOut">退出登录</button>
+      <text class="analytics-note">模板点击与制作的去重计数用于热力榜，不记录照片或输入文字。</text>
     </view>
     <view v-if="loginVisible" class="login-mask" @click="closeLogin">
       <view class="login-dialog" @click.stop>
@@ -78,6 +79,7 @@ export default {
 }
 </script>
 <style scoped>
+.feature-card{transition:transform .18s,box-shadow .18s;animation:profile-in .25s ease-out}.feature-card:active{transform:translateY(3rpx) scale(.97)}.avatar:active{transform:rotate(-5deg) scale(.95)}.login-dialog{animation:profile-in .23s ease-out}.analytics-note{display:block;text-align:center;font-size:19rpx;color:#b09c91;line-height:1.7;margin-top:44rpx;padding:0 16rpx}@keyframes profile-in{from{opacity:0;transform:translateY(16rpx)}to{opacity:1;transform:translateY(0)}}
 .my-page { min-height:100vh; padding:calc(100rpx + env(safe-area-inset-top)) 18rpx 180rpx; background:linear-gradient(135deg,#ff6b6b,#ffa500); box-sizing:border-box }
 .profile-panel { min-height:calc(100vh - 200rpx); border-radius:30rpx 30rpx 0 0; background:#fffaf7; padding:48rpx 18rpx; box-sizing:border-box }
 .profile-header { text-align:center; padding:8rpx 0 50rpx }.avatar { width:128rpx; height:128rpx; display:flex; align-items:center; justify-content:center; padding:0; font-size:56rpx; background:linear-gradient(45deg,#ff6b6b,#ff8e53); border-radius:34rpx; box-shadow:0 12rpx 30rpx rgba(255,107,107,.2); margin:0 auto 22rpx }

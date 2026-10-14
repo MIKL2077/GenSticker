@@ -40,6 +40,9 @@ export default {
 	button::after {
 		border: none;
 	}
+  button{transition:transform .18s ease,background-color .18s ease}
+  button:active{transform:scale(.97)}
+  @media (prefers-reduced-motion: reduce){view,text,button,image{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
 
 	/* 全局输入框样式 */
 	input {

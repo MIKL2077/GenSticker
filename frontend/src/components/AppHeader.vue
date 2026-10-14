@@ -22,4 +22,5 @@ export default { name: 'AppHeader' }
 @keyframes bounce { 0%,20%,50%,80%,100%{transform:translateY(0);} 40%{transform:translateY(-16rpx);} 60%{transform:translateY(-8rpx);} }
 .app-title { color:#333; font-size:44rpx; font-weight:bold; margin-bottom:10rpx; display:block; }
 .app-subtitle { color:#666; font-size:28rpx; display:block; }
+.header{display:grid;grid-template-columns:112rpx 1fr;grid-template-rows:1fr 1fr;gap:4rpx 24rpx;text-align:left;position:relative;margin-bottom:32rpx}.logo{grid-row:1/3;width:112rpx;height:112rpx;margin:0;border-radius:28rpx;box-shadow:0 6rpx 20rpx rgba(112,52,27,.1)}.brand-mark{font-size:40rpx}.brand-name{font-size:17rpx}.app-title{grid-column:2;align-self:end;font-size:36rpx;margin:0;color:#432e29}.app-subtitle{grid-column:2;align-self:start;font-size:22rpx;color:#815443;padding-top:7rpx}
 </style>
