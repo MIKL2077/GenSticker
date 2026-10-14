@@ -7,7 +7,7 @@
       <view class="floating-emoji" style="bottom: 20%; right: 10%; animation-delay: 0.5s;">😍</view>
     </app-header>
 
-    <view v-if="trialTemplate" class="trial-card" @click="onSelectTemplate(trialTemplate.key)"><image v-if="trialTemplate.previewImage" :src="trialTemplate.previewImage" mode="aspectFit"/><view><text class="trial-label">新模板试用</text><text class="trial-title">{{ trialTemplate.name }}</text><text class="trial-hint">保留原图表情 · 换一句你的心情 →</text></view></view>
+    <view v-if="trialTemplate" class="trial-card" @click="onSelectTemplate(trialTemplate.key)"><image v-if="trialTemplate.previewImage" :src="trialTemplate.previewImage" mode="aspectFit"/><view><text class="trial-label">新模板试用</text><text class="trial-title">{{ trialTemplate.name }}</text><text class="trial-hint">上传人脸替换狗头 · 文字也能改 →</text></view></view>
     <view class="heat-hero"><view class="hero-heading"><view><text class="hero-eyebrow">THE REACTION CLUB</text><text class="hero-title">今日，谁最有梗？</text></view><text class="hero-mark">✦</text></view><text class="hero-sub">大家的点击、收藏与制作，让好玩的表情浮上来</text><view class="spotlight"><view v-for="(item,index) in spotlight" :key="item.key" class="spotlight-card" @click="onSelectTemplate(item.key)"><text class="spotlight-rank">0{{ index+1 }}</text><image v-if="item.previewImage" :src="item.previewImage" mode="aspectFit" class="spotlight-image"/><text class="spotlight-name">{{ item.name }}</text><text class="spotlight-heat">{{ item.heat ? '热力 '+item.heat : '等你点燃' }}</text></view></view></view>
     <view class="meme-templates">
       <view class="template-header">

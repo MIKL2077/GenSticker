@@ -19,6 +19,7 @@ export function useTemplateInput() {
     if (!info) return '请上传图片'
     const { min, max } = parseRange(info.imageCount)
     if (max === 0) return '此模板不需要图片'
+    if (info.inputHint && !templateImages.value.length) return info.inputHint
     const current = templateImages.value.length
     if (current >= max) return `已上传 ${current} 张图片（最多${max}张）`
     if (min > 0 && current < min) return `还需要上传 ${min - current} 张图片（最少${min}张，最多${max}张）`

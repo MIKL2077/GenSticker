@@ -76,7 +76,7 @@ export function useTemplateData(showStatusMessage) {
       for (const card of data.cards || []) {
         const existing = templateDetails.value.get(card.key) || { key: card.key, previewImage: null, isLoadingPreview: true }
         const params=card.params_type
-        templateDetails.value.set(card.key, { ...existing, name:card.name, featuredTrial:!!card.featured_trial, keywords:card.keywords || [], tags:card.tags || [], heat:card.heat || 0, counts:card.counts || {}, localCapable:localKeys.has(card.key), ...(params ? {metadataLoaded:true, templateId:card.template_id, version:card.version, attribution:card.attribution || {}, imageCount:`${params.min_images}-${params.max_images}`, textCount:`${params.min_texts}-${params.max_texts}`, defaultTexts:params.default_texts || []} : {}) })
+        templateDetails.value.set(card.key, { ...existing, name:card.name, featuredTrial:!!card.featured_trial, inputHint:card.input_hint || '', keywords:card.keywords || [], tags:card.tags || [], heat:card.heat || 0, counts:card.counts || {}, localCapable:localKeys.has(card.key), ...(params ? {metadataLoaded:true, templateId:card.template_id, version:card.version, attribution:card.attribution || {}, imageCount:`${params.min_images}-${params.max_images}`, textCount:`${params.min_texts}-${params.max_texts}`, defaultTexts:params.default_texts || []} : {}) })
       }
       for(const card of data.cards || [])if(card.featured_trial)fetchMemePreview(card.key, true)
       categoryLoadedPages.value.clear()
@@ -102,6 +102,7 @@ export function useTemplateData(showStatusMessage) {
       }
       const info = await getTemplateInfo(key)
       const existingDetail = templateDetails.value.get(key) || { key }
+      existingDetail.inputHint = info.input_hint || ''
       existingDetail.templateId = info.template_id
       existingDetail.version = info.version
       existingDetail.attribution = info.attribution || {}
