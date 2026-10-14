@@ -51,5 +51,16 @@ class QualityTests(unittest.TestCase):
         self.assertEqual(row['status'],'license-pending')
         self.assertIn('未下载素材',row['reason'])
 
+    def test_legacy_subject_replacement_excluded_from_ai(self):
+        from meme_generator.features.catalog import publish
+        from meme_generator.features.worker import candidates
+        spec={'width':128,'height':128,'layers':[{'type':'subject','box':[0,0,128,128]}]}
+        meta={'name':'sample','min_images':1,'max_images':1,'min_texts':0,'max_texts':0,'default_texts':[],'tags':['general']}
+        publish('auto_legacy',{**meta,'conversion':'foreground-slot-v1'},spec)
+        publish('auto_reviewed',{**meta,'conversion':'emoji-frame-v1'},spec)
+        keys=[r['key'] for r in candidates({'user_id':'user','id':'job','day':'2026-10-14'},{'expression':'general','confidence':.9,'aspect':1})]
+        self.assertNotIn('auto_legacy',keys)
+        self.assertIn('auto_reviewed',keys)
+
 
 if __name__=='__main__':unittest.main()

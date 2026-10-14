@@ -4,7 +4,7 @@ import math
 import time
 import uuid
 import sqlite3
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from fastapi import APIRouter, Request, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials
 from pydantic import BaseModel, Field
@@ -13,6 +13,7 @@ from .store import connect, root
 router = APIRouter()
 KINDS = ('click', 'favorite', 'generate', 'ai_generate', 'ai_exposure', 'ai_choose', 'ai_download', 'client_generate')
 _snapshots = {}
+BEIJING = timezone(timedelta(hours=8))
 
 
 def actor(request: Request):
@@ -35,7 +36,7 @@ def record(key, identity, kind, *, dedup=None, db=None):
     own = db is None
     db = db or connect()
     now = time.time()
-    date = datetime.fromtimestamp(now, timezone.utc).strftime('%Y-%m-%d')
+    date = datetime.fromtimestamp(now, BEIJING).strftime('%Y-%m-%d')
     # Clicks: once/minute/template/actor. Other interactions: once/day,
     # server generated AI slots: once/job/slot even after crash recovery.
     token = dedup or (uuid.uuid4().hex if kind == 'generate' else str(int(now // 60)) if kind == 'click' else date)
@@ -77,9 +78,9 @@ def snapshot():
     try:
         for row in db.execute('SELECT * FROM popularity_totals'):
             metrics.setdefault(row['key'], {'counts': {k: 0 for k in KINDS}, 'heat': 0, 'recent': {}})['counts'][row['kind']] = row['count']
-        for row in db.execute('SELECT * FROM popularity_daily WHERE day>=date("now","-7 days")'):
+        for row in db.execute('SELECT * FROM popularity_daily WHERE day>=date("now","+8 hours","-6 days")'):
             stats = metrics.setdefault(row['key'], {'counts': {k: 0 for k in KINDS}, 'heat': 0, 'recent': {}})
-            age = max(0, (now-datetime.strptime(row['day'], '%Y-%m-%d').replace(tzinfo=timezone.utc).timestamp())/86400)
+            age = max(0, (now-datetime.strptime(row['day'], '%Y-%m-%d').replace(tzinfo=BEIJING).timestamp())/86400)
             stats['recent'][row['kind']] = stats['recent'].get(row['kind'], 0) + row['count'] * 2**(-age/3)
         for stats in metrics.values():
             r = stats.pop('recent')
@@ -118,4 +119,4 @@ def popularity():
 
 def maintenance(db):
     db.execute('DELETE FROM popularity_seen WHERE created<?', (time.time()-90*86400,))
-    db.execute('DELETE FROM popularity_daily WHERE day<date("now","-90 days")')
+    db.execute('DELETE FROM popularity_daily WHERE day<date("now","+8 hours","-89 days")')

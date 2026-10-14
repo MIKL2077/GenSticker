@@ -91,6 +91,10 @@ def candidates(job, analysis):
     }
     for row in rows():
         m = json.loads(row["metadata"])
+        # The early foreground-only sample can lose the original expression.
+        # Keep manual compatibility, but exclude it from automatic matching.
+        if m.get('conversion') == 'foreground-slot-v1':
+            continue
         if not (m["min_images"] <= 1 <= m["max_images"]) or m.get("min_texts", 0) > len(
             m.get("default_texts", [])
         ):

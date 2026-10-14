@@ -175,7 +175,7 @@ def create(params: CreateJob, user=Depends(current_user)):
                     "queued",
                     stamp,
                     stamp,
-                    "tags-position-v2",
+                    "tags-position-heat-v3",
                 ),
             )
             db.execute(
