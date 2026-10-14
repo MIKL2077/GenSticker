@@ -1,0 +1,52 @@
+{
+  "canvas": [
+    636,
+    750
+  ],
+  "intent": "保留Doge表情及六句散落彩色短语，只编辑底部一句",
+  "protected": [
+    {
+      "name": "Doge表情和固定彩色短语",
+      "box": [
+        0,
+        0,
+        636,
+        673
+      ]
+    }
+  ],
+  "slots": [
+    {
+      "type": "text",
+      "box": [
+        89,
+        676,
+        333,
+        68
+      ],
+      "slot": 0,
+      "value": "such neutral",
+      "font_size": 52,
+      "color": "#008000",
+      "weight": "bold",
+      "align": "center",
+      "text_mask": "glyph",
+      "max_lines": 1
+    }
+  ],
+  "metadata": {
+    "name": "Doge底部短语",
+    "source_url": "https://commons.wikimedia.org/wiki/File:Doge_homemade_meme.jpg",
+    "author": "Euterpia",
+    "license": "CC0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "origin": "wikimedia-commons",
+    "tags": [
+      "reaction"
+    ],
+    "review": {
+      "visual_status": "pending",
+      "reason": "Local visual review preserves expression and fixed phrases; typography remains approximate. Requires product acceptance before publication."
+    }
+  }
+}

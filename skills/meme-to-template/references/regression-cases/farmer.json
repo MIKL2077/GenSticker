@@ -1,0 +1,111 @@
+{
+  "canvas": [
+    750,
+    477
+  ],
+  "intent": "保留原来的帽子、工装、农田和上下两行文字，只替换帽子下方的人脸",
+  "protected": [
+    {
+      "name": "工装与农田",
+      "box": [
+        0,
+        307,
+        750,
+        84
+      ]
+    },
+    {
+      "name": "原帽子及上方文字",
+      "box": [
+        0,
+        0,
+        750,
+        107
+      ]
+    },
+    {
+      "name": "原底部文字",
+      "box": [
+        0,
+        386,
+        750,
+        91
+      ]
+    }
+  ],
+  "slots": [
+    {
+      "type": "face",
+      "box": [
+        170,
+        110,
+        172,
+        194
+      ],
+      "slot": 0,
+      "tone": "original",
+      "feather": 2,
+      "erase_polygon": [
+        [
+          20,
+          0
+        ],
+        [
+          117,
+          0
+        ],
+        [
+          158,
+          35
+        ],
+        [
+          171,
+          82
+        ],
+        [
+          155,
+          145
+        ],
+        [
+          132,
+          178
+        ],
+        [
+          96,
+          193
+        ],
+        [
+          55,
+          175
+        ],
+        [
+          27,
+          130
+        ],
+        [
+          4,
+          65
+        ],
+        [
+          0,
+          26
+        ]
+      ]
+    }
+  ],
+  "metadata": {
+    "name": "诚实劳动脸部替换",
+    "source_url": "https://commons.wikimedia.org/wiki/File:Farmer_meme_with_apostrophe.jpg",
+    "author": "Cakelot1 / Dianne Johnson, USDA",
+    "license": "Public domain",
+    "license_url": "https://creativecommons.org/publicdomain/mark/1.0/",
+    "origin": "wikimedia-commons",
+    "tags": [
+      "reaction"
+    ],
+    "review": {
+      "visual_status": "pending",
+      "reason": "Input crop contains a second hat brim; refine crop and inspect mask edge before publication."
+    }
+  }
+}

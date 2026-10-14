@@ -1,0 +1,82 @@
+{
+  "canvas": [
+    750,
+    499
+  ],
+  "intent": "保留猫咪闭眼享受抚摸、手与长椅，修改上下两行反应文字",
+  "protected": [
+    {
+      "name": "闭眼猫咪与抚摸的手",
+      "box": [
+        45,
+        65,
+        680,
+        360
+      ]
+    },
+    {
+      "name": "原有署名",
+      "box": [
+        0,
+        484,
+        70,
+        15
+      ]
+    }
+  ],
+  "slots": [
+    {
+      "type": "text",
+      "box": [
+        318,
+        4,
+        114,
+        55
+      ],
+      "slot": 0,
+      "value": "MFW",
+      "font_size": 45,
+      "color": "#ffffff",
+      "weight": "bold",
+      "align": "center",
+      "stroke_color": "#000000",
+      "stroke_width": 3,
+      "text_mask": "glyph",
+      "max_lines": 1
+    },
+    {
+      "type": "text",
+      "box": [
+        26,
+        431,
+        700,
+        51
+      ],
+      "slot": 1,
+      "value": "I GET A CUSTOM ORDER FOR A MEME",
+      "font_size": 43,
+      "color": "#ffffff",
+      "weight": "bold",
+      "align": "center",
+      "stroke_color": "#000000",
+      "stroke_width": 3,
+      "text_mask": "glyph",
+      "max_lines": 1
+    }
+  ],
+  "metadata": {
+    "name": "猫咪接单",
+    "source_url": "https://commons.wikimedia.org/wiki/File:Cat_Meme.jpg",
+    "author": "Jennifer Williams / original uploader alteration",
+    "license": "CC BY-SA 2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0/",
+    "origin": "wikimedia-commons",
+    "tags": [
+      "reaction"
+    ],
+    "review": {
+      "visual_status": "pending",
+      "reason": "Needs better scene repair: visible bench-texture artifacts remain after glyph inpainting; reconstruction typography differs."
+    }
+  }
+}

@@ -183,9 +183,12 @@
       "protected_scene": "保留枯花、爪子、西装与黑白场景；按用户要求替换狗头及底部文字",
       "explicit_face_replacement": true
     },
-    "input_hint": "上传一张清晰的单人正面照，自动定位人脸替换狗头；侧脸或遮挡照片请换一张",
+    "input_hint": "上传头像或其他图片；可先裁剪区域，再选择是否提取主体。无需正面人脸检测",
     "subject_types": [
-      "person"
+      "person",
+      "animal",
+      "object",
+      "unknown"
     ],
     "slot_aspect": 1.0
   }
