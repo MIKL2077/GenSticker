@@ -43,7 +43,7 @@ async function verify() {
   assert.equal(requests[0].responseType, 'arraybuffer')
   assert.deepEqual(JSON.parse(JSON.stringify(requests[0].data)), {
     images: [Buffer.from('/a.png').toString('base64'), Buffer.from('/b.png').toString('base64')],
-    texts: ['标题', '内容'], args: { enabled: true },
+    texts: ['标题', '内容'], args: { enabled: true }, extract_subject:false,
   })
   assert.equal(writes[0].data.byteLength, 8)
   assert.match(app.generatedMeme.value, /^\/sandbox\/generated_meme_\d+\.png$/)
@@ -65,6 +65,8 @@ async function verify() {
   assert.equal(compressions[0].compressedWidth, 1280)
   assert.equal(compressions[0].compressedHeight, 960)
   assert.equal(requests.at(-1).data.images[0], Buffer.from('/compressed.jpg').toString('base64'))
+  await app.generateFromTemplate('single', ['/camera.jpg'], [], {}, {extractSubject:true})
+  assert.equal(requests.at(-1).data.extract_subject,true)
   context.uni.request = async () => { throw { errMsg: 'request:fail timeout' } }
   await app.generateFromTemplate('single', [])
   assert.match(statuses.at(-1), /网络传输超时/)

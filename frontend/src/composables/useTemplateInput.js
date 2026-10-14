@@ -6,6 +6,7 @@ export function useTemplateInput() {
   const templateImages = ref([])
   const textInputs = ref([])
   const selectedTemplateDetail = ref(null)
+  const extractSubject = ref(false)
 
   const getImageInputCount = () => {
     const info = selectedTemplateDetail.value
@@ -44,6 +45,7 @@ export function useTemplateInput() {
   const initializeTemplateInputs = (detail) => {
     selectedTemplateDetail.value = detail || null
     templateImages.value = []
+    extractSubject.value = false
     const { max } = getTextInputRange()
     const defaults = selectedTemplateDetail.value?.defaultTexts || []
     if (max > 0) {
@@ -91,9 +93,16 @@ export function useTemplateInput() {
     })
   }
 
+  const cropTemplateImage = index => {
+    const crop = typeof wx !== 'undefined' ? wx.cropImage : uni.cropImage
+    if(!crop){uni.showToast({title:'请在相册裁剪后上传',icon:'none'});return}
+    crop({src:templateImages.value[index],cropScale:'1:1',success:r=>{templateImages.value[index]=r.tempFilePath;prepareImages([r.tempFilePath]).catch(()=>{})},fail:e=>{if(!/cancel/i.test(e.errMsg||''))uni.showToast({title:'请在相册裁剪后上传',icon:'none'})}})
+  }
+
   const removeTemplateImage = (index) => { templateImages.value.splice(index, 1) }
 
   const resetInputs = () => {
+    extractSubject.value = false
     templateImages.value = []
     textInputs.value = []
     selectedTemplateDetail.value = null
@@ -103,6 +112,7 @@ export function useTemplateInput() {
     templateImages,
     textInputs,
     selectedTemplateDetail,
+    extractSubject,
     getImageInputCount,
     getImageUploadText,
     getTextInputRange,
@@ -113,6 +123,7 @@ export function useTemplateInput() {
     isTemplateInputValid,
     chooseImagesForTemplate,
     removeTemplateImage,
+    cropTemplateImage,
     resetInputs,
   }
-} 
+}

@@ -161,7 +161,7 @@ export async function tryClientRender(key,paths,texts,args={}) {
         const [x,y,w,h]=layer.box;const values=texts.length ? texts : s.defaults
         const value=String(values[layer.slot] ?? layer.value).slice(0,200);let lines,size
         const stroke=layer.stroke_width || 0
-        for(size=layer.font_size;size>=10;size--){ctx.font=`${layer.weight==='bold' ? 'bold ' : ''}${size}px sans-serif`;lines=wrap(ctx,value,w-2*stroke);if(lines.length*(size+4)<=h)break}
+        for(size=layer.font_size;size>=10;size--){ctx.font=`${layer.weight==='bold' ? 'bold ' : ''}${size}px sans-serif`;lines=wrap(ctx,value,w-2*stroke);if((!layer.max_lines || lines.length<=layer.max_lines) && lines.length*(size+4)<=h)break}
         if(size<10)throw new Error('文字超出本地排版范围')
         ctx.textBaseline='top';ctx.fillStyle=layer.color;ctx.textAlign=layer.align || 'left';ctx.strokeStyle=layer.stroke_color || '#000000';ctx.lineWidth=stroke*2;ctx.lineJoin='round'
         const left=layer.align==='center' ? x+w/2 : layer.align==='right' ? x+w-stroke : x+stroke

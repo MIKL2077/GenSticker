@@ -29,6 +29,7 @@
         </view>
         <view v-if="imageInputCount > 0" class="image-input-section">
           <text class="detail-label">图片上传</text>
+          <view class="extraction-choice"><view><text class="extraction-title">提取图片主体</text><text class="extraction-hint">{{ extractSubject ? '生成前去除背景；透明图片会直接复用' : '直接使用图片，保留原背景' }}</text></view><switch :checked="extractSubject" color="#ff8453" @change="$emit('changeExtraction', $event.detail.value)" /></view>
           <view class="image-upload-area" @click="$emit('chooseImages')">
             <view class="upload-icon">📷</view>
             <text class="upload-text">{{ imageUploadText }}</text>
@@ -36,6 +37,7 @@
           <view v-if="templateImages.length > 0" class="template-images-grid">
             <view v-for="(image, index) in templateImages" :key="`template-image-${index}`" class="template-image-item">
               <image :src="image" class="template-image" mode="aspectFill" />
+              <button class="crop-image-btn" @click.stop="$emit('cropImage', index)">裁剪区域</button>
               <button class="remove-image-btn" @click.stop="$emit('removeImage', index)">✕</button>
             </view>
           </view>
@@ -74,12 +76,15 @@ export default {
     getTextMaxLength: { type: Function, required: true },
     canGenerate: { type: Boolean, default: false },
     favorite: { type: Boolean, default: false },
+    extractSubject: { type: Boolean, default: false },
   },
-  emits: ['close', 'chooseImages', 'removeImage', 'generate', 'favorite']
+  emits: ['close', 'chooseImages', 'removeImage', 'generate', 'favorite', 'changeExtraction', 'cropImage']
 }
 </script>
 
 <style scoped>
+.crop-image-btn{position:absolute;bottom:0;left:0;right:0;width:100%;margin:0;background:rgba(64,40,27,.65);color:white;font-size:21rpx;border-radius:0;line-height:1.8;padding:5rpx}
+.extraction-choice{display:flex;align-items:center;justify-content:space-between;gap:16rpx;padding:22rpx;background:#fff5ec;border-radius:18rpx;margin-bottom:20rpx}.extraction-title{display:block;color:#674739;font-size:25rpx;font-weight:600}.extraction-hint{display:block;color:#ad8370;font-size:21rpx;line-height:1.5;margin-top:6rpx}
 .local-note{display:block;color:#8b699e;background:#faf5ff;border-radius:14rpx;padding:14rpx 18rpx;font-size:21rpx;line-height:1.6;margin:12rpx 0 20rpx}
 .template-detail-modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(30,25,23,.55); display:flex; align-items:center; justify-content:center; z-index:2000 }
 .detail-content { background:#fff; border-radius:32rpx; width:90%; max-width:700rpx; max-height:80%; overflow:hidden; position:relative }

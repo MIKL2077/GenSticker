@@ -7,7 +7,7 @@
       <view class="floating-emoji" style="bottom: 20%; right: 10%; animation-delay: 0.5s;">😍</view>
     </app-header>
 
-    <view v-if="trialTemplate" class="trial-card" @click="onSelectTemplate(trialTemplate.key)"><image v-if="trialTemplate.previewImage" :src="trialTemplate.previewImage" mode="aspectFit"/><view><text class="trial-label">新模板试用</text><text class="trial-title">{{ trialTemplate.name }}</text><text class="trial-hint">上传人脸替换狗头 · 文字也能改 →</text></view></view>
+    <view v-if="trialTemplate" class="trial-card" @click="onSelectTemplate(trialTemplate.key)"><image v-if="trialTemplate.previewImage" :src="trialTemplate.previewImage" mode="aspectFit"/><view><text class="trial-label">新模板试用</text><text class="trial-title">{{ trialTemplate.name }}</text><text class="trial-hint">上传头像替换狗头 · 可选主体提取 →</text></view></view>
     <view class="heat-hero"><view class="hero-heading"><view><text class="hero-eyebrow">THE REACTION CLUB</text><text class="hero-title">今日，谁最有梗？</text></view><text class="hero-mark">✦</text></view><text class="hero-sub">大家的点击、收藏与制作，让好玩的表情浮上来</text><view class="spotlight"><view v-for="(item,index) in spotlight" :key="item.key" class="spotlight-card" @click="onSelectTemplate(item.key)"><text class="spotlight-rank">0{{ index+1 }}</text><image v-if="item.previewImage" :src="item.previewImage" mode="aspectFit" class="spotlight-image"/><text class="spotlight-name">{{ item.name }}</text><text class="spotlight-heat">{{ item.heat ? '热力 '+item.heat : '等你点燃' }}</text></view></view></view>
     <view class="meme-templates">
       <view class="template-header">
@@ -49,6 +49,8 @@
       :text-inputs="textInputs"
       :image-input-count="getImageInputCount()"
       :image-upload-text="getImageUploadText()"
+      :extract-subject="extractSubject"
+      @changeExtraction="extractSubject = $event"
       :text-range="getTextInputRange()"
       :text-max="getTextInputMax()"
       :get-text-placeholder="getTextPlaceholder"
@@ -58,6 +60,7 @@
       @favorite="favoriteTemplate"
       @chooseImages="chooseImagesForTemplate"
       @removeImage="removeTemplateImage"
+      @cropImage="cropTemplateImage"
       @generate="onGenerate"
       @close="closeTemplateDetail"
     />
@@ -123,7 +126,7 @@ export default {
       fetchMemePreview,
     } = useTemplateData(showStatusMessage)
 
-    const { templateImages, textInputs, selectedTemplateDetail, getImageInputCount, getImageUploadText, getTextInputRange, getTextInputMax, getTextPlaceholder, getTextMaxLength, initializeTemplateInputs, isTemplateInputValid, chooseImagesForTemplate, removeTemplateImage, resetInputs } = useTemplateInput()
+    const { templateImages, textInputs, extractSubject, selectedTemplateDetail, getImageInputCount, getImageUploadText, getTextInputRange, getTextInputMax, getTextPlaceholder, getTextMaxLength, initializeTemplateInputs, isTemplateInputValid, chooseImagesForTemplate, removeTemplateImage, cropTemplateImage, resetInputs } = useTemplateInput()
 
     const { showPreview, isGenerating, generatedMeme, generateFromTemplate, closePreview, saveMeme, shareMeme } = useMemeGeneration(showStatusMessage)
 
@@ -155,7 +158,7 @@ export default {
       }
       const texts = (textInputs.value || []).map(t => (t || '').trim()).filter(Boolean)
       const key=selectedTemplate.value
-      const success=await generateFromTemplate(key, templateImages.value, texts, {})
+      const success=await generateFromTemplate(key, templateImages.value, texts, {}, {extractSubject:extractSubject.value})
       if(!success || selectedTemplate.value!==key)return
       showTemplateDetail.value = false
       selectedTemplateDetail.value = null
@@ -229,6 +232,7 @@ export default {
       onSelectTemplate,
       closeTemplateDetail,
       // 输入
+      extractSubject,
       templateImages,
       textInputs,
       getImageInputCount,
@@ -240,6 +244,7 @@ export default {
       isTemplateInputValid,
       chooseImagesForTemplate,
       removeTemplateImage,
+      cropTemplateImage,
       // 生成/预览
       showPreview,
       isGenerating,

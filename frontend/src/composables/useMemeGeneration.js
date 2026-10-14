@@ -27,6 +27,7 @@ export function useMemeGeneration(showStatusMessage) {
     if (extra?.args && Object.keys(extra.args).length > 0) {
       form.append('args', JSON.stringify(extra.args))
     }
+    form.append('extract_subject', String(!!extra?.options?.extractSubject))
     const resp = await fetch(url, { method: 'POST', body: form, headers:visitorHeaders() })
     const ct = resp.headers.get('content-type') || ''
     if (!resp.ok) throw new Error(`上传失败: ${resp.status}`)
@@ -53,7 +54,7 @@ export function useMemeGeneration(showStatusMessage) {
     }
   }
 
-  const weixinGenerate = async (templateKey, localPaths, texts, args, epoch) => {
+  const weixinGenerate = async (templateKey, localPaths, texts, args, epoch, options) => {
     const fs = uni.getFileSystemManager()
     const images = []
     let totalSize = 0
@@ -68,7 +69,7 @@ export function useMemeGeneration(showStatusMessage) {
     const response = await uni.request({
       url: `${API_BASE_URL}/memes/${encodeURIComponent(templateKey)}/generate`,
       method: 'POST',
-      data: { images, texts, args },
+      data: { images, texts, args, extract_subject:!!options?.extractSubject },
       header: { 'Content-Type': 'application/json', ...visitorHeaders() },
       timeout: 60000,
       responseType: 'arraybuffer',
@@ -88,13 +89,13 @@ export function useMemeGeneration(showStatusMessage) {
     return filePath
   }
 
-  const generateFromTemplate = async (templateKey, imagesToUpload, texts = [], args = {}) => {
+  const generateFromTemplate = async (templateKey, imagesToUpload, texts = [], args = {}, options = {}) => {
     if (isGenerating.value) return false
     const epoch = ++generationEpoch
     showPreview.value = true; isGenerating.value = true; generatedMeme.value = ''
     try {
       const isH5 = typeof window !== 'undefined' && typeof document !== 'undefined'
-      if (!isH5) {
+      if (!isH5 && !options.extractSubject) {
         const local = await tryClientRender(templateKey, await prepareImages(imagesToUpload), texts, args)
         if(epoch!==generationEpoch){if(local)uni.getFileSystemManager().unlink({filePath:local,fail:()=>{}});return false}
         if (local) {
@@ -104,8 +105,8 @@ export function useMemeGeneration(showStatusMessage) {
         }
       }
       const output = isH5
-        ? await h5UploadMultipart(`${API_BASE_URL}${getGenerateUrl(templateKey)}`, imagesToUpload, { args, texts })
-        : await weixinGenerate(templateKey, imagesToUpload, texts, args, epoch)
+        ? await h5UploadMultipart(`${API_BASE_URL}${getGenerateUrl(templateKey)}`, imagesToUpload, { args, texts, options })
+        : await weixinGenerate(templateKey, imagesToUpload, texts, args, epoch, options)
       if(epoch!==generationEpoch)return false
       generatedMeme.value = output; isGenerating.value = false
       showStatusMessage && showStatusMessage('表情包生成成功！')
