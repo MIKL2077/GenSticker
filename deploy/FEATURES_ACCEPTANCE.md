@@ -1,5 +1,7 @@
 # 自动模板与九宫格验收
 
+本文件记录九宫格初版验收；后续导航、热度、端侧生成和转换质量更新见 [OPTIMIZATION_ACCEPTANCE.md](OPTIMIZATION_ACCEPTANCE.md)，以新记录为准。
+
 2026年10月14日开发版。开发分支为 `codex/restore-wechat-final`；微信小程序已生成私有开发预览，尚未提交审核或发布生产版本。
 
 临时微信预览二维码已生成在本机 `/private/tmp/gensticker-preview-20261014.png`，只供扫码验收，不提交Git；失效时可用微信CLI preview重新生成。预览包355.2KB。
