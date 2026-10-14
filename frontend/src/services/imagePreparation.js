@@ -3,7 +3,7 @@ const prepared = new Map()
 
 export async function prepareImage(originalPath) {
   if(typeof originalPath!=='string' || !originalPath)throw new Error('请重新选择图片')
-  if (prepared.has(originalPath)) return prepared.get(originalPath)
+  if (prepared.has(originalPath)) { const hit=prepared.get(originalPath);prepared.delete(originalPath);prepared.set(originalPath,hit);return hit }
   if (preparing.has(originalPath)) return preparing.get(originalPath)
   const task = (async () => {
     let path = originalPath

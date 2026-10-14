@@ -75,7 +75,8 @@ export function useTemplateData(showStatusMessage) {
       }
       for (const card of data.cards || []) {
         const existing = templateDetails.value.get(card.key) || { key: card.key, previewImage: null, isLoadingPreview: true }
-        templateDetails.value.set(card.key, { ...existing, name: card.name, tags: card.tags || [], heat:card.heat || 0, counts:card.counts || {}, localCapable:localKeys.has(card.key) })
+        const params=card.params_type
+        templateDetails.value.set(card.key, { ...existing, name:card.name, keywords:card.keywords || [], tags:card.tags || [], heat:card.heat || 0, counts:card.counts || {}, localCapable:localKeys.has(card.key), ...(params ? {metadataLoaded:true, templateId:card.template_id, version:card.version, attribution:card.attribution || {}, imageCount:`${params.min_images}-${params.max_images}`, textCount:`${params.min_texts}-${params.max_texts}`, defaultTexts:params.default_texts || []} : {}) })
       }
       categoryLoadedPages.value.clear()
       categories.value = categories.value.map(c => {
