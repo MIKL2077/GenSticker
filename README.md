@@ -169,6 +169,8 @@ python -m meme_generator.features.worker
 
 微信后台「开发管理 → 开发设置 → 服务器域名」中，`request`、`uploadFile`、`downloadFile` 合法域名均需包含 `https://www.shangkun.uk`（只填域名，不含 API 路径；已有地址用英文分号分隔后保留）。可设置 DNS 预解析为 `www.shangkun.uk`、预连接为 `https://www.shangkun.uk`；当前无需 socket / UDP / TCP 域名。开发者工具请求成功不代表真机域名配置已生效，保存后应退出小程序并重新扫码验证。真机网络排查记录见 [本次验收](deploy/MOBILE_NETWORK_ACCEPTANCE.md)。
 
+小程序现已开启域名校验。后台保存后，开发者工具仍可能缓存旧项目许可名单；当前已使用正常导入的新预览项目取得新域名，并验证首页 295 个模板。可运行 `npm --prefix frontend run preview:mp-weixin -- --qr-output /tmp/gensticker-preview.png`：脚本构建并导入不带旧本机设置的新预览目录，使用官方 CLI 生成二维码，不修改工具权限缓存。macOS 默认使用已安装的官方 CLI 路径，其他安装位置可设置 `WECHAT_DEVTOOLS_CLI_PATH`。不要通过关闭域名校验掩盖真机问题。
+
 - 健康与模板：`GET /healthz`、`GET /memes/categories`、`GET /templates`、`GET /memes/{key}/info`、`GET /memes/{key}/thumbnail`。
 - 热度与端侧模板：`GET /templates/popularity`、`POST /templates/events`、`GET /memes/{key}/client-template`、`GET /template-assets/{hash}.png`；来源状态：`GET /templates/sources`。
 - 图片去背景预览：`POST /images/subject`，单张 Base64 静态图片，最多 4 MB；返回私有透明 PNG，与生成共用两个处理并发槽及 Nginx 生成限速。
