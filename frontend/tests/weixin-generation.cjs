@@ -72,6 +72,14 @@ async function verify() {
   context.uni.request = async () => ({ statusCode: 429, header: {}, data: new ArrayBuffer(0) })
   await app.generateFromTemplate('single', [])
   assert.match(statuses.at(-1), /操作太频繁/)
+  let deliver
+  context.uni.request = async () => new Promise(resolve => { deliver=resolve })
+  const canceled=app.generateFromTemplate('text_only',[],['取消测试'])
+  await new Promise(resolve=>setImmediate(resolve))
+  app.closePreview()
+  deliver({statusCode:200,header:{'content-type':'image/png'},data:new ArrayBuffer(8)})
+  await canceled
+  assert.equal(app.generatedMeme.value,'');assert.equal(app.showPreview.value,false)
   console.log('PASS: multiple images, texts, binary image, native share, text-only generation, busy server')
 }
 verify().catch(e => { console.error(e); process.exitCode = 1 })

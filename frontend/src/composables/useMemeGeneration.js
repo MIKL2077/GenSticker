@@ -11,6 +11,7 @@ export function useMemeGeneration(showStatusMessage) {
   const isGenerating = ref(false)
   const generatedMeme = ref('')
   let lastGeneratedFile = ''
+  let generationEpoch = 0
 
   const h5UploadMultipart = async (url, localPaths, extra) => {
     const form = new FormData()
@@ -52,7 +53,7 @@ export function useMemeGeneration(showStatusMessage) {
     }
   }
 
-  const weixinGenerate = async (templateKey, localPaths, texts, args) => {
+  const weixinGenerate = async (templateKey, localPaths, texts, args, epoch) => {
     const fs = uni.getFileSystemManager()
     const images = []
     let totalSize = 0
@@ -72,6 +73,7 @@ export function useMemeGeneration(showStatusMessage) {
       timeout: 60000,
       responseType: 'arraybuffer',
     })
+    if(epoch!==generationEpoch)return ''
     const ct = response.header?.['Content-Type'] || response.header?.['content-type'] || ''
     if (response.statusCode !== 200 || !ct.startsWith('image/')) {
       let detail = ''
@@ -80,53 +82,45 @@ export function useMemeGeneration(showStatusMessage) {
     }
     const filePath = `${uni.env.USER_DATA_PATH}/generated_meme_${Date.now()}.${getFileExtensionFromContentType(ct)}`
     await new Promise((resolve, reject) => fs.writeFile({ filePath, data: response.data, success: resolve, fail: reject }))
+    if(epoch!==generationEpoch){fs.unlink({filePath,fail:()=>{}});return ''}
     if (lastGeneratedFile) fs.unlink({ filePath: lastGeneratedFile, fail: () => {} })
     lastGeneratedFile = filePath
     return filePath
   }
 
   const generateFromTemplate = async (templateKey, imagesToUpload, texts = [], args = {}) => {
-    if (isGenerating.value) return
-    showPreview.value = true
-    isGenerating.value = true
-    generatedMeme.value = ''
+    if (isGenerating.value) return false
+    const epoch = ++generationEpoch
+    showPreview.value = true; isGenerating.value = true; generatedMeme.value = ''
     try {
       const isH5 = typeof window !== 'undefined' && typeof document !== 'undefined'
       if (!isH5) {
         const local = await tryClientRender(templateKey, await prepareImages(imagesToUpload), texts, args)
+        if(epoch!==generationEpoch){if(local)uni.getFileSystemManager().unlink({filePath:local,fail:()=>{}});return false}
         if (local) {
           if (lastGeneratedFile) uni.getFileSystemManager().unlink({filePath:lastGeneratedFile,fail:()=>{}})
           lastGeneratedFile = local; generatedMeme.value = local; isGenerating.value = false
-          showStatusMessage && showStatusMessage('表情已在本机生成！'); return
+          showStatusMessage && showStatusMessage('表情已在本机生成！'); return true
         }
       }
-      const targetUrl = `${API_BASE_URL}${getGenerateUrl(templateKey)}`
-      if (imagesToUpload.length > 0) {
-        if (isH5) {
-          const dataUri = await h5UploadMultipart(targetUrl, imagesToUpload, { args, texts })
-          generatedMeme.value = dataUri
-        } else {
-          generatedMeme.value = await weixinGenerate(templateKey, imagesToUpload, texts, args)
-        }
-      } else {
-        if (isH5) {
-          const dataUri = await h5UploadMultipart(targetUrl, [], { args, texts })
-          generatedMeme.value = dataUri
-        } else {
-          generatedMeme.value = await weixinGenerate(templateKey, [], texts, args)
-        }
-      }
-      isGenerating.value = false
+      const output = isH5
+        ? await h5UploadMultipart(`${API_BASE_URL}${getGenerateUrl(templateKey)}`, imagesToUpload, { args, texts })
+        : await weixinGenerate(templateKey, imagesToUpload, texts, args, epoch)
+      if(epoch!==generationEpoch)return false
+      generatedMeme.value = output; isGenerating.value = false
       showStatusMessage && showStatusMessage('表情包生成成功！')
+      return true
     } catch (error) {
+      if(epoch!==generationEpoch)return false
       console.error('生成表情包失败:', error)
-      isGenerating.value = false
+      isGenerating.value = false; showPreview.value = false
       const message = /timeout/i.test(error.errMsg || error.message || '') ? '网络传输超时，请检查连接后重试；大图会自动压缩' : error.message || error.errMsg || '请稍后重试'
       showStatusMessage && showStatusMessage(`生成失败: ${message}`)
+      return false
     }
   }
 
-  const closePreview = () => { showPreview.value = false; isGenerating.value = false; generatedMeme.value = '' }
+  const closePreview = () => { generationEpoch++; showPreview.value = false; isGenerating.value = false; generatedMeme.value = '' }
 
   const saveMeme = () => {
     if (!generatedMeme.value) return

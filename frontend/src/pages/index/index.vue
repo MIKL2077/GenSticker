@@ -151,7 +151,9 @@ export default {
         return
       }
       const texts = (textInputs.value || []).map(t => (t || '').trim()).filter(Boolean)
-      await generateFromTemplate(selectedTemplate.value, templateImages.value, texts, {})
+      const key=selectedTemplate.value
+      const success=await generateFromTemplate(key, templateImages.value, texts, {})
+      if(!success || selectedTemplate.value!==key)return
       showTemplateDetail.value = false
       selectedTemplateDetail.value = null
       resetInputs()

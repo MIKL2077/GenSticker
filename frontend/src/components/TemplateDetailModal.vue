@@ -15,7 +15,7 @@
         <view class="template-info-section">
           <text class="detail-label">模板信息</text>
           <view class="info-item"><text class="info-key">名称：</text><text class="info-value">{{ detail?.name || detail?.key }}</text></view>
-          <text v-if="detail?.localCapable" class="local-note">✦ 支持本机快速合成，兼容图片无需上传</text>
+          <text v-if="detail?.localCapable" class="local-note">✦ 优先本机快制，不兼容时自动使用云端合成</text>
           <view class="info-item"><text class="info-key">关键词：</text><text class="info-value">{{ (detail?.keywords||[]).join(', ') || '无' }}</text></view>
           <view class="info-item"><text class="info-key">标签：</text><text class="info-value">{{ (detail?.tags||[]).join(', ') || '无' }}</text></view>
         </view>
