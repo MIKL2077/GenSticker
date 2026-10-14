@@ -344,10 +344,12 @@ def register_routers():
         text_only: list[str] = []
         image_only: list[str] = []
         mixed: list[str] = []
+        cards = []
 
         for meme in sorted(get_memes(), key=lambda meme: meme.key):
             all_keys.append(meme.key)
             params = meme.params_type
+            cards.append({'key': meme.key, 'name': (meme.keywords or [meme.key])[0], 'tags': sorted(meme.tags)[:6]})
             if params.min_images == 0 and params.max_images == 0 and params.min_texts >= 1:
                 text_only.append(meme.key)
             elif params.min_texts == 0 and params.max_texts == 0 and params.min_images >= 1:
@@ -360,6 +362,7 @@ def register_routers():
             "text_only": text_only,
             "image_only": image_only,
             "mixed": mixed,
+            "cards": cards,
         }
 
     for meme in sorted(get_memes(), key=lambda meme: meme.key):

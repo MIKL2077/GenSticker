@@ -22,6 +22,8 @@ export function useTemplateData(showStatusMessage) {
   const categoryKeys = ref({ all: [], text_only: [], image_only: [], mixed: [] })
   const categoryLoadedPages = ref(new Map()) // Map<uiCategoryKey, Set<number>>
 
+  const pageTasks = new Map()
+  let visibleLoads = 0
   const templatesPerPage = PAGINATION.templatesPerPage
 
   const currentCategoryAllKeys = computed(() => {
@@ -64,6 +66,11 @@ export function useTemplateData(showStatusMessage) {
         image_only: Array.isArray(data.image_only) ? data.image_only : [],
         mixed: Array.isArray(data.mixed) ? data.mixed : [],
       }
+      for (const card of data.cards || []) {
+        const existing = templateDetails.value.get(card.key) || { key: card.key, previewImage: null, isLoadingPreview: true }
+        templateDetails.value.set(card.key, { ...existing, name: card.name, tags: card.tags || [] })
+      }
+      categoryLoadedPages.value.clear()
       categories.value = categories.value.map(c => {
         const apiKey = CATEGORY_UI_TO_API[c.key]
         const len = categoryKeys.value[apiKey]?.length || 0
@@ -109,7 +116,7 @@ export function useTemplateData(showStatusMessage) {
     }
   }
 
-  const fetchMemePreview = async (key) => {
+  const fetchMemePreview = async (key, background = false) => {
     try {
       if (previewImageCache.value.has(key)) {
         const cached = previewImageCache.value.get(key)
@@ -122,8 +129,13 @@ export function useTemplateData(showStatusMessage) {
       }
       if (loadingStates.value.get(key)) return null
       loadingStates.value.set(key, true)
-      const previewImage = await getTemplatePreviewPath(key)
+      const previewImage = await getTemplatePreviewPath(key, background)
       previewImageCache.value.set(key, previewImage)
+      // Keep path references bounded too; protected visible keys survive eviction.
+      if (previewImageCache.value.size > 72) {
+        const stale = [...previewImageCache.value.keys()].find(k => !currentPageKeys.value.includes(k))
+        if (stale) { previewImageCache.value.delete(stale); const old = templateDetails.value.get(stale); if (old) old.previewImage = null }
+      }
       const detail = templateDetails.value.get(key)
       if (detail) {
         detail.previewImage = previewImage
@@ -138,50 +150,32 @@ export function useTemplateData(showStatusMessage) {
     }
   }
 
-  const ensurePageLoaded = async (uiCategoryKey, pageNumber) => {
-    const apiCategoryKey = CATEGORY_UI_TO_API[uiCategoryKey]
-    const keys = categoryKeys.value[apiCategoryKey] || []
-    if (!keys.length) return
-    if (!categoryLoadedPages.value.has(uiCategoryKey)) {
-      categoryLoadedPages.value.set(uiCategoryKey, new Set())
-    }
-    const loadedSet = categoryLoadedPages.value.get(uiCategoryKey)
-    if (loadedSet.has(pageNumber)) return
-
-    const start = (pageNumber - 1) * templatesPerPage
-    const end = start + templatesPerPage
-    const pageKeys = keys.slice(start, end)
-    if (!pageKeys.length) return
-
-    isLoadingTemplates.value = true
+  const ensurePageLoaded = async (uiCategoryKey, pageNumber, background = false) => {
+    const keys = categoryKeys.value[CATEGORY_UI_TO_API[uiCategoryKey]] || []
+    if (pageNumber < 1) return
+    const pageKeys = keys.slice((pageNumber - 1) * templatesPerPage, pageNumber * templatesPerPage)
+    if (!pageKeys.length || pageKeys.every(key => previewImageCache.value.has(key))) return
+    const taskKey = `${uiCategoryKey}:${pageNumber}`
+    if (!background) { visibleLoads++; isLoadingTemplates.value = true }
     try {
-      pageKeys.forEach((key) => {
-        if (!templateDetails.value.has(key)) {
-          templateDetails.value.set(key, {
-            key,
-            name: key,
-            keywords: [],
-            tags: [],
-            imageCount: '0-0',
-            textCount: '0-0',
-            defaultTexts: [],
-            previewImage: null,
-            isLoadingPreview: true,
-          })
-        }
-      })
-      const detailPromises = pageKeys.map((key) => fetchMemeInfo(key))
-      const previewPromises = pageKeys.map((key) => fetchMemePreview(key))
-      await Promise.allSettled([
-        Promise.allSettled(detailPromises),
-        Promise.allSettled(previewPromises),
-      ])
-      if (pageKeys.every(key => templateDetails.value.get(key)?.metadataLoaded && previewImageCache.value.has(key))) loadedSet.add(pageNumber)
-    } catch (e) {
-      console.error('分页加载失败:', e)
+      if (!pageTasks.has(taskKey)) {
+        const task = Promise.allSettled(pageKeys.map(key => {
+          if (!templateDetails.value.has(key)) templateDetails.value.set(key, { key, name: key, previewImage: null, isLoadingPreview: true })
+          // Old backends without a card manifest still load names correctly.
+          if (templateDetails.value.get(key).name === key) fetchMemeInfo(key)
+          return fetchMemePreview(key, background)
+        })).finally(() => pageTasks.delete(taskKey))
+        pageTasks.set(taskKey, task)
+      }
+      await pageTasks.get(taskKey)
     } finally {
-      isLoadingTemplates.value = false
+      if (!background) { visibleLoads--; isLoadingTemplates.value = visibleLoads > 0 }
     }
+  }
+
+  const prefetchAdjacent = (category, page) => {
+    // No loading spinner or navigation blocking for speculative downloads.
+    return Promise.allSettled([page + 1, page - 1, page + 2].map(p => ensurePageLoaded(category, p, true)))
   }
 
   const selectCategory = async (categoryKey) => {
@@ -211,6 +205,7 @@ export function useTemplateData(showStatusMessage) {
     fetchMemeInfo,
     fetchMemePreview,
     ensurePageLoaded,
+    prefetchAdjacent,
     selectCategory,
     prevPage,
     nextPage,

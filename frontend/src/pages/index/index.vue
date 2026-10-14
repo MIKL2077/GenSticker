@@ -108,6 +108,7 @@ export default {
       currentPageTemplates,
       fetchMemeCategories,
       ensurePageLoaded,
+      prefetchAdjacent,
       selectCategory,
       prevPage,
       nextPage,
@@ -172,13 +173,14 @@ export default {
 
     watch([selectedCategory, currentPage], async ([cat, page]) => {
       await ensurePageLoaded(cat, page)
-      ensurePageLoaded(cat, page + 1)
+      prefetchAdjacent(cat, page)
     })
 
     onMounted(async () => {
       try {
         await fetchMemeCategories()
         await ensurePageLoaded(selectedCategory.value, 1)
+        prefetchAdjacent(selectedCategory.value, 1)
       } catch (e) {
         showStatusMessage('初始化失败，请刷新页面重试')
       }
