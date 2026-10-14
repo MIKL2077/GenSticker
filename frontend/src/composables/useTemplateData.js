@@ -1,6 +1,7 @@
 import { ref, computed, onUnmounted } from 'vue'
 import { PAGINATION, CATEGORY_UI_TO_API } from '@/constants'
 import { getCategories, getTemplateInfo, getTemplatePreviewPath, setThumbnailWindow, onThumbnailEvict } from '@/services/memeService'
+import { seedClientRecipes } from '@/services/clientRenderer'
 
 export function useTemplateData(showStatusMessage) {
   const isLoadingTemplates = ref(false)
@@ -64,6 +65,7 @@ export function useTemplateData(showStatusMessage) {
       isLoadingTemplates.value = true
       loadError.value = ''
       const data = await getCategories()
+      seedClientRecipes(data.client)
       categoryKeys.value = {
         all: Array.isArray(data.all) ? data.all : [],
         text_only: Array.isArray(data.text_only) ? data.text_only : [],

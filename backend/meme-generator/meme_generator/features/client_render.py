@@ -41,6 +41,36 @@ def verify_receipt(token, key, identity):
         raise HTTPException(422, '本地生成凭据已失效')
 
 
+def public_recipe(row):
+    spec = TemplateSpec.model_validate_json(row['spec'])
+    metadata = json.loads(row['metadata'])
+    if spec.width > 768 or spec.height > 768 or len(spec.layers)>12:
+        return None
+    assets = sorted({l.value for l in spec.layers if l.type == 'asset'})
+    if len(assets)>6 or any(not (root()/'template_assets'/f'{a}.png').is_file() for a in assets):
+        return None
+    if sum((root()/'template_assets'/f'{a}.png').stat().st_size for a in assets)>1024*1024:
+        return None
+    return {'supported':True, 'key':row['key'], 'version':row['version'], 'spec':spec.model_dump(), 'assets':{a:f'/template-assets/{a}.png' for a in assets}, 'attribution':{k:metadata.get(k,'') for k in ('author','license','source_url','license_url')}, 'expires':int(time.time())+3600}
+
+
+def public_recipes(limit=32):
+    from .catalog import rows
+    output=[];inline={};used=0
+    for row in rows():
+        if not row['spec']:continue
+        recipe=public_recipe(row)
+        if recipe is None:continue
+        for asset_hash in recipe['assets']:
+            if asset_hash in inline:continue
+            data=(root()/'template_assets'/f'{asset_hash}.png').read_bytes()
+            if used+len(data)<=128*1024 and hashlib.sha256(data).hexdigest()==asset_hash:
+                inline[asset_hash]=base64.b64encode(data).decode();used+=len(data)
+        output.append(recipe)
+        if len(output)>=limit:break
+    return {'recipes':output,'assets':inline}
+
+
 @router.get('/memes/{key}/client-template')
 def recipe(key: str, request: Request, response: Response):
     response.headers['Cache-Control'] = 'private, no-store'
@@ -48,18 +78,12 @@ def recipe(key: str, request: Request, response: Response):
         row = declared(key)
     except HTTPException:
         return {'supported':False}
-    spec = TemplateSpec.model_validate_json(row['spec'])
-    metadata = json.loads(row['metadata'])
-    # Static bounded DSL only. No rotations, effects, animation or custom args.
-    if spec.width > 768 or spec.height > 768 or len(spec.layers)>12:
-        return {'supported':False}
-    assets = sorted({l.value for l in spec.layers if l.type == 'asset'})
-    if len(assets)>6 or any(not (root()/'template_assets'/f'{a}.png').is_file() for a in assets):
-        return {'supported':False}
-    if sum((root()/'template_assets'/f'{a}.png').stat().st_size for a in assets)>1024*1024:
-        return {'supported':False}
+    result=public_recipe(row)
+    if result is None:return {'supported':False}
     from .popularity import actor
-    return {'supported':True, 'key':key, 'version':row['version'], 'spec':spec.model_dump(), 'assets':{a:f'/template-assets/{a}.png' for a in assets}, 'attribution':{k:metadata.get(k,'') for k in ('author','license','source_url','license_url')}, 'receipt':receipt(key,row['version'],actor(request)), 'expires':int(time.time())+300}
+    result['receipt']=receipt(key,row['version'],actor(request))
+    result['receipt_expires']=int(time.time())+300
+    return result
 
 
 @router.get('/template-assets/{identifier}.png')

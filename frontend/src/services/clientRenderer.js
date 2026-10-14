@@ -3,12 +3,37 @@ import { API_BASE_URL } from '@/constants'
 import { visitorHeaders, trackTemplate } from '@/services/popularityService'
 
 const recipes = new Map(), assets = new Map(), inflight = new Map()
+const recipeRequests = new Map(), seeding = new Map()
 let assetBytes = 0, rendering = false
+// Only remove files owned by this public material cache, never user pictures.
+if(typeof uni!=='undefined' && uni.env?.USER_DATA_PATH && uni.getFileSystemManager) {
+  const fs=uni.getFileSystemManager()
+  fs.readdir?.({dirPath:uni.env.USER_DATA_PATH,success:r=>{for(const name of r.files || [])if(/^gensticker_material_[a-f0-9]{64}\.png$/.test(name))fs.unlink({filePath:`${uni.env.USER_DATA_PATH}/${name}`,fail:()=>{}})},fail:()=>{}})
+}
+function trimAssets() {
+  while(assetBytes>8*1024*1024 || assets.size>24) { const oldest=assets.keys().next().value, old=assets.get(oldest);assets.delete(oldest);assetBytes-=old.bytes;uni.getFileSystemManager().unlink({filePath:old.path,fail:()=>{}}) }
+}
+
+export function seedClientRecipes(manifest) {
+  if(typeof wx==='undefined' || !uni.getFileSystemManager || !uni.env?.USER_DATA_PATH) return
+  for(const recipe of manifest?.recipes || []) {
+    try { validateRecipe(recipe);if(recipes.size<32 || recipes.has(recipe.key))recipes.set(recipe.key,recipe) } catch(_) {}
+  }
+  let bytes=0
+  for(const [hash,value] of Object.entries(manifest?.assets || {})) {
+    if(!/^[a-f0-9]{64}$/.test(hash) || typeof value!=='string' || bytes+value.length>180*1024 || assets.has(hash) || seeding.has(hash))continue
+    bytes+=value.length
+    const path=`${uni.env.USER_DATA_PATH}/gensticker_material_${hash}.png`,size=Math.floor(value.length*3/4)
+    const task=new Promise(resolve=>uni.getFileSystemManager().writeFile({filePath:path,data:value,encoding:'base64',success:()=>{assets.set(hash,{path,bytes:size});assetBytes+=size;trimAssets();resolve()},fail:()=>resolve()})).finally(()=>seeding.delete(hash))
+    seeding.set(hash,task)
+  }
+}
 
 function assetPath(hash, path) {
   if (!/^[a-f0-9]{64}$/.test(hash) || path !== `/template-assets/${hash}.png`) throw new Error('素材地址无效')
   const hit = assets.get(hash)
   if (hit) { assets.delete(hash); assets.set(hash,hit); return Promise.resolve(hit.path) }
+  if(seeding.has(hash))return seeding.get(hash).then(()=>assetPath(hash,path))
   if(inflight.has(hash)) return inflight.get(hash)
   const task = new Promise((resolve,reject) => uni.downloadFile({ url:`${API_BASE_URL}${path}`, timeout:10000, success:r=>{
     if(r.statusCode!==200) return reject(new Error('本地素材暂不可用'))
@@ -16,7 +41,7 @@ function assetPath(hash, path) {
     fs.stat({path:r.tempFilePath,success:s=>{
       if(s.stats.size>1024*1024) { fs.unlink({filePath:r.tempFilePath,fail:()=>{}}); return reject(new Error('素材过大')) }
       assets.set(hash,{path:r.tempFilePath,bytes:s.stats.size}); assetBytes+=s.stats.size
-      while(assetBytes>8*1024*1024 || assets.size>24) { const oldest=assets.keys().next().value, old=assets.get(oldest);assets.delete(oldest);assetBytes-=old.bytes;fs.unlink({filePath:old.path,fail:()=>{}}) }
+      trimAssets()
       resolve(r.tempFilePath)
     },fail:reject})
   },fail:reject})).finally(()=>inflight.delete(hash))
@@ -26,7 +51,12 @@ function assetPath(hash, path) {
 export async function prefetchClientTemplate(key) {
   if(!key.startsWith('auto_') || typeof wx==='undefined' || !wx.createOffscreenCanvas) return null
   const cached=recipes.get(key)
-  if(cached && cached.expires>Date.now()/1000+30 && cached.receipt) return cached
+  if(cached && cached.expires>Date.now()/1000+30) {
+    for(const [hash,path] of Object.entries(cached.assets))await assetPath(hash,path)
+    return cached
+  }
+  if(recipeRequests.has(key))return recipeRequests.get(key)
+  const task=(async()=>{
   const recipe=await apiRequest(`/memes/${encodeURIComponent(key)}/client-template`,{header:visitorHeaders()},1)
   if(!recipe.supported) return null
   validateRecipe(recipe)
@@ -35,6 +65,18 @@ export async function prefetchClientTemplate(key) {
   recipes.set(key,recipe)
   while(recipes.size>16) recipes.delete(recipes.keys().next().value)
   return recipe
+  })().finally(()=>recipeRequests.delete(key))
+  recipeRequests.set(key,task);return task
+}
+
+function reportSuccess(key, recipe) {
+  const token=recipe.receipt;recipe.receipt=''
+  if(token && (recipe.receipt_expires || recipe.expires)>Date.now()/1000){trackTemplate(key,'client_generate',token);return}
+  // Analytics and ticket refresh must never block the local result.
+  apiRequest(`/memes/${encodeURIComponent(key)}/client-template`,{header:visitorHeaders()},1).then(fresh=>{
+    if(fresh.supported && fresh.version===recipe.version)trackTemplate(key,'client_generate',fresh.receipt)
+    else if(fresh.supported){validateRecipe(fresh);recipes.set(key,fresh)}
+  }).catch(()=>{})
 }
 
 export function validateRecipe(recipe) {
@@ -80,11 +122,12 @@ export async function tryClientRender(key,paths,texts,args={}) {
     canvas.height=s.height+(credits.length ? credits.length*16+12 : 0)
     ctx=canvas.getContext('2d');ctx.fillStyle='#ffffff';ctx.fillRect(0,0,canvas.width,canvas.height)
     ctx.save();ctx.translate((width-s.width)/2,0);ctx.fillStyle=s.background;ctx.fillRect(0,0,s.width,s.height)
+    let decodedPixels=0
     for(const layer of s.layers) {
       if(layer.type!=='text') {
         const path=layer.type==='subject'?paths[layer.slot]:await assetPath(layer.value,recipe.assets[layer.value])
         if(!path)throw new Error('缺少图片')
-        const img=await loadImage(canvas,path);images.push(img);drawImage(ctx,img,layer)
+        const img=await loadImage(canvas,path);decodedPixels+=img.width*img.height;if(decodedPixels>6000000)throw new Error('素材解码资源超限');images.push(img);drawImage(ctx,img,layer)
       } else {
         const [x,y,w,h]=layer.box;const values=texts.length ? texts : s.defaults
         const value=String(values[layer.slot] ?? layer.value).slice(0,200);let lines,size
@@ -95,8 +138,7 @@ export async function tryClientRender(key,paths,texts,args={}) {
     }
     ctx.restore();ctx.font='12px sans-serif';ctx.textBaseline='top';ctx.fillStyle='#666666';credits.forEach((line,i)=>ctx.fillText(line,6,s.height+5+i*16))
     const result=await new Promise((resolve,reject)=>wx.canvasToTempFilePath({canvas,fileType:'jpg',quality:.9,success:r=>resolve(r.tempFilePath),fail:reject}))
-    const token=recipe.receipt;recipe.receipt=''
-    trackTemplate(key,'client_generate',token)
+    reportSuccess(key,recipe)
     return result
   } catch(e) { console.info('本地模板回退服务器:',e.message || e.errMsg);return null }
   finally { if(canvas){canvas.width=1;canvas.height=1}images.length=0;rendering=false }

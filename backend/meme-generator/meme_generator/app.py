@@ -238,11 +238,14 @@ def register_routers():
         db=connect()
         try: catalog_entry=db.execute('SELECT id,version,metadata FROM templates WHERE key=?',(key,)).fetchone()
         finally: db.close()
+        attribution={k:json.loads(catalog_entry['metadata']).get(k,'') for k in ['author','license','source_url','license_url']} if catalog_entry else {}
+        if not attribution.get('source_url'):
+            attribution={'author':'MemeCrafters 模板合集','license':'素材权利信息见上游','source_url':'https://github.com/MemeCrafters/meme-generator','license_url':''}
         return MemeInfoResponse(
             key=meme.key,
             template_id=catalog_entry['id'] if catalog_entry else '',
             version=catalog_entry['version'] if catalog_entry else 1,
-            attribution={k:json.loads(catalog_entry['metadata']).get(k,'') for k in ['author','license','source_url','license_url']} if catalog_entry else {},
+            attribution=attribution,
             params_type=MemeParamsResponse(
                 min_images=meme.params_type.min_images,
                 max_images=meme.params_type.max_images,
@@ -376,7 +379,9 @@ def register_routers():
             elif params.min_images >= 1 and params.min_texts >= 1:
                 mixed.append(meme.key)
 
+        from meme_generator.features.client_render import public_recipes
         return {
+            "client": public_recipes(),
             "all": all_keys,
             "text_only": text_only,
             "image_only": image_only,
