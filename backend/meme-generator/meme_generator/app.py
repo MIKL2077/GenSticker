@@ -80,6 +80,33 @@ def healthz():
     return {'status': 'ok', 'templates': len(get_meme_keys())}
 
 
+class SubjectPreviewRequest(BaseModel):
+    image: str = Field(min_length=1, max_length=6 * 1024 * 1024)
+
+
+@app.post('/images/subject')
+async def subject_preview(params: SubjectPreviewRequest, request: Request):
+    """Private foreground preview; shares inference slots/cache with generation."""
+    from meme_generator.features.popularity import actor
+    from PIL import UnidentifiedImageError
+    try:
+        raw = base64.b64decode(params.image, validate=True)
+    except (ValueError, binascii.Error):
+        raise HTTPException(status_code=422, detail='图片格式无效，请重新选择')
+    if len(raw) > 4 * 1024 * 1024:
+        raise HTTPException(status_code=413, detail='图片不能超过 4 MB，请先裁剪或压缩')
+    if generation_slots.locked():
+        raise HTTPException(status_code=503, detail='图片处理繁忙，请稍后再试')
+    async with generation_slots:
+        try:
+            content = (await run_sync(prepare_inputs)([raw], actor(request)))[0]
+        except MemeGeneratorException as exc:
+            raise HTTPException(status_code=exc.status_code, detail=exc.message)
+        except (UnidentifiedImageError, Image.DecompressionBombError, ValueError, OSError):
+            raise HTTPException(status_code=422, detail='图片无法读取，请选择静态图片')
+    return Response(content=content, media_type='image/png', headers={'Cache-Control': 'private, no-store'})
+
+
 @app.post('/memes/{key}/generate')
 async def generate_json(key: str, params: GenerateRequest, request: Request):
     """WeChat uses JSON for multiple images and receives a binary image response."""
