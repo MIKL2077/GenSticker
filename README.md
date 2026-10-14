@@ -61,8 +61,8 @@ GenSticker 是一个微信小程序：可以选择模板、替换图片和文字
 - 2 个兼容模板支持微信本机 Canvas 合成：JPEG 输入的“一直”“看扁”静态布局。“笑不出来”使用预先拆解的图像槽位，模板旧主体在制作阶段清除；生成时直接合成上传图片，不要求检测到正面人脸。只下发受限 JSON 和已发布素材，不下载执行 Python 或任意代码；GIF、复杂布局、资源超限或不支持的设备自动回服务端。画布任务结束释放，公开素材缓存最多 24 个 / 8 MB。
 - 本机结果先显示，统计回执异步发送；服务端对确定性模板使用按用户隔离的短期内存缓存，最多 16 项 / 8 MB / 120 秒，结果不设公共缓存。
 - 大尺寸 JPEG 上传前缩放至最长边 1280 像素，手动入口保留透明或动画原图；阻止重复生成并明确提示超时、限速和服务繁忙。
-- 图片模板详情提供“提取图片主体”开关，默认关闭：直接使用原图；开启后在服务器本地用 U2NetP 一次提取最大主体，再合成。透明图片复用 alpha，无需模型推理；可先使用“裁剪区域”选择头像，客户端不支持裁剪时提示相册裁剪。提取失败保留表单，可关闭后重试。该选项独立于 AI 九图入口。
-- 手动主体提取缓存按用户和照片隔离，最多 8 项 / 8 MB / 120 秒；不落盘，不启用公共缓存。开关状态进入生成结果缓存键，避免混用结果。
+- 图片上传后自动进入预览编辑区：可拖动 / 缩放裁剪并选择方形、头像、横图或原比例，支持左右翻转、顺时针旋转、去背景保留主要主体。编辑结果即时显示，透明区域显示格纹；支持最近四步撤销和还原原图，多张图片分别编辑，完成后使用处理结果生成。去背景才请求本地 CPU 后端，其余处理在设备端完成。
+- 手动主体提取缓存按用户和照片隔离，最多 8 项 / 8 MB / 120 秒；不落盘，不启用公共缓存。预览和旧版生成提取请求共享此缓存；已去背景的 PNG 直接用于生成。取消 / 失败保留输入，迟到的处理结果丢弃；仅清理编辑器自有临时文件。
 - 推荐任务独立 worker 处理，模型预热后复用，同一照片处理结果可复用，九图最多并行渲染两张，预览下载最多并发三张。
 - 用户照片不发送给外部 AI；模型只在本地 CPU 运行，付费 AI 调用关闭。成本账本记录本地 CPU / 字节用量及零 API 金额。
 - 原图和处理缓存 24 小时后按小时清理，结果与任务保留七天，标签反馈最多保留 90 天；不保留人脸身份向量。
@@ -165,10 +165,11 @@ python -m meme_generator.features.worker
 
 ## API 与部署
 
-当前 HTTPS API 前缀：`https://www.shangkun.uk/gensticker/api`。主要接口如下（路径相对此前缀）：
+当前 HTTPS API 前缀：`https://www.shangkun.uk/gensticker/api`。微信小程序构建固定使用该公网地址，不受本地 H5 的环境变量覆盖。主要接口如下（路径相对此前缀）：
 
 - 健康与模板：`GET /healthz`、`GET /memes/categories`、`GET /templates`、`GET /memes/{key}/info`、`GET /memes/{key}/thumbnail`。
 - 热度与端侧模板：`GET /templates/popularity`、`POST /templates/events`、`GET /memes/{key}/client-template`、`GET /template-assets/{hash}.png`；来源状态：`GET /templates/sources`。
+- 图片去背景预览：`POST /images/subject`，单张 Base64 静态图片，最多 4 MB；返回私有透明 PNG，与生成共用两个处理并发槽及 Nginx 生成限速。
 - 手动生成：`POST /memes/{key}/generate`，小程序使用 JSON 输入并接收图片；兼容原有表单生成接口。
 - 登录与资料：`POST /auth/wechat`、`GET /auth/me`、`DELETE /auth/session`、`PUT /account/profile`。
 - 用户库：`GET /account/library`、`POST /account/library/merge`，以及历史 / 收藏的写入、删除接口。
@@ -197,6 +198,7 @@ node frontend/tests/thumbnail-cache.cjs
 node frontend/tests/recommend-service.cjs
 node frontend/tests/client-renderer.cjs
 node frontend/tests/template-paging.cjs
+node frontend/tests/image-editing.cjs
 npm --prefix frontend run build:mp-weixin
 npm --prefix frontend run build:h5
 ```
@@ -209,9 +211,9 @@ python -m unittest discover -s tests -p test_account.py
 python -m unittest discover -s tests/features -p 'test_*.py'
 ```
 
-当前已通过六组前端测试、五项账户测试和二十五项功能测试（服务器功能测试与五项账户测试同样通过），覆盖缓存与同步隔离、平台图片生成、模板版本与 DSL 边界、任务归属、幂等、额度退款、私有下载、反馈删除、任务恢复和测试模板恢复。微信与 H5 构建通过；微信模拟器验证了手动文字 / 单图 / 多图 / 图文生成、登录同步和照片九图。
+当前已通过七组前端测试、五项账户测试和二十七项功能测试（服务器功能测试与五项账户测试同样通过），覆盖缓存与同步隔离、平台图片生成、模板版本与 DSL 边界、任务归属、幂等、额度退款、私有下载、反馈删除、任务恢复和测试模板恢复。微信与 H5 构建通过；微信模拟器验证了手动文字 / 单图 / 多图 / 图文生成、登录同步和照片九图。
 
-缓存翻页实测九张预览立即就绪；预载后的一个声明式模板本机合成约 32 毫秒，均为单次模拟器样例。一次真实样例的主体与表情处理约 0.52 秒，首组九图服务端完成约 6.8 秒；这是单次观测，不是并发压测或响应时间保证。真机相册授权、保存和域名配置仍需实际扫码验收。临时私有预览二维码不提交仓库。主体提取开关新版已在模拟器真实验证：一次开启生成约 5.01 秒，一次关闭并使用裁剪照片约 2.68 秒，包含网络、资源准备与渲染，样本不同，不能视作严格性能对照。详见 [本次主体提取验收](deploy/SUBJECT_EXTRACTION_ACCEPTANCE.md)。
+缓存翻页实测九张预览立即就绪；预载后的一个声明式模板本机合成约 32 毫秒，均为单次模拟器样例。一次真实样例的主体与表情处理约 0.52 秒，首组九图服务端完成约 6.8 秒；这是单次观测，不是并发压测或响应时间保证。真机相册授权、保存和域名配置仍需实际扫码验收。临时私有预览二维码不提交仓库。主体提取开关新版已在模拟器真实验证：一次开启生成约 5.01 秒，一次关闭并使用裁剪照片约 2.68 秒，包含网络、资源准备与渲染，样本不同，不能视作严格性能对照。旧版开关记录见 [主体提取验收](deploy/SUBJECT_EXTRACTION_ACCEPTANCE.md)；当前交互见 [图片编辑验收](deploy/IMAGE_EDITOR_ACCEPTANCE.md)。
 
 ## 许可与素材来源
 
