@@ -76,8 +76,9 @@ export function useTemplateData(showStatusMessage) {
       for (const card of data.cards || []) {
         const existing = templateDetails.value.get(card.key) || { key: card.key, previewImage: null, isLoadingPreview: true }
         const params=card.params_type
-        templateDetails.value.set(card.key, { ...existing, name:card.name, keywords:card.keywords || [], tags:card.tags || [], heat:card.heat || 0, counts:card.counts || {}, localCapable:localKeys.has(card.key), ...(params ? {metadataLoaded:true, templateId:card.template_id, version:card.version, attribution:card.attribution || {}, imageCount:`${params.min_images}-${params.max_images}`, textCount:`${params.min_texts}-${params.max_texts}`, defaultTexts:params.default_texts || []} : {}) })
+        templateDetails.value.set(card.key, { ...existing, name:card.name, featuredTrial:!!card.featured_trial, keywords:card.keywords || [], tags:card.tags || [], heat:card.heat || 0, counts:card.counts || {}, localCapable:localKeys.has(card.key), ...(params ? {metadataLoaded:true, templateId:card.template_id, version:card.version, attribution:card.attribution || {}, imageCount:`${params.min_images}-${params.max_images}`, textCount:`${params.min_texts}-${params.max_texts}`, defaultTexts:params.default_texts || []} : {}) })
       }
+      for(const card of data.cards || [])if(card.featured_trial)fetchMemePreview(card.key, true)
       categoryLoadedPages.value.clear()
       categories.value = categories.value.map(c => {
         const apiKey = CATEGORY_UI_TO_API[c.key]

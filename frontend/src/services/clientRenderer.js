@@ -92,6 +92,7 @@ export function validateRecipe(recipe) {
     if(x<0 || y<0 || w<=0 || h<=0 || x+w>s.width || y+h>s.height || !['contain','cover'].includes(l.fit) || !Number.isInteger(l.slot) || l.slot<0 || l.slot>1 || !/^#[a-f0-9]{6}$/i.test(l.color)) throw new Error('模板图层越界')
     if(l.type==='asset' && (!/^[a-f0-9]{64}$/.test(l.value) || !recipe.assets[l.value])) throw new Error('模板素材无效')
     if(l.type==='text' && (!Number.isInteger(l.font_size) || l.font_size<10 || l.font_size>100)) throw new Error('文字图层无效')
+    if(l.type==='text' && ((!['left','center','right'].includes(l.align || 'left')) || !['normal','bold'].includes(l.weight || 'normal') || !Number.isInteger(l.stroke_width ?? 0) || (l.stroke_width ?? 0)<0 || (l.stroke_width ?? 0)>4 || !/^#[a-f0-9]{6}$/i.test(l.stroke_color || '#000000')))throw new Error('文字样式无效')
   }
 }
 
@@ -143,10 +144,10 @@ export async function tryClientRender(key,paths,texts,args={}) {
       const output=await new Promise((resolve,reject)=>wx.canvasToTempFilePath({canvas,fileType:'jpg',quality:.9,success:r=>resolve(r.tempFilePath),fail:reject}))
       reportSuccess(key,recipe);return output
     }
-    const s=recipe.spec,width=Math.max(s.width,512),credit=recipe.attribution || {}
+    const s=recipe.spec,credit=recipe.attribution || {},width=credit.origin==='user-provided' ? s.width : Math.max(s.width,512)
     canvas=wx.createOffscreenCanvas({type:'2d',width,height:s.height+256})
     let ctx=canvas.getContext('2d');ctx.font='12px sans-serif'
-    const credits=credit.source_url ? [String(credit.author||'')+' · '+String(credit.license||''),credit.source_url,credit.license_url].flatMap(t=>wrap(ctx,String(t||'').slice(0,500),width-12)) : []
+    const credits=credit.source_url && credit.origin!=='user-provided' ? [String(credit.author||'')+' · '+String(credit.license||''),credit.source_url,credit.license_url].flatMap(t=>wrap(ctx,String(t||'').slice(0,500),width-12)) : []
     canvas.height=s.height+(credits.length ? credits.length*16+12 : 0)
     ctx=canvas.getContext('2d');ctx.fillStyle='#ffffff';ctx.fillRect(0,0,canvas.width,canvas.height)
     ctx.save();ctx.translate((width-s.width)/2,0);ctx.fillStyle=s.background;ctx.fillRect(0,0,s.width,s.height)
@@ -159,9 +160,13 @@ export async function tryClientRender(key,paths,texts,args={}) {
       } else {
         const [x,y,w,h]=layer.box;const values=texts.length ? texts : s.defaults
         const value=String(values[layer.slot] ?? layer.value).slice(0,200);let lines,size
-        for(size=layer.font_size;size>=10;size--){ctx.font=`${size}px sans-serif`;lines=wrap(ctx,value,w);if(lines.length*(size+4)<=h)break}
+        const stroke=layer.stroke_width || 0
+        for(size=layer.font_size;size>=10;size--){ctx.font=`${layer.weight==='bold' ? 'bold ' : ''}${size}px sans-serif`;lines=wrap(ctx,value,w-2*stroke);if(lines.length*(size+4)<=h)break}
         if(size<10)throw new Error('文字超出本地排版范围')
-        ctx.textBaseline='top';ctx.fillStyle=layer.color;lines.forEach((line,i)=>ctx.fillText(line,x,y+i*(size+4)))
+        ctx.textBaseline='top';ctx.fillStyle=layer.color;ctx.textAlign=layer.align || 'left';ctx.strokeStyle=layer.stroke_color || '#000000';ctx.lineWidth=stroke*2;ctx.lineJoin='round'
+        const left=layer.align==='center' ? x+w/2 : layer.align==='right' ? x+w-stroke : x+stroke
+        lines.forEach((line,i)=>{if(stroke)ctx.strokeText(line,left,y+i*(size+4));ctx.fillText(line,left,y+i*(size+4))})
+        ctx.textAlign='left'
       }
     }
     ctx.restore();ctx.font='12px sans-serif';ctx.textBaseline='top';ctx.fillStyle='#666666';credits.forEach((line,i)=>ctx.fillText(line,6,s.height+5+i*16))

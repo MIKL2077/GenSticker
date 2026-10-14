@@ -7,6 +7,7 @@
       <view class="floating-emoji" style="bottom: 20%; right: 10%; animation-delay: 0.5s;">😍</view>
     </app-header>
 
+    <view v-if="trialTemplate" class="trial-card" @click="onSelectTemplate(trialTemplate.key)"><image v-if="trialTemplate.previewImage" :src="trialTemplate.previewImage" mode="aspectFit"/><view><text class="trial-label">新模板试用</text><text class="trial-title">{{ trialTemplate.name }}</text><text class="trial-hint">保留原图表情 · 换一句你的心情 →</text></view></view>
     <view class="heat-hero"><view class="hero-heading"><view><text class="hero-eyebrow">THE REACTION CLUB</text><text class="hero-title">今日，谁最有梗？</text></view><text class="hero-mark">✦</text></view><text class="hero-sub">大家的点击、收藏与制作，让好玩的表情浮上来</text><view class="spotlight"><view v-for="(item,index) in spotlight" :key="item.key" class="spotlight-card" @click="onSelectTemplate(item.key)"><text class="spotlight-rank">0{{ index+1 }}</text><image v-if="item.previewImage" :src="item.previewImage" mode="aspectFit" class="spotlight-image"/><text class="spotlight-name">{{ item.name }}</text><text class="spotlight-heat">{{ item.heat ? '热力 '+item.heat : '等你点燃' }}</text></view></view></view>
     <view class="meme-templates">
       <view class="template-header">
@@ -110,6 +111,7 @@ export default {
       totalPages,
       currentPageTemplates,
       sortMode,
+      templateDetails,
       spotlight,
       fetchMemeCategories,
       ensurePageLoaded,
@@ -125,6 +127,7 @@ export default {
 
     const { showPreview, isGenerating, generatedMeme, generateFromTemplate, closePreview, saveMeme, shareMeme } = useMemeGeneration(showStatusMessage)
 
+    const trialTemplate = computed(() => [...templateDetails.value.values()].find(item => item.featuredTrial))
     const selectedTemplate = ref('')
     const showTemplateDetail = ref(false)
 
@@ -218,6 +221,7 @@ export default {
       prevPage,
       nextPage,
       // 模板选择
+      trialTemplate,
       selectedTemplate,
       showTemplateDetail,
       selectedTemplateDetail,
@@ -250,6 +254,8 @@ export default {
 </script>
 
 <style scoped>
+.trial-card{margin:0 0 24rpx;padding:22rpx;background:#fff6ed;border:2rpx solid #ffd0b8;border-radius:30rpx;display:flex;align-items:center;gap:24rpx;box-shadow:0 8rpx 24rpx rgba(163,79,33,.08)}
+.trial-card image{width:144rpx;height:144rpx;border-radius:20rpx;flex-shrink:0}.trial-card text{display:block}.trial-label{color:#d96843;font-size:20rpx}.trial-title{font-size:34rpx;color:#49352b;font-weight:700;margin:8rpx 0}.trial-hint{font-size:22rpx;color:#967563}.trial-card:active{transform:scale(.98)}
 .heat-hero{background:#fff9f2;border-radius:36rpx;padding:30rpx;margin:0 0 36rpx;box-shadow:0 14rpx 38rpx rgba(101,49,25,.08)}.hero-heading{display:flex;justify-content:space-between;align-items:center}.hero-eyebrow{display:block;font-size:17rpx;letter-spacing:3rpx;color:#a88572}.hero-title{display:block;font-size:38rpx;font-weight:750;color:#3a2c29;margin-top:10rpx}.hero-mark{font-size:64rpx;color:#d97b55}.hero-sub{display:block;color:#9b7e6e;font-size:21rpx;line-height:1.7;margin:16rpx 0 24rpx}.spotlight{display:flex;gap:14rpx}.spotlight-card{flex:1;min-width:0;position:relative;border-radius:24rpx;background:#fff;padding:20rpx 10rpx 16rpx;text-align:center;transition:transform .2s}.spotlight-card:active{transform:scale(.95)}.spotlight-rank{position:absolute;left:12rpx;top:10rpx;font-size:20rpx;color:#bda08d;font-style:italic}.spotlight-image{width:102rpx;height:102rpx;margin:6rpx 0 14rpx}.spotlight-name{display:block;font-size:23rpx;color:#493a34;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.spotlight-heat{display:block;font-size:18rpx;color:#b76c49;margin-top:8rpx}.sort-row{display:flex;align-items:center;justify-content:space-between;margin:24rpx 0}.sort-switch{display:flex;background:rgba(255,255,255,.3);padding:5rpx;border-radius:25rpx}.sort-switch button{margin:0;background:transparent;border:0;font-size:22rpx;padding:0 23rpx;line-height:2.5;color:#6d4635;border-radius:22rpx}.sort-switch .chosen{background:#fffaf6;color:#9c4e35;font-weight:700}.sort-note{font-size:19rpx;color:#73442e}
 
 .container{min-height:100vh;background:linear-gradient(150deg,#ff8c78 0%,#ffa849 100%);padding:calc(120rpx + env(safe-area-inset-top)) 30rpx calc(180rpx + env(safe-area-inset-bottom));position:relative;overflow:hidden}
