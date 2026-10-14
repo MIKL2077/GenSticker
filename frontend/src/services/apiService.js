@@ -1,4 +1,5 @@
 import { API_BASE_URL } from '@/constants'
+import { requestError } from '@/services/networkErrors'
 
 export async function apiRequest(url, options = {}, retries = 3) {
   for (let i = 0; i < retries; i++) {
@@ -37,8 +38,9 @@ export async function apiRequest(url, options = {}, retries = 3) {
         error.statusCode = response.statusCode
         throw error
       }
-    } catch (error) {
-      if (i === retries - 1 || (error.statusCode >= 400 && error.statusCode < 500)) throw error
+    } catch (failure) {
+      const error=requestError(failure)
+      if (i === retries - 1 || error.retryable===false || (error.statusCode >= 400 && error.statusCode < 500)) throw error
       await new Promise(r => setTimeout(r, 1000 * (i + 1)))
     }
   }

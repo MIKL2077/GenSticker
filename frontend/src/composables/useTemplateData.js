@@ -87,8 +87,8 @@ export function useTemplateData(showStatusMessage) {
       })
     } catch (error) {
       console.error('获取分类失败:', error)
-      loadError.value = '模板暂时无法加载，请检查网络后重试'
-      showStatusMessage && showStatusMessage(`获取分类失败: ${error.message}`)
+      loadError.value = `${error.message || error.errMsg || '模板暂时无法加载，请检查网络后重试'}${error.code ? '（'+error.code+'）' : ''}`
+      showStatusMessage && showStatusMessage('模板加载失败，可查看页面提示后重试')
     } finally {
       isLoadingTemplates.value = false
     }
