@@ -4,6 +4,7 @@ import base64
 import hashlib
 import json
 from pathlib import Path
+from PIL import Image
 from .store import connect, root
 from .declarative import TemplateSpec
 
@@ -40,15 +41,24 @@ def restore():
             if old and old['version'] >= item.get('version',1):
                 continue
             spec = TemplateSpec.model_validate(item["spec"]).model_dump()
-            for layer in spec["layers"]:
-                if layer["type"] == "asset":
-                    digest = layer["value"]
+            hashes={layer['value'] for layer in spec['layers'] if layer['type']=='asset'}
+            if spec.get('reference_asset'):hashes.add(spec['reference_asset'])
+            for digest in hashes:
+                if digest in manifest['assets']:
                     raw = base64.b64decode(manifest["assets"][digest], validate=True)
                     if hashlib.sha256(raw).hexdigest() != digest:
                         raise ValueError("seed asset checksum mismatch")
                     directory = root() / "template_assets"
                     directory.mkdir(exist_ok=True)
                     (directory / (digest + ".png")).write_bytes(raw)
+            if item.get('prepare_background_from_reference'):
+                from .face_slot import prepared_background
+                from io import BytesIO
+                with Image.open(root()/'template_assets'/(spec['reference_asset']+'.png')) as source:
+                    prepared=prepared_background(source,TemplateSpec.model_validate(spec).layers)
+                output=BytesIO();prepared.save(output,'PNG');digest=hashlib.sha256(output.getvalue()).hexdigest()
+                (root()/'template_assets'/(digest+'.png')).write_bytes(output.getvalue())
+                spec['layers'][0]['value']=digest
             publish(item["key"], metadata, spec, minimum_version=item.get('version',1))
             with db:
                 db.execute(

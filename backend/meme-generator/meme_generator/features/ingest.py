@@ -18,7 +18,7 @@ from .recommend import day
 HEADERS = {
     "User-Agent": "GenSticker/1.0 (https://github.com/MIKL2077/GenSticker; licensed template collector)"
 }
-LICENSES = {"CC0", "CC BY 4.0", "CC BY-SA 4.0", "Public domain"}
+LICENSES = {"CC BY-SA 2.0", "CC0", "CC BY 4.0", "CC BY-SA 4.0", "Public domain"}
 
 
 def text(value):

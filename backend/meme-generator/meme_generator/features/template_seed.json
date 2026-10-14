@@ -2,7 +2,7 @@
   "templates": [
     {
       "key": "auto_94a791fdabf54599f5f89bbd",
-      "version": 2,
+      "version": 3,
       "metadata": {
         "name": "笑不出来",
         "origin": "user-provided",
@@ -40,7 +40,7 @@
         "original_hash": "94a791fdabf54599f5f89bbd2217dd965eeb551eab9cf0d204627a4cb9576113",
         "perceptual_hash": "72f8ec485849c95d",
         "intent_signature": "d248dea73ab6846d294f6649bcf0a34841ec55cd3047a49a833e79fa04302755",
-        "conversion": "reviewed-face-slot-v1",
+        "conversion": "reviewed-image-slot-v2",
         "intent": {
           "caption": [
             "笑不出来"
@@ -49,16 +49,17 @@
           "replaceable": "狗头替换为上传人脸；底部反应文字可编辑"
         },
         "quality": {
-          "round_trip_mae": 5.21,
-          "protected_pixel_mae": 0.0,
-          "synthesis_protected_mae": 0.094,
-          "face_slot_tested": true,
-          "method": "reviewed-decomposition-v1"
+          "method": "preauthored-image-slot-v2",
+          "background_prepared": true,
+          "input_validation": "image bounds only; optional foreground extraction"
         },
         "quality_score": 0.566,
-        "input_hint": "上传一张清晰的单人正面照，自动定位人脸替换狗头；侧脸或遮挡照片请换一张",
+        "input_hint": "上传头像或其他图片；可先裁剪区域，再选择是否提取主体。无需正面人脸检测",
         "subject_types": [
-          "person"
+          "person",
+          "animal",
+          "object",
+          "unknown"
         ],
         "slot_aspect": 1.0,
         "decomposition": {
@@ -384,8 +385,11 @@
         ],
         "defaults": [
           "笑不出来"
-        ]
-      }
+        ],
+        "reference_asset": "00669964e3d1ee7dce963b01a900cd5370bc7f573f25a3f51dd3279c37fd2f3b",
+        "background_prepared": true
+      },
+      "prepare_background_from_reference": true
     }
   ],
   "assets": {

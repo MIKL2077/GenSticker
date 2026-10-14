@@ -36,6 +36,7 @@ async def lifespan(app):
         while True:
             await asyncio.sleep(30)
             render_cache.prune()
+            subject_cache.prune()
     task = asyncio.create_task(expire_private_cache())
     try:
         yield
@@ -45,6 +46,7 @@ async def lifespan(app):
             await task
         render_cache.items.clear()
         render_cache.bytes = 0
+        subject_cache.items.clear();subject_cache.bytes=0
 
 
 app = FastAPI(lifespan=lifespan)
@@ -52,12 +54,25 @@ app.include_router(account_router)
 generation_slots = asyncio.Semaphore(2)
 from meme_generator.features.render_cache import RenderCache
 render_cache = RenderCache()
+subject_cache = RenderCache(max_entries=8)
+
+def prepare_inputs(images, identity):
+    from meme_generator.features.subjects import extract_subject
+    output=[]
+    for raw in images:
+        key=hashlib.sha256(identity.encode()+b'\0u2netp-subject-v1\0'+raw).hexdigest()
+        value=subject_cache.get(key)
+        if value is None:
+            value=extract_subject(raw);subject_cache.put(key,value)
+        output.append(value)
+    return output
 
 
 class GenerateRequest(BaseModel):
     images: list[str] = Field(default_factory=list, max_length=10)
     texts: list[str] = Field(default_factory=list, max_length=20)
     args: dict[str, Any] = Field(default_factory=dict)
+    extract_subject: bool = Field(default=False,strict=True)
 
 
 @app.get('/healthz')
@@ -89,7 +104,7 @@ async def generate_json(key: str, params: GenerateRequest, request: Request):
         raise HTTPException(status_code=422, detail=str(e))
     from meme_generator.features.popularity import record, actor
     identity = actor(request)
-    cache_key = hashlib.sha256(json.dumps([identity, key, loaded_versions.get(key, 1), params.images, params.texts, model_dump(args)],sort_keys=True).encode()).hexdigest()
+    cache_key = hashlib.sha256(json.dumps([identity, key, loaded_versions.get(key, 1), params.images, params.texts, model_dump(args),params.extract_subject],sort_keys=True).encode()).hexdigest()
     cacheable = key.startswith('auto_') or key in {'always','petpet','my_friend','look_flat','look_this_icon'}
     cached = render_cache.get(cache_key) if cacheable else None
     if cached:
@@ -100,6 +115,7 @@ async def generate_json(key: str, params: GenerateRequest, request: Request):
     started = time.perf_counter()
     async with generation_slots:
         try:
+            if params.extract_subject:images=await run_sync(prepare_inputs)(images,identity)
             result = await run_sync(meme)(images=images, texts=params.texts, args=model_dump(args))
         except MemeGeneratorException as e:
             raise HTTPException(status_code=e.status_code, detail=e.message)
@@ -163,6 +179,7 @@ def register_router(meme: Meme):
         images: list[UploadFile] = [],
         texts: list[str] = meme.params_type.default_texts,
         args: args_model = Depends(args_checker),  # type: ignore
+        extract_subject: bool = Form(default=False),
     ):
         imgs: list[bytes] = []
         for image in images:
@@ -173,9 +190,12 @@ def register_router(meme: Meme):
         assert isinstance(args, args_model)
 
         try:
-            result = await run_sync(meme)(
-                images=imgs, texts=texts, args=model_dump(args)
-            )
+            if generation_slots.locked():raise HTTPException(503,'生成队列已满，请稍后重试')
+            async with generation_slots:
+                if extract_subject:
+                    from meme_generator.features.popularity import actor
+                    imgs=await run_sync(prepare_inputs)(imgs,actor(request))
+                result = await run_sync(meme)(images=imgs,texts=texts,args=model_dump(args))
         except MemeGeneratorException as e:
             raise HTTPException(status_code=e.status_code, detail=e.message)
 

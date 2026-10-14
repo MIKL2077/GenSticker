@@ -10,7 +10,7 @@ _emotion = None
 PROCESSOR_VERSION = "u2netp-largest-v1-ferplus-v1"
 
 
-def warmup():
+def warmup(*, include_emotion=True):
     global _session, _emotion
     home = Path(os.getenv("U2NET_HOME", str(root() / "models")))
     if not (home / "u2netp.onnx").is_file():
@@ -31,7 +31,7 @@ def warmup():
         sess_options=options,
         providers=["CPUExecutionProvider"],
     )
-    if (home / "emotion-ferplus-8.onnx").is_file():
+    if include_emotion and (home / "emotion-ferplus-8.onnx").is_file():
         if (
             hashlib.sha256((home / "emotion-ferplus-8.onnx").read_bytes()).hexdigest()
             != "a2a2ba6a335a3b29c21acb6272f962bd3d47f84952aaffa03b60986e04efa61c"

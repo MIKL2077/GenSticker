@@ -7,7 +7,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 from meme_generator.features.decomposition import decompose
 from meme_generator.features.declarative import render, TemplateSpec
-from meme_generator.features.face_slot import locate, composite, FaceInputError
+from meme_generator.features.face_slot import composite, FaceInputError
 
 
 class FaceDecompositionTests(unittest.TestCase):
@@ -29,7 +29,7 @@ class FaceDecompositionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'actual face'):decompose(self.raw,self.brief,authorized_local=True,publish=True)
         result=decompose(self.raw,self.brief,authorized_local=True)
         self.assertEqual(result['metadata']['min_images'],1)
-        self.assertFalse(result['metadata']['quality']['face_slot_tested'])
+        self.assertFalse(result['metadata']['quality']['image_slot_tested'])
         self.assertEqual(Image.open(render(result['spec'],[],preview=True)).size,(256,256))
         with self.assertRaises(FaceInputError):render(result['spec'],[])
 
@@ -38,7 +38,7 @@ class FaceDecompositionTests(unittest.TestCase):
         draw.ellipse((25,10,155,210),fill='#e9a47f');draw.ellipse((25,10,155,70),fill='#222222');draw.ellipse((65,95,75,105),fill='black');draw.ellipse((105,95,115,105),fill='black')
         canvas=Image.new('RGBA',(256,256),'#756f65');before=np.array(canvas)
         layer=TemplateSpec(width=256,height=256,layers=[self.face]).layers[0]
-        with patch('meme_generator.features.face_slot.locate',return_value=portrait):composite(canvas,portrait,layer)
+        composite(canvas,portrait,layer)
         after=np.array(canvas);outside=np.ones((256,256),dtype=bool);outside[16:176,64:192]=False
         self.assertTrue(np.array_equal(before[outside],after[outside]))
         centre=after[80:130,105:150,:3];self.assertLess(np.abs(centre[:,:,0].astype(float)-centre[:,:,2]).mean(),5)
@@ -46,14 +46,12 @@ class FaceDecompositionTests(unittest.TestCase):
         bad={**self.face,'erase_polygon':[[0,0],[300,0],[0,20]]}
         with self.assertRaises(ValueError):TemplateSpec(width=256,height=256,layers=[bad])
 
-    def test_no_ambiguous_or_oversized_face_is_silently_inserted(self):
+    def test_plain_images_need_no_frontal_face_detector(self):
         image=Image.new('RGB',(256,256),'white')
-        with self.assertRaisesRegex(FaceInputError,'未找到'):locate(image)
-        class Detector:
-            def detectMultiScale(self,*args,**kwargs):return np.array([[10,20,80,80],[120,30,75,75]])
-        with patch('meme_generator.features.face_slot.detectors',return_value=(Detector(),Detector())):
-            with self.assertRaisesRegex(FaceInputError,'多张'):locate(image)
-        with self.assertRaisesRegex(FaceInputError,'过大'):locate(Image.new('RGB',(2001,2000)))
+        layer=TemplateSpec(width=256,height=256,layers=[self.face]).layers[0]
+        canvas=Image.new('RGBA',(256,256),'gray');composite(canvas,image,layer)
+        with self.assertRaisesRegex(FaceInputError,'过大'):composite(canvas,Image.new('RGB',(2001,2000)),layer)
+        with self.assertRaisesRegex(FaceInputError,'为空'):composite(canvas,Image.new('RGBA',(128,128)),layer)
 
     def test_seed_upgrades_same_key_without_recreating_template(self):
         import json
@@ -66,7 +64,7 @@ class FaceDecompositionTests(unittest.TestCase):
         db.close()
         old=publish(current['key'],{**meta,'min_images':0,'max_images':0},{**spec,'layers':[l for l in spec['layers'] if l['type']!='face']})
         self.assertEqual(old['version'],1);self.assertEqual(restore(),1)
-        upgraded=rows()[0];self.assertEqual(upgraded['id'],old['id']);self.assertEqual(upgraded['version'],2)
+        upgraded=rows()[0];self.assertEqual(upgraded['id'],old['id']);self.assertEqual(upgraded['version'],3)
         self.assertEqual(json.loads(upgraded['metadata'])['min_images'],1);self.assertEqual(restore(),0)
 
 

@@ -12,6 +12,7 @@ Environment=XDG_CACHE_HOME=/var/cache/gensticker
 Environment=FONTCONFIG_FILE=/opt/gensticker/fonts.conf
 Environment=PYTHONDONTWRITEBYTECODE=1
 Environment=GENSTICKER_STATE_DIR=/var/lib/gensticker
+Environment=U2NET_HOME=/var/cache/gensticker/models
 Environment=WX_APPID=wx2e3a058ed0117034
 EnvironmentFile=-/etc/gensticker.env
 ExecStart=/opt/gensticker-venv/bin/uvicorn meme_generator.app:app --host 127.0.0.1 --port 3001 --workers 1 --limit-concurrency 24

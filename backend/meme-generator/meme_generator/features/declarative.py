@@ -24,6 +24,8 @@ class Layer(BaseModel):
     tone: Literal["original", "grayscale"] = "grayscale"
     feather: int = Field(default=3, ge=0, le=12)
     erase_polygon: list[tuple[int, int]] = Field(default_factory=list, max_length=24)
+    text_mask: Literal['box','glyph'] = 'box'
+    max_lines: int = Field(default=0, ge=0, le=5)
 
 
 class TemplateSpec(BaseModel):
@@ -33,6 +35,8 @@ class TemplateSpec(BaseModel):
     background: str = Field(default="#ffffff", pattern=r"^#[0-9a-fA-F]{6}$")
     layers: list[Layer] = Field(min_length=1, max_length=20)
     defaults: list[str] = Field(default_factory=list, max_length=5)
+    background_prepared: bool = False
+    reference_asset: str = Field(default='',pattern=r'^(?:[a-f0-9]{64})?$')
 
     @model_validator(mode="after")
     def bounds(self):
@@ -79,6 +83,9 @@ def font(size, bold=False):
 def render(spec, images, texts=None, *, preview=False):
     spec = TemplateSpec.model_validate(spec)
     canvas = Image.new("RGBA", (spec.width, spec.height), spec.background)
+    if preview and spec.reference_asset:
+        with Image.open(root()/'template_assets'/(spec.reference_asset+'.png')) as reference:
+            canvas.alpha_composite(reference.convert('RGBA'))
     for layer in spec.layers:
         x, y, w, h = layer.box
         if layer.type == 'face':
@@ -87,8 +94,9 @@ def render(spec, images, texts=None, *, preview=False):
             from .face_slot import composite, FaceInputError
             if layer.slot >= len(images):
                 raise FaceInputError('请上传一张清晰的单人正面照片')
-            composite(canvas, images[layer.slot], layer)
+            composite(canvas, images[layer.slot], layer, background_prepared=spec.background_prepared)
         elif layer.type in ("subject", "asset"):
+            if preview and spec.reference_asset and layer.type=='asset':continue
             if layer.type == "subject":
                 if layer.slot >= len(images):
                     raise ValueError("missing subject")
@@ -113,6 +121,7 @@ def render(spec, images, texts=None, *, preview=False):
                 else layer.value
             )[:200]
             draw = ImageDraw.Draw(canvas)
+            fits=False
             for size in range(layer.font_size, 9, -1):
                 face = font(size, layer.weight == "bold")
                 lines, current = [], ""
@@ -123,10 +132,12 @@ def render(spec, images, texts=None, *, preview=False):
                     else:
                         current += char
                 lines.append(current)
+                if layer.max_lines and len(lines)>layer.max_lines:continue
                 line_height = max(draw.textbbox((0,0), line or " ", font=face, stroke_width=layer.stroke_width)[3] - draw.textbbox((0,0), line or " ", font=face, stroke_width=layer.stroke_width)[1] for line in lines)
                 if len(lines) * line_height + (len(lines)-1)*4 <= h:
+                    fits=True
                     break
-            if len(lines) * line_height + (len(lines)-1)*4 > h:
+            if not fits:
                 raise ValueError("text overflows")
             for index, line in enumerate(lines):
                 bbox = draw.textbbox((0,0), line, font=face, stroke_width=layer.stroke_width)

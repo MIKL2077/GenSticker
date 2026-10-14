@@ -1,6 +1,7 @@
 #!/bin/sh
 set -eu
-# The API virtualenv is left untouched; the worker receives its own runtime.
+# API and worker each use their own environment; manual subject extraction needs CPU ONNX in API.
+/opt/gensticker-venv/bin/python -m pip install 'onnxruntime>=1.23,<2' 'opencv-python-headless>=4.10,<5'
 if [ ! -d /opt/gensticker-worker-venv ]; then
   cp -a /opt/gensticker-venv /opt/gensticker-worker-venv
 fi
