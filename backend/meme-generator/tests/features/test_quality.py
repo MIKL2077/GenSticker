@@ -74,11 +74,11 @@ class QualityTests(unittest.TestCase):
         from meme_generator.features.ingest import run_openmoji
         self.assertEqual(restore(),1)
         row=rows()[0];meta=json.loads(row['metadata']);spec=json.loads(row['spec'])
-        self.assertEqual(meta['name'],'笑不出来');self.assertEqual(meta['min_images'],0)
+        self.assertEqual(meta['name'],'笑不出来');self.assertEqual(meta['min_images'],1)
         self.assertIn('sad',meta['tags']);self.assertNotIn('happy',meta['tags'])
-        self.assertEqual(spec['layers'][1]['color'],'#ffffff');self.assertEqual(spec['layers'][1]['weight'],'bold')
-        original=np.array(Image.open(render(spec,[],['笑不出来'])))
-        changed=np.array(Image.open(render(spec,[],['今天不想上班'])))
+        self.assertEqual(spec['layers'][-1]['color'],'#ffffff');self.assertEqual(spec['layers'][-1]['weight'],'bold')
+        original=np.array(Image.open(render(spec,[],['笑不出来'],preview=True)))
+        changed=np.array(Image.open(render(spec,[],['今天不想上班'],preview=True)))
         self.assertEqual(original.shape,changed.shape)
         self.assertLess(np.abs(original[:240].astype(float)-changed[:240]).mean(),.1)
         self.assertGreater(np.abs(original[259:304].astype(float)-changed[259:304]).mean(),1)
@@ -89,7 +89,7 @@ class QualityTests(unittest.TestCase):
         with db:db.execute('INSERT INTO templates(id,key,version,fingerprint,metadata,spec) VALUES(?,?,?,?,?,?)',('retired',retired[0],1,'old','{}',None))
         db.close();restore()
         self.assertFalse(any(r['key'] in retired for r in rows()))
-        invalid={**spec,'layers':[dict(l) for l in spec['layers']]};invalid['layers'][1]['stroke_width']=10
+        invalid={**spec,'layers':[dict(l) for l in spec['layers']]};invalid['layers'][-1]['stroke_width']=10
         with self.assertRaises(ValueError):TemplateSpec.model_validate(invalid)
 
 

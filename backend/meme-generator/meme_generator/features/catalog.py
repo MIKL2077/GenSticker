@@ -32,7 +32,7 @@ def emotion_tags(name):
     ] or ["general"]
 
 
-def publish(key, metadata, spec=None):
+def publish(key, metadata, spec=None, *, minimum_version=1):
     retired=json.loads(Path(__file__).with_name("template_policy.json").read_text())["retired_keys"]
     if key in retired:
         raise ValueError("template withdrawn by owner")
@@ -42,7 +42,7 @@ def publish(key, metadata, spec=None):
     if spec is not None:
         # Publication gate: deterministic rendering must succeed with representative subjects.
         sample = Image.new("RGBA", (512, 384), "#e0c3b0")
-        render(spec, [sample, sample])
+        render(spec, [sample, sample], preview=True)
     fingerprint = hashlib.sha256(
         json.dumps(
             {"metadata": metadata, "spec": spec}, sort_keys=True, ensure_ascii=False
@@ -54,9 +54,9 @@ def publish(key, metadata, spec=None):
         with db:
             db.execute("BEGIN IMMEDIATE")
             old = db.execute("SELECT * FROM templates WHERE key=?", (key,)).fetchone()
-            if old and old["fingerprint"] == fingerprint:
+            if old and old["fingerprint"] == fingerprint and old['version'] >= minimum_version:
                 return dict(old)
-            version = old["version"] + 1 if old else 1
+            version = max((old["version"] + 1 if old and old['fingerprint'] != fingerprint else old['version'] if old else 1), minimum_version)
             values = (
                 identifier,
                 key,
@@ -217,7 +217,7 @@ def info(key):
 def thumbnail(key):
     r = declared(key)
     output = render(
-        json.loads(r["spec"]), [Image.new("RGBA", (256, 256), "#ffcbad")] * 2
+        json.loads(r["spec"]), [Image.new("RGBA", (256, 256), "#ffcbad")] * 2, preview=True
     )
     with Image.open(output) as image:
         image.thumbnail((256, 256))

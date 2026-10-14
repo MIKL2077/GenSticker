@@ -2,7 +2,7 @@
   "templates": [
     {
       "key": "auto_94a791fdabf54599f5f89bbd",
-      "version": 1,
+      "version": 2,
       "metadata": {
         "name": "笑不出来",
         "origin": "user-provided",
@@ -27,10 +27,11 @@
             "stroke_width": 2,
             "font_size": 42
           },
-          "protected_scene": "保留小狗尴尬的表情、枯花、黑白场景与西装；只修改底部文字"
+          "protected_scene": "保留枯花、爪子、西装与黑白场景；按用户要求替换狗头及底部文字",
+          "explicit_face_replacement": true
         },
-        "min_images": 0,
-        "max_images": 0,
+        "min_images": 1,
+        "max_images": 1,
         "min_texts": 1,
         "max_texts": 1,
         "default_texts": [
@@ -39,21 +40,197 @@
         "original_hash": "94a791fdabf54599f5f89bbd2217dd965eeb551eab9cf0d204627a4cb9576113",
         "perceptual_hash": "72f8ec485849c95d",
         "intent_signature": "d248dea73ab6846d294f6649bcf0a34841ec55cd3047a49a833e79fa04302755",
-        "conversion": "caption-preserved-v2",
+        "conversion": "reviewed-face-slot-v1",
         "intent": {
           "caption": [
             "笑不出来"
           ],
-          "fixed": "original expression, action and scene",
-          "replaceable": "edge captions only"
+          "fixed": "枯花、抓花的爪子、西装、黑白场景和整体低落反应",
+          "replaceable": "狗头替换为上传人脸；底部反应文字可编辑"
         },
         "quality": {
           "round_trip_mae": 5.21,
           "protected_pixel_mae": 0.0,
-          "ocr_min_confidence": 0.95,
-          "method": "conservative-local-gates"
+          "synthesis_protected_mae": 0.094,
+          "face_slot_tested": true,
+          "method": "reviewed-decomposition-v1"
         },
-        "quality_score": 0.566
+        "quality_score": 0.566,
+        "input_hint": "上传一张清晰的单人正面照，自动定位人脸替换狗头；侧脸或遮挡照片请换一张",
+        "subject_types": [
+          "person"
+        ],
+        "slot_aspect": 1.0,
+        "decomposition": {
+          "canvas": [
+            324,
+            322
+          ],
+          "intent": "用枯花、西装和黑白场景表现无奈；按用户要求把狗头换成上传人脸，底部反应文字继续可编辑",
+          "protected": [
+            {
+              "name": "枯花与花茎",
+              "box": [
+                45,
+                143,
+                40,
+                72
+              ]
+            },
+            {
+              "name": "抓花的爪子",
+              "box": [
+                63,
+                214,
+                33,
+                30
+              ]
+            },
+            {
+              "name": "西装与领带",
+              "box": [
+                126,
+                222,
+                157,
+                32
+              ]
+            },
+            {
+              "name": "路灯",
+              "box": [
+                290,
+                12,
+                26,
+                134
+              ]
+            }
+          ],
+          "slots": [
+            {
+              "type": "face",
+              "box": [
+                69,
+                8,
+                218,
+                204
+              ],
+              "slot": 0,
+              "value": "",
+              "color": "#222222",
+              "font_size": 32,
+              "fit": "contain",
+              "align": "left",
+              "weight": "normal",
+              "stroke_color": "#000000",
+              "stroke_width": 0,
+              "tone": "grayscale",
+              "feather": 3,
+              "erase_polygon": [
+                [
+                  23,
+                  17
+                ],
+                [
+                  43,
+                  5
+                ],
+                [
+                  77,
+                  0
+                ],
+                [
+                  127,
+                  4
+                ],
+                [
+                  162,
+                  14
+                ],
+                [
+                  188,
+                  35
+                ],
+                [
+                  216,
+                  67
+                ],
+                [
+                  216,
+                  106
+                ],
+                [
+                  194,
+                  128
+                ],
+                [
+                  178,
+                  132
+                ],
+                [
+                  165,
+                  161
+                ],
+                [
+                  130,
+                  190
+                ],
+                [
+                  99,
+                  199
+                ],
+                [
+                  61,
+                  185
+                ],
+                [
+                  43,
+                  171
+                ],
+                [
+                  28,
+                  143
+                ],
+                [
+                  6,
+                  117
+                ],
+                [
+                  0,
+                  83
+                ],
+                [
+                  1,
+                  52
+                ],
+                [
+                  9,
+                  30
+                ]
+              ]
+            },
+            {
+              "type": "text",
+              "box": [
+                75,
+                259,
+                175,
+                44
+              ],
+              "slot": 0,
+              "value": "笑不出来",
+              "color": "#ffffff",
+              "font_size": 42,
+              "fit": "contain",
+              "align": "center",
+              "weight": "bold",
+              "stroke_color": "#000000",
+              "stroke_width": 2,
+              "tone": "grayscale",
+              "feather": 3,
+              "erase_polygon": []
+            }
+          ]
+        }
       },
       "spec": {
         "width": 324,
@@ -76,7 +253,112 @@
             "align": "left",
             "weight": "normal",
             "stroke_color": "#000000",
-            "stroke_width": 0
+            "stroke_width": 0,
+            "tone": "grayscale",
+            "feather": 3,
+            "erase_polygon": []
+          },
+          {
+            "type": "face",
+            "box": [
+              69,
+              8,
+              218,
+              204
+            ],
+            "slot": 0,
+            "value": "",
+            "color": "#222222",
+            "font_size": 32,
+            "fit": "contain",
+            "align": "left",
+            "weight": "normal",
+            "stroke_color": "#000000",
+            "stroke_width": 0,
+            "tone": "grayscale",
+            "feather": 3,
+            "erase_polygon": [
+              [
+                23,
+                17
+              ],
+              [
+                43,
+                5
+              ],
+              [
+                77,
+                0
+              ],
+              [
+                127,
+                4
+              ],
+              [
+                162,
+                14
+              ],
+              [
+                188,
+                35
+              ],
+              [
+                216,
+                67
+              ],
+              [
+                216,
+                106
+              ],
+              [
+                194,
+                128
+              ],
+              [
+                178,
+                132
+              ],
+              [
+                165,
+                161
+              ],
+              [
+                130,
+                190
+              ],
+              [
+                99,
+                199
+              ],
+              [
+                61,
+                185
+              ],
+              [
+                43,
+                171
+              ],
+              [
+                28,
+                143
+              ],
+              [
+                6,
+                117
+              ],
+              [
+                0,
+                83
+              ],
+              [
+                1,
+                52
+              ],
+              [
+                9,
+                30
+              ]
+            ]
           },
           {
             "type": "text",
@@ -94,7 +376,10 @@
             "align": "center",
             "weight": "bold",
             "stroke_color": "#000000",
-            "stroke_width": 2
+            "stroke_width": 2,
+            "tone": "grayscale",
+            "feather": 3,
+            "erase_polygon": []
           }
         ],
         "defaults": [

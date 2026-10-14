@@ -129,6 +129,7 @@ class MemeInfoResponse(BaseModel):
     key: str
     template_id: str = ''
     version: int = 1
+    input_hint: str = ''
     attribution: dict[str,str] = Field(default_factory=dict)
     params_type: MemeParamsResponse
     keywords: list[str]
@@ -265,6 +266,7 @@ def register_routers():
             key=meme.key,
             template_id=catalog_entry['id'] if catalog_entry else '',
             version=catalog_entry['version'] if catalog_entry else 1,
+            input_hint=json.loads(catalog_entry['metadata']).get('input_hint','') if catalog_entry else '',
             attribution=attribution,
             params_type=MemeParamsResponse(
                 min_images=meme.params_type.min_images,
@@ -398,7 +400,7 @@ def register_routers():
             attribution = {k:metadata.get(k,'') for k in ('author','license','source_url','license_url')}
             if not attribution['source_url']:
                 attribution = {'author':'MemeCrafters 模板合集','license':'素材权利信息见上游','source_url':'https://github.com/MemeCrafters/meme-generator','license_url':''}
-            cards.append({'key':meme.key, 'name':(meme.keywords or [meme.key])[0], 'keywords':meme.keywords, 'tags':sorted(meme.tags)[:6], 'template_id':entry.get('id',''), 'version':entry.get('version',1), 'featured_trial':bool(metadata.get('featured_trial')), 'attribution':attribution, 'params_type':{'min_images':params.min_images,'max_images':params.max_images,'min_texts':params.min_texts,'max_texts':params.max_texts,'default_texts':params.default_texts}, **popularity.get(meme.key, {'heat':0, 'counts':{}})})
+            cards.append({'key':meme.key, 'name':(meme.keywords or [meme.key])[0], 'keywords':meme.keywords, 'tags':sorted(meme.tags)[:6], 'template_id':entry.get('id',''), 'version':entry.get('version',1), 'featured_trial':bool(metadata.get('featured_trial')), 'input_hint':metadata.get('input_hint',''), 'attribution':attribution, 'params_type':{'min_images':params.min_images,'max_images':params.max_images,'min_texts':params.min_texts,'max_texts':params.max_texts,'default_texts':params.default_texts}, **popularity.get(meme.key, {'heat':0, 'counts':{}})})
             if params.min_images == 0 and params.max_images == 0 and params.min_texts >= 1:
                 text_only.append(meme.key)
             elif params.min_texts == 0 and params.max_texts == 0 and params.min_images >= 1:

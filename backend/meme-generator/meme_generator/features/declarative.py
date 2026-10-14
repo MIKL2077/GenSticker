@@ -10,7 +10,7 @@ from .store import root
 
 class Layer(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    type: Literal["subject", "text", "asset"]
+    type: Literal["subject", "face", "text", "asset"]
     box: tuple[int, int, int, int]
     slot: int = Field(default=0, ge=0, le=1)
     value: str = Field(default="", max_length=300)
@@ -21,6 +21,9 @@ class Layer(BaseModel):
     weight: Literal["normal", "bold"] = "normal"
     stroke_color: str = Field(default="#000000", pattern=r"^#[0-9a-fA-F]{6}$")
     stroke_width: int = Field(default=0, ge=0, le=4)
+    tone: Literal["original", "grayscale"] = "grayscale"
+    feather: int = Field(default=3, ge=0, le=12)
+    erase_polygon: list[tuple[int, int]] = Field(default_factory=list, max_length=24)
 
 
 class TemplateSpec(BaseModel):
@@ -47,6 +50,8 @@ class TemplateSpec(BaseModel):
                 or any(c not in "0123456789abcdef" for c in layer.value)
             ):
                 raise ValueError("asset must be a local SHA256")
+            if layer.erase_polygon and (layer.type != 'face' or len(layer.erase_polygon)<3 or any(px<0 or py<0 or px>=w or py>=h for px,py in layer.erase_polygon)):
+                raise ValueError('face mask outside declared slot')
         return self
 
 
@@ -71,12 +76,19 @@ def font(size, bold=False):
     return ImageFont.load_default(size=size)
 
 
-def render(spec, images, texts=None):
+def render(spec, images, texts=None, *, preview=False):
     spec = TemplateSpec.model_validate(spec)
     canvas = Image.new("RGBA", (spec.width, spec.height), spec.background)
     for layer in spec.layers:
         x, y, w, h = layer.box
-        if layer.type in ("subject", "asset"):
+        if layer.type == 'face':
+            if preview:
+                continue
+            from .face_slot import composite, FaceInputError
+            if layer.slot >= len(images):
+                raise FaceInputError('请上传一张清晰的单人正面照片')
+            composite(canvas, images[layer.slot], layer)
+        elif layer.type in ("subject", "asset"):
             if layer.type == "subject":
                 if layer.slot >= len(images):
                     raise ValueError("missing subject")

@@ -36,9 +36,8 @@ def restore():
                 != "https://commons.wikimedia.org/wiki/File:LEGO_%22Y_U_NO_%22_meme_(Free_to_use).jpg"
             ):
                 raise ValueError("unreviewed seed origin")
-            if db.execute(
-                "SELECT 1 FROM templates WHERE key=?", (item["key"],)
-            ).fetchone():
+            old = db.execute("SELECT version FROM templates WHERE key=?", (item["key"],)).fetchone()
+            if old and old['version'] >= item.get('version',1):
                 continue
             spec = TemplateSpec.model_validate(item["spec"]).model_dump()
             for layer in spec["layers"]:
@@ -50,7 +49,7 @@ def restore():
                     directory = root() / "template_assets"
                     directory.mkdir(exist_ok=True)
                     (directory / (digest + ".png")).write_bytes(raw)
-            publish(item["key"], metadata, spec)
+            publish(item["key"], metadata, spec, minimum_version=item.get('version',1))
             with db:
                 db.execute(
                     "INSERT OR IGNORE INTO candidates VALUES(?,?,?,?,?)",

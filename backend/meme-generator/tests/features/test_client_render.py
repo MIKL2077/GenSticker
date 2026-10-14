@@ -43,5 +43,10 @@ class ClientRenderTests(unittest.TestCase):
             with self.assertRaises(Exception): verify_receipt(token,'auto_test','guest:one')
         with self.assertRaises(Exception): verify_receipt(token+'x','auto_test','guest:one')
 
+    def test_face_slot_is_explicitly_server_only(self):
+        spec={'width':128,'height':128,'layers':[{'type':'face','box':[0,0,128,128]}]}
+        publish('auto_face',{'name':'face'},spec)
+        self.assertEqual(self.client.get('/memes/auto_face/client-template').json(),{'supported':False})
+
 
 if __name__=='__main__': unittest.main()
