@@ -228,7 +228,8 @@ def favorite(key: str, user=Depends(current_user)):
     finally:
         db.close()
     from .features.popularity import record
-    record(key, 'user:' + user['id'], 'favorite')
+    if not exists:
+        record(key, 'user:' + user['id'], 'favorite')
     return {'key': key, 'favorite': True}
 
 

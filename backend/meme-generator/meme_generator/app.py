@@ -4,6 +4,7 @@ import binascii
 import asyncio
 import hashlib
 import time
+from contextlib import asynccontextmanager, suppress
 from functools import lru_cache
 from io import BytesIO
 from datetime import datetime
@@ -29,7 +30,24 @@ from meme_generator.utils import MemeProperties, render_meme_list, run_sync
 from meme_generator.version import __version__
 from meme_generator.account import router as account_router
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app):
+    async def expire_private_cache():
+        while True:
+            await asyncio.sleep(30)
+            render_cache.prune()
+    task = asyncio.create_task(expire_private_cache())
+    try:
+        yield
+    finally:
+        task.cancel()
+        with suppress(asyncio.CancelledError):
+            await task
+        render_cache.items.clear()
+        render_cache.bytes = 0
+
+
+app = FastAPI(lifespan=lifespan)
 app.include_router(account_router)
 generation_slots = asyncio.Semaphore(2)
 from meme_generator.features.render_cache import RenderCache
@@ -72,7 +90,8 @@ async def generate_json(key: str, params: GenerateRequest, request: Request):
     from meme_generator.features.popularity import record, actor
     identity = actor(request)
     cache_key = hashlib.sha256(json.dumps([identity, key, loaded_versions.get(key, 1), params.images, params.texts, model_dump(args)],sort_keys=True).encode()).hexdigest()
-    cached = render_cache.get(cache_key)
+    cacheable = key.startswith('auto_') or key in {'always','petpet','my_friend','look_flat','look_this_icon'}
+    cached = render_cache.get(cache_key) if cacheable else None
     if cached:
         record(key, identity, 'generate')
         return Response(content=cached,media_type=filetype.guess_mime(cached) or 'application/octet-stream',headers={'Cache-Control':'private, no-store','X-Gensticker-Cache':'hit'})
@@ -85,7 +104,8 @@ async def generate_json(key: str, params: GenerateRequest, request: Request):
         except MemeGeneratorException as e:
             raise HTTPException(status_code=e.status_code, detail=e.message)
     content = result.getvalue()
-    render_cache.put(cache_key,content)
+    if cacheable:
+        render_cache.put(cache_key,content)
     record(key, identity, 'generate')
     return Response(content=content, media_type=filetype.guess_mime(content) or 'application/octet-stream',headers={'Cache-Control':'private, no-store','Server-Timing':f'generation;dur={(time.perf_counter()-started)*1000:.1f}'})
 
