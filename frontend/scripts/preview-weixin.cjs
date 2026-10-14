@@ -14,6 +14,7 @@ try {
   const output=index===0?path.resolve(args[1]):path.join(os.tmpdir(),`gensticker-preview-${Date.now()}.png`)
   const cli=process.env.WECHAT_DEVTOOLS_CLI_PATH||'/Applications/wechatwebdevtools.app/Contents/MacOS/cli'
   console.log('Preview project:',project)
+  run(cli,['open','--project',project])
   run(cli,['preview','--project',project,'--qr-format','image','--qr-output',output])
   console.log('QR image:',output)
 } catch(error){console.error(error.message);process.exitCode=1}
