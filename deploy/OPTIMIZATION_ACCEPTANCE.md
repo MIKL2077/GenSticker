@@ -1,5 +1,7 @@
 # 交互、热度与性能优化验收
 
+此文件为上一轮优化验收记录。十个新增模板现已撤下，模板库 295 个，本机合成支持 3 个模板；最新模板与配色以 [USER_TEMPLATE_ACCEPTANCE.md](USER_TEMPLATE_ACCEPTANCE.md) 为准。
+
 2026-10-14，分支 `codex/restore-wechat-final`。后端最后补丁已同步京东云；本机微信构建已生成 411.7 KB 的私有开发预览。未提交审核或发布生产版本。
 
 ## 完成范围
