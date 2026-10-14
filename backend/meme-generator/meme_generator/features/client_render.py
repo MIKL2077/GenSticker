@@ -11,6 +11,25 @@ from .declarative import TemplateSpec
 from .store import connect, root
 
 router = APIRouter()
+BUILTIN_LAYOUTS = {'always':'always-normal-v1','look_flat':'look-flat-v1'}
+
+
+def version(key):
+    db=connect()
+    try:
+        row=db.execute("SELECT version FROM templates WHERE key=? AND status='published'",(key,)).fetchone()
+        if not row:raise HTTPException(404,'模板不存在')
+        return row['version']
+    finally:db.close()
+
+
+def builtin_recipe(key):
+    if key not in BUILTIN_LAYOUTS:return None
+    try:
+        current=version(key)
+    except HTTPException:
+        return None
+    return {'supported':True,'key':key,'version':current,'layout':BUILTIN_LAYOUTS[key], 'assets':{}, 'attribution':{},'expires':int(time.time())+3600}
 
 
 def secret():
@@ -34,7 +53,7 @@ def verify_receipt(token, key, identity):
         if not hmac.compare_digest(signature, hmac.new(secret(), payload.encode(), hashlib.sha256).hexdigest()):
             raise ValueError()
         data = json.loads(base64.urlsafe_b64decode(payload))
-        if data['key'] != key or data['actor'] != identity or data['expires'] < time.time() or declared(key)['version'] != data['version']:
+        if data['key'] != key or data['actor'] != identity or data['expires'] < time.time() or version(key) != data['version']:
             raise ValueError()
         return data['nonce']
     except (ValueError, KeyError, TypeError):
@@ -56,7 +75,7 @@ def public_recipe(row):
 
 def public_recipes(limit=32):
     from .catalog import rows
-    output=[];inline={};used=0
+    output=[r for key in BUILTIN_LAYOUTS if (r:=builtin_recipe(key)) is not None];inline={};used=0
     for row in rows():
         if not row['spec']:continue
         recipe=public_recipe(row)
@@ -77,8 +96,11 @@ def recipe(key: str, request: Request, response: Response):
     try:
         row = declared(key)
     except HTTPException:
-        return {'supported':False}
-    result=public_recipe(row)
+        result=builtin_recipe(key)
+        if result is None:return {'supported':False}
+        row={'version':result['version']}
+    else:
+        result=public_recipe(row)
     if result is None:return {'supported':False}
     from .popularity import actor
     result['receipt']=receipt(key,row['version'],actor(request))

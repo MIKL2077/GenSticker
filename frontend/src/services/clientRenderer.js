@@ -49,7 +49,7 @@ function assetPath(hash, path) {
 }
 
 export async function prefetchClientTemplate(key) {
-  if(!key.startsWith('auto_') || typeof wx==='undefined' || !wx.createOffscreenCanvas) return null
+  if((!key.startsWith('auto_') && !['always','look_flat'].includes(key)) || typeof wx==='undefined' || !wx.createOffscreenCanvas) return null
   const cached=recipes.get(key)
   if(cached && cached.expires>Date.now()/1000+30) {
     for(const [hash,path] of Object.entries(cached.assets))await assetPath(hash,path)
@@ -80,6 +80,10 @@ function reportSuccess(key, recipe) {
 }
 
 export function validateRecipe(recipe) {
+  if(recipe.layout) {
+    if(!((recipe.key==='always' && recipe.layout==='always-normal-v1') || (recipe.key==='look_flat' && recipe.layout==='look-flat-v1')))throw new Error('本地布局未注册')
+    return
+  }
   const s=recipe.spec
   if(!s || !Number.isInteger(s.width) || !Number.isInteger(s.height) || s.width<64 || s.height<64 || s.width>768 || s.height>768 || !/^#[a-f0-9]{6}$/i.test(s.background) || !Array.isArray(s.layers) || s.layers.length>12 || s.layers.length<1) throw new Error('模板超出本地能力')
   for(const l of s.layers) {
@@ -110,11 +114,35 @@ function drawImage(ctx,img,layer) {
 }
 
 export async function tryClientRender(key,paths,texts,args={}) {
-  if(rendering || Object.keys(args).length || !key.startsWith('auto_')) return null
+  if(rendering || Object.keys(args).length || (!key.startsWith('auto_') && !['always','look_flat'].includes(key))) return null
   let canvas=null,images=[];rendering=true
   try {
     const recipe=await prefetchClientTemplate(key)
     if(!recipe) return null
+    if(recipe.layout) {
+      // Preserve original GIF behaviour: native ports accept JPEG only.
+      const info=await new Promise((resolve,reject)=>uni.getImageInfo({src:paths[0],success:resolve,fail:reject}))
+      if(!/^(jpg|jpeg)$/i.test(info.type || '') || info.width*info.height>2400000)return null
+      const h=Math.round(500*info.height/info.width),smallH=Math.round(100*info.height/info.width)
+      const outputH=key==='always' ? h+Math.max(smallH,80)+10 : Math.floor(h/2)+80
+      if(outputH>1024 || paths.length!==1)return null
+      canvas=wx.createOffscreenCanvas({type:'2d',width:500,height:outputH})
+      const ctx=canvas.getContext('2d'),img=await loadImage(canvas,paths[0]);images.push(img)
+      ctx.fillStyle='#ffffff';ctx.fillRect(0,0,500,outputH);ctx.fillStyle='#000000';ctx.textBaseline='top'
+      if(key==='always') {
+        ctx.drawImage(img,0,0,500,h);ctx.drawImage(img,290,h+5+(Math.max(smallH,80)-smallH)/2,100,smallH)
+        ctx.font='60px sans-serif';ctx.textAlign='right';ctx.fillText('要我一直',280,h+5+(Math.max(smallH,80)-60)/2)
+        ctx.textAlign='left';ctx.fillText('吗',400,h+5+(Math.max(smallH,80)-60)/2)
+      } else {
+        const imageH=Math.floor(h/2),text=String(texts[0] || '可恶...被人看扁了')
+        ctx.drawImage(img,0,0,500,imageH);let size=55
+        for(;size>=30;size--){ctx.font=`bold ${size}px sans-serif`;if(ctx.measureText(text).width<=480)break}
+        if(size<30)throw new Error('本地文字超出排版范围')
+        ctx.textAlign='center';ctx.fillText(text,250,imageH+(80-size)/2)
+      }
+      const output=await new Promise((resolve,reject)=>wx.canvasToTempFilePath({canvas,fileType:'jpg',quality:.9,success:r=>resolve(r.tempFilePath),fail:reject}))
+      reportSuccess(key,recipe);return output
+    }
     const s=recipe.spec,width=Math.max(s.width,512),credit=recipe.attribution || {}
     canvas=wx.createOffscreenCanvas({type:'2d',width,height:s.height+256})
     let ctx=canvas.getContext('2d');ctx.font='12px sans-serif'

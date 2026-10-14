@@ -1,7 +1,7 @@
 <template>
   <view class="template-container">
     <button v-if="currentPage > 1" class="nav-btn nav-left" @click="$emit('prev')">‹</button>
-    <view v-if="loading && !templates.some(t => t.previewImage)" class="template-grid">
+    <view v-if="loading && !templates.length" class="template-grid">
       <view v-for="n in 9" :key="n" class="template-item skeleton"><view class="skeleton-image" /><view class="skeleton-text" /></view>
     </view>
     <view v-else class="template-grid">
@@ -13,7 +13,7 @@
         @click="$emit('select', template.key)"
       >
         <image v-if="template.previewImage" :src="template.previewImage" class="template-preview" mode="aspectFit" />
-        <text v-else class="template-emoji"></text>
+        <view v-else class="preview-placeholder" />
         <text class="template-name">{{ template.name || template.key }}</text>
         <text v-if="template.heat" class="heat-label">热力 {{ template.heat }}</text>
       </view>
@@ -37,6 +37,7 @@ export default {
 </script>
 
 <style scoped>
+.preview-placeholder{width:108rpx;height:108rpx;border-radius:18rpx;background:#f8f5f2;margin-bottom:16rpx;animation:placeholder-pulse 1.4s ease-in-out infinite}@keyframes placeholder-pulse{0%,100%{opacity:.6}50%{opacity:1}}
 .heat-label{font-size:18rpx;color:#c4855a;margin-top:8rpx}.template-item{animation:card-enter .2s ease-out}.template-item:active{transform:scale(.95)}@keyframes card-enter{from{opacity:.65;transform:translateY(8rpx)}to{opacity:1;transform:translateY(0)}}
 .template-container { position:relative; display:flex; align-items:center }
 .nav-btn { position:absolute; width:60rpx; height:60rpx; background:rgba(255,255,255,.9); border:none; border-radius:50%; font-size:32rpx; color:#666; display:flex; align-items:center; justify-content:center; box-shadow:0 4rpx 12rpx rgba(0,0,0,.15); transition:all .3s ease; z-index:10 }

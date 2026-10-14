@@ -66,6 +66,7 @@ export function useTemplateData(showStatusMessage) {
       loadError.value = ''
       const data = await getCategories()
       seedClientRecipes(data.client)
+      const localKeys=new Set((data.client?.recipes || []).map(r=>r.key))
       categoryKeys.value = {
         all: Array.isArray(data.all) ? data.all : [],
         text_only: Array.isArray(data.text_only) ? data.text_only : [],
@@ -74,7 +75,7 @@ export function useTemplateData(showStatusMessage) {
       }
       for (const card of data.cards || []) {
         const existing = templateDetails.value.get(card.key) || { key: card.key, previewImage: null, isLoadingPreview: true }
-        templateDetails.value.set(card.key, { ...existing, name: card.name, tags: card.tags || [], heat:card.heat || 0, counts:card.counts || {} })
+        templateDetails.value.set(card.key, { ...existing, name: card.name, tags: card.tags || [], heat:card.heat || 0, counts:card.counts || {}, localCapable:localKeys.has(card.key) })
       }
       categoryLoadedPages.value.clear()
       categories.value = categories.value.map(c => {

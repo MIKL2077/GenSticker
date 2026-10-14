@@ -32,6 +32,8 @@ class ClientRenderTests(unittest.TestCase):
         self.assertEqual(self.client.post('/templates/events',headers={'X-Gensticker-Visitor':'different-visitor-12345'},json=body).status_code,422)
         publish('auto_test',{'name':'new-version'},self.spec)
         self.assertEqual(self.client.post('/templates/events',headers=headers,json=body).status_code,422)
+        publish('always',{'name':'一直'})
+        self.assertEqual(self.client.get('/memes/always/client-template').json()['layout'],'always-normal-v1')
         self.assertEqual(self.client.get('/memes/petpet/client-template').json(),{'supported':False})
         self.assertEqual(self.client.get('/template-assets/'+('a'*64)+'.png').status_code,404)
 

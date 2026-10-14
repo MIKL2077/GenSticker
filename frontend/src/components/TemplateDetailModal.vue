@@ -15,6 +15,7 @@
         <view class="template-info-section">
           <text class="detail-label">模板信息</text>
           <view class="info-item"><text class="info-key">名称：</text><text class="info-value">{{ detail?.name || detail?.key }}</text></view>
+          <text v-if="detail?.localCapable" class="local-note">✦ 支持本机快速合成，兼容图片无需上传</text>
           <view class="info-item"><text class="info-key">关键词：</text><text class="info-value">{{ (detail?.keywords||[]).join(', ') || '无' }}</text></view>
           <view class="info-item"><text class="info-key">标签：</text><text class="info-value">{{ (detail?.tags||[]).join(', ') || '无' }}</text></view>
         </view>
@@ -79,6 +80,7 @@ export default {
 </script>
 
 <style scoped>
+.local-note{display:block;color:#8b699e;background:#faf5ff;border-radius:14rpx;padding:14rpx 18rpx;font-size:21rpx;line-height:1.6;margin:12rpx 0 20rpx}
 .template-detail-modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(30,25,23,.55); display:flex; align-items:center; justify-content:center; z-index:2000 }
 .detail-content { background:#fff; border-radius:32rpx; width:90%; max-width:700rpx; max-height:80%; overflow:hidden; position:relative }
 .detail-header { display:flex; justify-content:center; align-items:center; padding:30rpx; border-bottom:2rpx solid #eee }
