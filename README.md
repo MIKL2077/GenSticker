@@ -115,19 +115,19 @@ git clone --branch codex/restore-wechat-final git@github.com:MIKL2077/GenSticker
 cd GenSticker/frontend
 npm ci
 cp .env.example .env.local
-npm run build:mp-weixin
+npm run open:mp-weixin
 ```
 
-在微信开发者工具中导入 `frontend/dist/build/mp-weixin`，项目配置的 AppID 为 `wx2e3a058ed0117034`。开发时可运行 `npm run dev:mp-weixin`，导入对应的 `frontend/dist/dev/mp-weixin` 目录。
+上述命令会构建并通过微信官方 CLI 打开 `GenSticker-public-…` 项目窗口，AppID 为 `wx2e3a058ed0117034`，域名校验保持开启。它关闭本仓库旧的 build / dev 项目窗口，正常导入新的临时目录，由微信取得当前服务器域名配置；终端会打印实际目录。请在这个新窗口编译、调试，避免再次打开缓存旧 Sealos 名单的 `frontend/dist/build/mp-weixin`。需要扫码时运行 `npm run preview:mp-weixin -- --qr-output /tmp/gensticker-preview.png`。
 
-`.env.local` 中配置后端地址，默认使用当前部署服务：
+微信端固定使用当前公网后端；以下环境变量仅用于 H5：
 
 ```dotenv
 VITE_API_BASE_URL=https://www.shangkun.uk/gensticker/api
 VITE_PROXY_TARGET=http://127.0.0.1:3001
 ```
 
-联调本地后端时把 `VITE_API_BASE_URL` 改为 `http://127.0.0.1:3001` 并重新编译。开发工具关闭域名校验只适用于调试；真机使用 HTTPS，并在微信公众平台配置 request、uploadFile、downloadFile 合法域名 `https://www.shangkun.uk`，完善照片、头像和相册保存的隐私用途说明。
+H5 联调本地后端时把 `VITE_API_BASE_URL` 改为 `http://127.0.0.1:3001` 并重新编译。微信端使用 HTTPS，在微信公众平台配置 request、uploadFile、downloadFile 合法域名 `https://www.shangkun.uk`，完善照片、头像和相册保存的隐私用途说明。请保留域名校验，不以关闭校验代替正常配置。
 
 可运行 `npm run dev:h5` 或 `npm run build:h5` 开发 / 构建 H5。微信登录、原生分享和相册能力以微信端为验收目标，H5 构建通过不表示这些微信专属能力在浏览器可用。
 
