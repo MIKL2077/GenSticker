@@ -92,11 +92,24 @@ class EditorLiveTests(unittest.TestCase):
         self.assertEqual(large.status_code,413)
 
     @unittest.skipUnless(shutil.which('ffmpeg') and shutil.which('ffprobe'),'requires FFmpeg')
-    def test_compatibility_rejects_untrimmed_long_video(self):
+    def test_long_source_selects_middle_clip_and_finishes_in_queue(self):
         frames=[Image.new('RGB',(32,32),color) for color in ('red','green')]
         buf=BytesIO();frames[0].save(buf,'GIF',save_all=True,append_images=frames[1:],duration=5000,loop=0)
         response=self.client.post('/studio/live/assets',files={'file':('long.gif',buf.getvalue(),'image/gif')})
-        self.assertEqual(response.status_code,422,response.text);self.assertIn('9 秒',response.json()['detail'])
+        self.assertEqual(response.status_code,201,response.text)
+        job=self.client.post('/studio/live/jobs',json={'asset_id':response.json()['asset_id'],'idempotency_key':'middle-long-source','start':4,'duration':3,'crop':[.1,.1,.8,.8]}).json()
+        self.assertTrue(studio.work_one())
+        result=self.client.get('/studio/jobs/'+job['id']).json();self.assertEqual(result['status'],'completed',result)
+        output=self.client.get(result['result_url']);self.assertLessEqual(len(output.content),500*1024)
+
+    def test_complex_nine_second_scene_is_always_compressed_without_redo(self):
+        import numpy as np
+        random=np.random.default_rng(17)
+        frames=[Image.fromarray(random.integers(0,256,(120,160,3),dtype=np.uint8)) for _ in range(90)]
+        raw=livegif.fit_gif(frames);self.assertLessEqual(len(raw),500*1024)
+        image=Image.open(BytesIO(raw));self.assertLessEqual(max(image.size),240)
+        from PIL import ImageSequence
+        self.assertEqual(sum(frame.info['duration'] for frame in ImageSequence.Iterator(image)),9000)
 
     def test_static_photo_and_invalid_crop_have_clear_errors(self):
         buf=BytesIO();Image.new('RGB',(32,32),'red').save(buf,'JPEG')

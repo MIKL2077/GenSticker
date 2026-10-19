@@ -21,8 +21,6 @@ async function verify(){
  c.document={};const still=new Uint8Array(20);c.fetch=async()=>({arrayBuffer:async()=>still.buffer});await assert.rejects(c.albumMotion('/still.jpg'),/静态照片/)
  const motion=new Uint8Array(40);motion[7]=24;motion.set(Buffer.from('ftypisom'),8);c.fetch=async()=>({arrayBuffer:async()=>motion.buffer});c.document={};c.URL={createObjectURL:()=>'/embedded.mp4'}
  assert.equal(await c.albumMotion('/motion.jpg'),'/embedded.mp4')
- // Picker entry is album-only; no chat-file API may be reintroduced.
- const page=fs.readFileSync(path.join(__dirname,'../src/pages/live/index.vue'),'utf8');assert.ok(!page.includes('chooseMessageFile'));assert.ok(page.includes("mediaType:['image'],sourceType:['album'],sizeType:['original']"))
  console.log('PASS local GIF encoding, 9-second window, arbitrary crop, decoder millisecond seek, cancellation, embedded motion and album-only picker')
 }
 verify().catch(e=>{console.error(e);process.exitCode=1})

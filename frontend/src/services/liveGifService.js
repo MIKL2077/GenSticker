@@ -26,6 +26,15 @@ function deadline(promise, ms=12000) {
   let timer
   return Promise.race([promise,new Promise((_,reject)=>timer=setTimeout(()=>reject(Error('这台设备读取视频超时，请缩短片段或使用兼容模式')),ms))]).finally(()=>clearTimeout(timer))
 }
+export function decoderEvent(decoder,name,action) {
+  if(!decoder.on)return deadline(Promise.resolve().then(action))
+  return new Promise((resolve,reject)=>{
+    const finish=(error)=>{clearTimeout(timer);decoder.off?.(name,ready);error?reject(error):resolve()}
+    const ready=()=>finish(),timer=setTimeout(()=>finish(Error('本地解码没有响应')),5000)
+    decoder.on(name,ready)
+    try{const pending=action();pending?.catch?.(finish)}catch(error){finish(error)}
+  })
+}
 // The browser seeks the selected window; WeChat uses its native local decoder.
 // No video upload is needed on this path. Keep only downscaled output frames in memory.
 async function frameReader(path) {
@@ -35,9 +44,9 @@ async function frameReader(path) {
     return {async at(seconds){if(Math.abs(video.currentTime-seconds)>.015)await deadline(new Promise((resolve,reject)=>{video.onseeked=resolve;video.onerror=()=>reject(Error('视频定位失败'));video.currentTime=seconds}));return {image:video,width:video.videoWidth,height:video.videoHeight}},async close(){video.pause();video.removeAttribute('src');video.load()}}
   }
   const decoder=wx.createVideoDecoder(),rawCanvas=canvas(1,1)
-  try { await deadline(decoder.start({source:path,mode:1,abortAudio:true})) } catch(e){await decoder.remove().catch(()=>{});throw e}
+  try { await decoderEvent(decoder,'start',()=>decoder.start({source:path,mode:1,abortAudio:true})) } catch(e){await decoder.remove().catch(()=>{});throw e}
   return {async at(seconds){
-    await deadline(decoder.seek(Math.round(seconds*1000)))
+    await decoderEvent(decoder,'seek',()=>decoder.seek(Math.round(seconds*1000)))
     const end=Date.now()+3000;let frame
     while(!(frame=decoder.getFrameData())){if(Date.now()>end)throw Error('没有读到动态画面，请换一段视频');await pause(10)}
     if(frame.width*frame.height>12_000_000)throw Error('这段视频分辨率过高，请从相册导出 1080p 版本')
@@ -68,21 +77,30 @@ export function drawFrame(ctx, image, width, height, options, edge=240) {
   }
   return geo
 }
+export function resizeRgba(input,width,height,outWidth,outHeight) {
+  const output=new Uint8ClampedArray(outWidth*outHeight*4)
+  for(let y=0;y<outHeight;y++)for(let x=0;x<outWidth;x++){
+    const source=(Math.min(height-1,Math.floor(y*height/outHeight))*width+Math.min(width-1,Math.floor(x*width/outWidth)))*4
+    output.set(input.subarray(source,source+4),(y*outWidth+x)*4)
+  }
+  return output
+}
 export async function encodeGifFrames(frames,width,height,onProgress=()=>{},cancelled) {
   // Start at 128 colors. Reduce fps, then palette, preserving the selected duration.
-  for(const [stride,colors] of [[1,128],[2,128],[2,64],[3,64],[3,32]]) {
+  for(const [stride,colors,edge] of [[1,128,240],[2,128,240],[2,64,180],[2,64,120],[3,32,96],[3,16,32]]) {
+    const scale=Math.min(1,edge/Math.max(width,height)),outWidth=Math.max(2,Math.round(width*scale)),outHeight=Math.max(2,Math.round(height*scale))
     const encoder=GIFEncoder()
     for(let i=0;i<frames.length;i+=stride){
       checkCancelled(cancelled)
-      const rgba=frames[i],palette=quantize(rgba,colors),indices=applyPalette(rgba,palette)
-      encoder.writeFrame(indices,width,height,{palette,delay:Math.min(stride,frames.length-i)*100,repeat:0,dispose:1})
+      const original=frames[i],rgba=outWidth===width&&outHeight===height?original:resizeRgba(original,width,height,outWidth,outHeight),palette=quantize(rgba,colors),indices=applyPalette(rgba,palette)
+      encoder.writeFrame(indices,outWidth,outHeight,{palette,delay:Math.min(stride,frames.length-i)*100,repeat:0,dispose:1})
       onProgress(Math.round(65+30*Math.min(1,(i+stride)/frames.length)))
       if(i%4===0)await pause(0)
     }
     encoder.finish();const bytes=encoder.bytes()
-    if(bytes.length<=MAX_GIF_BYTES)return {bytes,fps:10/stride,colors}
+    if(bytes.length<=MAX_GIF_BYTES)return {bytes,fps:10/stride,colors,width:outWidth,height:outHeight}
   }
-  throw Error('这段画面变化太多，500 KB 内会明显失真，请缩短到 3 秒或缩小裁剪范围')
+  throw Error('本地编码未完成，将继续使用后台生成')
 }
 export async function renderLocalGif(path, options, onProgress=()=>{}, cancelled) {
   if(!supportsLocalGif())throw Error('当前微信不支持本地制作，请更新微信或使用兼容模式')
@@ -101,7 +119,7 @@ export async function renderLocalGif(path, options, onProgress=()=>{}, cancelled
     let resultPath
     if(typeof document !== 'undefined')resultPath=registerTemporary(URL.createObjectURL(new Blob([result.bytes],{type:'image/gif'})))
     else{resultPath=`${uni.env.USER_DATA_PATH}/generated_meme_live_${Date.now()}.gif`;await writeOwnedFile(resultPath,result.bytes.buffer.slice(result.bytes.byteOffset,result.bytes.byteOffset+result.bytes.byteLength))}
-    onProgress(100);return {...result,path:resultPath,width,height}
+    onProgress(100);return {...result,path:resultPath}
   } finally {frames.length=0;output.width=1;output.height=1;await reader.close().catch(()=>{})}
 }
 // Read an original album image only to find an embedded motion stream. A static
@@ -132,4 +150,14 @@ export async function localVideoInfo(path) {
   const video=document.createElement('video');video.preload='metadata';video.src=path
   try{await deadline(new Promise((resolve,reject)=>{video.onloadedmetadata=resolve;video.onerror=()=>reject(Error('这个视频格式暂时无法播放'))}));return {duration:video.duration,width:video.videoWidth,height:video.videoHeight}}
   finally{video.removeAttribute('src');video.load()}
+}
+
+export async function videoThumbnails(path,total) {
+  if(typeof document==='undefined')return []
+  const reader=await frameReader(path),output=canvas(80,80),images=[]
+  try{for(let i=0;i<6;i++){
+    const frame=await reader.at(Math.min(total-.05,total*(i+.5)/6));output.width=80;output.height=80
+    const ctx=output.getContext('2d'),scale=Math.max(80/frame.width,80/frame.height),w=frame.width*scale,h=frame.height*scale
+    ctx.drawImage(frame.image,(80-w)/2,(80-h)/2,w,h);images.push(output.toDataURL('image/jpeg',.6))
+  }return images}finally{output.width=1;await reader.close().catch(()=>{})}
 }

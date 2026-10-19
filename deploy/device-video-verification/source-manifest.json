@@ -1,0 +1,5 @@
+{
+  "meme_generator/features/livegif.py": "c8bfce2fb331db45527dc8bbe5c20219e8176e0553d95109eab41a1afff80630",
+  "meme_generator/features/vision.py": "34e4b8ee5fe40ee49c324e2f4e2b4fa5d5105e84bf46083bfcf77ceada2ff5ea",
+  "meme_generator/features/portrait.py": "8bf439609edc319b156e98e11e5ef564c844dfad50f66fd85cd43d10cfff24ba"
+}

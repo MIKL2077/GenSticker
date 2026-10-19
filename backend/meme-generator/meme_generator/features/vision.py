@@ -7,7 +7,7 @@ from .store import root
 
 _session = None
 _emotion = None
-PROCESSOR_VERSION = "u2netp-largest-v1-ferplus-v1"
+PROCESSOR_VERSION = "u2netp-portrait-v2-ferplus-v1"
 
 
 def warmup(*, include_emotion=True):
@@ -120,16 +120,16 @@ def process(path):
             analysis["warnings"].append("主体提取失败，已保留原图")
     else:
         analysis["warnings"].append("抠图模型未就绪，已保留原图")
+    heads = []
     try:
         import cv2
         import numpy as np
+        from .portrait import detect_heads
+        heads = detect_heads(image)
 
         gray = cv2.cvtColor(np.asarray(image.convert("RGB")), cv2.COLOR_RGB2GRAY)
         cv2.setNumThreads(2)
-        detector = cv2.CascadeClassifier(
-            cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
-        )
-        faces = detector.detectMultiScale(gray, 1.1, 5, minSize=(40, 40))
+        faces = [tuple(round(v) for v in box) for kind,box in heads if kind=='person']
         if len(faces):
             x, y, w, h = max(faces, key=lambda f: f[2] * f[3])
             analysis["subject"] = "person"
@@ -174,6 +174,11 @@ def process(path):
         # Unknown/non-human subjects deliberately use general rather than face labels.
     except ImportError:
         pass
+    # Frame the usable head after cutout rather than fitting an entire body into avatar slots.
+    from .portrait import focus_portrait
+    image, framing = focus_portrait(image,heads=heads)
+    analysis.update(framing)
+    image.thumbnail((768,768), Image.Resampling.LANCZOS)
     analysis["aspect"] = round(image.width / max(1, image.height), 2)
     analysis["warnings"].append("表情标签仅描述视觉线索，不判断真实情绪")
     return image, analysis

@@ -27,7 +27,7 @@ def prepare_result(raw,idem,user):
     try:
         try:
             with Image.open(BytesIO(raw)) as image:
-                if image.format!='GIF' or max(image.size)>240 or min(image.size)<2 or not 2<=image.n_frames<=100:raise ValueError()
+                if image.format!='GIF' or max(image.size)>240 or min(image.size)<2 or not 1<=image.n_frames<=100:raise ValueError()
                 duration=0
                 for frame in ImageSequence.Iterator(image):
                     frame.load();duration+=frame.info.get('duration',100)
@@ -92,8 +92,8 @@ def own(asset,user):
 @router.post('/assets',status_code=201)
 async def upload(file:UploadFile=File(...),user=Depends(current_user)):
     from asyncio import to_thread
-    raw=await file.read(30*1024*1024+1)
-    if len(raw)>30*1024*1024:raise HTTPException(413,'动态素材最多 30 MB，请先缩短视频')
+    raw=await file.read(60*1024*1024+1)
+    if len(raw)>60*1024*1024:raise HTTPException(413,'素材超过 60 MB，请先在时间轴截取或压缩视频')
     return await to_thread(prepare,raw,user['id'])
 
 def prepare(raw,user):
@@ -108,7 +108,7 @@ def prepare(raw,user):
         stream=next((s for s in info['streams'] if s.get('codec_type')=='video'),None)
         if not stream or stream.get('width',0)*stream.get('height',0)>33_200_000:raise HTTPException(422,'视频分辨率过高，先导出 1080p 再试试')
         duration=float(info.get('format',{}).get('duration') or stream.get('duration') or 3)
-        if not .08<=duration<=9.1:raise HTTPException(422,'兼容模式请先截取最长 9 秒的视频；长视频请使用本地制作')
+        if not .08<=duration<=1800:raise HTTPException(422,'请选择 30 分钟以内的视频')
         poster=directory()/(identifier+'.jpg')
         run(['ffmpeg','-nostdin','-v','error','-threads','2','-protocol_whitelist','file,pipe','-i',str(path),'-frames:v','1','-vf','scale=640:640:force_original_aspect_ratio=decrease','-y',str(poster)])
         with Image.open(poster) as image:width,height=image.size
@@ -126,7 +126,7 @@ def poster(identifier:str,user=Depends(current_user)):
 class LiveJob(BaseModel):
     asset_id:str=Field(pattern='^[a-f0-9]{32}$')
     idempotency_key:str=Field(min_length=8,max_length=100)
-    start:float=Field(default=0,ge=0,le=120)
+    start:float=Field(default=0,ge=0,le=1800)
     duration:float=Field(default=3,ge=.2,le=9)
     crop:tuple[float,float,float,float]=(0,0,1,1)
     text:str=Field(default='',max_length=100)
@@ -143,6 +143,13 @@ class LiveJob(BaseModel):
 def create(params:LiveJob,user=Depends(current_user)):
     meta=own(params.asset_id,user['id'])
     if params.start>=meta['duration']:raise HTTPException(422,'起始时间已经超出视频长度')
+    from .store import connect
+    from .recommend import admit_generation
+    db=connect()
+    try:
+        with db:
+            db.execute('BEGIN IMMEDIATE');admit_generation(db,user['id'],'gif:'+hashlib.sha256((user['id']+params.idempotency_key).encode()).hexdigest(),time.time())
+    finally:db.close()
     from .studio import enqueue
     return enqueue('livegif',params.model_dump(exclude={'idempotency_key'}),params.idempotency_key,user)
 
@@ -157,7 +164,7 @@ def render_job(payload,user):
     elif params.rotation==180:filters.extend(['hflip','vflip'])
     elif params.rotation==270:filters.append('transpose=2')
     if params.flip:filters.append('hflip')
-    x,y,w,h=params.crop;filters.extend([f'crop=iw*{w}:ih*{h}:iw*{x}:ih*{y}','scale=240:240:force_original_aspect_ratio=decrease','fps=10'])
+    x,y,w,h=params.crop;filters.extend([fr'crop=w=max(1\,floor(iw*{w})):h=max(1\,floor(ih*{h})):x=min(iw-ow\,floor(iw*{x})):y=min(ih-oh\,floor(ih*{y})):exact=1',r'scale=w=max(2\,trunc(iw*min(240/iw\,240/ih))):h=max(2\,trunc(ih*min(240/iw\,240/ih)))','fps=10'])
     with tempfile.TemporaryDirectory(dir=directory()) as temp:
         pattern=str(Path(temp)/'frame-%03d.png')
         run(['ffmpeg','-nostdin','-v','error','-threads','2','-filter_threads','2','-protocol_whitelist','file,pipe','-ss',str(params.start),'-i',str(source),'-t',str(params.duration),'-an','-vf',','.join(filters),'-frames:v','90','-y',pattern],timeout=30)
@@ -175,12 +182,20 @@ def render_job(payload,user):
                 painter.rectangle((0,max(0,frame.height-height-12),frame.width,frame.height),fill='#fff5df')
                 for i,line in enumerate(lines):painter.text((frame.width/2,frame.height-height-6+i*(size+5)),line,font=face,fill='#253f45',anchor='mt')
             frames.append(frame)
-        if len(frames)<2:raise ValueError('source has no motion')
-        for stride,colors in ((1,128),(2,128),(2,64),(3,64),(3,32)):
-            reduced=[f.quantize(colors=colors,method=Image.Quantize.MEDIANCUT) for f in frames[::stride]]
-            output=BytesIO();reduced[0].save(output,'GIF',save_all=True,append_images=reduced[1:],duration=[min(stride,len(frames)-i)*100 for i in range(0,len(frames),stride)],loop=0,optimize=True,disposal=2)
-            if len(output.getvalue())<=MAX_GIF_BYTES:return output.getvalue()
-        raise ValueError('画面过于复杂，请缩短片段后重试')
+        if not frames:raise ValueError('视频没有可读取的画面')
+        return fit_gif(frames)
+
+def fit_gif(frames):
+    """Keep the whole selected interval. Bound size by resolution as well as color/fps."""
+    # Never ask users to redo a valid edit merely because a busy scene has more entropy.
+    for edge,stride,colors in ((240,1,128),(240,2,128),(200,2,96),(160,2,64),(120,2,64),(96,3,48),(64,3,32),(32,3,16)):
+        reduced=[]
+        for frame in frames[::stride]:
+            image=frame.copy();image.thumbnail((edge,edge),Image.Resampling.LANCZOS)
+            reduced.append(image.quantize(colors=colors,method=Image.Quantize.MEDIANCUT))
+        output=BytesIO();reduced[0].save(output,'GIF',save_all=True,append_images=reduced[1:],duration=[min(stride,len(frames)-i)*100 for i in range(0,len(frames),stride)],loop=0,optimize=True,disposal=2)
+        if len(output.getvalue())<=MAX_GIF_BYTES:return output.getvalue()
+    raise ValueError('GIF 压缩失败')
 
 def cleanup():
     for meta_path in directory().glob('*.json'):

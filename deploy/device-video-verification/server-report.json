@@ -1,0 +1,47 @@
+{
+  "checks": [
+    {
+      "name": "long H264 selected interval",
+      "queued": true,
+      "frames": 45,
+      "duration_ms": 9000,
+      "bytes": 279179,
+      "size": [
+        231,
+        240
+      ],
+      "elapsed_seconds": 3.27
+    },
+    {
+      "name": "HEVC phone codec",
+      "queued": true,
+      "frames": 30,
+      "duration_ms": 3000,
+      "bytes": 209493,
+      "size": [
+        231,
+        240
+      ],
+      "elapsed_seconds": 1.75
+    },
+    {
+      "name": "embedded Live motion automatic extraction",
+      "queued": true,
+      "frames": 30,
+      "duration_ms": 3000,
+      "bytes": 204049,
+      "size": [
+        231,
+        240
+      ],
+      "elapsed_seconds": 1.73
+    },
+    {
+      "name": "portrait cascade models available",
+      "detectors": 3
+    }
+  ],
+  "identity": "isolated synthetic fixture, no real user data",
+  "status": "passed",
+  "fixture_cleaned": true
+}
