@@ -45,6 +45,21 @@ export function uploadLiveSource(path,token,onProgress=()=>{}) {
 // native decoder or page lifetime is needed for the FFmpeg worker to finish it.
 export async function submitVideoJob(asset,options,key=uniqueKey(),token) {
   const owner=uni.getStorageSync('gensticker.session.v1')?.profile?.id
-  const job=await apiRequest('/studio/live/jobs',{method:'POST',header:token?{Authorization:'Bearer '+token}:{},data:{asset_id:asset.asset_id,idempotency_key:key,...options}},1)
+  const job=await apiRequest('/studio/live/jobs',{method:'POST',header:token?{Authorization:'Bearer '+token}:{},timeout:30000,data:{asset_id:asset.asset_id,idempotency_key:key,...options}},1)
   return trackStudioJob(job,owner)
+}
+
+// A small, 10 fps intermediate lets the native decoder read sequentially. It
+// also bounds fallback upload size on slow cellular links. Picker originals stay intact.
+export async function prepareLocalSource(path,info,crop=[0,0,1,1]) {
+  if(!isNativeVideo())return {path,sequential:false}
+  if(!wx.compressVideo||info.duration>30)return {path,sequential:false,nativeUnavailable:true}
+  const edge=Math.min(1280,Math.max(720,240/Math.min(crop[2],crop[3])))
+  let timer
+  const compression=call(wx.compressVideo.bind(wx),{src:path,bitrate:600,fps:10,resolution:Math.min(1,edge/Math.max(info.width,info.height))})
+  try{
+    const result=await Promise.race([compression,new Promise((_,reject)=>timer=setTimeout(()=>reject(Error('本地压缩没有响应')),30000))])
+    return {path:result.tempFilePath,sequential:true}
+  }catch(_){return {path,sequential:false,nativeUnavailable:true}}
+  finally{clearTimeout(timer)}
 }

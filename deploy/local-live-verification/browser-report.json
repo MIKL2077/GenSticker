@@ -1,0 +1,24 @@
+{
+  "status": "passed",
+  "seconds": 0.787,
+  "background": "rgb(255, 250, 245)",
+  "generateButtonBounds": {
+    "x": 31,
+    "y": 741.125,
+    "width": 328,
+    "height": 60.828125
+  },
+  "localResult": {
+    "id": "1792416628368-m9s1urvbni",
+    "local": true,
+    "kind": "livegif",
+    "status": "completed",
+    "created_at": 1792416628.368,
+    "message": "本机已完成，可保存分享；正在同步",
+    "localPath": "blob:http://127.0.0.1:5174/eafd97fa-3c0e-4f2b-a6a5-0a3a00b02874",
+    "syncAttempt": 1792416629019
+  },
+  "sourceUploads": 0,
+  "syncTimeoutPreservesResult": true,
+  "pageErrors": []
+}

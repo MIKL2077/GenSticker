@@ -1,0 +1,35 @@
+{
+  "checks": [
+    {
+      "name": "Live capability bridge",
+      "account_credential_sent_by_shortcut": false,
+      "one_use": true,
+      "authenticated_download": true,
+      "bytes": 75275,
+      "duration": 2.0
+    },
+    {
+      "name": "Imported Live edits finish in durable queue",
+      "frames": 20,
+      "bytes": 129854,
+      "size": [
+        160,
+        240
+      ]
+    },
+    {
+      "name": "Browser local GIF cloud sync",
+      "bytes": 175072,
+      "idempotent": true,
+      "byte_identical": true,
+      "unread_until_viewed": true
+    },
+    {
+      "name": "Setup guide hosted",
+      "content_type": "text/html"
+    }
+  ],
+  "identity": "isolated synthetic fixture; no real user data",
+  "status": "passed",
+  "fixture_cleaned": true
+}

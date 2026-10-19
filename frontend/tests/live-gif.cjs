@@ -18,7 +18,8 @@ async function verify(){
  const nativeCanvas={width:1,height:1,getContext(){return {createImageData:(w,h)=>({data:new Uint8ClampedArray(w*h*4)}),putImageData:()=>{}}}}
  c.wx={createOffscreenCanvas:()=>nativeCanvas,createVideoDecoder:()=>({start:async options=>{assert.equal(options.mode,1);assert.equal(options.abortAudio,true)},seek:async ms=>seeks.push(ms),getFrameData:()=>({width:2,height:2,data:new Uint8Array(16).buffer}),stop:async()=>{},remove:async()=>{removed=true}})}
  const reader=await c.frameReader('/local.mp4');await reader.at(12.4);await reader.close();assert.deepEqual(seeks,[12400]);assert.ok(removed)
- c.document={};const still=new Uint8Array(20);c.fetch=async()=>({arrayBuffer:async()=>still.buffer});await assert.rejects(c.albumMotion('/still.jpg'),/静态照片/)
+ const sequential=await c.frameReader('/10fps.mp4',true);await sequential.at(2);await sequential.at(2.1);await sequential.at(2.2);await sequential.close();assert.deepEqual(seeks,[12400,2000],'compressed native clip seeks once and reads successive 10 fps frames')
+ c.document={};const still=new Uint8Array(20);c.fetch=async()=>({arrayBuffer:async()=>still.buffer});await assert.rejects(c.albumMotion('/still.jpg'),/动态片段/)
  const motion=new Uint8Array(40);motion[7]=24;motion.set(Buffer.from('ftypisom'),8);c.fetch=async()=>({arrayBuffer:async()=>motion.buffer});c.document={};c.URL={createObjectURL:()=>'/embedded.mp4'}
  assert.equal(await c.albumMotion('/motion.jpg'),'/embedded.mp4')
  console.log('PASS local GIF encoding, 9-second window, arbitrary crop, decoder millisecond seek, cancellation, embedded motion and album-only picker')

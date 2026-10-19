@@ -49,12 +49,6 @@ def prepare_result(raw,idem,user):
             path.write_bytes(raw)
             meta_path.write_text(json.dumps({'user_id':user['id'],'created':time.time(),'duration':duration/1000,'width':width,'height':height,'ready':True}))
         job=enqueue('livegif',{'asset_id':identifier,'ready':True},idem,user)
-        # This result was already displayed locally before sync; don't create an unread badge.
-        from .studio import init
-        db=init()
-        try:
-            with db:db.execute('INSERT OR IGNORE INTO studio_views VALUES(?,?,?)',(job['id'],user['id'],time.time()))
-        finally:db.close()
         return job
     finally:slots.release()
 
@@ -64,7 +58,7 @@ def directory():
 def run(args,timeout=25):
     try:return subprocess.run(args,stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=timeout,check=True).stdout
     except FileNotFoundError:raise HTTPException(503,'动图工作室还在准备编解码器')
-    except (subprocess.SubprocessError,OSError):raise HTTPException(422,'没有读取到动态画面，请将 Live 图存储为视频后再上传')
+    except (subprocess.SubprocessError,OSError):raise HTTPException(422,'没有读取到动态画面，请重选视频或使用 iPhone Live 直连')
 
 def motion(raw):
     if raw[:6] in (b'GIF87a',b'GIF89a'):return raw
@@ -79,7 +73,7 @@ def motion(raw):
         start=offset+8
     # QuickTime can start with wide/mdat/moov instead of an ftyp box.
     if len(raw)>12 and raw[4:8] in (b'moov',b'mdat',b'wide'):return raw
-    raise HTTPException(422,'微信只传来了静态照片，没有 Live 动态片段。请在 iPhone 相册选择“存储为视频”，再从这里选取视频；也可上传包含动态片段的原始文件')
+    raise HTTPException(422,'微信没有提供 Live 动态片段。请使用 iPhone Live 直连，或选择包含动态片段的原始文件')
 
 def own(asset,user):
     if len(asset)!=32 or any(c not in '0123456789abcdef' for c in asset):raise HTTPException(404,'素材不存在')

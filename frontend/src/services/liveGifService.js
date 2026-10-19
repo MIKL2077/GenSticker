@@ -24,37 +24,41 @@ function canvas(width,height) {
 function checkCancelled(cancelled) { if(cancelled?.()) throw Error('制作已取消') }
 function deadline(promise, ms=12000) {
   let timer
-  return Promise.race([promise,new Promise((_,reject)=>timer=setTimeout(()=>reject(Error('这台设备读取视频超时，请缩短片段或使用兼容模式')),ms))]).finally(()=>clearTimeout(timer))
+  return Promise.race([promise,new Promise((_,reject)=>timer=setTimeout(()=>reject(Error('本地读取暂时没有响应，将自动切换后台制作')),ms))]).finally(()=>clearTimeout(timer))
 }
 export function decoderEvent(decoder,name,action) {
   if(!decoder.on)return deadline(Promise.resolve().then(action))
   return new Promise((resolve,reject)=>{
-    const finish=(error)=>{clearTimeout(timer);decoder.off?.(name,ready);error?reject(error):resolve()}
+    let settled=false
+    const finish=(error)=>{if(settled)return;settled=true;clearTimeout(timer);decoder.off?.(name,ready);error?reject(error):resolve()}
     const ready=()=>finish(),timer=setTimeout(()=>finish(Error('本地解码没有响应')),5000)
     decoder.on(name,ready)
-    try{const pending=action();pending?.catch?.(finish)}catch(error){finish(error)}
+    try{const pending=action();pending?.then?.(()=>finish(),finish)}catch(error){finish(error)}
   })
 }
 // The browser seeks the selected window; WeChat uses its native local decoder.
 // No video upload is needed on this path. Keep only downscaled output frames in memory.
-async function frameReader(path) {
+async function frameReader(path, sequential=false, cancelled) {
   if(typeof document !== 'undefined') {
     const video=document.createElement('video');video.muted=true;video.playsInline=true;video.preload='auto';video.src=path
     try { await deadline(new Promise((resolve,reject)=>{video.onloadeddata=resolve;video.onerror=()=>reject(Error('这个视频暂时不能解码'))})) } catch(e){video.removeAttribute('src');video.load();throw e}
     return {async at(seconds){if(Math.abs(video.currentTime-seconds)>.015)await deadline(new Promise((resolve,reject)=>{video.onseeked=resolve;video.onerror=()=>reject(Error('视频定位失败'));video.currentTime=seconds}));return {image:video,width:video.videoWidth,height:video.videoHeight}},async close(){video.pause();video.removeAttribute('src');video.load()}}
   }
   const decoder=wx.createVideoDecoder(),rawCanvas=canvas(1,1)
-  try { await decoderEvent(decoder,'start',()=>decoder.start({source:path,mode:1,abortAudio:true})) } catch(e){await decoder.remove().catch(()=>{});throw e}
+  try { await decoderEvent(decoder,'start',()=>decoder.start({source:path,mode:1,abortAudio:true})) } catch(e){await deadline(Promise.resolve().then(()=>decoder.remove()),1000).catch(()=>{});throw e}
+  let started=false,ended=false,lastFrame
+  decoder.on?.('ended',()=>{ended=true})
   return {async at(seconds){
-    await decoderEvent(decoder,'seek',()=>decoder.seek(Math.round(seconds*1000)))
+    checkCancelled(cancelled)
+    if(!sequential||!started){if(seconds>0)await decoderEvent(decoder,'seek',()=>decoder.seek(Math.round(seconds*1000)));started=true}
     const end=Date.now()+3000;let frame
-    while(!(frame=decoder.getFrameData())){if(Date.now()>end)throw Error('没有读到动态画面，请换一段视频');await pause(10)}
+    while(!(frame=decoder.getFrameData())){checkCancelled(cancelled);if(ended&&lastFrame)return lastFrame;if(Date.now()>end)throw Error('本地解码暂时不可用');await pause(10)}
     if(frame.width*frame.height>12_000_000)throw Error('这段视频分辨率过高，请从相册导出 1080p 版本')
     rawCanvas.width=frame.width;rawCanvas.height=frame.height
     const ctx=rawCanvas.getContext('2d'),image=ctx.createImageData(frame.width,frame.height)
     image.data.set(new Uint8Array(frame.data));ctx.putImageData(image,0,0)
-    return {image:rawCanvas,width:frame.width,height:frame.height}
-  },async close(){rawCanvas.width=1;rawCanvas.height=1;try{await decoder.stop()}finally{await decoder.remove()}}}
+    lastFrame={image:rawCanvas,width:frame.width,height:frame.height};return lastFrame
+  },async close(){rawCanvas.width=1;rawCanvas.height=1;try{await deadline(Promise.resolve().then(()=>decoder.stop()),1000).catch(()=>{})}finally{await deadline(Promise.resolve().then(()=>decoder.remove()),1000).catch(()=>{})}}}
 }
 export function drawFrame(ctx, image, width, height, options, edge=240) {
   const rotation=options.rotation||0, rotated=rotation%180!==0, rw=rotated?height:width, rh=rotated?width:height
@@ -103,18 +107,20 @@ export async function encodeGifFrames(frames,width,height,onProgress=()=>{},canc
   throw Error('本地编码未完成，将继续使用后台生成')
 }
 export async function renderLocalGif(path, options, onProgress=()=>{}, cancelled) {
-  if(!supportsLocalGif())throw Error('当前微信不支持本地制作，请更新微信或使用兼容模式')
-  const reader=await frameReader(path),output=canvas(1,1),frames=[]
+  if(!supportsLocalGif())throw Error('当前设备需要后台制作')
+  const expires=Date.now()+25000,isCancelled=()=>cancelled?.()||Date.now()>expires
+  const reader=await frameReader(path,!!options.sequential,isCancelled),output=canvas(1,1),frames=[]
   try {
     const count=Math.max(2,Math.ceil(options.duration*10));let width,height
     for(let i=0;i<count;i++) {
       checkCancelled(cancelled)
+      checkCancelled(isCancelled)
       const frame=await reader.at(options.start+i*options.duration/count)
       const geo=drawFrame(output.getContext('2d'),frame.image,frame.width,frame.height,options)
       width=geo.width;height=geo.height;frames.push(output.getContext('2d').getImageData(0,0,width,height).data)
       onProgress(Math.round(65*(i+1)/count));await pause(0)
     }
-    const result=await encodeGifFrames(frames,width,height,onProgress,cancelled)
+    const result=await encodeGifFrames(frames,width,height,onProgress,isCancelled)
     checkCancelled(cancelled)
     let resultPath
     if(typeof document !== 'undefined')resultPath=registerTemporary(URL.createObjectURL(new Blob([result.bytes],{type:'image/gif'})))
@@ -129,10 +135,10 @@ export async function albumMotion(path) {
   if(typeof document !== 'undefined')bytes=new Uint8Array(await(await fetch(path)).arrayBuffer())
   else {
     const fs=uni.getFileSystemManager(),stat=await new Promise((resolve,reject)=>fs.stat({path,success:r=>resolve(r.stats),fail:reject}))
-    if(stat.size>30*1024*1024)throw Error('Live 原图最多 30 MB，请在相册存储为视频后选择')
+    if(stat.size>30*1024*1024)throw Error('Live 原图最多 30 MB，可使用 iPhone Live 直连或改选视频')
     bytes=new Uint8Array(await new Promise((resolve,reject)=>fs.readFile({filePath:path,success:r=>resolve(r.data),fail:reject})))
   }
-  if(bytes.length>30*1024*1024)throw Error('Live 原图最多 30 MB，请在相册存储为视频后选择')
+  if(bytes.length>30*1024*1024)throw Error('Live 原图最多 30 MB，可使用 iPhone Live 直连或改选视频')
   for(let i=4;i<bytes.length-8;i++)if(bytes[i]===102 && bytes[i+1]===116 && bytes[i+2]===121 && bytes[i+3]===112){
     const brand=String.fromCharCode(...bytes.slice(i+4,i+8)),size=new DataView(bytes.buffer,bytes.byteOffset+i-4,4).getUint32(0)
     if(['heic','heix','hevc','hevx','mif1','avif'].includes(brand)||size<8||size>256)continue
@@ -141,7 +147,7 @@ export async function albumMotion(path) {
     const destination=`${uni.env.USER_DATA_PATH}/gensticker_edit_motion_${Date.now()}.mp4`
     await writeOwnedFile(destination,motion.buffer);return registerTemporary(destination)
   }
-  throw Error('微信只返回了静态照片。请在手机相册打开这张 Live 图，选择“存储为视频”，再点“从相册选视频”；无需发送到聊天。')
+  throw Error('微信没有提供这张 Live 的动态片段。可使用下方“iPhone Live 直连”，从系统相册提取动态画面。')
 }
 export const disposeLocalMedia=releaseTemporary
 

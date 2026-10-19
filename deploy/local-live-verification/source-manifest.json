@@ -1,0 +1,6 @@
+{
+  "backend/meme-generator/meme_generator/app.py": "75132db3c4e994e51975e33e58b4ffe0746adbafdb7f4287b2f4f0213d5e190a",
+  "backend/meme-generator/meme_generator/features/livegif.py": "4782e6a5e4a8733b8611832f94041610e409d0ea3f7a6cfa76b3936fd97a9e19",
+  "backend/meme-generator/meme_generator/features/live_import.py": "d86c81bae41d751960c76b853c96e5d9cd35892c259405863894b7d3ade3199b",
+  "frontend/public/live-setup.html": "e5cc5071c6b67760199719bdea320a27d07318eb183747fcccb914bac3cd91e4"
+}

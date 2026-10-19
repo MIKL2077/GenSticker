@@ -83,6 +83,8 @@ class EditorLiveTests(unittest.TestCase):
         self.assertEqual(again.json()['id'],job['id'])
         with patch.object(livegif,'run',side_effect=AssertionError('prepared GIF must not reencode')):self.assertTrue(studio.work_one())
         output=self.client.get('/studio/jobs/'+job['id']+'/image');self.assertEqual(output.content,raw)
+        self.assertEqual(self.client.get('/studio/unread').json()['count'],1)
+        self.client.post('/studio/jobs/'+job['id']+'/view')
         self.assertEqual(self.client.get('/studio/unread').json()['count'],0)
         self.owner='bob';self.assertEqual(self.client.get('/studio/jobs/'+job['id']+'/image').status_code,404)
         self.owner='alice'
@@ -114,6 +116,6 @@ class EditorLiveTests(unittest.TestCase):
     def test_static_photo_and_invalid_crop_have_clear_errors(self):
         buf=BytesIO();Image.new('RGB',(32,32),'red').save(buf,'JPEG')
         response=self.client.post('/studio/live/assets',files={'file':('static.jpg',buf.getvalue(),'image/jpeg')})
-        self.assertEqual(response.status_code,422);self.assertIn('存储为视频',response.json()['detail'])
+        self.assertEqual(response.status_code,422);self.assertIn('Live 直连',response.json()['detail'])
         for crop in ([0,0,0,1],[0,0,2,1],[-.1,0,1,1]):
             self.assertEqual(self.client.post('/studio/live/jobs',json={'asset_id':'a'*32,'idempotency_key':'invalid-crop','crop':crop}).status_code,422)

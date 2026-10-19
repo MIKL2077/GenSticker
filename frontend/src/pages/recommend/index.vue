@@ -7,7 +7,7 @@
   <template v-else>
    <view class="quota-row"><text>{{quotaLoading?'正在连接工作室…':quotaReady?(unlimited?'日常使用不限次数，连续操作稍作间隔':'今日剩余 '+quota.remaining+' / '+quota.limit+' 次'):'工作室暂未连接'}}</text><text class="quota-badge">灵感持续供应</text></view>
    <button v-if="quotaError" class="error retry-inline" @click="refresh">{{quotaError}} · 重试 ↗</button>
-   <button class="upload-card fx-enter" :disabled="busy" @click="choose"><image v-if="photo" :src="photo" mode="aspectFit" class="photo"/><view v-else class="upload-illustration"><text>☺</text><text>＋</text></view><text class="upload-title">{{photo?'照片准备好了':'选一张喜欢的照片'}}</text><text class="upload-caption">{{photo?'点击更换照片':'从相册选取，或拍一张新的'}}</text></button>
+   <button class="upload-card fx-enter" :disabled="busy" @click="choose"><image v-if="photo" :src="photo" mode="aspectFit" class="photo"/><view v-else class="upload-illustration"><text>☺</text><text>＋</text></view><text class="upload-title">{{photo?'照片准备好了':'选一张喜欢的照片'}}</text><text class="upload-caption">{{photo?'点击更换照片':'建议上传包含单个主体的图片'}}</text></button>
    <button class="ui-primary generate-button" :disabled="busy || retrySeconds>0 || !photo || !quotaReady || !quotaAvailable" :loading="uploading" @click="generate">{{uploading?'正在上传照片':job && !finished?'正在搭配表情…':'为 Ta 生成 9 张损图 ✦'}}</button>
    <text class="hint generation-hint">{{generateHint}}</text><button v-if="quotaReady && !quotaAvailable" class="text-link" @click="goHome">去首页手动制作 ↗</button>
   </template>

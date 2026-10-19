@@ -11,7 +11,8 @@ async function verify(){
  c.wx.chooseMedia=options=>options.success({tempFiles:[{tempFilePath:'/static.jpg',fileType:'image'}]});await assert.rejects(c.chooseAlbumVideo(true),/动态分量/)
  const ingress=c.uploadLiveSource('/trimmed.mp4','owner-token',v=>progress=v);assert.equal((await ingress.promise).asset_id,'asset');assert.equal(uploadOptions.header.Authorization,'Bearer owner-token');assert.equal(progress,75)
  const pending=c.submitVideoJob({asset_id:'asset'},{start:0,duration:8.2},'stable-key','owner-token');owner='bob';resolveJob({id:'job',kind:'livegif',status:'queued'});await pending;assert.equal(tracked.id,'alice','late submissions retain the submitting account identity')
- const page=fs.readFileSync(path.join(__dirname,'../src/pages/live/index.vue'),'utf8');assert.ok(!page.includes('renderLocalGif('));assert.ok(page.includes("uni.navigateTo({url:'/pages/queue/index'})"));assert.ok(!page.includes('使用兼容模式'))
+ c.setTimeout=setTimeout;c.clearTimeout=clearTimeout;c.Math=Math;c.wx.compressVideo=options=>{assert.equal(options.fps,10);assert.equal(options.bitrate,600);assert.ok(options.resolution<1);options.success({tempFilePath:'/small.mp4'})};const small=await c.prepareLocalSource('/original.mov',{duration:9,width:1080,height:1920});assert.equal(small.path,'/small.mp4');assert.equal(small.sequential,true);assert.equal((await c.prepareLocalSource('/long.mov',{duration:120,width:1080,height:1920})).nativeUnavailable,true)
+ const page=fs.readFileSync(path.join(__dirname,'../src/pages/live/index.vue'),'utf8');assert.ok(page.includes('renderLocalGif('));assert.ok(page.includes("uni.navigateTo({url:'/pages/queue/index'})"));assert.ok(!page.includes('使用兼容模式'))
  console.log('PASS native timeline trimming, millisecond duration, cancellation, honest Live detection, upload progress, durable queue and stale-account isolation')
 }
 verify().catch(e=>{console.error(e);process.exitCode=1})
