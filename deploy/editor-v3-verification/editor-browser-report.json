@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "scrubbedSeconds": 1.4,
+  "captionMoved": true,
+  "generateBounds": {
+    "x": 31,
+    "y": 741.125,
+    "width": 328,
+    "height": 60.828125
+  },
+  "keyboardControlsVisible": true,
+  "foregroundShowsResult": true,
+  "backgroundSurvivesEditorUnload": true,
+  "noAutomaticQueueRedirect": true,
+  "pageErrors": []
+}

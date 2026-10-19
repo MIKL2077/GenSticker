@@ -1,3 +1,4 @@
+import {paintCaption} from '@/services/captionLayout'
 import { GIFEncoder, quantize, applyPalette } from 'gifenc'
 import { writeOwnedFile, registerTemporary, releaseTemporary } from '@/services/ownedFiles'
 
@@ -70,15 +71,7 @@ export function drawFrame(ctx, image, width, height, options, edge=240) {
   if(rotation===180){ctx.translate(width,height);ctx.rotate(Math.PI)}
   if(rotation===270){ctx.translate(0,width);ctx.rotate(-Math.PI/2)}
   ctx.drawImage(image,0,0,width,height);ctx.restore()
-  if(options.text){
-    const size=Math.max(11,Math.min(20,Math.round(geo.width/12)));ctx.font=`bold ${size}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='top'
-    const lines=[];let line=''
-    for(const char of options.text){if(ctx.measureText(line+char).width>geo.width-12 && line){lines.push(line);line=char}else line+=char}
-    if(line)lines.push(line)
-    const visible=lines.slice(0,3),top=Math.max(0,geo.height-visible.length*(size+3)-8)
-    ctx.fillStyle='#fff5df';ctx.fillRect(0,top,geo.width,geo.height-top);ctx.fillStyle='#253f45'
-    visible.forEach((value,i)=>ctx.fillText(value,geo.width/2,top+4+i*(size+3)))
-  }
+  if(options.text)paintCaption(ctx,options.text,geo.width,geo.height,options.caption_style)
   return geo
 }
 export function resizeRgba(input,width,height,outWidth,outHeight) {
@@ -135,10 +128,10 @@ export async function albumMotion(path) {
   if(typeof document !== 'undefined')bytes=new Uint8Array(await(await fetch(path)).arrayBuffer())
   else {
     const fs=uni.getFileSystemManager(),stat=await new Promise((resolve,reject)=>fs.stat({path,success:r=>resolve(r.stats),fail:reject}))
-    if(stat.size>30*1024*1024)throw Error('Live 原图最多 30 MB，可使用 iPhone Live 直连或改选视频')
+    if(stat.size>30*1024*1024)throw Error('Live 原图最多 30 MB，请选择较小的动态原图或视频')
     bytes=new Uint8Array(await new Promise((resolve,reject)=>fs.readFile({filePath:path,success:r=>resolve(r.data),fail:reject})))
   }
-  if(bytes.length>30*1024*1024)throw Error('Live 原图最多 30 MB，可使用 iPhone Live 直连或改选视频')
+  if(bytes.length>30*1024*1024)throw Error('Live 原图最多 30 MB，请选择较小的动态原图或视频')
   for(let i=4;i<bytes.length-8;i++)if(bytes[i]===102 && bytes[i+1]===116 && bytes[i+2]===121 && bytes[i+3]===112){
     const brand=String.fromCharCode(...bytes.slice(i+4,i+8)),size=new DataView(bytes.buffer,bytes.byteOffset+i-4,4).getUint32(0)
     if(['heic','heix','hevc','hevx','mif1','avif'].includes(brand)||size<8||size>256)continue
@@ -147,7 +140,7 @@ export async function albumMotion(path) {
     const destination=`${uni.env.USER_DATA_PATH}/gensticker_edit_motion_${Date.now()}.mp4`
     await writeOwnedFile(destination,motion.buffer);return registerTemporary(destination)
   }
-  throw Error('微信没有提供这张 Live 的动态片段。可使用下方“iPhone Live 直连”，从系统相册提取动态画面。')
+  throw Error('微信本次只提供了静态照片，未提供配对视频，暂时无法还原动态。可改选带视频片段的动态原图或相册视频。')
 }
 export const disposeLocalMedia=releaseTemporary
 

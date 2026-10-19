@@ -14,8 +14,9 @@ def detectors():
             if not detector.empty():_local.detectors.append((detector,kind))
     return _local.detectors
 
-def detect_heads(image):
+def detect_heads(image,*,all_heads=False):
     """Detect on a small neutral-backed image so transparency isn't a black halo."""
+    cv2.setNumThreads(2)
     rgba=image.convert('RGBA');background=Image.new('RGBA',rgba.size,'#dddddd');background.alpha_composite(rgba)
     scale=min(1,640/max(image.size));small=background.convert('RGB').resize((max(1,round(image.width*scale)),max(1,round(image.height*scale))))
     gray=cv2.cvtColor(np.asarray(small),cv2.COLOR_RGB2GRAY);gray=cv2.equalizeHist(gray)
@@ -23,7 +24,7 @@ def detect_heads(image):
     for detector,kind in detectors():
         for x,y,w,h in detector.detectMultiScale(gray,1.1,5,minSize=(28,28)):
             boxes.append((kind,tuple(float(v)/scale for v in (x,y,w,h))))
-        if boxes and kind=='person':break
+        if boxes and kind=='person' and not all_heads:break
     return boxes
 
 def focus_portrait(image,heads=None):
@@ -45,3 +46,20 @@ def focus_portrait(image,heads=None):
             box=(max(0,x-pad),max(0,y-pad),min(image.width,right+pad),min(image.height,bottom+pad))
             return image.crop(box),{'framing':'subject','focus_box':list(box)}
     return image,{'framing':'original'}
+
+def candidate_boxes(image):
+    boxes=sorted(detect_heads(image,all_heads=True),key=lambda item:item[1][2]*item[1][3],reverse=True);accepted=[]
+    for kind,(x,y,w,h) in boxes:
+        if w<=0 or h<=0:continue
+        duplicate=False
+        for _,(ax,ay,aw,ah) in accepted:
+            intersection=max(0,min(x+w,ax+aw)-max(x,ax))*max(0,min(y+h,ay+ah)-max(y,ay))
+            if intersection/max(1,min(w*h,aw*ah))>.65:duplicate=True;break
+        if not duplicate:accepted.append((kind,(x,y,w,h)))
+        if len(accepted)>=12:break
+    results=[]
+    for index,(kind,(x,y,w,h)) in enumerate(accepted):
+        size=min(max(w,h)*(1.85 if kind=='animal' else 1.65),image.width,image.height)
+        left=max(0,min(image.width-size,x+w/2-size/2));top=max(0,min(image.height-size,y+h*.45-size/2))
+        results.append({'id':str(index),'kind':kind,'box':[left/image.width,top/image.height,size/image.width,size/image.height]})
+    return results

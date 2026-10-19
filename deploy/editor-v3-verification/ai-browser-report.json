@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "candidateCount": 2,
+  "selectedSecondCandidate": true,
+  "rectangleResized": true,
+  "croppedSize": {
+    "width": 248,
+    "height": 404
+  },
+  "confirmedSelectionUploaded": true,
+  "animatedGridCount": 9,
+  "animatedPreviewVisuallyChanges": true,
+  "pageErrors": []
+}

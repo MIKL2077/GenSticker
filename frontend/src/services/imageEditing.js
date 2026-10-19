@@ -17,13 +17,13 @@ export function cropGeometry(width, height, frameWidth, frameHeight, zoom = 1, o
 
 }
 
-async function exportCanvas(canvas) {
+async function exportCanvas(canvas, fileType='png') {
   if (typeof document !== 'undefined') {
-    const blob = await new Promise(resolve=>canvas.toBlob(resolve, 'image/png'))
+    const blob = await new Promise(resolve=>canvas.toBlob(resolve, fileType==='jpg'?'image/jpeg':'image/png',.88))
     if (!blob) throw new Error('图片导出失败，请重试')
     return registerTemporary(URL.createObjectURL(blob))
   }
-  const temporary=await new Promise((resolve,reject)=>wx.canvasToTempFilePath({canvas,fileType:'png',success:r=>resolve(r.tempFilePath),fail:reject}))
+  const temporary=await new Promise((resolve,reject)=>wx.canvasToTempFilePath({canvas,fileType,quality:.88,success:r=>resolve(r.tempFilePath),fail:reject}))
   return registerTemporary(temporary)
 }
 
@@ -49,7 +49,7 @@ export async function editImage(path, operation) {
     if (rotated) {ctx.translate(canvas.width,0);ctx.rotate(Math.PI/2)}
     if (operation.type==='flip') {ctx.translate(width,0);ctx.scale(-1,1)}
     ctx.drawImage(image,sourceWidth*rect[0],sourceHeight*rect[1],sw,sh,0,0,width,height)
-    return await exportCanvas(canvas)
+    return await exportCanvas(canvas,operation.fileType||'png')
   } finally { if(canvas){canvas.width=1;canvas.height=1}image=null }
 }
 

@@ -1,0 +1,20 @@
+{
+  "backend/meme-generator/meme_generator/app.py": "e11d57617c4335d4f7a3a81da85923bdfd9f71be4e80ffb35f209a6a3703f44f",
+  "backend/meme-generator/meme_generator/features/animation.py": "1d4170dcf8032583a69fdc92157267051078401b9b0319e64014a82a336898b6",
+  "backend/meme-generator/meme_generator/features/caption.py": "959b5a641d87da4a4400ea40ebb87a24f0d85baa056dbbfdcb88e27557ba6680",
+  "backend/meme-generator/meme_generator/features/declarative.py": "a278a0c8f8d41faf93874afcb3cc0b928ed28ac9e4830a9e77188dcd7e69f767",
+  "backend/meme-generator/meme_generator/features/livegif.py": "0f226ebc455172314610b2f3d9685ca3cac65b465c5f0271d558a152777f55f9",
+  "backend/meme-generator/meme_generator/features/portrait.py": "bb265569fd9f7d79372ca0e6ad2d5469a5eafe3d05b18f9c220fcfae5e00950d",
+  "backend/meme-generator/meme_generator/features/recommend.py": "3caf7e309614762f3aef7c6c33718bef76730cf5e173eb3077f48c63e7e1cd05",
+  "backend/meme-generator/meme_generator/features/vision.py": "a3b2ca61ec8b64d5bfb8624cc0c22378c2b182d90188e3f81d079c9bbad55845",
+  "backend/meme-generator/meme_generator/features/worker.py": "624baccc8074ad882eebbff167fb5ba8b5633f5efba1f73de644763aa3cf333a",
+  "frontend/src/components/VideoCropper.vue": "7e4b10129ac48207308f34ce7665dbc8d28f2a04d2547c9e3e6284d3723da411",
+  "frontend/src/components/SubjectPicker.vue": "8bab83949b8fb31b9e622cfacf0f566efa08b5921693215740a20443e14011ce",
+  "frontend/src/pages/live/index.vue": "238275c86296845bac5b166a088ec2a3a56ef06c1d8163e8d7661256e53090d9",
+  "frontend/src/pages/recommend/index.vue": "5560022b356f409fc93197fa6f32620e4efbc6ba356ed68826d67d37e22ac5a8",
+  "frontend/src/services/captionLayout.js": "6f37d437d52a7d3ca6370c6f6e820b39cf06f91477ec231ca30e13569af7dad4",
+  "frontend/src/services/subjectSelection.js": "ac0e1c05d270ea093dfd03b51125764a60fc1d1898daadb8735d64eb8721a9c7",
+  "frontend/src/services/liveGifService.js": "59ccc309c6e26a96a5905dbb32231bb8593ac85b5e39566d7b19080e385d500e",
+  "frontend/src/services/recommendService.js": "b009560dfaf82b18ec632a61e3293c966cc33c53d701cbe437ca8830810c2b1e",
+  "frontend/src/services/imageEditing.js": "31eef6c9f1961df136038abcf50a81ec3c1aa9abf3735cec7a06a7200efc0146"
+}

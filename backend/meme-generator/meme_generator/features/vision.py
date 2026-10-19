@@ -73,7 +73,7 @@ def extract(image):
     return output
 
 
-def process(path):
+def process(path,*,subject_selected=False):
     with Image.open(path) as original:
         image = ImageOps.exif_transpose(original).convert("RGBA")
     analysis = {
@@ -85,6 +85,20 @@ def process(path):
         "method": "original-crop",
         "warnings": [],
     }
+    if subject_selected:
+        # The client has already cropped a confirmed selection. Never choose a
+        # different/larger face or connected component during later batches.
+        if _session is not None:
+            try:
+                cutout=extract(image);alpha=cutout.getchannel('A');bbox=alpha.point(lambda value:255 if value>80 else 0).getbbox()
+                coverage=sum(value>80 for value in alpha.resize((64,64)).getdata())/4096
+                if bbox and .01<coverage<.99:image=cutout.crop(bbox);analysis.update(cutout=True,method='u2netp-selected')
+                else:analysis['warnings'].append('抠图不明确，已保留选定区域')
+            except Exception:analysis['warnings'].append('抠图暂未完成，已保留选定区域')
+        else:analysis['warnings'].append('抠图模型未就绪，已保留选定区域')
+        image.thumbnail((768,768),Image.Resampling.LANCZOS)
+        analysis.update(subject_selected=True,framing='user-selection',aspect=round(image.width/max(1,image.height),2))
+        return image,analysis
     if _session is not None:
         try:
             cutout = extract(image)

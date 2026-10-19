@@ -8,7 +8,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel,Field,model_validator
 from ..account import current_user
 from .store import root
-from .declarative import font
+from .caption import CaptionStyle,paint_caption
 router=APIRouter(prefix='/studio/live');slots=threading.BoundedSemaphore(2)
 TTL=7*86400
 MAX_GIF_BYTES=500*1024
@@ -58,7 +58,7 @@ def directory():
 def run(args,timeout=25):
     try:return subprocess.run(args,stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=timeout,check=True).stdout
     except FileNotFoundError:raise HTTPException(503,'动图工作室还在准备编解码器')
-    except (subprocess.SubprocessError,OSError):raise HTTPException(422,'没有读取到动态画面，请重选视频或使用 iPhone Live 直连')
+    except (subprocess.SubprocessError,OSError):raise HTTPException(422,'没有读取到动态画面，请重新选择含视频片段的素材')
 
 def motion(raw):
     if raw[:6] in (b'GIF87a',b'GIF89a'):return raw
@@ -73,7 +73,7 @@ def motion(raw):
         start=offset+8
     # QuickTime can start with wide/mdat/moov instead of an ftyp box.
     if len(raw)>12 and raw[4:8] in (b'moov',b'mdat',b'wide'):return raw
-    raise HTTPException(422,'微信没有提供 Live 动态片段。请使用 iPhone Live 直连，或选择包含动态片段的原始文件')
+    raise HTTPException(422,'微信没有提供 Live 动态片段，请选择包含动态片段的原始文件或视频')
 
 def own(asset,user):
     if len(asset)!=32 or any(c not in '0123456789abcdef' for c in asset):raise HTTPException(404,'素材不存在')
@@ -124,6 +124,7 @@ class LiveJob(BaseModel):
     duration:float=Field(default=3,ge=.2,le=9)
     crop:tuple[float,float,float,float]=(0,0,1,1)
     text:str=Field(default='',max_length=100)
+    caption_style:CaptionStyle=Field(default_factory=CaptionStyle)
     rotation:int=Field(default=0)
     flip:bool=False
     @model_validator(mode='after')
@@ -165,16 +166,7 @@ def render_job(payload,user):
         frames=[]
         for file in sorted(Path(temp).glob('frame-*.png')):
             with Image.open(file) as image:frame=image.convert('RGB')
-            if params.text:
-                painter=ImageDraw.Draw(frame);size=max(12,min(36,frame.width//12));face=font(size,True)
-                lines=[];line=''
-                for char in params.text:
-                    if painter.textlength(line+char,font=face)>frame.width-16:lines.append(line);line=char
-                    else:line+=char
-                if line:lines.append(line)
-                lines=lines[:3];height=(size+5)*len(lines)
-                painter.rectangle((0,max(0,frame.height-height-12),frame.width,frame.height),fill='#fff5df')
-                for i,line in enumerate(lines):painter.text((frame.width/2,frame.height-height-6+i*(size+5)),line,font=face,fill='#253f45',anchor='mt')
+            if params.text:paint_caption(frame,params.text,params.caption_style)
             frames.append(frame)
         if not frames:raise ValueError('视频没有可读取的画面')
         return fit_gif(frames)

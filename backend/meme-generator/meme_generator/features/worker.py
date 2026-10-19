@@ -177,7 +177,7 @@ def run_job(job):
             subject = Image.open(processed).convert("RGBA")
             analysis = cached_analysis
         else:
-            subject, analysis = process(asset["path"])
+            subject, analysis = process(asset["path"],subject_selected=True) if Path(asset["path"]).stem.endswith(".selected") else process(asset["path"])
             subject.save(processed, "PNG")
             analysis_file.write_text(json.dumps(analysis, ensure_ascii=False))
         buf = BytesIO()
@@ -211,14 +211,8 @@ def run_job(job):
                     images=[raw], texts=metadata.get("default_texts", [])
                 )
             output = add_attribution(output, metadata)
-            with Image.open(output) as original:
-                frame = original.convert("RGB")
-                frame.thumbnail((1024, 1024))
-                path = directory / f"{slot}.jpg"
-                frame.save(path, "JPEG", quality=88)
-                frame.thumbnail((256, 256))
-                preview = directory / f"{slot}-preview.jpg"
-                frame.save(preview, "JPEG", quality=75)
+            from .animation import save_result_files
+            path,preview=save_result_files(output,directory,slot)
             return slot, row, metadata, path, preview
 
         used = {r['key'] for r in db.execute('SELECT key FROM results WHERE job_id=?', (job['id'],))}

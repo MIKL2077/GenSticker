@@ -506,8 +506,6 @@ from meme_generator.features.editor import router as editor_router
 app.include_router(editor_router)
 from meme_generator.features.livegif import router as live_router
 app.include_router(live_router)
-from meme_generator.features.live_import import router as live_import_router
-app.include_router(live_import_router)
 
 
 @app.post('/memes/{key}/')

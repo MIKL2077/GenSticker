@@ -8,6 +8,7 @@
    <view class="quota-row"><text>{{quotaLoading?'正在连接工作室…':quotaReady?(unlimited?'日常使用不限次数，连续操作稍作间隔':'今日剩余 '+quota.remaining+' / '+quota.limit+' 次'):'工作室暂未连接'}}</text><text class="quota-badge">灵感持续供应</text></view>
    <button v-if="quotaError" class="error retry-inline" @click="refresh">{{quotaError}} · 重试 ↗</button>
    <button class="upload-card fx-enter" :disabled="busy" @click="choose"><image v-if="photo" :src="photo" mode="aspectFit" class="photo"/><view v-else class="upload-illustration"><text>☺</text><text>＋</text></view><text class="upload-title">{{photo?'照片准备好了':'选一张喜欢的照片'}}</text><text class="upload-caption">{{photo?'点击更换照片':'建议上传包含单个主体的图片'}}</text></button>
+   <button v-if="photo && photoOriginal" class="adjust-subject" :disabled="busy" @click="subjectPicker=true">调整选定主体 ↗</button>
    <button class="ui-primary generate-button" :disabled="busy || retrySeconds>0 || !photo || !quotaReady || !quotaAvailable" :loading="uploading" @click="generate">{{uploading?'正在上传照片':job && !finished?'正在搭配表情…':'为 Ta 生成 9 张损图 ✦'}}</button>
    <text class="hint generation-hint">{{generateHint}}</text><button v-if="quotaReady && !quotaAvailable" class="text-link" @click="goHome">去首页手动制作 ↗</button>
   </template>
@@ -16,7 +17,7 @@
    <view v-if="job" class="result-header fx-enter"><view><text class="section-title">{{job.status==='failed'?'这盒暂时没出炉':finished?'你的表情出炉啦':'小情绪，变身中'}}</text><text class="result-status">{{job.message || '正在等待生成'}}{{finished && job.results.length<9 && job.results.length?' · 本次生成'+job.results.length+'张':''}}</text></view><text class="result-count">{{job.results.length}}<text> / 9</text></text></view>
    <view v-if="job && finished" class="batch-bar fx-enter"><view><text class="batch-title">同一张照片，再开一盒</text><text class="batch-caption">{{!rerollSupported?'当前服务器尚未支持换批，请先保存这组结果':job.reroll_available===false?'原图已过期，请重新选一张照片':'优先用新模板 · 上一批在最近生成里'}}</text></view><button class="reroll-button" :disabled="busy || retrySeconds>0 || !quotaReady || !quotaAvailable || !rerollSupported || job.reroll_available===false" :loading="uploading" @click="reroll">{{rerollSupported?'↻ 换一批':'服务待更新'}}</button></view>
    <view v-if="job?.analysis?.warnings?.length" class="hint">{{job.analysis.warnings.filter(t=>!t.includes('真实情绪')).join('；')}}</view>
-   <view v-if="job" class="results"><view v-for="slot in resultSlots" :key="slot" class="result" :class="{selected:selected.includes(slot),'fx-enter':!!previews[slot]}" @click="toggle(slot)"><image v-if="previews[slot]" :src="previews[slot]" :data-slot="slot" mode="aspectFit" class="result-image"/><text v-else class="placeholder" :class="{'fx-breathe':!finished}">{{finished?'图片加载中':'✦'}}</text><button v-if="previews[slot]" class="zoom" :aria-label="'放大第'+(slot+1)+'张'" @click.stop="preview(slot)">放大 ↗</button><text class="check" :class="{checked:selected.includes(slot)}">{{selected.includes(slot)?'✓':' '}}</text></view></view>
+   <view v-if="job" class="results"><view v-for="slot in resultSlots" :key="slot" class="result" :class="{selected:selected.includes(slot),'fx-enter':!!previews[slot]}" @click="toggle(slot)"><image v-if="previews[slot]" :src="previews[slot]" :data-slot="slot" mode="aspectFit" class="result-image"/><text v-else class="placeholder" :class="{'fx-breathe':!finished}">{{finished?'图片加载中':'✦'}}</text><button v-if="previews[slot]" class="zoom" :aria-label="'放大第'+(slot+1)+'张'" @click.stop="preview(slot)">放大 ↗</button><text v-if="job?.results?.find(r=>r.slot===slot)?.animated" class="animated-label">动图</text><text class="check" :class="{checked:selected.includes(slot)}">{{selected.includes(slot)?'✓':' '}}</text></view></view>
    <text v-if="finished && !job?.results?.length" class="empty-note">{{job?.status==='failed'?'这次没有完成，可以再换一批，或试试另一张照片。':'这次没有匹配到合适的结果，试试另一张照片吧。'}}</text>
    <view v-if="job?.results?.length" class="actions"><view class="selection-copy"><text>{{saveProgress || '选中了 '+selected.length+' 张小表情'}}</text><button :disabled="saving" @click="selectAll">{{selected.length===job.results.length?'取消全选':'全都要'}}</button></view><button class="ui-primary" :disabled="!selected.length || saving" :loading="saving" @click="save">{{saving?saveProgress:'保存 '+selected.length+' 张到相册 ↓'}}</button><button class="ui-secondary share-selected" :disabled="!selected.length || saving" @click="shareSelected"><ui-icon name="share" tone="accent" :size="30"/> 分享所选原图 / 朋友圈</button></view>
    <view v-if="attributions.length" class="attribution"><text v-for="item in attributions" :key="item.source_url">素材：{{item.author}} · {{item.license}}（来源见图片底部）</text></view>
@@ -25,6 +26,7 @@
    <view v-for="item in visibleHistory" :key="item.job_id" class="history-row fx-enter"><button class="history-open" :disabled="uploading || saving" @click="open(item.job_id)"><view class="history-symbol"><image v-if="historyPreviews[item.job_id]" :src="historyPreviews[item.job_id]" mode="aspectFill"/><ui-icon v-else name="image" :size="40" tone="accent"/></view><view><text>{{formatTime(item.created_at)}}</text><text class="history-meta">{{labels[item.status] || item.status}} · {{item.count}} 张</text></view></button><button class="link delete-link" :disabled="uploading || saving" @click="deleteHistory(item)">删除</button></view>
    <view v-if="historyPages>1" class="history-paging"><button :disabled="historyPage===1" @click="changeHistoryPage(-1)">上一页</button><text>{{historyPage}} / {{historyPages}}</text><button :disabled="historyPage===historyPages" @click="changeHistoryPage(1)">下一页</button></view>
   </template>
+  <subject-picker :show="subjectPicker" :src="photoOriginal" :initial-rect="subjectRect" @cancel="subjectPicker=false" @confirm="confirmSubject"/>
   <preview-modal :show="shareSlot!==null" :is-generating="false" :image="shareImage" :allow-edit="false" @close="shareSlot=null" @share="shareCurrent" @save="saveCurrent"/>
   <view class="privacy-note"><text>放心制作，照片只用于本次处理。</text><text>原图24小时后清理，原图缩略图和结果保留7天。</text><text>每次换一批，都会保留上一组结果。</text></view>
   <bottom-tabs active="ai"/>
@@ -38,18 +40,20 @@ import MoodToy from '@/components/MoodToy.vue'
 import BottomTabs from '@/components/BottomTabs.vue'
 import UiIcon from '@/components/UiIcon.vue'
 import PreviewModal from '@/components/PreviewModal.vue'
+import SubjectPicker from '@/components/SubjectPicker.vue'
 import {shareOriginalImage} from '@/services/wechatSharing'
 import { getQuota,listJobs,getJob,createJob,uploadPhoto,downloadResult,selectResults,removeJob,setPersonalization } from '@/services/recommendService'
 export default {
-  components: { BottomTabs, MoodToy, UiIcon, PreviewModal },
+  components: { BottomTabs, MoodToy, UiIcon, PreviewModal, SubjectPicker },
   setup() {
+    const subjectPicker=ref(false),photoOriginal=ref(''),subjectRect=ref(null),subjectSelected=ref(false),fullImages=ref({})
     const sceneActive=ref(true),historyPage=ref(1),historyPreviews=ref({}),shareSlot=ref(null)
     const historyPages=computed(()=>Math.max(1,Math.ceil(history.value.length/5)))
     const visibleHistory=computed(()=>history.value.slice((historyPage.value-1)*5,historyPage.value*5))
     const historyInflight=new Set()
     const loadHistoryPreviews=async()=>{const owner=session.value?.profile?.id;for(const item of visibleHistory.value){if(!item.source_preview_url || historyPreviews.value[item.job_id] || historyInflight.has(item.job_id))continue;historyInflight.add(item.job_id);downloadResult(item.source_preview_url).then(path=>{if(owner===session.value?.profile?.id)historyPreviews.value[item.job_id]=path}).catch(()=>{}).finally(()=>historyInflight.delete(item.job_id))}}
     const changeHistoryPage=delta=>{historyPage.value=Math.max(1,Math.min(historyPages.value,historyPage.value+delta));loadHistoryPreviews()}
-    const shareImage=computed(()=>shareSlot.value===null?'':previews.value[shareSlot.value]||'')
+    const shareImage=computed(()=>shareSlot.value===null?'':fullImages.value[shareSlot.value]||previews.value[shareSlot.value]||'')
     const account=useLibrary(), {session,loggingIn}=account, quotaLoading=ref(false), quotaReady=ref(false), quotaError=ref(''), historyError=ref(''), savedSlots=ref([]), saveProgress=ref(''), quota=ref({limit:0,remaining:null,unlimited:true,personalization:true}),photo=ref(''),job=ref(null),previews=ref({}),selected=ref([]),error=ref(''),uploading=ref(false),saving=ref(false),history=ref([]),activeId=ref('')
     let timer=null, visible=true, polling=false, failures=0, requestKey='', rerollKey='', generation=0
     const inflight=new Set(), exposed=new Set()
@@ -115,10 +119,11 @@ export default {
         if(visible && activeId.value && (!finished.value || job.value?.results?.some(r=>!previews.value[r.slot])))timer=setTimeout(poll,Math.min(8000,1000+failures*1500))
       }
     }
-    const open=async (id,initial=null)=>{if(saving.value)return;rerollKey='';savedSlots.value=[];saveProgress.value='';stop();generation++;activeId.value=id;job.value=initial;previews.value={};selected.value=[];inflight.clear();exposed.clear();failures=0;uni.setStorageSync(activeKey(),id);if(initial){poll();return}await poll();selected.value=job.value?.selected_slots||[]}
+    const open=async (id,initial=null)=>{if(saving.value)return;rerollKey='';savedSlots.value=[];saveProgress.value='';stop();generation++;activeId.value=id;job.value=initial;previews.value={};fullImages.value={};selected.value=[];inflight.clear();exposed.clear();failures=0;uni.setStorageSync(activeKey(),id);if(initial){poll();return}await poll();selected.value=job.value?.selected_slots||[]}
     onShow(()=>{visible=true;sceneActive.value=true;observeVisible();refresh().catch(e=>{error.value=e.message||'暂时无法获取额度'});if(activeId.value)poll();else{const id=uni.getStorageSync(activeKey());if(id && session.value)open(id).catch(()=>{})}})
     onHide(()=>{visible=false;sceneActive.value=false;stop();disconnectObserver()});onUnload(()=>{visible=false;stop();disconnectObserver();generation++})
-    const choose=()=>uni.chooseImage({count:1,sizeType:['compressed'],sourceType:['album','camera'],success:r=>{photo.value=r.tempFilePaths[0];requestKey='';error.value=''}})
+    const choose=()=>{if(busy.value)return;const owner=session.value?.profile?.id;uni.chooseImage({count:1,sizeType:['compressed'],sourceType:['album','camera'],success:r=>{if(owner!==session.value?.profile?.id)return;photoOriginal.value=r.tempFilePaths[0];subjectRect.value=null;subjectPicker.value=true;error.value=''}})}
+    const confirmSubject=selection=>{photo.value=selection.path;subjectRect.value=selection.rect;subjectSelected.value=true;subjectPicker.value=false;uploadedAsset=null;requestKey='';error.value=''}
     let uploadedAsset=null
     const generate=async()=>{
       if(busy.value||retrySeconds.value||!photo.value||!quotaReady.value||!quotaAvailable.value)return
@@ -126,7 +131,7 @@ export default {
       const owner=session.value?.profile?.id,epoch=generation
       try {
         if(!requestKey){requestKey=`${Date.now()}-${Math.random().toString(36).slice(2)}`;uploadedAsset=null}
-        if(!uploadedAsset)uploadedAsset=await uploadPhoto(photo.value)
+        if(!uploadedAsset)uploadedAsset=await uploadPhoto(photo.value,subjectSelected.value)
         if(owner!==session.value?.profile?.id || epoch!==generation)return
         const data=await createJob(uploadedAsset.asset_id,requestKey)
         if(owner!==session.value?.profile?.id || epoch!==generation)return
@@ -175,13 +180,13 @@ export default {
     }
     const login=async()=>{if(loggingIn.value)return;error.value='';try{await account.loginWeChat();await refresh()}catch(e){error.value=e.message||'登录失败，请重试'}}
     const shareCurrent=()=>shareOriginalImage(shareImage.value,title=>uni.showToast({title,icon:'none'}))
-    const shareSelected=async()=>{const slot=selected.value[0],id=activeId.value,owner=session.value?.profile?.id;if(slot===undefined)return;try{const path=previews.value[slot]||await downloadResult(`/recommend/jobs/${id}/results/${slot}`);if(id!==activeId.value || owner!==session.value?.profile?.id)return;previews.value[slot]=path;shareSlot.value=slot}catch(e){error.value=e.message||'图片暂时没能打开，请重试'}}
+    const shareSelected=async()=>{const slot=selected.value[0],id=activeId.value,owner=session.value?.profile?.id;if(slot===undefined)return;try{const path=fullImages.value[slot]||await downloadResult(`/recommend/jobs/${id}/results/${slot}`);if(id!==activeId.value || owner!==session.value?.profile?.id)return;fullImages.value[slot]=path;shareSlot.value=slot}catch(e){error.value=e.message||'图片暂时没能打开，请重试'}}
     const saveCurrent=async()=>{if(!shareImage.value)return;try{await uni.saveImageToPhotosAlbum({filePath:shareImage.value});uni.showToast({title:'已保存',icon:'success'})}catch(e){error.value='保存失败，请检查相册权限后重试'}}
-    const preview=slot=>{const paths=(job.value?.results||[]).map(r=>previews.value[r.slot]).filter(Boolean);if(previews.value[slot])uni.previewImage({urls:paths,current:previews.value[slot]})}
+    const preview=async slot=>{const id=activeId.value,owner=session.value?.profile?.id;try{const path=fullImages.value[slot]||await downloadResult(`/recommend/jobs/${id}/results/${slot}`);if(id!==activeId.value||owner!==session.value?.profile?.id)return;fullImages.value[slot]=path;const paths=(job.value?.results||[]).map(r=>fullImages.value[r.slot]||previews.value[r.slot]).filter(Boolean);uni.previewImage({urls:paths,current:path})}catch(e){error.value=e.message||'原图暂时无法打开，请重试'}}
     const deleteHistory=item=>{if(uploading.value || saving.value)return;uni.showModal({title:'删除生成记录',content:'删除这组结果后无法恢复。若原照片还被其他批次使用，会继续保留至24小时到期。',success:async r=>{if(!r.confirm)return;try{await removeJob(item.job_id);if(activeId.value===item.job_id){stop();activeId.value='';job.value=null;previews.value={};uni.removeStorageSync(activeKey())}await refresh()}catch(e){error.value=e.message||'删除失败'}}})}
     const preference=async e=>{try{await setPersonalization(e.detail.value);quota.value.personalization=e.detail.value}catch(e){error.value=e.message||'设置失败'}}
-    watch(()=>session.value?.profile?.id,(id,old)=>{if(id===old)return;stop();generation++;disconnectObserver();activeId.value='';job.value=null;previews.value={};selected.value=[];photo.value='';history.value=[];historyPage.value=1;historyPreviews.value={};historyInflight.clear();shareSlot.value=null;savedSlots.value=[];saveProgress.value='';quotaReady.value=false;quotaLoading.value=false;quotaError.value='';historyError.value='';inflight.clear();exposed.clear();requestKey='';rerollKey='';uploadedAsset=null;if(id && visible)refresh()})
-    return {historyPage,historyPages,visibleHistory,historyPreviews,changeHistoryPage,shareSlot,shareImage,shareCurrent,shareSelected,saveCurrent,sceneActive,rerollSupported,unlimited,quotaAvailable,reroll,session,loggingIn,quotaLoading,quotaReady,quotaError,historyError,resultSlots,generateHint,savedSlots,saveProgress,preview,refresh,goHome:()=>uni.switchTab({url:'/pages/index/index'}),quota,photo,job,previews,selected,error,uploading,saving,history,activeId,finished,busy,attributions,choose,generate,toggle,selectAll,save,login,open,deleteHistory,preference,resume:()=>{stop();poll()},back:()=>uni.navigateBack(),formatTime:t=>new Date(t*1000).toLocaleString(),labels:{queued:'等待中',running:'生成中',completed:'已完成',failed:'未完成'}}
+    watch(()=>session.value?.profile?.id,(id,old)=>{if(id===old)return;stop();generation++;disconnectObserver();activeId.value='';job.value=null;previews.value={};fullImages.value={};selected.value=[];photo.value='';photoOriginal.value='';subjectRect.value=null;subjectSelected.value=false;subjectPicker.value=false;history.value=[];historyPage.value=1;historyPreviews.value={};historyInflight.clear();shareSlot.value=null;savedSlots.value=[];saveProgress.value='';quotaReady.value=false;quotaLoading.value=false;quotaError.value='';historyError.value='';inflight.clear();exposed.clear();requestKey='';rerollKey='';uploadedAsset=null;if(id && visible)refresh()})
+    return {subjectPicker,photoOriginal,subjectRect,confirmSubject,historyPage,historyPages,visibleHistory,historyPreviews,changeHistoryPage,shareSlot,shareImage,shareCurrent,shareSelected,saveCurrent,sceneActive,rerollSupported,unlimited,quotaAvailable,reroll,session,loggingIn,quotaLoading,quotaReady,quotaError,historyError,resultSlots,generateHint,savedSlots,saveProgress,preview,refresh,goHome:()=>uni.switchTab({url:'/pages/index/index'}),quota,photo,job,previews,selected,error,uploading,saving,history,activeId,finished,busy,attributions,choose,generate,toggle,selectAll,save,login,open,deleteHistory,preference,resume:()=>{stop();poll()},back:()=>uni.navigateBack(),formatTime:t=>new Date(t*1000).toLocaleString(),labels:{queued:'等待中',running:'生成中',completed:'已完成',failed:'未完成'}}
   }
 }
 </script>
@@ -194,4 +199,5 @@ export default {
 .step.active{animation:ui-pop .35s ease-out both}.result.selected .check{animation:ui-pop .3s ease-out both}.result:nth-child(3n+2) .placeholder{animation-delay:.2s}.result:nth-child(3n) .placeholder{animation-delay:.4s}.reroll-button:not([disabled]):active{transform:translateY(4rpx) rotate(-3deg)}.result.selected{transform:translateY(-3rpx)}.error{animation:ui-nudge .35s ease-out both}.selection-copy{animation:ui-reveal .25s ease-out both}
 
 .actions{position:static;margin:24rpx 0;box-shadow:none;border-radius:26rpx}.recommend-page.has-results{padding-bottom:calc(180rpx + env(safe-area-inset-bottom))}.share-selected{width:100%;margin-top:14rpx;gap:12rpx}.history-symbol{overflow:hidden;display:flex;align-items:center;justify-content:center}.history-symbol image{width:100%;height:100%}.history-paging{display:flex;justify-content:center;align-items:center;gap:26rpx;margin:26rpx 0;color:#8f9a80;font-size:24rpx}.history-paging button{padding:16rpx 24rpx;border-radius:16rpx;background:white;color:#bb7d57;font-size:24rpx}.history-paging button[disabled]{opacity:.35}
+.adjust-subject{width:100%;text-align:right;color:var(--accent-dark);font-size:23rpx;padding:14rpx 4rpx;line-height:1.5}.animated-label{position:absolute;left:8rpx;top:8rpx;font-size:18rpx;padding:2rpx 8rpx;border-radius:8rpx;background:#263f48cc;color:#fff}
 </style>

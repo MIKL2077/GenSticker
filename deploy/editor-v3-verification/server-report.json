@@ -1,0 +1,40 @@
+{
+  "checks": [
+    {
+      "name": "Real two-face candidate detection",
+      "candidates": 2,
+      "selected_second": true,
+      "cropped_size": [
+        288,
+        288
+      ]
+    },
+    {
+      "name": "Real AI animated petpet result",
+      "frames": 5,
+      "preview_frames": 5,
+      "duration_ms": 300,
+      "bytes": 30372,
+      "preview_bytes": 25783,
+      "selected_region_preserved": true
+    },
+    {
+      "name": "Real video caption position and style",
+      "frames": 20,
+      "bytes": 78166,
+      "caption_blue_pixels": 965,
+      "caption_max_y": 58,
+      "height": 240
+    },
+    {
+      "name": "Shortcut bridge retired",
+      "tutorial_status": 410,
+      "import_status": 410,
+      "capabilities_revoked": true
+    }
+  ],
+  "fixture_source": "https://github.com/opencv/opencv/blob/master/samples/data/lena.jpg",
+  "identity": "isolated fixture account; no real user data",
+  "status": "passed",
+  "fixture_cleaned": true
+}

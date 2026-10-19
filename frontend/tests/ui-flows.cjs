@@ -8,7 +8,7 @@ const clone = value => JSON.parse(JSON.stringify(value))
 function page(file, extra) {
   let code = fs.readFileSync(path.join(__dirname, '../src/pages', file), 'utf8').split('<script>')[1].split('</script>')[0]
   code = code.replace(/^import .*$/gm, '').replace('export default', 'const component =')
-  const c = { BottomTabs:{}, MoodToy:{}, UiIcon:{}, PreviewModal:{}, ref, computed, watch:()=>{}, nextTick:()=>{}, unreadCount:ref(0),refreshUnread:async()=>{},getCurrentInstance:()=>({proxy:{}}), onUnmounted:()=>{}, onShow:()=>{}, onHide:()=>{}, onUnload:()=>{}, console, setTimeout, clearTimeout, ...extra }
+  const c = { BottomTabs:{}, MoodToy:{}, UiIcon:{}, PreviewModal:{}, SubjectPicker:{}, ref, computed, watch:()=>{}, nextTick:()=>{}, unreadCount:ref(0),refreshUnread:async()=>{},getCurrentInstance:()=>({proxy:{}}), onUnmounted:()=>{}, onShow:()=>{}, onHide:()=>{}, onUnload:()=>{}, console, setTimeout, clearTimeout, ...extra }
   vm.createContext(c); vm.runInContext(code + '\nthis.app = component.setup()', c)
   return c.app
 }
@@ -39,10 +39,12 @@ async function verify() {
   assert.ok(requests.some(r=>r.url==='/auth/session' && r.options.header.Authorization==='Bearer token-a'))
 
   let failSlot = 1, writes = [], downloads = []
-  const rec = page('recommend/index.vue',{useLibrary:()=>({session:ref({profile:{id:'a'}}),loggingIn:ref(false)}),getQuota:async()=>({limit:3,remaining:2,personalization:true}),listJobs:async()=>[],getJob:async()=>{},createJob:async()=>{},uploadPhoto:async()=>{},removeJob:async()=>{},setPersonalization:async()=>{},selectResults:async()=>{throw Error('telemetry unavailable')},downloadResult:async url=>{const slot=Number(url.split('/').pop());downloads.push(slot);if(slot===failSlot){failSlot=-1;throw Error('network failed')}return'/result-'+slot},uni:{getStorageSync:()=>null,setStorageSync:()=>{},removeStorageSync:()=>{},showToast:()=>{},saveImageToPhotosAlbum:async({filePath})=>writes.push(filePath)}})
+  const rec = page('recommend/index.vue',{useLibrary:()=>({session:ref({profile:{id:'a'}}),loggingIn:ref(false)}),getQuota:async()=>({limit:3,remaining:2,personalization:true}),listJobs:async()=>[],getJob:async()=>{},createJob:async()=>{},uploadPhoto:async()=>{},removeJob:async()=>{},setPersonalization:async()=>{},selectResults:async()=>{throw Error('telemetry unavailable')},downloadResult:async url=>{const slot=Number(url.split('/').pop());downloads.push(slot);if(slot===failSlot){failSlot=-1;throw Error('network failed')}return'/result-'+slot},uni:{getStorageSync:()=>null,setStorageSync:()=>{},removeStorageSync:()=>{},showToast:()=>{},saveImageToPhotosAlbum:async({filePath})=>writes.push(filePath),chooseImage:options=>options.success({tempFilePaths:['/group-original.jpg']})}})
   rec.activeId.value='job';rec.job.value={status:'completed',results:[{slot:0},{slot:1},{slot:2}]};rec.selected.value=[0,1,2]
   await rec.save();assert.deepEqual(writes,['/result-0']);assert.match(rec.error.value,/剩余/)
   await rec.save();assert.deepEqual(writes,['/result-0','/result-1','/result-2']);assert.deepEqual(downloads,[0,1,1,2]);assert.equal(rec.saving.value,false)
+  rec.choose();assert.equal(rec.subjectPicker.value,true);assert.equal(rec.photo.value,'','photo is not submitted before explicit subject confirmation');rec.confirmSubject({path:'/selected-head.jpg',rect:[0.2,0.1,0.3,0.4]});assert.equal(rec.photo.value,'/selected-head.jpg');assert.equal(rec.subjectPicker.value,false)
+  rec.previews.value[0]='/small-preview.gif';rec.selected.value=[0];await rec.shareSelected();assert.equal(rec.shareImage.value,'/result-0','sharing uses the full animated result instead of a thumbnail')
   const batches=[], activeSession=ref({profile:{id:'a'}})
   let rejectNext=true,uploads=0
   const variations=page('recommend/index.vue',{useLibrary:()=>({session:activeSession,loggingIn:ref(false)}),getQuota:async()=>({limit:0,remaining:null,unlimited:true,personalization:true,features:{reroll:true}}),listJobs:async()=>[],getJob:async()=>({status:'completed',results:[],selected_slots:[]}),createJob:async(asset,key,parent)=>{batches.push({asset,key,parent});if(rejectNext){rejectNext=false;throw Error('temporary network failure')}return{job_id:'next-batch',status:'queued'}},uploadPhoto:async()=>{uploads++;return{asset_id:'photo'}},removeJob:async()=>{},setPersonalization:async()=>{},selectResults:async()=>{},downloadResult:async()=>'',uni:{getStorageSync:()=>null,setStorageSync:()=>{},removeStorageSync:()=>{},showToast:()=>{}}})

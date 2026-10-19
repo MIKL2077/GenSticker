@@ -9,7 +9,7 @@ from zoneinfo import ZoneInfo
 from io import BytesIO
 from pathlib import Path
 from PIL import Image, ImageOps, UnidentifiedImageError
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Response
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Response, Form
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from ..account import current_user
@@ -58,7 +58,7 @@ def normalize(raw):
 
 
 @router.post("/assets", status_code=201)
-async def upload(file: UploadFile = File(...), user=Depends(current_user)):
+async def upload(file: UploadFile = File(...), subject_selected:bool=Form(default=False), user=Depends(current_user)):
     raw = await file.read(3 * 1024 * 1024 + 1)
     if normalization_slots.locked():
         raise HTTPException(503, "照片处理繁忙，请稍后重试")
@@ -67,7 +67,7 @@ async def upload(file: UploadFile = File(...), user=Depends(current_user)):
     identifier = uuid.uuid4().hex
     db = connect()
     try:
-        digest = hashlib.sha256(normalized).hexdigest()
+        digest = hashlib.sha256(normalized+(b':user-selected' if subject_selected else b'')).hexdigest()
         duplicate = db.execute(
             "SELECT * FROM assets WHERE user_id=? AND hash=? AND created>?",
             (user["id"], digest, time.time() - 86400),
@@ -84,7 +84,7 @@ async def upload(file: UploadFile = File(...), user=Depends(current_user)):
             raise HTTPException(429, "上传太快啦，请一分钟后再试")
         directory = root() / "private" / user["id"]
         directory.mkdir(parents=True, exist_ok=True, mode=0o700)
-        path = directory / (identifier + ".png")
+        path = directory / (identifier + (".selected.png" if subject_selected else ".png"))
         path.write_bytes(normalized)
         thumbs=root()/"history_thumbs";thumbs.mkdir(exist_ok=True)
         with Image.open(BytesIO(normalized)) as image:
@@ -98,6 +98,26 @@ async def upload(file: UploadFile = File(...), user=Depends(current_user)):
         db.close()
     return {"asset_id": identifier, "expires_at": time.time() + 86400}
 
+
+# Detection is transient: return coordinates and discard photo bytes.
+_detect_recent={}
+@router.post('/subjects/detect')
+async def detect_subjects(file:UploadFile=File(...),user=Depends(current_user)):
+    now=time.time();recent=[stamp for stamp in _detect_recent.get(user['id'],[]) if stamp>now-60]
+    if len(recent)>=12:raise HTTPException(429,'选图有点快，稍等一分钟再试；仍可手动框选')
+    if len(_detect_recent)>1024:
+        for key in list(_detect_recent):
+            if not _detect_recent[key] or _detect_recent[key][-1]<now-60:_detect_recent.pop(key,None)
+        if len(_detect_recent)>1024:raise HTTPException(503,'主体检测繁忙，可先手动框选')
+    _detect_recent[user['id']]=recent+[now]
+    raw=await file.read(3*1024*1024+1)
+    if normalization_slots.locked():raise HTTPException(503,'主体检测繁忙，可先手动框选')
+    def detect():
+        normalized=normalize(raw)
+        with Image.open(BytesIO(normalized)) as image:
+            from .portrait import candidate_boxes
+            return {'candidates':candidate_boxes(image),'method':'server-opencv'}
+    async with normalization_slots:return await asyncio.to_thread(detect)
 
 @router.get('/jobs/{identifier}/source-preview')
 def source_preview(identifier:str,user=Depends(current_user)):
@@ -313,6 +333,8 @@ def status(identifier: str, user=Depends(current_user)):
                     "version": result["version"],
                     "key": result["key"],
                     "preview_url": f"/recommend/jobs/{identifier}/results/{result['slot']}?preview=true",
+                    "image_url": f"/recommend/jobs/{identifier}/results/{result['slot']}",
+                    "animated": Path(result["path"]).suffix.lower()==".gif",
                 }
             )
         asset = db.execute(
@@ -350,7 +372,7 @@ def result(
             raise HTTPException(410, "结果已过期")
         return FileResponse(
             path,
-            media_type="image/jpeg",
+            media_type="image/gif" if path.suffix.lower()==".gif" else "image/jpeg",
             headers={"Cache-Control": "private, no-store"},
         )
     finally:

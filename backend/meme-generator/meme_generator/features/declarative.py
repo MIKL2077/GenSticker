@@ -155,31 +155,24 @@ def add_attribution(output, metadata):
     if not metadata.get("source_url"):
         return output
     with Image.open(output) as original:
-        image = original.convert("RGB")
-    credits = [
-        metadata.get("author", "")[:80] + " · " + metadata.get("license", ""),
-        metadata["source_url"],
-        metadata.get("license_url", ""),
-    ]
-    width = max(image.width, 512)
-    face = font(12)
-    measure = ImageDraw.Draw(image)
-    lines = []
-    for credit in credits:
-        current = ""
-        for char in credit:
-            if measure.textlength(current + char, font=face) > width - 12:
-                lines.append(current)
-                current = char
-            else:
-                current += char
-        if current:
-            lines.append(current)
-    frame = Image.new("RGB", (width, image.height + len(lines) * 16 + 12), "white")
-    frame.paste(image, ((width - image.width) // 2, 0))
-    ImageDraw.Draw(frame).multiline_text(
-        (6, image.height + 5), "\n".join(lines), font=face, fill="#666666", spacing=4
-    )
-    result = BytesIO()
-    frame.save(result, "JPEG", quality=90)
-    return result
+        # Credits must be applied to each frame, never flatten a GIF to its cover.
+        from PIL import ImageSequence
+        frames=[];durations=[]
+        if getattr(original,'n_frames',1)>240:raise ValueError('too many animation frames')
+        for source in ImageSequence.Iterator(original):
+            image=source.convert('RGB')
+            credits=[metadata.get('author','')[:80]+' · '+metadata.get('license',''),metadata['source_url'],metadata.get('license_url','')]
+            width=max(image.width,512);face=font(12);measure=ImageDraw.Draw(image);lines=[]
+            for credit in credits:
+                current=''
+                for char in credit:
+                    if measure.textlength(current+char,font=face)>width-12:lines.append(current);current=char
+                    else:current+=char
+                if current:lines.append(current)
+            frame=Image.new('RGB',(width,image.height+len(lines)*16+12),'white');frame.paste(image,((width-image.width)//2,0))
+            ImageDraw.Draw(frame).multiline_text((6,image.height+5),'\n'.join(lines),font=face,fill='#666666',spacing=4)
+            frames.append(frame);durations.append(max(20,int(source.info.get('duration',100))))
+        result=BytesIO()
+        if len(frames)>1:frames[0].save(result,'GIF',save_all=True,append_images=frames[1:],duration=durations,loop=original.info.get('loop',0),disposal=2)
+        else:frames[0].save(result,'JPEG',quality=90)
+        return result
