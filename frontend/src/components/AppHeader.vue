@@ -1,26 +1,6 @@
-<template>
-  <view class="header">
-    <view class="logo"><text class="brand-mark">🎭</text><text class="brand-name">GenSticker</text></view>
-    <text class="app-title">表情包生成器</text>
-    <text class="app-subtitle">轻松制作专属表情包</text>
-    <slot />
-  </view>
-</template>
-
-<script>
-export default { name: 'AppHeader' }
-</script>
-
+<template><view class="header"><image class="logo" src="/static/logo.png" mode="aspectFit"/><view class="brand-copy"><text class="brand-name">GenSticker</text><text class="app-subtitle">把小情绪，做成表情包。</text></view><view class="brand-stamp"><text>✦</text></view></view></template>
+<script>export default {name:'AppHeader'}</script>
 <style scoped>
-.header { text-align: center; margin-bottom: 40rpx; }
-.logo {
-  width: 140rpx; height: 140rpx; background: #fffaf7;
-  border-radius: 22rpx; display: flex; flex-direction:column; align-items: center; justify-content: center;
-  margin: 0 auto 38rpx; box-shadow: 0 8rpx 16rpx rgba(0,0,0,.12);
-}
-.brand-mark { font-size:48rpx }.brand-name { color:#063c50; font-size:22rpx; font-weight:800 }
-@keyframes bounce { 0%,20%,50%,80%,100%{transform:translateY(0);} 40%{transform:translateY(-16rpx);} 60%{transform:translateY(-8rpx);} }
-.app-title { color:#333; font-size:44rpx; font-weight:bold; margin-bottom:10rpx; display:block; }
-.app-subtitle { color:#666; font-size:28rpx; display:block; }
-.header{display:grid;grid-template-columns:112rpx 1fr;grid-template-rows:1fr 1fr;gap:4rpx 24rpx;text-align:left;position:relative;margin-bottom:32rpx}.logo{grid-row:1/3;width:112rpx;height:112rpx;margin:0;border-radius:28rpx;box-shadow:0 6rpx 20rpx rgba(112,52,27,.1)}.brand-mark{font-size:40rpx}.brand-name{font-size:17rpx}.app-title{grid-column:2;align-self:end;font-size:36rpx;margin:0;color:#432e29}.app-subtitle{grid-column:2;align-self:start;font-size:22rpx;color:#815443;padding-top:7rpx}
+.header{display:flex;align-items:center;gap:16rpx;margin-bottom:26rpx}.logo{width:92rpx;height:92rpx;border-radius:25rpx;flex-shrink:0;border:2rpx solid #fff;box-shadow:0 5rpx 0 #e9e7e4}.brand-copy{flex:1}.brand-name{display:block;font-size:36rpx;font-weight:850;letter-spacing:-1.5rpx;color:#29444d}.app-subtitle{display:block;font-size:21rpx;color:#a59d93;margin-top:3rpx}.brand-stamp{width:64rpx;height:64rpx;border:3rpx solid #fff7d7;border-radius:23rpx;color:#b68b34;background:linear-gradient(135deg,#fff3b8,#f6d784);box-shadow:0 5rpx 0 #e4c77d,inset 0 2rpx 0 #fff;display:flex;align-items:center;justify-content:center;font-size:39rpx;transform:rotate(12deg)}
+.brand-copy{animation:ui-enter .45s ease-out both}.brand-stamp{animation:stamp-hello 1s ease-out both}@keyframes stamp-hello{0%{opacity:0;transform:scale(.6) rotate(-20deg)}65%{opacity:1;transform:scale(1.13) rotate(20deg)}100%{transform:scale(1) rotate(12deg)}}
 </style>

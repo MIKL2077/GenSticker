@@ -90,7 +90,8 @@ def trim(db, user_id, table, column):
 
 @router.get('/account/config')
 def account_config():
-    return {'login_enabled': bool(os.getenv('WX_APPID') and os.getenv('WX_APP_SECRET'))}
+    # AppID is public; never expose AppSecret or provider credentials.
+    return {'login_enabled': bool(os.getenv('WX_APPID') and os.getenv('WX_APP_SECRET')), 'app_id': os.getenv('WX_APPID') or '', 'features': {'studio': True, 'reroll': True, 'template_editor': True, 'livegif': True}}
 
 
 @router.post('/auth/wechat')

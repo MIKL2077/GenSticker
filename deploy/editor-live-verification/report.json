@@ -1,0 +1,41 @@
+{
+  "checks": [
+    {
+      "name": "Nginx and new feature flags"
+    },
+    {
+      "name": "built-in differential template guide",
+      "windows": 2,
+      "generic": false
+    },
+    {
+      "name": "temporary foreground URL download and ownership",
+      "bytes": 1862
+    },
+    {
+      "name": "actual segmentation model on opaque test picture",
+      "alpha_min": 0
+    },
+    {
+      "name": "exact private-template replacement window"
+    },
+    {
+      "name": "real manual worker, download remains unread, view clears count, replay generates"
+    },
+    {
+      "name": "actual GIF worker with crop, rotation, mirror, caption and idempotency",
+      "frames": 10,
+      "size": [
+        160,
+        480
+      ],
+      "bytes": 32745
+    },
+    {
+      "name": "static-only Live input gets an actionable error"
+    }
+  ],
+  "identity": "isolated synthetic identity; no WeChat login or public publication",
+  "status": "passed",
+  "fixture_cleaned": true
+}

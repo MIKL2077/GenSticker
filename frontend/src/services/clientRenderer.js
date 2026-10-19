@@ -11,7 +11,7 @@ if(typeof uni!=='undefined' && uni.env?.USER_DATA_PATH && uni.getFileSystemManag
   fs.readdir?.({dirPath:uni.env.USER_DATA_PATH,success:r=>{for(const name of r.files || [])if(/^gensticker_material_[a-f0-9]{64}\.png$/.test(name))fs.unlink({filePath:`${uni.env.USER_DATA_PATH}/${name}`,fail:()=>{}})},fail:()=>{}})
 }
 function trimAssets() {
-  while(assetBytes>8*1024*1024 || assets.size>24) { const oldest=assets.keys().next().value, old=assets.get(oldest);assets.delete(oldest);assetBytes-=old.bytes;uni.getFileSystemManager().unlink({filePath:old.path,fail:()=>{}}) }
+  while(assetBytes>2*1024*1024 || assets.size>24) { const oldest=assets.keys().next().value, old=assets.get(oldest);assets.delete(oldest);assetBytes-=old.bytes;uni.getFileSystemManager().unlink({filePath:old.path,fail:()=>{}}) }
 }
 
 export function seedClientRecipes(manifest) {

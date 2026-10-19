@@ -1,0 +1,85 @@
+{
+  "identity": "isolated synthetic account; no real user impersonation",
+  "checks": [
+    {
+      "name": "real nine-image batch",
+      "batch": 1,
+      "keys": [
+        "addiction",
+        "confuse",
+        "dont_touch",
+        "little_angel",
+        "look_this_icon",
+        "love_you",
+        "perfect",
+        "read_book",
+        "why_at_me"
+      ],
+      "previous_overlap": 0
+    },
+    {
+      "name": "real nine-image batch",
+      "batch": 2,
+      "keys": [
+        "always",
+        "applaud",
+        "dog_dislike",
+        "garbage",
+        "interview",
+        "my_friend",
+        "police",
+        "think_what",
+        "worship"
+      ],
+      "previous_overlap": 0
+    },
+    {
+      "name": "real nine-image batch",
+      "batch": 3,
+      "keys": [
+        "addiction",
+        "auto_94a791fdabf54599f5f89bbd",
+        "cover_face",
+        "distracted",
+        "hug_leg",
+        "little_angel",
+        "look_flat",
+        "petpet",
+        "support"
+      ],
+      "previous_overlap": 0
+    },
+    {
+      "name": "real nine-image batch",
+      "batch": 4,
+      "keys": [
+        "always",
+        "applaud",
+        "confuse",
+        "dont_touch",
+        "look_this_icon",
+        "love_you",
+        "perfect",
+        "read_book",
+        "why_at_me"
+      ],
+      "previous_overlap": 0
+    },
+    {
+      "name": "variety across first three batches",
+      "unique_templates": 25
+    },
+    {
+      "name": "local GIF sync is byte-identical, private, idempotent and already viewed",
+      "bytes": 6968,
+      "frames": 20
+    },
+    {
+      "name": "real API rolling abuse guard",
+      "status": 429,
+      "retry_after": 46
+    }
+  ],
+  "status": "passed",
+  "fixture_cleaned": true
+}

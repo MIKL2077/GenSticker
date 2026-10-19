@@ -14,6 +14,9 @@ from meme_generator.features.declarative import TemplateSpec, render
 
 class FeatureTests(unittest.TestCase):
     def setUp(self):
+        self.limits = patch.multiple(recommend, USER_LIMIT=3, GLOBAL_LIMIT=100)
+        self.limits.start()
+        self.addCleanup(self.limits.stop)
         self.directory = tempfile.TemporaryDirectory()
         self.env = patch.dict(
             os.environ,
@@ -65,6 +68,7 @@ class FeatureTests(unittest.TestCase):
         def process(path):
             return Image.open(path).convert("RGBA"), {
                 "expression": "general",
+                "processor_version": worker.PROCESSOR_VERSION,
                 "confidence": 0,
                 "warnings": [],
             }
@@ -83,6 +87,144 @@ class FeatureTests(unittest.TestCase):
         ):
             worker.run_job(job)
         return job["id"]
+
+    def test_history_source_preview_is_private_survives_day_one_and_is_cleaned_with_job(self):
+        from meme_generator.features.store import root
+        asset=self.upload();response=self.create(asset,'history-preview-check');self.assertEqual(response.status_code,202,response.text)
+        identifier=response.json()['job_id'];self.finish()
+        history=self.client.get('/recommend/jobs').json();url=history[0]['source_preview_url']
+        self.assertEqual(self.client.get(url).status_code,200)
+        self.owner='stranger';self.assertEqual(self.client.get(url).status_code,404);self.owner='a'
+        db=connect()
+        with db:db.execute('UPDATE assets SET created=0')
+        db.close();worker.maintenance()
+        self.assertEqual(self.client.get(url).status_code,200,'seven-day thumbnail survives 24-hour original cleanup')
+        db=connect()
+        with db:db.execute('UPDATE jobs SET created=0')
+        db.close();worker.maintenance()
+        self.assertEqual(self.client.get(url).status_code,404)
+        self.assertFalse((root()/'history_thumbs'/(asset+'.jpg')).exists())
+
+    def test_unlimited_preserves_queue_and_ownership(self):
+        with patch.multiple(recommend, USER_LIMIT=0, GLOBAL_LIMIT=0):
+            asset = self.upload()
+            for index in range(5):
+                response = self.create(asset, f"unlimited-{index}")
+                self.assertEqual(response.status_code, 202, response.text)
+                if index == 0:
+                    self.assertEqual(self.create(asset, "parallel-task").status_code, 409)
+                self.finish()
+            quota = self.client.get("/recommend/quota").json()
+            self.assertTrue(quota["unlimited"])
+            self.assertIsNone(quota["remaining"])
+            self.assertFalse(quota["paid_ai_enabled"])
+
+    def test_optional_budgets_are_independent_and_queue_stays_bounded(self):
+        asset = self.upload()
+        with patch.multiple(recommend, USER_LIMIT=0, GLOBAL_LIMIT=1):
+            self.assertEqual(self.create(asset, "global-budget").status_code, 202)
+            self.finish()
+            self.assertEqual(self.create(asset, "global-exhausted").status_code, 429)
+        with patch.multiple(recommend, USER_LIMIT=1, GLOBAL_LIMIT=0):
+            self.assertEqual(self.create(asset, "personal-exhausted").status_code, 429)
+        with patch.multiple(recommend, USER_LIMIT=0, GLOBAL_LIMIT=0):
+            import time
+            db = connect()
+            with db:
+                for index in range(10):
+                    db.execute("INSERT INTO jobs(id,user_id,idempotency,asset_id,day,status,created,updated) VALUES(?,?,?,?,?,?,?,?)", (f"busy-{index}", f"other-{index}", f"queue-{index}", asset, recommend.day(), "queued", time.time(), time.time()))
+            db.close()
+            self.assertEqual(self.create(asset, "queue-is-full").status_code, 503)
+
+    def test_reroll_uses_other_templates_and_cached_analysis(self):
+        with patch.multiple(recommend, USER_LIMIT=0, GLOBAL_LIMIT=0):
+            asset = self.upload()
+            first = self.create(asset).json()["job_id"]
+            self.finish()
+            first_keys = {r["key"] for r in self.client.get(f"/recommend/jobs/{first}").json()["results"]}
+            payload = {"previous_job_id": first, "idempotency_key": "reroll-second"}
+            self.owner = "b"
+            self.assertEqual(self.client.post("/recommend/jobs", json=payload).status_code, 404)
+            self.owner = "a"
+            second = self.client.post("/recommend/jobs", json=payload)
+            self.assertEqual(second.status_code, 202, second.text)
+            identifier = second.json()["job_id"]
+            self.assertEqual(self.client.post("/recommend/jobs", json=payload).json()["job_id"], identifier)
+            job = worker.claim()
+            with patch.object(worker, "process", side_effect=AssertionError("analysis should be cached")):
+                worker.run_job(job)
+            result = self.client.get(f"/recommend/jobs/{identifier}").json()
+            self.assertEqual(result["status"], "completed", result)
+            second_keys = {r["key"] for r in result["results"]}
+            self.assertTrue(second_keys)
+            self.assertTrue(first_keys.isdisjoint(second_keys), (first_keys, second_keys))
+            self.assertEqual(self.client.get(f"/recommend/jobs/{first}").status_code, 200)
+            payload["previous_job_id"] = identifier
+            self.assertEqual(self.client.post("/recommend/jobs", json=payload).status_code, 409)
+            payload["idempotency_key"] = "reroll-third"
+            third = self.client.post("/recommend/jobs", json=payload).json()["job_id"]
+            self.finish()
+            third_keys = {r["key"] for r in self.client.get(f"/recommend/jobs/{third}").json()["results"]}
+            self.assertTrue(third_keys)
+            self.assertTrue(second_keys.isdisjoint(third_keys))
+            self.assertEqual(self.client.delete(f"/recommend/jobs/{first}").status_code, 204)
+            db = connect()
+            self.assertTrue(db.execute("SELECT 1 FROM assets WHERE id=?", (asset,)).fetchone())
+            with db:
+                db.execute("UPDATE assets SET created=0 WHERE id=?", (asset,))
+            db.close()
+            self.assertEqual(self.client.post("/recommend/jobs", json={"previous_job_id": third, "idempotency_key": "expired-photo"}).status_code, 404)
+
+    def test_repeated_new_jobs_rotate_full_batches_and_replace_failed_templates(self):
+        with patch.multiple(recommend, USER_LIMIT=0, GLOBAL_LIMIT=0):
+            asset=self.upload();batches=[]
+            for index in range(4):
+                response=self.create(asset,f'fresh-batch-{index}')
+                self.assertEqual(response.status_code,202,response.text)
+                identifier=self.finish()
+                result=self.client.get(f'/recommend/jobs/{identifier}').json()
+                keys={r['key'] for r in result['results']}
+                self.assertEqual(len(keys),9,result)
+                if batches:self.assertTrue(keys.isdisjoint(batches[-1]),(keys,batches[-1]))
+                batches.append(keys)
+            self.assertGreaterEqual(len(set.union(*batches[:3])),24)
+            # At least nine successful alternatives survive several broken renderers.
+            job_id=self.create(asset,'failed-template-replacements').json()['job_id']
+            job=worker.claim();ordered=worker.candidates(job,{'expression':'general','confidence':0})
+            broken={r['key'] for r in ordered[:4]}
+            real=worker.get_meme
+            def get_meme(key):
+                if key in broken:raise ValueError('broken template fixture')
+                return real(key)
+            with patch.object(worker,'get_meme',side_effect=get_meme):worker.run_job(job)
+            result=self.client.get(f'/recommend/jobs/{job_id}').json()
+            self.assertEqual(len(result['results']),9,result)
+            self.assertTrue(broken.isdisjoint({r['key'] for r in result['results']}))
+
+    def test_rolling_guard_survives_deletion_and_retries_and_recovers(self):
+        import time
+        with patch.multiple(recommend, USER_LIMIT=0, GLOBAL_LIMIT=0):
+            asset=self.upload()
+            first=self.create(asset,'guard-idempotent').json()['job_id'];self.finish()
+            db=connect();stamp=time.time()
+            with db:
+                for i in range(7):db.execute('INSERT INTO generation_admissions VALUES(?,?,?)',(f'guard-{i}',self.owner,stamp))
+            db.close()
+            self.assertEqual(self.create(asset,'guard-idempotent').json()['job_id'],first)
+            # Deleting a completed job does not refund the rolling abuse budget.
+            self.assertEqual(self.client.delete('/recommend/jobs/'+first).status_code,204)
+            asset=self.upload()
+            limited=self.create(asset,'guard-blocked')
+            self.assertEqual(limited.status_code,429,limited.text);self.assertGreater(int(limited.headers['retry-after']),0)
+            db=connect()
+            with db:db.execute('UPDATE generation_admissions SET created=?',(stamp-61,))
+            db.close();self.assertEqual(self.create(asset,'guard-recovered').status_code,202)
+            self.finish()
+            db=connect()
+            with db:
+                db.execute('DELETE FROM generation_admissions')
+                for i in range(80):db.execute('INSERT INTO generation_admissions VALUES(?,?,?)',(f'hour-{i}',self.owner,stamp-120))
+            db.close();self.assertEqual(self.create(asset,'hour-blocked').status_code,429)
 
     def test_dsl_and_stable_versions(self):
         spec = {

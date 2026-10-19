@@ -44,7 +44,7 @@ def recognize(image):
     return recognized or []
 
 
-def convert_caption(raw, metadata):
+def convert_caption(raw, metadata, *, publish_result=True):
     """Keep original expression/action intact; expose only reliable edge captions."""
     import cv2
     with Image.open(BytesIO(raw)) as original:
@@ -87,8 +87,10 @@ def convert_caption(raw, metadata):
         if protected_error>.1:raise ValueError('protected expression or action changed')
         digest=hashlib.sha256(raw).hexdigest()
         metadata={**metadata,'name':defaults[0][:40], 'min_images':0,'max_images':0,'min_texts':len(defaults),'max_texts':len(defaults),'default_texts':defaults,'tags':metadata.get('tags') or emotion_tags(' '.join(defaults)), 'original_hash':digest,'perceptual_hash':phash,'intent_signature':signature,'conversion':'caption-preserved-v2','intent':{'caption':defaults,'fixed':'original expression, action and scene','replaceable':'edge captions only'},'quality':{'round_trip_mae':round(error,2),'protected_pixel_mae':round(protected_error,3),'ocr_min_confidence':.95,'method':'conservative-local-gates'},'quality_score':round(max(0,1-error/12),3)}
-        publish('auto_'+digest[:24],metadata,spec)
-        return spec
+        if publish_result:
+            publish('auto_'+digest[:24],metadata,spec)
+            return spec
+        return spec, metadata
     except Exception:
         if not existed:asset_path.unlink(missing_ok=True)
         raise

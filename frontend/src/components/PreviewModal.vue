@@ -1,50 +1,9 @@
-<template>
-  <view v-if="show" class="preview-modal">
-    <view class="preview-content">
-      <view class="preview-header">
-        <text class="preview-title">表情包预览</text>
-        <button class="close-btn" @click="$emit('close')">✕</button>
-      </view>
-      <view v-if="isGenerating" class="generating-container">
-        <view class="loading-spinner"></view>
-        <text class="loading-text">正在生成中...</text>
-      </view>
-      <view v-else-if="image" class="meme-result">
-        <image :src="image" class="meme-image" mode="aspectFit" />
-        <view class="meme-actions">
-          <button class="btn btn-secondary" @click="$emit('save')">保存到相册</button>
-          <button class="btn btn-primary" @click="$emit('share')">分享</button>
-        </view>
-      </view>
-    </view>
-  </view>
-</template>
-
-<script>
-export default {
-  name: 'PreviewModal',
-  props: {
-    show: { type: Boolean, required: true },
-    isGenerating: { type: Boolean, required: true },
-    image: { type: String, default: '' },
-  },
-  emits: ['close', 'save', 'share']
-}
-</script>
-
+<template><view v-if="show" class="preview-modal" @click="isGenerating && $emit('close')"><view class="preview-content" @click.stop="isGenerating && $emit('close')"><view class="preview-header"><view><text class="ui-kicker">{{isGenerating?'A LITTLE MAGIC':'MADE BY YOU'}}</text><text class="preview-title">{{isGenerating?'表情正在酝酿中':'你的表情，出炉啦'}}</text></view><button class="ui-close" :aria-label="isGenerating?'放入生成队列':'关闭预览'" @click.stop="$emit('close')">×</button></view><view v-if="isGenerating" class="generating-container"><view class="making-mascot"><ui-icon name="spark" :size="90" tone="accent"/><view class="orbit-star">✦</view></view><text class="loading-text">给小情绪加一点魔法…</text><text class="loading-caption">点一下，交给小窝慢慢做～完成后喊你来收图</text></view><view v-else-if="image" class="meme-result"><image :src="image" class="meme-image" mode="aspectFit" @click="previewImage"/><text class="result-note">点击图片放大看看</text><button v-if="allowEdit" class="edit-again" @click="$emit('edit')">↶ 再改一点</button><view class="meme-actions"><button class="ui-secondary" @click="$emit('share')"><ui-icon name="share" tone="accent" :size="30"/> 发原图给好友</button><button class="ui-primary" @click="$emit('save')"><ui-icon name="download" tone="white" :size="30"/> 保存相册</button></view><button class="moments-share" @click="moments"><ui-icon name="grid" tone="accent" :size="30"/> 配好文案，发朋友圈</button><button v-if="regeneratable" class="original-share" @click="$emit('regenerate')">再生成一张</button><text class="share-note">分享的是图片，微信系统菜单由你选择好友或朋友圈</text></view></view></view></template>
+<script>import {canDirectChatShare,shareToMoments} from '@/services/wechatSharing';
+import UiIcon from '@/components/UiIcon.vue';
+export default{components:{UiIcon},data:()=>({directChat:canDirectChatShare()}),watch:{show(value){if(value)this.directChat=canDirectChatShare()}},name:'PreviewModal',props:{show:{type:Boolean,required:true},isGenerating:{type:Boolean,required:true},image:{type:String,default:''},regeneratable:Boolean,allowEdit:{type:Boolean,default:true},caption:{type:String,default:'今天的快乐，由我亲手造梗。#GenSticker'}},emits:['close','save','share','edit','regenerate'],methods:{moments(){shareToMoments(this.image,this.caption,title=>uni.showToast({title,icon:'none'}))},emojiHelp(){uni.showModal({title:'把梗收进微信表情',content:'先点“保存到相册”，再进入微信聊天，打开表情面板的“＋”或添加的单个表情，选择刚保存的图片。是否可添加由微信根据图片格式和大小决定。',showCancel:false,confirmText:'知道啦'})},previewImage(){if(this.image)uni.previewImage({urls:[this.image],current:this.image})}}}</script>
 <style scoped>
-.preview-modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.8); display:flex; align-items:center; justify-content:center; z-index:2000 }
-.preview-content { background:#fff; border-radius:20rpx; width:90%; max-width:600rpx; max-height:80%; overflow:hidden; position:relative }
-.preview-header { display:flex; justify-content:space-between; align-items:center; padding:30rpx; border-bottom:2rpx solid #eee }
-.preview-title { font-size:32rpx; font-weight:bold; color:#333 }
-.generating-container { padding:80rpx 40rpx; text-align:center }
-.loading-spinner { width:80rpx; height:80rpx; border:6rpx solid #f3f3f3; border-top:6rpx solid #ff6b6b; border-radius:50%; animation:spin 1s linear infinite; margin:0 auto 30rpx }
-@keyframes spin { 0%{ transform:rotate(0deg)} 100%{ transform:rotate(360deg)} }
-.loading-text { font-size:28rpx; color:#666 }
-.meme-result { padding:40rpx }
-.meme-image { width:100%; max-height:400rpx; border-radius:16rpx; margin-bottom:30rpx }
-.meme-actions { display:flex; gap:20rpx }
-.btn { flex:1; padding:24rpx; border:none; border-radius:40rpx; font-size:28rpx; font-weight:bold; transition:all .3s ease }
-.btn-primary { background:linear-gradient(45deg, #ff6b6b, #ff8e53); color:#fff }
-.btn-secondary { background:#f8f9fa; color:#666; border:2rpx solid #ddd }
-</style> 
+.preview-modal{position:fixed;inset:0;z-index:2400;background:rgba(29,43,47,.48);display:flex;align-items:center;justify-content:center;padding:28rpx}.preview-content{background:var(--paper);border-radius:38rpx;width:100%;max-width:700rpx;max-height:calc(100% - env(safe-area-inset-top) - env(safe-area-inset-bottom));overflow-y:auto;animation:ui-sheet .24s ease-out}.preview-header{display:flex;justify-content:space-between;align-items:center;gap:16rpx;padding:30rpx 28rpx 18rpx}.preview-title{display:block;font-size:32rpx;font-weight:750;margin-top:8rpx}.generating-container{padding:44rpx 20rpx 70rpx;text-align:center}.making-mascot{width:150rpx;height:150rpx;margin:0 auto 35rpx;background:#ffe8ae;color:#755f39;border-radius:48rpx;position:relative;display:flex;align-items:center;justify-content:center;animation:ui-float 2.8s ease-in-out infinite}.making-mascot>text{font-size:96rpx;line-height:1}.orbit-star{position:absolute;right:-20rpx;top:-18rpx;color:var(--accent);font-size:52rpx}.loading-text{display:block;color:var(--ink);font-size:28rpx;font-weight:600}.loading-caption{display:block;color:#889188;font-size:22rpx;margin-top:14rpx}.meme-result{padding:12rpx 28rpx 30rpx}.meme-image{width:100%;height:390rpx;max-height:40vh;background:#f0ede4;border-radius:24rpx}.result-note{display:block;text-align:center;font-size:21rpx;color:#8d958b;margin-top:12rpx}.edit-again{min-height:80rpx;font-size:25rpx;color:var(--accent-dark);line-height:1.5;padding:20rpx}.meme-actions{display:flex;gap:14rpx}.meme-actions .ui-primary{flex:2}.meme-actions .ui-secondary{flex:1;display:flex;align-items:center;justify-content:center}
+.preview-content{border:3rpx solid #fff;background:var(--paper);box-shadow:0 12rpx 0 rgba(79,57,112,.2)}
+.meme-image{animation:ui-enter .4s ease-out both}.result-note{animation:ui-reveal .4s ease-out .15s both}.meme-actions{animation:ui-enter .35s ease-out .1s both}.loading-caption{animation:ui-breathe 2.4s ease-in-out infinite}.making-mascot{box-shadow:0 8rpx 0 #e7c67e,inset 0 3rpx 0 #fff7d9}
+.share-note{display:block;text-align:center;color:#b1a28f;font-size:20rpx;margin:18rpx 0 4rpx}.original-share{font-size:22rpx;color:#b18160;padding:14rpx;line-height:1.6}.meme-actions{flex-wrap:wrap}.meme-actions button{gap:10rpx;font-size:24rpx;flex:1!important}.moments-share{display:flex;align-items:center;justify-content:center;gap:12rpx;width:100%;padding:20rpx;font-size:24rpx;background:#eef1e3;border-radius:22rpx;color:#849464;margin-top:18rpx}.share-note{line-height:1.8}</style>

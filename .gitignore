@@ -14,3 +14,8 @@ avatar.jpg
 output/
 .env.local
 .env.*.local
+
+# Local deployment bundles and machine metadata; keep source/scripts and safe reports.
+.DS_Store
+deploy/backend-update-package/
+deploy/editor-live-update/

@@ -1,12 +1,17 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path')
 const read=file=>fs.readFileSync(path.join(__dirname,'../src',file),'utf8').replace(/^import .*$/gm,'').replace(/export /g,'')
 async function verify(){
-  const geometryContext={};vm.createContext(geometryContext);vm.runInContext(read('services/imageEditing.js'),geometryContext)
+  const geometryContext={releaseTemporary:()=>{}};vm.createContext(geometryContext);vm.runInContext(read('services/imageEditing.js'),geometryContext)
   const geometry=geometryContext.cropGeometry
   let crop=geometry(400,200,200,200,1)
   assert.deepEqual(Array.from(crop.rect),[.25,0,.5,1])
   crop=geometry(400,200,200,200,2,10000,-10000)
   assert.deepEqual(Array.from(crop.rect),[0,.5,.25,.5])
+  crop=geometry(400,900,120,270,1)
+  assert.deepEqual(Array.from(crop.rect),[0,0,1,1],'original portrait aspect keeps every pixel')
+  assert.equal(crop.width/crop.height,400/900,'preview geometry never stretches a portrait')
+  crop=geometry(400,900,180,180,1)
+  assert.equal(crop.width/crop.height,400/900,'square crop preserves source aspect instead of squashing')
   const released=[],callbacks=[],calls=[];let pending,fail=false
   const c={ref:value=>({value}),parseRange:s=>{const [min,max]=s.split('-').map(Number);return {min,max}},prepareImages:async()=>[],disposeEditedImage:p=>released.push(p),editImage:async(p,o)=>{calls.push([p,o]);if(fail)throw Error('failed edit');return '/edited-'+calls.length+'.png'},removeImageBackground:()=>new Promise(resolve=>pending=resolve),uni:{chooseImage:o=>callbacks.push(o)}}
   vm.createContext(c);vm.runInContext(read('composables/useTemplateInput.js'),c)

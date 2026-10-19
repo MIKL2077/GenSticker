@@ -1,0 +1,91 @@
+{
+  "checked_at": "2026-10-19T00:11:59.855949+08:00",
+  "base_url": "https://www.shangkun.uk/gensticker/api",
+  "checks": [
+    {
+      "method": "GET",
+      "path": "/healthz",
+      "status": 200,
+      "seconds": 5.901
+    },
+    {
+      "method": "GET",
+      "path": "/memes/categories",
+      "status": 200,
+      "seconds": 1.089
+    },
+    {
+      "method": "GET",
+      "path": "/account/config",
+      "status": 200,
+      "seconds": 0.429
+    },
+    {
+      "method": "GET",
+      "path": "/openapi.json",
+      "status": 200,
+      "seconds": 1.424
+    },
+    {
+      "method": "GET",
+      "path": "/memes/emperor_dragon/thumbnail",
+      "status": 200,
+      "seconds": 2.117,
+      "image_format": "PNG",
+      "image_size": [
+        256,
+        256
+      ],
+      "bytes": 71947,
+      "sha256": "156259864753ddab871abaa7c5d2f32c6bf16a8d8efc8b70dc57358d5bfa9ec5"
+    },
+    {
+      "method": "POST",
+      "path": "/memes/emperor_dragon/generate",
+      "status": 200,
+      "seconds": 7.487,
+      "image_format": "PNG",
+      "image_size": [
+        512,
+        512
+      ],
+      "bytes": 173516,
+      "sha256": "1287c111483d34740916a39dd82f4a9127ae7075e22f4735b12d382c62f3e4d5"
+    },
+    {
+      "method": "POST",
+      "path": "/memes/always/generate",
+      "status": 200,
+      "seconds": 0.954,
+      "image_format": "JPEG",
+      "image_size": [
+        500,
+        610
+      ],
+      "bytes": 17363,
+      "sha256": "95dd28c601ae3fc4aa9bb827e733a1e8c7d8608ed3eac18382babe858e7d2de2"
+    },
+    {
+      "method": "POST",
+      "path": "/images/subject",
+      "status": 200,
+      "seconds": 0.809,
+      "image_format": "PNG",
+      "image_size": [
+        137,
+        153
+      ],
+      "bytes": 4175,
+      "sha256": "02feeb5568b3d6db2477d10f76a9ed0cedfefef6114fa89bb2953dc28334aea3"
+    }
+  ],
+  "limitations": [
+    "Backend does not publish its AppID; account identity is not verified.",
+    "Deployed backend still uses the old job protocol and requires deployment before reroll works."
+  ],
+  "template_count": 295,
+  "login_enabled": true,
+  "backend_public_appid": null,
+  "reroll_supported": false,
+  "status": "partial"
+}

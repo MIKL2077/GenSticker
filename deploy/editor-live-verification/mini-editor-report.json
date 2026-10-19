@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "pinch": "1.5",
+  "exported": {
+    "width": 280,
+    "height": 280,
+    "open": false,
+    "error": ""
+  },
+  "queueRows": 4
+}

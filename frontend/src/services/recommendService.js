@@ -5,7 +5,7 @@ const token = () => uni.getStorageSync('gensticker.session.v1')?.access_token
 export const getQuota = () => apiRequest('/recommend/quota', {}, 1)
 export const listJobs = () => apiRequest('/recommend/jobs', {}, 1)
 export const getJob = id => apiRequest(`/recommend/jobs/${id}`, {}, 1)
-export const createJob = (asset_id, idempotency_key) => apiRequest('/recommend/jobs', { method:'POST', data:{asset_id,idempotency_key} }, 1)
+export const createJob = (asset_id, idempotency_key, previous_job_id) => apiRequest('/recommend/jobs', { method:'POST', data:{asset_id,idempotency_key,previous_job_id} }, 1)
 export const selectResults = (id, slots, action = 'choose') => apiRequest(`/recommend/jobs/${id}/selections`, { method:'POST', data:{event_id:`${Date.now()}-${Math.random().toString(36).slice(2)}`, slots, action} }, 1)
 export const removeJob = id => apiRequest(`/recommend/jobs/${id}`, { method:'DELETE' }, 1)
 export const setPersonalization = enabled => apiRequest('/recommend/preferences', { method:'PUT', data:{enabled} }, 1)

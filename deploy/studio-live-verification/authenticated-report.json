@@ -1,0 +1,45 @@
+{
+  "identity": "isolated synthetic test identity, not a real WeChat login",
+  "checks": [
+    {
+      "name": "public identity and feature flags",
+      "app_id": "wx2e3a058ed0117034"
+    },
+    {
+      "name": "batch generation unlimited"
+    },
+    {
+      "name": "manual template persisted privately"
+    },
+    {
+      "name": "manual submission idempotency"
+    },
+    {
+      "name": "durable manual queue and authenticated actual image",
+      "bytes": 19221
+    },
+    {
+      "name": "actual AI batch",
+      "count": 9
+    },
+    {
+      "name": "actual reroll without another upload",
+      "first_count": 9,
+      "second_count": 6,
+      "overlap": 0,
+      "download_bytes": 10342
+    },
+    {
+      "name": "AI template limit enforced by server",
+      "second_status": 429
+    },
+    {
+      "name": "real local OCR conversion and fail-closed publication",
+      "status": "pending",
+      "text_slots": 1
+    }
+  ],
+  "limitations": [],
+  "status": "passed",
+  "fixture_cleanup": "completed"
+}

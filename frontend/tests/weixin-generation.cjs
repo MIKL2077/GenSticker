@@ -11,6 +11,7 @@ async function verify() {
   const requests = [], writes = [], shares = [], statuses = []
   const context = {
     ref: value => ({ value }),
+    rememberGuestMeme:()=>{},
     visitorHeaders: () => ({ 'X-Gensticker-Visitor': 'test-visitor-123456789' }),
     tryClientRender: async () => null,
     API_BASE_URL: 'https://example.test/api',
@@ -19,6 +20,7 @@ async function verify() {
     console,
     uni: {
       env: { USER_DATA_PATH: '/sandbox' },
+      getStorageSync:()=>null,
       getFileSystemManager: () => ({
         stat: o => o.success({ stats: { size: 10 } }),
         readFile: o => o.success({ data: Buffer.from(o.filePath).toString('base64') }),
@@ -35,6 +37,8 @@ async function verify() {
   vm.createContext(context)
   const preparation = fs.readFileSync(path.join(__dirname, '../src/services/imagePreparation.js'),'utf8').replace(/export /g,'')
   vm.runInContext(preparation,context)
+  const sharing=fs.readFileSync(path.join(__dirname,'../src/services/wechatSharing.js'),'utf8').replace(/export /g,'')
+  vm.runInContext(sharing,context)
   vm.runInContext(source, context)
   const app = context.useMemeGeneration(s => statuses.push(s))
   await app.generateFromTemplate('two_images', ['/a.png', '/b.png'], ['标题', '内容'], { enabled: true })
@@ -49,6 +53,10 @@ async function verify() {
   assert.match(app.generatedMeme.value, /^\/sandbox\/generated_meme_\d+\.png$/)
   app.shareMeme()
   assert.equal(shares[0].path, app.generatedMeme.value)
+  let directShare
+  context.wx={getEnterOptionsSync:()=>({apiCategory:'chatTool'}),shareEmojiToGroup:o=>{directShare=o}}
+  app.shareMeme();assert.equal(directShare.imagePath,app.generatedMeme.value)
+  context.wx=undefined
   await app.generateFromTemplate('text_only', [], ['你好'])
   assert.equal(requests[1].data.images.length, 0)
   assert.equal(requests[1].data.texts[0], '你好')
@@ -74,14 +82,16 @@ async function verify() {
   context.uni.request = async () => ({ statusCode: 429, header: {}, data: new ArrayBuffer(0) })
   await app.generateFromTemplate('single', [])
   assert.match(statuses.at(-1), /操作太频繁/)
+  context.uni.getStorageSync=()=>({access_token:'legacy-token',profile:{id:'legacy-user'}})
+  context.supportsStudio=async()=>false
   let deliver
   context.uni.request = async () => new Promise(resolve => { deliver=resolve })
-  const canceled=app.generateFromTemplate('text_only',[],['取消测试'])
+  const backgrounded=app.generateFromTemplate('text_only',[],['取消测试'])
   await new Promise(resolve=>setImmediate(resolve))
   app.closePreview()
   deliver({statusCode:200,header:{'content-type':'image/png'},data:new ArrayBuffer(8)})
-  await canceled
+  await backgrounded
   assert.equal(app.generatedMeme.value,'');assert.equal(app.showPreview.value,false)
-  console.log('PASS: multiple images, texts, binary image, native share, text-only generation, busy server')
+  console.log('PASS: multiple images, texts, binary image, native share, text-only generation, busy server and background completion')
 }
 verify().catch(e => { console.error(e); process.exitCode = 1 })

@@ -2,46 +2,36 @@ import { API_BASE_URL } from '@/constants'
 import { visitorHeaders } from '@/services/popularityService'
 import { prepareImage } from '@/services/imagePreparation'
 
-// Discard only this editor's leftovers from a previous app session.
-if(typeof uni!=='undefined' && uni.env?.USER_DATA_PATH && uni.getFileSystemManager) {
-  const fs=uni.getFileSystemManager()
-  fs.readdir?.({dirPath:uni.env.USER_DATA_PATH,success:r=>{for(const name of r.files||[])if(/^gensticker_edit_[\w.-]+\.png$/.test(name))fs.unlink({filePath:`${uni.env.USER_DATA_PATH}/${name}`,fail:()=>{}})},fail:()=>{}})
-}
-
-export function disposeEditedImage(path) {
-  if (typeof path !== 'string') return
-  if (path.startsWith('blob:')) { URL.revokeObjectURL(path); return }
-  if (/\/gensticker_edit_[\w.-]+\.png$/.test(path)) uni.getFileSystemManager?.().unlink({ filePath:path, fail:()=>{} })
-}
+import {registerTemporary,releaseTemporary,trimOwnedFiles} from '@/services/ownedFiles'
+export const disposeEditedImage=releaseTemporary
 
 export function cropGeometry(width, height, frameWidth, frameHeight, zoom = 1, offsetX = 0, offsetY = 0) {
   const scale = Math.max(frameWidth / width, frameHeight / height) * Math.max(1, zoom)
   const drawnWidth = width * scale, drawnHeight = height * scale
-  const dx = Math.max(-(drawnWidth-frameWidth)/2, Math.min((drawnWidth-frameWidth)/2, offsetX))
-  const dy = Math.max(-(drawnHeight-frameHeight)/2, Math.min((drawnHeight-frameHeight)/2, offsetY))
+  const extraWidth=Math.max(0,drawnWidth-frameWidth),extraHeight=Math.max(0,drawnHeight-frameHeight)
+  const dx = Math.max(-extraWidth/2, Math.min(extraWidth/2, offsetX))
+  const dy = Math.max(-extraHeight/2, Math.min(extraHeight/2, offsetY))
+  const rw=Math.min(1,frameWidth/scale/width),rh=Math.min(1,frameHeight/scale/height)
   return { width:drawnWidth, height:drawnHeight, x:dx, y:dy,
-    rect:[((drawnWidth-frameWidth)/2-dx)/scale/width, ((drawnHeight-frameHeight)/2-dy)/scale/height, frameWidth/scale/width, frameHeight/scale/height] }
+    rect:[Math.max(0,Math.min(1-rw,(extraWidth/2-dx)/scale/width)),Math.max(0,Math.min(1-rh,(extraHeight/2-dy)/scale/height)),rw,rh] }
+
 }
 
 async function exportCanvas(canvas) {
   if (typeof document !== 'undefined') {
     const blob = await new Promise(resolve=>canvas.toBlob(resolve, 'image/png'))
     if (!blob) throw new Error('图片导出失败，请重试')
-    return URL.createObjectURL(blob)
+    return registerTemporary(URL.createObjectURL(blob))
   }
-  // Copy a temporary Canvas output into an explicitly owned path for cleanup.
-  const temporary = await new Promise((resolve,reject)=>wx.canvasToTempFilePath({ canvas, fileType:'png', success:r=>resolve(r.tempFilePath), fail:reject }))
-  const fs = uni.getFileSystemManager(), path = `${uni.env.USER_DATA_PATH}/gensticker_edit_${Date.now()}_${Math.random().toString(36).slice(2)}.png`
-  await new Promise((resolve,reject)=>fs.copyFile({srcPath:temporary,destPath:path,success:resolve,fail:reject}))
-  fs.unlink({filePath:temporary,fail:()=>{}})
-  return path
+  const temporary=await new Promise((resolve,reject)=>wx.canvasToTempFilePath({canvas,fileType:'png',success:r=>resolve(r.tempFilePath),fail:reject}))
+  return registerTemporary(temporary)
 }
 
 export async function editImage(path, operation) {
   path = await prepareImage(path)
   const info = await new Promise((resolve,reject)=>uni.getImageInfo({src:path,success:resolve,fail:reject}))
-  if (/gif|webp/i.test(info.type || '')) throw new Error('请先选择一张静态 JPG 或 PNG 图片进行编辑')
-  if (info.width*info.height > 4_000_000) throw new Error('图片过大，请先在相册缩小后编辑')
+  // Browser/native image decoding supplies a static frame for animated inputs.
+  if (info.width*info.height > 40_000_000) throw new Error('图片超过 4000 万像素，请先缩小后编辑')
   let canvas, image
   try {
     canvas = typeof document !== 'undefined' ? document.createElement('canvas') : wx.createOffscreenCanvas?.({type:'2d',width:1,height:1})
@@ -49,7 +39,7 @@ export async function editImage(path, operation) {
     image = typeof document !== 'undefined' ? new Image() : canvas.createImage()
     await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error('图片读取超时')),10000);image.onload=()=>{clearTimeout(timer);resolve()};image.onerror=()=>{clearTimeout(timer);reject(new Error('图片读取失败'))};image.src=path})
     const sourceWidth=image.width, sourceHeight=image.height
-    let rect = operation.type==='crop' ? operation.rect : [0,0,1,1]
+    let rect = ['crop','window'].includes(operation.type) ? operation.rect : [0,0,1,1]
     if (!Array.isArray(rect) || rect.length!==4 || rect.some(n=>!Number.isFinite(n)) || rect[0]<0 || rect[1]<0 || rect[2]<=0 || rect[3]<=0 || rect[0]+rect[2]>1.00001 || rect[1]+rect[3]>1.00001) throw new Error('裁剪区域无效')
     const sw=sourceWidth*rect[2], sh=sourceHeight*rect[3], rotated=operation.type==='rotate'
     const scale=Math.min(1,1280/Math.max(sw,sh))
@@ -68,22 +58,22 @@ export async function removeImageBackground(path) {
   let encoded
   if(typeof document !== 'undefined') {
     const blob=await (await fetch(path)).blob()
-    if(blob.size>4*1024*1024)throw new Error('图片不能超过 4 MB，请先裁剪')
+    if(blob.size>8*1024*1024)throw new Error('图片不能超过 8 MB，请先裁剪')
     encoded=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(',')[1]);reader.onerror=reject;reader.readAsDataURL(blob)})
   } else {
     const fs=uni.getFileSystemManager()
     const info=await new Promise((resolve,reject)=>fs.stat({path,success:resolve,fail:reject}))
-    if(info.stats.size>4*1024*1024)throw new Error('图片不能超过 4 MB，请先裁剪')
+    if(info.stats.size>8*1024*1024)throw new Error('图片不能超过 8 MB，请先裁剪')
     encoded=await new Promise((resolve,reject)=>fs.readFile({filePath:path,encoding:'base64',success:r=>resolve(r.data),fail:reject}))
   }
-  const response=await uni.request({url:`${API_BASE_URL}/images/subject`,method:'POST',data:{image:encoded},header:{'Content-Type':'application/json',...visitorHeaders()},responseType:'arraybuffer',timeout:60000})
-  if(response.statusCode!==200) {
-    let message=response.statusCode===429 ? '处理太频繁，请稍后再试' : response.statusCode===404 ? '图片处理暂未准备好，请稍后再试' : '背景处理失败，请稍后重试'
-    try {const detail=JSON.parse(decodeURIComponent(Array.from(new Uint8Array(response.data).slice(0,8192),b=>'%'+b.toString(16).padStart(2,'0')).join(''))).detail;if(typeof detail==='string' && response.statusCode!==404)message=detail} catch(_) {}
-    throw new Error(message)
+  await trimOwnedFiles()
+  const response=await uni.request({url:`${API_BASE_URL}/images/subject`,method:'POST',data:{image:encoded,delivery:'url'},header:{'Content-Type':'application/json',...visitorHeaders()},timeout:60000})
+  if(response.statusCode!==200)throw Error(typeof response.data?.detail==='string'?response.data.detail:'抠图暂时繁忙，原图已保留，请稍后再试')
+  if(!response.data?.image_url)throw Error('抠图结果暂时没送达，点一下再试')
+  if(typeof document!=='undefined'){
+    const result=await fetch(`${API_BASE_URL}${response.data.image_url}`,{headers:visitorHeaders()});if(!result.ok)throw Error('抠图结果已过期，请重试')
+    return registerTemporary(URL.createObjectURL(await result.blob()))
   }
-  if(typeof document!=='undefined')return URL.createObjectURL(new Blob([response.data],{type:'image/png'}))
-  const result=`${uni.env.USER_DATA_PATH}/gensticker_edit_${Date.now()}_${Math.random().toString(36).slice(2)}.png`
-  await new Promise((resolve,reject)=>uni.getFileSystemManager().writeFile({filePath:result,data:response.data,success:resolve,fail:reject}))
-  return result
+  const result=await new Promise((resolve,reject)=>uni.downloadFile({url:`${API_BASE_URL}${response.data.image_url}`,header:visitorHeaders(),timeout:30000,success:r=>r.statusCode===200?resolve(r.tempFilePath):reject(Error('抠图结果已过期，请重试')),fail:reject}))
+  return registerTemporary(result)
 }

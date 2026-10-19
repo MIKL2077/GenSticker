@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import uni from '@dcloudio/vite-plugin-uni'
+import { HttpsProxyAgent } from 'https-proxy-agent'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -24,6 +25,10 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
         secure: true,
+        // Optional development transport. Keep TLS validation and the real API;
+        // this does not affect the WeChat build or change system proxy settings.
+        agent: process.env.VITE_PROXY_URL ? new HttpsProxyAgent(process.env.VITE_PROXY_URL) : undefined,
+        proxyTimeout: 65000,
         configure: (proxy, options) => {
           proxy.on('error', (err, req, res) => {
             console.log('proxy error', err);

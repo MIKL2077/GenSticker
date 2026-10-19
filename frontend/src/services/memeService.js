@@ -42,7 +42,7 @@ function memo(key, load, ttl = 3600000) {
   requests.set(key, task)
   return task
 }
-export function getCategories() { return memo('categories', () => apiRequest('/memes/categories',{timeout:25000},2), 300000) }
+export function getCategories(force=false) { if(force)cached.delete('categories');return memo('categories', () => apiRequest('/memes/categories',{timeout:25000},2), 300000) }
 export function getTemplateInfo(key) { return memo(`info:${key}`, () => apiRequest(`/memes/${encodeURIComponent(key)}/info`)) }
 export function getTemplatePreviewData(key) { return apiImageRequest(`/memes/${encodeURIComponent(key)}/thumbnail`) }
 export function getTemplatePreviewPath(key, background = false) {

@@ -1,0 +1,190 @@
+"""Bounded, private Live Photo motion/video -> editable GIF. No network protocols."""
+import json,os,shutil,subprocess,tempfile,time,uuid,threading,hashlib
+from io import BytesIO
+from pathlib import Path
+from PIL import Image,ImageDraw,ImageSequence
+from fastapi import APIRouter,Depends,HTTPException,UploadFile,File,Form
+from fastapi.responses import FileResponse
+from pydantic import BaseModel,Field,model_validator
+from ..account import current_user
+from .store import root
+from .declarative import font
+router=APIRouter(prefix='/studio/live');slots=threading.BoundedSemaphore(2)
+TTL=7*86400
+MAX_GIF_BYTES=500*1024
+
+@router.post('/results',status_code=201)
+async def save_result(file:UploadFile=File(...),idempotency_key:str=Form(min_length=8,max_length=100),user=Depends(current_user)):
+    """Sync only the final local GIF. Never decode or upload the full source."""
+    raw=await file.read(MAX_GIF_BYTES+1)
+    if len(raw)>MAX_GIF_BYTES:raise HTTPException(413,'成品需要压缩到 500 KB 以内')
+    from asyncio import to_thread
+    return await to_thread(prepare_result,raw,idempotency_key,user)
+
+def prepare_result(raw,idem,user):
+    from .studio import enqueue
+    if not slots.acquire(False):raise HTTPException(503,'动图同步繁忙，请稍后再试')
+    try:
+        try:
+            with Image.open(BytesIO(raw)) as image:
+                if image.format!='GIF' or max(image.size)>240 or min(image.size)<2 or not 2<=image.n_frames<=100:raise ValueError()
+                duration=0
+                for frame in ImageSequence.Iterator(image):
+                    frame.load();duration+=frame.info.get('duration',100)
+                if not 100<=duration<=9100:raise ValueError()
+                width,height=image.size
+        except (OSError,ValueError,Image.DecompressionBombError):raise HTTPException(422,'请选择最长 9 秒、长边 240 px 以内的动态 GIF')
+        # Deterministic identifier makes interrupted upload retries idempotent.
+        identifier=hashlib.sha256((user['id']+':'+idem).encode()+raw).hexdigest()[:32]
+        path=directory()/(identifier+'.media');meta_path=directory()/(identifier+'.json')
+        if not meta_path.exists():
+            from .store import connect
+            db=connect()
+            try:
+                # Count ingress before retaining another file; deleting jobs cannot bypass it.
+                from .recommend import admit_generation
+                with db:
+                    db.execute('BEGIN IMMEDIATE');admit_generation(db,user['id'],'live:'+identifier,time.time())
+            finally:db.close()
+            path.write_bytes(raw)
+            meta_path.write_text(json.dumps({'user_id':user['id'],'created':time.time(),'duration':duration/1000,'width':width,'height':height,'ready':True}))
+        job=enqueue('livegif',{'asset_id':identifier,'ready':True},idem,user)
+        # This result was already displayed locally before sync; don't create an unread badge.
+        from .studio import init
+        db=init()
+        try:
+            with db:db.execute('INSERT OR IGNORE INTO studio_views VALUES(?,?,?)',(job['id'],user['id'],time.time()))
+        finally:db.close()
+        return job
+    finally:slots.release()
+
+def directory():
+    path=root()/'live_sources';path.mkdir(exist_ok=True);return path
+
+def run(args,timeout=25):
+    try:return subprocess.run(args,stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=timeout,check=True).stdout
+    except FileNotFoundError:raise HTTPException(503,'动图工作室还在准备编解码器')
+    except (subprocess.SubprocessError,OSError):raise HTTPException(422,'没有读取到动态画面，请将 Live 图存储为视频后再上传')
+
+def motion(raw):
+    if raw[:6] in (b'GIF87a',b'GIF89a'):return raw
+    # MP4/MOV, or Android motion JPEG with an appended MP4 stream.
+    start=0
+    while True:
+        offset=raw.find(b'ftyp',start)
+        if offset<4:break
+        brand=raw[offset+4:offset+8]
+        size=int.from_bytes(raw[offset-4:offset],'big')
+        if brand not in (b'heic',b'heix',b'hevc',b'hevx',b'mif1',b'avif') and 8<=size<=256:return raw[offset-4:]
+        start=offset+8
+    # QuickTime can start with wide/mdat/moov instead of an ftyp box.
+    if len(raw)>12 and raw[4:8] in (b'moov',b'mdat',b'wide'):return raw
+    raise HTTPException(422,'微信只传来了静态照片，没有 Live 动态片段。请在 iPhone 相册选择“存储为视频”，再从这里选取视频；也可上传包含动态片段的原始文件')
+
+def own(asset,user):
+    if len(asset)!=32 or any(c not in '0123456789abcdef' for c in asset):raise HTTPException(404,'素材不存在')
+    meta_path=directory()/(asset+'.json')
+    if not meta_path.exists():raise HTTPException(404,'动态素材已过期')
+    meta=json.loads(meta_path.read_text())
+    if meta['user_id']!=user or meta['created']<time.time()-TTL:raise HTTPException(404,'动态素材已过期')
+    return meta
+
+@router.post('/assets',status_code=201)
+async def upload(file:UploadFile=File(...),user=Depends(current_user)):
+    from asyncio import to_thread
+    raw=await file.read(30*1024*1024+1)
+    if len(raw)>30*1024*1024:raise HTTPException(413,'动态素材最多 30 MB，请先缩短视频')
+    return await to_thread(prepare,raw,user['id'])
+
+def prepare(raw,user):
+    if not slots.acquire(False):raise HTTPException(503,'动态素材正在准备，请稍后再传')
+    identifier=uuid.uuid4().hex;path=directory()/(identifier+'.media')
+    try:
+        # Per-user rolling ingress budget, independent of unlimited meme generation.
+        recent=[p for p in directory().glob('*.json') if p.stat().st_mtime>time.time()-60]
+        if sum(json.loads(p.read_text()).get('user_id')==user for p in recent)>=4:raise HTTPException(429,'视频上传有点快，休息一分钟再来')
+        path.write_bytes(motion(raw))
+        info=json.loads(run(['ffprobe','-v','error','-protocol_whitelist','file,pipe','-show_streams','-show_format','-of','json',str(path)]))
+        stream=next((s for s in info['streams'] if s.get('codec_type')=='video'),None)
+        if not stream or stream.get('width',0)*stream.get('height',0)>33_200_000:raise HTTPException(422,'视频分辨率过高，先导出 1080p 再试试')
+        duration=float(info.get('format',{}).get('duration') or stream.get('duration') or 3)
+        if not .08<=duration<=9.1:raise HTTPException(422,'兼容模式请先截取最长 9 秒的视频；长视频请使用本地制作')
+        poster=directory()/(identifier+'.jpg')
+        run(['ffmpeg','-nostdin','-v','error','-threads','2','-protocol_whitelist','file,pipe','-i',str(path),'-frames:v','1','-vf','scale=640:640:force_original_aspect_ratio=decrease','-y',str(poster)])
+        with Image.open(poster) as image:width,height=image.size
+        meta={'user_id':user,'created':time.time(),'duration':duration,'width':width,'height':height}
+        (directory()/(identifier+'.json')).write_text(json.dumps(meta))
+        return {**{k:v for k,v in meta.items() if k not in ('user_id','created')},'asset_id':identifier,'poster_url':f'/studio/live/assets/{identifier}/poster'}
+    except Exception:
+        path.unlink(missing_ok=True);(directory()/(identifier+'.jpg')).unlink(missing_ok=True);raise
+    finally:slots.release()
+
+@router.get('/assets/{identifier}/poster')
+def poster(identifier:str,user=Depends(current_user)):
+    own(identifier,user['id']);return FileResponse(directory()/(identifier+'.jpg'),media_type='image/jpeg',headers={'Cache-Control':'private, no-store'})
+
+class LiveJob(BaseModel):
+    asset_id:str=Field(pattern='^[a-f0-9]{32}$')
+    idempotency_key:str=Field(min_length=8,max_length=100)
+    start:float=Field(default=0,ge=0,le=120)
+    duration:float=Field(default=3,ge=.2,le=9)
+    crop:tuple[float,float,float,float]=(0,0,1,1)
+    text:str=Field(default='',max_length=100)
+    rotation:int=Field(default=0)
+    flip:bool=False
+    @model_validator(mode='after')
+    def valid(self):
+        x,y,w,h=self.crop
+        import math
+        if not all(math.isfinite(v) for v in self.crop) or min(x,y)<0 or min(w,h)<=0 or x+w>1.00001 or y+h>1.00001 or self.rotation not in (0,90,180,270):raise ValueError('invalid crop or rotation')
+        return self
+
+@router.post('/jobs',status_code=201)
+def create(params:LiveJob,user=Depends(current_user)):
+    meta=own(params.asset_id,user['id'])
+    if params.start>=meta['duration']:raise HTTPException(422,'起始时间已经超出视频长度')
+    from .studio import enqueue
+    return enqueue('livegif',params.model_dump(exclude={'idempotency_key'}),params.idempotency_key,user)
+
+def render_job(payload,user):
+    meta=own(payload['asset_id'],user)
+    if payload.get('ready'):
+        if not meta.get('ready'):raise ValueError('invalid prepared GIF')
+        return (directory()/(payload['asset_id']+'.media')).read_bytes()
+    params=LiveJob.model_validate({**payload,'idempotency_key':'worker-render'})
+    source=directory()/(params.asset_id+'.media');filters=[]
+    if params.rotation==90:filters.append('transpose=1')
+    elif params.rotation==180:filters.extend(['hflip','vflip'])
+    elif params.rotation==270:filters.append('transpose=2')
+    if params.flip:filters.append('hflip')
+    x,y,w,h=params.crop;filters.extend([f'crop=iw*{w}:ih*{h}:iw*{x}:ih*{y}','scale=240:240:force_original_aspect_ratio=decrease','fps=10'])
+    with tempfile.TemporaryDirectory(dir=directory()) as temp:
+        pattern=str(Path(temp)/'frame-%03d.png')
+        run(['ffmpeg','-nostdin','-v','error','-threads','2','-filter_threads','2','-protocol_whitelist','file,pipe','-ss',str(params.start),'-i',str(source),'-t',str(params.duration),'-an','-vf',','.join(filters),'-frames:v','90','-y',pattern],timeout=30)
+        frames=[]
+        for file in sorted(Path(temp).glob('frame-*.png')):
+            with Image.open(file) as image:frame=image.convert('RGB')
+            if params.text:
+                painter=ImageDraw.Draw(frame);size=max(12,min(36,frame.width//12));face=font(size,True)
+                lines=[];line=''
+                for char in params.text:
+                    if painter.textlength(line+char,font=face)>frame.width-16:lines.append(line);line=char
+                    else:line+=char
+                if line:lines.append(line)
+                lines=lines[:3];height=(size+5)*len(lines)
+                painter.rectangle((0,max(0,frame.height-height-12),frame.width,frame.height),fill='#fff5df')
+                for i,line in enumerate(lines):painter.text((frame.width/2,frame.height-height-6+i*(size+5)),line,font=face,fill='#253f45',anchor='mt')
+            frames.append(frame)
+        if len(frames)<2:raise ValueError('source has no motion')
+        for stride,colors in ((1,128),(2,128),(2,64),(3,64),(3,32)):
+            reduced=[f.quantize(colors=colors,method=Image.Quantize.MEDIANCUT) for f in frames[::stride]]
+            output=BytesIO();reduced[0].save(output,'GIF',save_all=True,append_images=reduced[1:],duration=[min(stride,len(frames)-i)*100 for i in range(0,len(frames),stride)],loop=0,optimize=True,disposal=2)
+            if len(output.getvalue())<=MAX_GIF_BYTES:return output.getvalue()
+        raise ValueError('画面过于复杂，请缩短片段后重试')
+
+def cleanup():
+    for meta_path in directory().glob('*.json'):
+        try:
+            if json.loads(meta_path.read_text())['created']>time.time()-TTL:continue
+            for extension in ('.json','.jpg','.media'):(directory()/(meta_path.stem+extension)).unlink(missing_ok=True)
+        except (ValueError,OSError,KeyError):pass

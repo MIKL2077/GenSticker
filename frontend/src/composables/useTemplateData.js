@@ -2,6 +2,7 @@ import { ref, computed, onUnmounted } from 'vue'
 import { PAGINATION, CATEGORY_UI_TO_API } from '@/constants'
 import { getCategories, getTemplateInfo, getTemplatePreviewPath, setThumbnailWindow, onThumbnailEvict } from '@/services/memeService'
 import { seedClientRecipes } from '@/services/clientRenderer'
+import {listMyTemplates,privateImage} from '@/services/studioService'
 
 export function useTemplateData(showStatusMessage) {
   const isLoadingTemplates = ref(false)
@@ -22,19 +23,45 @@ export function useTemplateData(showStatusMessage) {
 
   const currentPage = ref(1)
   const sortMode = ref('hot')
+  const libraryMode=ref('warehouse'),mineKeys=ref([]),favoriteKeys=ref([]),mineTemplates=ref([])
 
   const categoryKeys = ref({ all: [], text_only: [], image_only: [], mixed: [] })
+  // Ranking is global and independent of the template library's filters.
+  const spotlight = computed(() => categoryKeys.value.all.map(key => templateDetails.value.get(key)).filter(item => item && item.heat > 0).sort((a,b) => b.heat - a.heat || a.key.localeCompare(b.key)).slice(0,3))
   const categoryLoadedPages = ref(new Map()) // Map<uiCategoryKey, Set<number>>
 
   const pageTasks = new Map()
   let visibleLoads = 0
   const templatesPerPage = PAGINATION.templatesPerPage
 
-  const currentCategoryAllKeys = computed(() => {
-    const apiKey = CATEGORY_UI_TO_API[selectedCategory.value]
-    const keys = categoryKeys.value[apiKey] || []
-    return sortMode.value === 'explore' ? [...keys].sort((a,b) => a.localeCompare(b)) : keys
+  const orderedKeys=(category)=>{
+    let keys=categoryKeys.value[CATEGORY_UI_TO_API[category]] || []
+    if(libraryMode.value==='mine'){
+      const combined=[...new Set([...mineKeys.value,...favoriteKeys.value])]
+      keys=category==='all'?combined:combined.filter(key=>{
+        const d=templateDetails.value.get(key),im=Number(d?.imageCount?.split('-')[1]||0),tx=Number(d?.textCount?.split('-')[1]||0)
+        return category==='image'?im>0&&!tx:category==='text'?tx>0&&!im:im>0&&tx>0
+      })
+    }
+    return [...keys].sort((a,b)=>{
+      const x=templateDetails.value.get(a)||{},y=templateDetails.value.get(b)||{}
+      if(sortMode.value==='hot')return (y.heat||0)-(x.heat||0)||a.localeCompare(b)
+      if(sortMode.value==='cold')return (x.heat||0)-(y.heat||0)||a.localeCompare(b)
+      if(sortMode.value==='old')return (x.createdAt||0)-(y.createdAt||0)||a.localeCompare(b)
+      return (y.createdAt||0)-(x.createdAt||0)||a.localeCompare(b)
     })
+  }
+  const currentCategoryAllKeys=computed(()=>orderedKeys(selectedCategory.value))
+  let mineOwner=''
+  const loadMine=async favorites=>{
+    const nextOwner=uni.getStorageSync('gensticker.session.v1')?.profile?.id||'guest'
+    if(mineOwner!==nextOwner){for(const key of mineKeys.value){previewImageCache.value.delete(key);templateDetails.value.delete(key)}mineKeys.value=[];mineTemplates.value=[];mineOwner=nextOwner}
+    favoriteKeys.value=favorites||[]
+    if(!uni.getStorageSync('gensticker.session.v1')?.access_token){mineKeys.value=[];mineTemplates.value=[];return}
+    const owner=uni.getStorageSync('gensticker.session.v1')?.profile?.id
+    const data=await listMyTemplates();if(owner!==uni.getStorageSync('gensticker.session.v1')?.profile?.id)return;mineTemplates.value=data;mineKeys.value=data.map(t=>t.id)
+    for(const item of data){const p=item.params_type;templateDetails.value.set(item.id,{...templateDetails.value.get(item.id),key:item.id,name:item.name,keywords:[item.name],tags:['我的模板'],metadataLoaded:true,imageCount:`${p.min_images}-${p.max_images}`,textCount:`${p.min_texts}-${p.max_texts}`,defaultTexts:p.default_texts,creator:item.creator,createdAt:item.created_at,status:item.status,message:item.message,ownPreview:item.preview_url,isLoadingPreview:true})}
+  }
 
   const totalPages = computed(() => Math.max(1, Math.ceil(currentCategoryAllKeys.value.length / templatesPerPage)))
 
@@ -60,11 +87,11 @@ export function useTemplateData(showStatusMessage) {
     }
   }))
 
-  const fetchMemeCategories = async () => {
+  const fetchMemeCategories = async (force=false) => {
     try {
       isLoadingTemplates.value = true
       loadError.value = ''
-      const data = await getCategories()
+      const data = await getCategories(force)
       seedClientRecipes(data.client)
       const localKeys=new Set((data.client?.recipes || []).map(r=>r.key))
       categoryKeys.value = {
@@ -76,9 +103,10 @@ export function useTemplateData(showStatusMessage) {
       for (const card of data.cards || []) {
         const existing = templateDetails.value.get(card.key) || { key: card.key, previewImage: null, isLoadingPreview: true }
         const params=card.params_type
-        templateDetails.value.set(card.key, { ...existing, name:card.name, featuredTrial:!!card.featured_trial, inputHint:card.input_hint || '', keywords:card.keywords || [], tags:card.tags || [], heat:card.heat || 0, counts:card.counts || {}, localCapable:localKeys.has(card.key), ...(params ? {metadataLoaded:true, templateId:card.template_id, version:card.version, attribution:card.attribution || {}, imageCount:`${params.min_images}-${params.max_images}`, textCount:`${params.min_texts}-${params.max_texts}`, defaultTexts:params.default_texts || []} : {}) })
+        templateDetails.value.set(card.key, { ...existing, name:card.name, featuredTrial:!!card.featured_trial, inputHint:card.input_hint || '', keywords:card.keywords || [], tags:card.tags || [], heat:card.heat || 0, createdAt:card.created_at || 0, creator:card.creator, counts:card.counts || {}, localCapable:localKeys.has(card.key), ...(params ? {metadataLoaded:true, templateId:card.template_id, version:card.version, attribution:card.attribution || {}, imageCount:`${params.min_images}-${params.max_images}`, textCount:`${params.min_texts}-${params.max_texts}`, defaultTexts:params.default_texts || []} : {}) })
       }
       for(const card of data.cards || [])if(card.featured_trial)fetchMemePreview(card.key, true)
+      spotlight.value.forEach(item => fetchMemePreview(item.key, true))
       categoryLoadedPages.value.clear()
       categories.value = categories.value.map(c => {
         const apiKey = CATEGORY_UI_TO_API[c.key]
@@ -103,6 +131,8 @@ export function useTemplateData(showStatusMessage) {
       const info = await getTemplateInfo(key)
       const existingDetail = templateDetails.value.get(key) || { key }
       existingDetail.inputHint = info.input_hint || ''
+      existingDetail.creator=info.creator
+      existingDetail.createdAt=info.created_at || 0
       existingDetail.templateId = info.template_id
       existingDetail.version = info.version
       existingDetail.attribution = info.attribution || {}
@@ -139,7 +169,8 @@ export function useTemplateData(showStatusMessage) {
       }
       if (loadingStates.value.get(key)) return null
       loadingStates.value.set(key, true)
-      const previewImage = await getTemplatePreviewPath(key, background)
+      const owned=templateDetails.value.get(key)?.ownPreview
+      const previewImage = owned ? await privateImage(owned) : await getTemplatePreviewPath(key, background)
       previewImageCache.value.set(key, previewImage)
       // Keep path references bounded too; protected visible keys survive eviction.
       if (previewImageCache.value.size > 72) {
@@ -161,11 +192,10 @@ export function useTemplateData(showStatusMessage) {
   }
 
   const ensurePageLoaded = async (uiCategoryKey, pageNumber, background = false) => {
-    const rawKeys = categoryKeys.value[CATEGORY_UI_TO_API[uiCategoryKey]] || []
-    const keys = sortMode.value === 'explore' ? [...rawKeys].sort((a,b) => a.localeCompare(b)) : rawKeys
+    const keys=orderedKeys(uiCategoryKey)
     if (pageNumber < 1) return
     const pageKeys = keys.slice((pageNumber - 1) * templatesPerPage, pageNumber * templatesPerPage)
-    if (!background) setThumbnailWindow([...pageKeys,...keys.slice(0,3)])
+    if (!background) setThumbnailWindow([...pageKeys,...spotlight.value.map(item=>item.key)])
     if (!pageKeys.length || pageKeys.every(key => previewImageCache.value.has(key))) return
     const taskKey = `${uiCategoryKey}:${pageNumber}`
     if (!background) { visibleLoads++; isLoadingTemplates.value = true }
@@ -213,7 +243,8 @@ export function useTemplateData(showStatusMessage) {
     totalPages,
     currentPageTemplates,
     sortMode,
-    spotlight: computed(() => currentCategoryAllKeys.value.slice(0,3).map(key => templateDetails.value.get(key)).filter(Boolean)),
+    libraryMode,loadMine,mineTemplates,
+    spotlight,
     // actions
     fetchMemeCategories,
     fetchMemeInfo,

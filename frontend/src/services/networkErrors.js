@@ -3,6 +3,7 @@ export function requestError(error) {
   const raw=String(error?.errMsg || error?.message || '网络连接失败')
   const result=new Error(raw)
   result.statusCode=error?.statusCode
+  result.retryAfter=error?.retryAfter || 0
   if(/not in domain list|domain.*not.*allowed|域名.*(非法|未配置|不合法)/i.test(raw)) {
     result.code='DOMAIN_NOT_ALLOWED'
     result.message='当前小程序版本尚未开通服务域名，请联系开发者处理'

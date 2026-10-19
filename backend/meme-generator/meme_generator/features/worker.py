@@ -1,6 +1,5 @@
 import json
 import hashlib
-import random
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
 from pathlib import Path
@@ -28,7 +27,7 @@ def claim():
             for job in stale:
                 if job["attempts"] >= 2:
                     db.execute(
-                        "UPDATE jobs SET status='failed',message='服务中断，次数已退回',updated=? WHERE id=?",
+                        "UPDATE jobs SET status='failed',message='服务中断，可以再换一批重试',updated=? WHERE id=?",
                         (stamp, job["id"]),
                     )
                     db.execute(
@@ -64,6 +63,16 @@ def candidates(job, analysis):
             if preference and preference["enabled"]
             else {}
         )
+        variation = db.execute("SELECT * FROM job_variations WHERE job_id=?", (job["id"],)).fetchone()
+        excluded = set(json.loads(variation["excluded_keys"])) if variation else set()
+        previous = set(json.loads(variation["previous_keys"])) if variation else set()
+        # All entry points share exposure history, including starting again without a parent.
+        usage = {r['key']: (r['uses'], r['last_seen']) for r in db.execute(
+            "SELECT r.key,COUNT(*) AS uses,MAX(j.created) AS last_seen FROM results r JOIN jobs j ON j.id=r.job_id WHERE j.user_id=? AND j.id!=? AND j.created>? GROUP BY r.key",
+            (job['user_id'], job['id'], time.time()-7*86400))}
+        latest = db.execute("SELECT id FROM jobs WHERE user_id=? AND id!=? AND status='completed' ORDER BY created DESC LIMIT 1", (job['user_id'],job['id'])).fetchone()
+        if latest:
+            previous.update(r['key'] for r in db.execute('SELECT key FROM results WHERE job_id=?',(latest['id'],)))
     finally:
         db.close()
     from .popularity import snapshot
@@ -88,6 +97,17 @@ def candidates(job, analysis):
         "rub",
         "why_at_me",
         "addiction",
+        "applaud",
+        "cover_face",
+        "dog_dislike",
+        "distracted",
+        "dont_touch",
+        "garbage",
+        "interview",
+        "make_friend",
+        "police",
+        "read_book",
+        "worship",
     }
     for row in rows():
         m = json.loads(row["metadata"])
@@ -112,45 +132,28 @@ def candidates(job, analysis):
             2 if analysis["expression"] in tags and analysis["confidence"] > 0.2 else 0
         )
         score += 0.25 / (1 + abs(analysis.get("aspect", 1) - m.get("slot_aspect", 1)))
-        # Stable user-scoped jitter ensures variety without re-running analysis per image.
+        # Seed by job: crash recovery keeps the same order, new batches get new variety.
         score += (
             int(
                 hashlib.sha256(
-                    (job["user_id"] + row["key"] + job["day"]).encode()
+                    (job["id"] + row["key"]).encode()
                 ).hexdigest()[:8],
                 16,
             )
             / 0xFFFFFFFF
         )
         available.append((score, row))
-    ordered = [r for _, r in sorted(available, key=lambda pair: pair[0], reverse=True)]
-    chosen = []
-    counts = {}
+    # Fresh templates first; when a cycle is nearly exhausted, fill from the
+    # least recently used templates instead of returning six images. The last
+    # batch stays excluded whenever the catalog can supply nine alternatives.
+    ordered = [r for _, r in sorted(available, key=lambda pair: (
+        pair[1]['key'] in previous,
+        pair[1]['key'] in excluded or pair[1]['key'] in usage,
+        usage.get(pair[1]['key'], (0, 0)),
+        -pair[0],
+    ))]
+    return ordered
 
-    def take(row):
-        metadata = json.loads(row["metadata"])
-        family = (
-            "emoji-frame-v1"
-            if metadata.get("conversion") == "emoji-frame-v1"
-            else row["key"]
-        )
-        if counts.get(family, 0) >= 2:
-            return False
-        counts[family] = counts.get(family, 0) + 1
-        chosen.append(row)
-        return True
-
-    for row in ordered:
-        take(row)
-        if len(chosen) == 6:
-            break
-    remaining = [r for r in ordered if r not in chosen]
-    random.Random(job["id"]).shuffle(remaining)
-    for row in remaining:
-        take(row)
-        if len(chosen) == 9:
-            break
-    return chosen
 
 
 def run_job(job):
@@ -218,55 +221,40 @@ def run_job(job):
                 frame.save(preview, "JPEG", quality=75)
             return slot, row, metadata, path, preview
 
+        used = {r['key'] for r in db.execute('SELECT key FROM results WHERE job_id=?', (job['id'],))}
+        remaining = iter(r for r in choices if r['key'] not in used)
         with ThreadPoolExecutor(max_workers=2) as executor:
-            futures = [
-                executor.submit(render_one, slot, row)
-                for slot, row in enumerate(choices)
-                if slot not in done
-            ]
-            for future in as_completed(futures):
-                try:
-                    slot, row, metadata, path, preview = future.result()
+            while len(done) < 9:
+                batch = []
+                for slot in (i for i in range(9) if i not in done):
+                    row = next(remaining, None)
+                    if row is None: break
+                    batch.append(executor.submit(render_one, slot, row))
+                    if len(batch) == 2: break
+                if not batch: break
+                for future in as_completed(batch):
+                    try:
+                        slot, row, metadata, path, preview = future.result()
+                    except Exception:
+                        # Broken templates don't shrink a batch while alternatives remain.
+                        continue
                     with db:
                         from .popularity import record
                         record(row['key'], 'user:' + job['user_id'], 'ai_generate', dedup=f"{job['id']}:{slot}", db=db)
-                        db.execute(
-                            "INSERT OR REPLACE INTO results VALUES(?,?,?,?,?,?,?,?)",
-                            (
-                                job["id"],
-                                slot,
-                                row["id"],
-                                row["version"],
-                                row["key"],
-                                json.dumps(metadata["tags"]),
-                                str(path),
-                                str(preview),
-                            ),
-                        )
-                        db.execute(
-                            "UPDATE jobs SET lease=?,updated=?,message=? WHERE id=?",
-                            (
-                                time.time() + 300,
-                                time.time(),
-                                f"已生成{len(done) + 1}张",
-                                job["id"],
-                            ),
-                        )
-                    with db:
-                        db.execute(
-                            "UPDATE worker_state SET updated=? WHERE id=1",
-                            (time.time(),),
-                        )
-                    done.add(slot)
-                except Exception:
-                    continue
+                        db.execute('INSERT OR REPLACE INTO results VALUES(?,?,?,?,?,?,?,?)',
+                            (job['id'], slot, row['id'], row['version'], row['key'], json.dumps(metadata['tags']), str(path), str(preview)))
+                        done.add(slot)
+                        stamp = time.time()
+                        db.execute('UPDATE jobs SET lease=?,updated=?,message=? WHERE id=?',
+                            (stamp+300, stamp, f'已生成{len(done)}张', job['id']))
+                        db.execute('UPDATE worker_state SET updated=? WHERE id=1', (stamp,))
         count = db.execute(
             "SELECT COUNT(*) FROM results WHERE job_id=?", (job["id"],)
         ).fetchone()[0]
         if not count:
-            raise ValueError("no valid results")
+            raise ValueError("no valid results" if choices else "templates exhausted")
         message = (
-            "九张表情已准备好" if count == 9 else f"已生成{count}张，部分模板暂时不可用"
+            "九张表情已准备好" if count == 9 else f"已生成{count}张，按本次可用模板展示"
         )
         with db:
             db.execute(
@@ -286,11 +274,11 @@ def run_job(job):
                     sum(p.stat().st_size for p in directory.glob("*.jpg")),
                 ),
             )
-    except Exception:
+    except Exception as error:
         with db:
             db.execute(
-                "UPDATE jobs SET status='failed',updated=?,lease=0,message='生成失败，次数已退回，请重新上传' WHERE id=?",
-                (time.time(), job["id"]),
+                "UPDATE jobs SET status='failed',updated=?,lease=0,message=? WHERE id=?",
+                (time.time(), "这张照片的可用模板已经试完啦，换张照片再玩吧" if str(error) == "templates exhausted" else "这次生成没成功，可以重试或换张照片", job["id"]),
             )
             db.execute(
                 "UPDATE quotas SET status='refunded' WHERE job_id=?", (job["id"],)
@@ -335,6 +323,7 @@ def maintenance():
                     for v in r
                 )
                 db.execute("DELETE FROM results WHERE job_id=?", (job["id"],))
+                db.execute("DELETE FROM job_variations WHERE job_id=?", (job["id"],))
 
                 db.execute("DELETE FROM jobs WHERE id=?", (job["id"],))
             db.execute("DELETE FROM events WHERE created<?", (stamp - 90 * 86400,))
@@ -396,6 +385,11 @@ def maintenance():
                     "INSERT INTO preferences(user_id,weights,updated) VALUES(?,?,?) ON CONFLICT(user_id) DO UPDATE SET weights=excluded.weights,updated=excluded.updated",
                     (user, json.dumps(weights), stamp),
                 )
+        thumbs=root()/'history_thumbs'
+        if thumbs.exists():
+            active_assets={r['asset_id'] for r in db.execute('SELECT DISTINCT asset_id FROM jobs')}
+            for thumbnail in thumbs.glob('*.jpg'):
+                if thumbnail.stem not in active_assets:paths.append(thumbnail)
         for path in paths:
             path.unlink(missing_ok=True)
     finally:
@@ -417,6 +411,8 @@ def main():
     while True:
         if time.time() - last > 3600:
             maintenance()
+            from .studio import cleanup
+            cleanup()
             last = time.time()
         db = connect()
         with db:
@@ -425,6 +421,8 @@ def main():
                 (time.time(), int(model_ready)),
             )
         db.close()
+        from .studio import work_one
+        work_one()
         job = claim()
         if job:
             run_job(job)

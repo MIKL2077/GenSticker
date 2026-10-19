@@ -11,7 +11,7 @@ const context = {
   uni: { getStorageSync: key => storage.get(key), setStorageSync: (k, v) => storage.set(k, clone(v)), removeStorageSync: k => storage.delete(k), login: o => o.success({ code: 'test-code' }) },
   apiRequest: async (url, options = {}) => {
     calls.push({ url, options })
-    if (url === '/account/config') return { login_enabled: true }
+    if (url === '/account/config') return { login_enabled: true, app_id:'wx1234567890abcdef' }
     if (url === '/auth/wechat') return { access_token: 'test-token', expires_at: Date.now() / 1000 + 600, profile: { id: 'user-a', name: '微信用户' } }
     if (url === '/account/library/merge') { remote = clone(options.data); return clone(remote) }
     if (url === '/account/library') return clone(remote)
@@ -28,6 +28,11 @@ vm.createContext(context); vm.runInContext(source, context)
   a.toggleFavorite('two')
   for (let i = 0; i < 110; i++) a.recordVisit('key-' + i)
   assert.equal(a.historyCount.value, 100)
+  context.uni.getAccountInfoSync=()=>({miniProgram:{appId:'wx0000000000000000'}})
+  const before=calls.filter(x=>x.url==='/auth/wechat').length
+  await assert.rejects(a.loginWeChat(),/身份与服务配置不一致/)
+  assert.equal(calls.filter(x=>x.url==='/auth/wechat').length,before,'mismatched app must not request a WeChat login session')
+  context.uni.getAccountInfoSync=()=>({miniProgram:{appId:'wx1234567890abcdef'}})
   await a.loginWeChat()
   assert.equal(a.session.value.profile.id, 'user-a')
   await a.syncLibrary() // Login returns immediately; migration completes in the background.

@@ -40,10 +40,24 @@ class SubjectPreviewTests(unittest.TestCase):
             model.assert_not_called()
         self.assertEqual(len(api.subject_cache.items), 2)
 
+    def test_url_delivery_download_stays_private_and_expires(self):
+        from meme_generator.features import editor
+        visitor={'X-Gensticker-Visitor':'foreground-owner-123456'}
+        response=self.client.post('/images/subject',json={'image':self.encoded,'delivery':'url'},headers=visitor)
+        self.assertEqual(response.status_code,200,response.text)
+        path=response.json()['image_url']
+        image=self.client.get(path,headers=visitor)
+        self.assertEqual(image.status_code,200)
+        self.assertEqual(image.headers['cache-control'],'private, no-store')
+        self.assertEqual(self.client.get(path,headers={'X-Gensticker-Visitor':'foreground-stranger-1234'}).status_code,404)
+        with patch.object(editor.time,'time',return_value=10**12):
+            self.assertEqual(self.client.get(path,headers=visitor).status_code,404)
+        editor._foreground.clear()
+
     def test_invalid_images_and_busy_preview_do_not_render(self):
         for value in ['???', base64.b64encode(b'not an image').decode()]:
             self.assertEqual(self.client.post('/images/subject', json={'image': value}).status_code, 422)
-        too_big = base64.b64encode(b'a' * (4 * 1024 * 1024 + 1)).decode()
+        too_big = base64.b64encode(b'a' * (8 * 1024 * 1024 + 1)).decode()
         self.assertEqual(self.client.post('/images/subject', json={'image': too_big}).status_code, 413)
         with patch.object(api, 'generation_slots', asyncio.Semaphore(0)):
             response = self.client.post('/images/subject', json={'image': self.encoded})

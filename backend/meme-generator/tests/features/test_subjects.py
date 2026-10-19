@@ -22,7 +22,9 @@ class SubjectTests(unittest.TestCase):
         with patch('meme_generator.features.vision._session',None),patch('meme_generator.features.vision.warmup',return_value=True) as warm,patch('meme_generator.features.vision.extract',return_value=cutout) as extract:
             output=extract_subject(png(original));warm.assert_called_once_with(include_emotion=False);extract.assert_called_once()
         self.assertGreater(len(output),0)
-    def test_empty_and_animated_inputs_have_actionable_errors(self):
+    def test_empty_input_errors_and_animation_uses_first_frame(self):
         with self.assertRaisesRegex(SubjectError,'主体为空'):extract_subject(png(Image.new('RGBA',(128,128))))
         buf=BytesIO();Image.new('RGB',(128,128),'red').save(buf,'GIF',save_all=True,append_images=[Image.new('RGB',(128,128),'blue')])
-        with self.assertRaisesRegex(SubjectError,'动图'):extract_subject(buf.getvalue())
+        with patch('meme_generator.features.vision._session',object()),patch('meme_generator.features.vision.extract',return_value=Image.new('RGBA',(64,64),(255,0,0,255))):
+            output=Image.open(BytesIO(extract_subject(buf.getvalue())))
+            self.assertEqual(output.mode,'RGBA')

@@ -1,27 +1,16 @@
-<template>
-  <view class="bottom-tabs">
-    <button class="tab" :class="{ active: active === 'home' }" @click="go('home')"><text class="icon">🏠</text><text>首页</text></button>
-    <view class="ai-slot"><button class="ai-orb" :class="{ selected: active === 'ai' }" aria-label="AI生成" @click="go('ai')"><text class="spark">✦</text><text class="ai-label">AI</text></button><text class="ai-copy">AI 生成</text></view>
-    <button class="tab" :class="{ active: active === 'my' }" @click="go('my')"><text class="icon">👤</text><text>我的</text></button>
-  </view>
-</template>
+<template><view class="bottom-tabs"><button class="tab" :class="{active:active==='home'}" @click="go('home')" aria-label="首页"><ui-icon name="home" :tone="active==='home'?'accent':'ink'" :size="42"/><text>首页</text><view v-if="active==='home'" class="active-dot"/></button><button class="ai-tab" :class="{selected:active==='ai'}" aria-label="AI生成" @click="go('ai')"><view class="ai-orb"><ui-icon name="spark" tone="white" :size="40"/></view><text class="ai-copy">AI 生成</text></button><button class="tab" :class="{active:active==='my'}" @click="go('my')" aria-label="我的"><ui-icon name="user" :tone="active==='my'?'accent':'ink'" :size="42"/><text v-if="unreadCount" class="nav-badge">{{unreadCount>99?'99+':unreadCount}}</text><text>我的</text><view v-if="active==='my'" class="active-dot"/></button></view></template>
 <script>
-import { onMounted } from 'vue'
-export default {
-  props: { active: String },
-  setup(props) {
-    onMounted(() => uni.hideTabBar({ animation: false, fail: () => {} }))
-    return { go: tab => { if (tab === props.active) return; if (tab === 'ai') return uni.navigateTo({ url: '/pages/recommend/index' }); uni.switchTab({ url: tab === 'home' ? '/pages/index/index' : '/pages/my/index' }) } }
-  },
-}
+import {onMounted} from 'vue'
+import UiIcon from '@/components/UiIcon.vue'
+import {unreadCount} from '@/services/studioService'
+import {openRecommend} from '@/services/navigation'
+export default{components:{UiIcon},props:{active:String},setup(props){onMounted(()=>uni.hideTabBar({animation:false,fail:()=>{}}));return{unreadCount,go:tab=>{if(tab===props.active)return;if(tab==='ai')return openRecommend();uni.switchTab({url:tab==='home'?'/pages/index/index':'/pages/my/index'})}}}}
 </script>
 <style scoped>
-.bottom-tabs { position:fixed; bottom:0; left:0; right:0; display:flex; gap:10rpx; background:white; padding:12rpx 16rpx calc(12rpx + env(safe-area-inset-bottom)); border-radius:24rpx 24rpx 0 0; z-index:100 }
-.tab { flex:1; margin:0; border:2rpx solid transparent; border-radius:22rpx; background:#f7f8fa; color:#666; font-size:24rpx; line-height:1.5; padding:20rpx; display:flex; flex-direction:column; align-items:center; gap:6rpx }
-.icon { font-size:36rpx }.tab.active { color:#ff6868; border-color:#ffd0d0; background:#fff7f7; font-weight:600 }
-.bottom-tabs{align-items:center;background:rgba(255,255,255,.97)}
-.ai-slot{width:132rpx;display:flex;flex-direction:column;align-items:center;position:relative;margin-top:-44rpx;gap:8rpx}
-.ai-orb{width:112rpx;height:112rpx;padding:0;margin:0;line-height:1;background:linear-gradient(145deg,#ff6868,#ff8453 65%,#ffad45);color:white;border-radius:50%;border:8rpx solid #fff;box-shadow:0 8rpx 28rpx rgba(255,112,76,.28);display:flex;flex-direction:column;align-items:center;justify-content:center;animation:orb-breathe 3.4s ease-in-out infinite;transition:transform .2s}
-.ai-orb:active{transform:scale(.92)}.ai-orb.selected{box-shadow:0 0 0 5rpx #ffe0cc,0 8rpx 28rpx rgba(255,112,76,.28)}.spark{font-size:32rpx;line-height:1}.ai-label{font-size:24rpx;font-weight:700;margin-top:4rpx}.ai-copy{font-size:20rpx;color:#d96943;font-weight:600}
-@keyframes orb-breathe{0%,100%{box-shadow:0 8rpx 24rpx rgba(255,112,76,.24)}50%{box-shadow:0 8rpx 34rpx rgba(255,112,76,.4)}}
-</style>
+.bottom-tabs{position:fixed;bottom:0;left:0;right:0;z-index:100;display:flex;align-items:center;background:#fffdfa;border-top:2rpx solid var(--line);padding:12rpx 32rpx calc(12rpx + env(safe-area-inset-bottom));box-shadow:0 -8rpx 30rpx rgba(61,50,38,.035)}.tab{position:relative;flex:1;min-height:98rpx;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rpx;color:#8c9696;font-size:22rpx;line-height:1.4;border-radius:24rpx}.tab-icon{font-size:44rpx;line-height:1}.tab.active{color:var(--accent-dark);font-weight:650}.active-dot{position:absolute;bottom:0;width:6rpx;height:6rpx;border-radius:50%;background:var(--accent)}.ai-tab{width:164rpx;min-height:108rpx;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4rpx;padding:0;line-height:1.4;color:#8a6c5c}.ai-orb{width:82rpx;height:68rpx;background:var(--accent);color:white;border-radius:25rpx;display:flex;align-items:center;justify-content:center;box-shadow:0 6rpx 0 #e56449;transform:rotate(-5deg)}.ai-orb text{font-size:40rpx}.ai-copy{font-size:22rpx;margin-top:5rpx}.selected .ai-copy{color:var(--accent-dark);font-weight:700}.selected .ai-orb{transform:rotate(0)}
+.bottom-tabs{left:24rpx;right:24rpx;bottom:calc(18rpx + env(safe-area-inset-bottom));border:3rpx solid #fff;border-radius:36rpx;background:#fffefd;padding:8rpx 24rpx;box-shadow:0 7rpx 0 #eee7e0,0 15rpx 38rpx rgba(55,40,89,.1)}.tab{min-height:94rpx;color:#aea59a}.tab-icon{font-weight:700}.tab.active .tab-icon{color:#c88b75;text-shadow:0 2rpx 0 #f2e2cf}.tab.active{color:#bc7b63}.ai-tab{min-height:102rpx;overflow:visible}.ai-orb{background:linear-gradient(135deg,#f0b8a4,#d88f75 65%,#bd7960);border:2rpx solid #f1bca9;box-shadow:inset 0 3rpx 0 #f6e8d7,0 6rpx 0 #a25e45,0 10rpx 16rpx rgba(105,89,177,.17);width:86rpx;height:65rpx;border-radius:24rpx;transform:rotate(-7deg)}.ai-orb text{text-shadow:0 2rpx 0 #bb7961}.ai-copy{color:#a3978a;font-size:20rpx}.selected .ai-orb{transform:rotate(0)}
+.bottom-tabs{background:#fffdfa;box-shadow:0 7rpx 0 #ede4d6,0 15rpx 38rpx rgba(93,66,39,.08)}.tab{color:#a99c89}.tab.active,.tab.active .tab-icon{color:#ca7e59}.tab.active .tab-icon{text-shadow:0 2rpx 0 #f0d3b2}.ai-orb{background:linear-gradient(135deg,#ffb38b,#f79168 65%,#eb7c57);border-color:#ffc29c;box-shadow:inset 0 3rpx 0 #ffdec0,0 6rpx 0 #ce6745,0 10rpx 16rpx rgba(179,101,57,.15)}.ai-orb text{text-shadow:0 2rpx 0 #d97955}.ai-copy{color:#b28d6b}.selected .ai-copy{color:#c87951}
+.tab.active .tab-icon{animation:ui-pop .45s ease-out both}.selected .ai-orb{animation:nav-hello .65s ease-out both}.active-dot{animation:ui-pop .4s ease-out both}@keyframes nav-hello{0%,100%{transform:rotate(0)}30%{transform:translateY(-5rpx) rotate(-10deg)}65%{transform:translateY(-2rpx) rotate(6deg)}}
+
+.bottom-tabs{left:0;right:0;bottom:0;border-radius:28rpx 28rpx 0 0;border:0;border-top:2rpx solid #f0e4d6;padding:8rpx 28rpx calc(8rpx + env(safe-area-inset-bottom));box-shadow:0 -8rpx 30rpx #74543d0a}.ai-orb{animation:nav-magic 3.8s ease-in-out infinite}.ai-orb text{animation:nav-spark 3.8s ease-in-out infinite}.ai-tab:active .ai-orb{transform:scale(.9)}@keyframes nav-magic{0%,65%,100%{transform:rotate(-6deg) translateY(0)}75%{transform:rotate(7deg) translateY(-7rpx)}85%{transform:rotate(-8deg) translateY(-3rpx)}}@keyframes nav-spark{0%,65%,100%{transform:scale(1)}77%{transform:rotate(90deg) scale(1.15)}}
+.nav-badge{position:absolute;top:6rpx;left:55%;font-size:18rpx;color:white;background:#ef6658;border:3rpx solid #fffdf8;border-radius:30rpx;min-width:31rpx;line-height:25rpx;padding:0 7rpx;animation:ui-pop .3s ease-out}</style>

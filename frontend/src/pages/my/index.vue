@@ -1,97 +1,45 @@
 <template>
-  <view class="my-page">
-    <view class="profile-panel">
-      <view class="profile-header">
-        <button class="avatar" :loading="loggingIn" @click="showLogin" :aria-label="session ? '编辑资料' : '微信登录'"><image v-if="session?.profile.avatarPath" :src="session.profile.avatarPath" class="profile-avatar" /><text v-else>👤</text></button>
-        <text class="name">{{ session ? session.profile.name : '未登录用户' }}</text>
-        <text class="hint">{{ session ? '已登录，收藏与历史可跨设备同步' : '点击上方头像登录' }}</text>
-        <text v-if="!session" class="guest-note">登录后同步历史与收藏</text>
-      </view>
-      <text class="section-title">🎯 常用功能</text>
-      <view class="feature-grid">
-        <button class="feature-card history-card" @click="openLibrary('history')">
-          <text class="feature-title">历史记录</text><view class="feature-desc"><text class="feature-icon">🕘</text><text>浏览过的表情模板</text></view><text v-if="historyCount" class="count">{{ historyCount }} 个模板</text>
-        </button>
-        <button class="feature-card favorites-card" @click="openLibrary('favorites')">
-          <text class="feature-title">收藏模板</text><view class="feature-desc"><text class="feature-icon">⭐</text><text>我收藏的表情模板</text></view><text v-if="favoritesCount" class="count">{{ favoritesCount }} 个模板</text>
-        </button>
-      </view>
-      <button v-if="syncError" class="sync-message" @click="syncLibrary">{{ syncError }} · 点击重试</button>
-      <button v-if="session" class="logout" @click="signOut">退出登录</button>
-      <text class="analytics-note">模板点击与制作的去重计数用于热力榜，不记录照片或输入文字。</text>
-    </view>
-    <view v-if="loginVisible" class="login-mask" @click="closeLogin">
-      <view class="login-dialog" @click.stop>
-        <button class="dialog-close" :disabled="submitting" @click="closeLogin">×</button>
-        <text class="login-title">{{ session ? '个人资料' : '微信登录' }}</text>
-        <text class="login-subtitle">{{ session ? '设置头像与昵称' : '使用微信账号快速登录' }}</text>
-        <text class="field-label">选择头像</text>
-        <button class="choose-avatar" open-type="chooseAvatar" @chooseavatar="chooseAvatar"><image v-if="chosenAvatar || session?.profile.avatarPath" :src="chosenAvatar || session.profile.avatarPath" class="chosen-image" /><text v-else>📷</text></button>
-        <text class="field-label">输入昵称</text>
-        <input class="nickname" type="nickname" v-model="nickname" maxlength="32" placeholder="请输入昵称" @blur="onNickname" />
-        <text v-if="loginError" class="login-error">{{ loginError }}</text>
-        <button class="login-submit" :loading="submitting" :disabled="submitting" @click="login">{{ session ? '保存资料' : '一键登录' }}</button>
-        <text class="login-note">头像与昵称由你主动选择，仅用于个人资料展示</text>
-      </view>
-    </view>
-    <bottom-tabs active="my" />
-  </view>
+ <view class="my-page" :class="{'motion-paused':!sceneActive,'scene-enter':sceneActive}">
+  <view class="page-heading fx-enter"><text class="ui-kicker">MY LITTLE COLLECTION</text><text class="page-title">我的表情小窝</text></view>
+  <view class="profile-panel ui-enter"><view class="profile-top"><button class="avatar" :disabled="loggingIn || submitting" :loading="loggingIn" @click="profileAction" :aria-label="session?'编辑资料':'一键登录'"><image :src="session?.profile.avatarPath || '/static/logo.png'" class="profile-avatar" mode="aspectFit"/></button><view class="profile-copy"><text class="name">{{session ? session.profile.name : '你好，表情收藏家'}}</text><text class="hint">{{session?'你的私有造梗小窝，灵感和作品都收好。':'登录后，把喜欢的表情带在身边。'}}</text><button v-if="session" class="edit-profile" @click="showProfile">编辑资料 ↗</button></view></view><button v-if="!session" class="ui-primary login-main" :loading="loggingIn || submitting" :disabled="loggingIn || submitting" @click="login">{{loggingIn?'正在登录…':'微信一键登录'}} <text>→</text></button><text v-if="!session" class="guest-note">自动使用已有资料或默认头像昵称，之后随时修改。</text><text v-if="loginError && !profileVisible" class="login-error">{{loginError}}</text><view v-if="session" class="account-state"><view class="state-dot fx-breathe"/><text>已登录 · 收藏与浏览记录可跨设备同步</text></view></view>
+  <view class="section-heading"><text>我的收藏夹</text><text class="ui-caption">一点点，攒下快乐</text></view>
+  <view class="feature-grid"><button class="feature-card fx-enter" @click="openLibrary('history')"><view class="feature-icon history-icon"><ui-icon name="history"/></view><text class="feature-title">浏览历史</text><text class="feature-desc">再做一张喜欢的</text><text class="count">{{historyCount}} <text>个模板</text></text></button><button class="feature-card fx-enter" @click="openLibrary('favorites')"><view class="feature-icon favorite-icon"><ui-icon name="heart" tone="accent"/></view><text class="feature-title">收藏模板</text><text class="feature-desc">灵感都收好了</text><text class="count">{{favoritesCount}} <text>个模板</text></text></button></view>
+  <button class="recent-link fx-enter" @click="openQueue"><view class="recent-icon"><ui-icon name="queue" tone="accent"/></view><view><text>生成队列 <text v-if="unreadCount" class="queue-badge">{{unreadCount}} 未查看</text></text><text class="recent-desc">手动制作的表情 · 保留近 7 天</text></view><text>›</text></button>
+  <button v-if="syncError" class="sync-message" @click="syncLibrary">{{syncError}} · 点击重试</button>
+  <view class="account-footer"><text class="analytics-note">模板点击与制作的去重计数用于热力榜，
+不记录照片或输入文字。</text><button v-if="session" class="logout" :disabled="loggingIn || submitting" @click="signOut">退出当前账号</button><text class="brand-foot">GenSticker · 给心情一个小表情</text></view>
+  <view v-if="profileVisible" class="login-mask" @touchmove.stop><view class="login-dialog"><view class="dialog-header"><view><text class="ui-kicker">A LITTLE ABOUT YOU</text><text class="login-title">换个可爱的身份</text></view><button class="ui-close" :disabled="submitting" aria-label="关闭资料编辑" @click="profileVisible=false">×</button></view><text class="login-subtitle">默认资料已经填好，也可以换成你喜欢的。</text><button class="choose-avatar" open-type="chooseAvatar" @chooseavatar="chooseAvatar" aria-label="选择头像"><image :src="chosenAvatar || session?.profile.avatarPath || '/static/logo.png'" class="chosen-image" mode="aspectFit"/><text>换头像</text></button><text class="field-label">昵称</text><input class="nickname" type="nickname" v-model="nickname" maxlength="32" placeholder="给自己起个名字" @blur="onNickname" :cursor-spacing="120"/><text v-if="loginError" class="login-error">{{loginError}}</text><button class="ui-primary" :loading="submitting" :disabled="submitting" @click="saveProfile">保存资料 ✓</button><text class="login-note">头像与昵称仅用于个人资料展示</text></view></view>
+  <bottom-tabs active="my"/>
+ </view>
 </template>
 <script>
-import { ref } from 'vue'
-import { onShow } from '@dcloudio/uni-app'
+import {ref} from 'vue'
+import {onShow,onHide} from '@dcloudio/uni-app'
 import BottomTabs from '@/components/BottomTabs.vue'
-import { useLibrary } from '@/composables/useLibrary'
-export default {
-  components: { BottomTabs },
-  setup() {
-    const account = useLibrary()
-    onShow(() => { uni.hideTabBar({ animation: false }); account.syncLibrary(); if (!account.session.value) account.prefetchLogin().catch(() => {}); if (uni.getStorageSync('gensticker.open-recommend')) { if (account.session.value) { uni.removeStorageSync('gensticker.open-recommend'); uni.navigateTo({url:'/pages/recommend/index'}) } else showLogin() } })
-    const loginVisible = ref(false), nickname = ref(''), chosenAvatar = ref(''), loginError = ref(''), submitting = ref(false)
-    let nextLibrary = ''
-    const showLogin = () => { nickname.value = account.session.value?.profile.name || ''; chosenAvatar.value = ''; loginError.value = ''; loginVisible.value = true }
-    const closeLogin = () => { if (!submitting.value) { loginVisible.value = false; nextLibrary = ''; uni.removeStorageSync('gensticker.open-recommend') } }
-    const openLibrary = mode => {
-      if (!account.session.value) { nextLibrary = mode; showLogin(); return }
-      uni.navigateTo({ url: `/pages/library/index?mode=${mode}` })
-    }
-    const login = async () => {
-      if (submitting.value) return
-      const name = nickname.value.trim()
-      if (!name) { loginError.value = '请先输入昵称'; return }
-      submitting.value = true; loginError.value = ''
-      try {
-        if (!account.session.value) await account.loginWeChat()
-        await account.saveProfile(name, chosenAvatar.value)
-        loginVisible.value = false
-        uni.showToast({ title: '已完成', icon: 'success' })
-        const mode = nextLibrary; nextLibrary = ''
-        if (uni.getStorageSync('gensticker.open-recommend')) { uni.removeStorageSync('gensticker.open-recommend'); uni.navigateTo({url:'/pages/recommend/index'}) } else if (mode) openLibrary(mode)
-      } catch (e) { loginError.value = e.message || e.errMsg || '登录失败，请重试' }
-      finally { submitting.value = false }
-    }
-    const signOut = async () => {
-      try { await account.logout(); uni.showToast({ title: '已退出登录', icon: 'none' }) }
-      catch (_) { uni.showToast({ title: '退出失败，请联网重试', icon: 'none' }) }
-    }
-    return { ...account, login, signOut, openLibrary, showLogin, closeLogin, loginVisible, nickname, chosenAvatar, loginError, submitting, chooseAvatar: e => { chosenAvatar.value = e.detail.avatarUrl }, onNickname: e => { nickname.value = e.detail.value } }
-  },
-}
+import {useLibrary} from '@/composables/useLibrary'
+import UiIcon from '@/components/UiIcon.vue'
+import {unreadCount,refreshUnread} from '@/services/studioService'
+import {openRecommend} from '@/services/navigation'
+export default{components:{BottomTabs,UiIcon},setup(){
+ const sceneActive=ref(true)
+ onHide(()=>{sceneActive.value=false})
+ const account=useLibrary(),profileVisible=ref(false),nickname=ref(''),chosenAvatar=ref(''),loginError=ref(''),submitting=ref(false)
+ let nextDestination=''
+ const continueToDestination=()=>{const next=nextDestination;nextDestination='';if(next==='recommend')openRecommend();else if(next)uni.navigateTo({url:`/pages/library/index?mode=${next}`})}
+ const login=async()=>{if(account.loggingIn.value || submitting.value)return;loginError.value='';try{await account.loginWeChat();if(account.session.value){uni.showToast({title:'登录成功',icon:'success'});continueToDestination()}}catch(e){loginError.value=e.message || e.errMsg || '登录暂时没成功，再试一次吧'}}
+ const showProfile=()=>{nickname.value=account.session.value?.profile.name || '微信用户';chosenAvatar.value='';loginError.value='';profileVisible.value=true}
+ const openLibrary=mode=>{if(!account.session.value){nextDestination=mode;login();return}uni.navigateTo({url:`/pages/library/index?mode=${mode}`})}
+ const openQueue=()=>uni.navigateTo({url:'/pages/queue/index'})
+ const openAI=()=>{if(!account.session.value){nextDestination='recommend';login();return}openRecommend()}
+ onShow(()=>{sceneActive.value=true;refreshUnread();uni.hideTabBar({animation:false,fail:()=>{}});account.syncLibrary();if(!account.session.value)account.prefetchLogin().catch(()=>{});if(uni.getStorageSync('gensticker.open-recommend')){uni.removeStorageSync('gensticker.open-recommend');nextDestination='recommend';if(account.session.value)continueToDestination();else login()}})
+ const saveProfile=async()=>{if(submitting.value)return;const name=nickname.value.trim();if(!name){loginError.value='写个昵称再保存吧';return}submitting.value=true;loginError.value='';try{await account.saveProfile(name,chosenAvatar.value);profileVisible.value=false;uni.showToast({title:'资料已更新',icon:'success'})}catch(e){loginError.value=e.message || '资料保存失败，请重试'}finally{submitting.value=false}}
+ const signOut=()=>{if(submitting.value || account.loggingIn.value)return;profileVisible.value=false;nextDestination='';uni.removeStorageSync('gensticker.open-recommend');account.logout();loginError.value='';uni.showToast({title:'已退出登录',icon:'none'})}
+ return{sceneActive,unreadCount,...account,profileVisible,nickname,chosenAvatar,loginError,submitting,login,showProfile,saveProfile,openLibrary,openAI,openQueue,signOut,profileAction:()=>account.session.value?showProfile():login(),chooseAvatar:e=>chosenAvatar.value=e.detail.avatarUrl,onNickname:e=>nickname.value=e.detail.value}
+}}
 </script>
 <style scoped>
-.feature-card{transition:transform .18s,box-shadow .18s;animation:profile-in .25s ease-out}.feature-card:active{transform:translateY(3rpx) scale(.97)}.avatar:active{transform:rotate(-5deg) scale(.95)}.login-dialog{animation:profile-in .23s ease-out}.analytics-note{display:block;text-align:center;font-size:19rpx;color:#b09c91;line-height:1.7;margin-top:44rpx;padding:0 16rpx}@keyframes profile-in{from{opacity:0;transform:translateY(16rpx)}to{opacity:1;transform:translateY(0)}}
-.my-page { min-height:100vh; padding:calc(100rpx + env(safe-area-inset-top)) 18rpx 180rpx; background:linear-gradient(135deg,#ff6b6b,#ffa500); box-sizing:border-box }
-.profile-panel { min-height:calc(100vh - 200rpx); border-radius:30rpx 30rpx 0 0; background:#fffaf7; padding:48rpx 18rpx; box-sizing:border-box }
-.profile-header { text-align:center; padding:8rpx 0 50rpx }.avatar { width:128rpx; height:128rpx; display:flex; align-items:center; justify-content:center; padding:0; font-size:56rpx; background:linear-gradient(45deg,#ff6b6b,#ff8e53); border-radius:34rpx; box-shadow:0 12rpx 30rpx rgba(255,107,107,.2); margin:0 auto 22rpx }
-.name { display:block; font-size:34rpx; font-weight:700; color:#333 }.hint { display:block; font-size:22rpx; color:#888; margin-top:18rpx }.guest-note { display:block; font-size:20rpx; color:#aaa; margin-top:12rpx }
-.section-title { display:block; font-size:28rpx; font-weight:700; margin:8rpx 0 20rpx; color:#333 }.feature-grid { display:flex; gap:18rpx }
-.feature-card { flex:1; min-width:0; margin:0; padding:28rpx 24rpx; border-radius:26rpx; background:white; text-align:left; line-height:1.5; box-shadow:0 6rpx 16rpx rgba(0,0,0,.06) }.feature-title { display:block; font-size:27rpx; font-weight:600; color:#333 }.feature-desc { display:flex; align-items:center; gap:16rpx; color:#999; font-size:20rpx; margin-top:22rpx }.feature-icon { font-size:38rpx }.count { display:block; color:#ff7474; font-size:20rpx; margin-top:12rpx }.logout { margin-top:50rpx; color:#888; font-size:24rpx }.sync-message { font-size:22rpx; color:#a85b22; margin-top:24rpx; line-height:1.6; padding:16rpx }
-
-.profile-avatar { width:100%; height:100%; border-radius:34rpx }
-.login-mask { position:fixed; inset:0; z-index:3000; background:rgba(30,25,23,.55); display:flex; align-items:center; justify-content:center; padding:32rpx; box-sizing:border-box }
-.login-dialog { position:relative; width:100%; max-width:600rpx; border-radius:36rpx; background:white; padding:52rpx 38rpx 38rpx; box-sizing:border-box }
-.dialog-close { position:absolute; top:16rpx; right:18rpx; margin:0; color:#999; font-size:40rpx; width:60rpx; padding:0; line-height:1.3; background:transparent }
-.login-title { display:block; text-align:center; font-size:40rpx; font-weight:700; color:#302b28 }.login-subtitle { display:block; text-align:center; font-size:25rpx; color:#888; margin:16rpx 0 32rpx }
-.field-label { display:block; color:#514741; font-size:26rpx; margin:24rpx 0 16rpx }.choose-avatar { width:130rpx; height:130rpx; border-radius:50%; padding:0; display:flex; justify-content:center; align-items:center; background:#f5f5f5; font-size:45rpx; margin:0 auto }.chosen-image { width:130rpx; height:130rpx; border-radius:50% }
-.nickname { border:2rpx solid #ebe6e3; border-radius:18rpx; padding:0 22rpx; font-size:28rpx; height:88rpx; box-sizing:border-box; background:#fffaf7 }.login-submit { background:#07b963; color:white; border-radius:24rpx; margin-top:34rpx; font-size:30rpx; font-weight:600; line-height:2.8 }.login-note { display:block; margin-top:26rpx; text-align:center; font-size:21rpx; line-height:1.6; color:#999 }.login-error { display:block; color:#b43c2e; font-size:24rpx; margin-top:16rpx }
-</style>
+.my-page{min-height:100vh;background:var(--paper);padding:calc(105rpx + env(safe-area-inset-top)) 28rpx calc(170rpx + env(safe-area-inset-bottom))}.page-heading{margin-bottom:30rpx}.page-title{display:block;font-size:42rpx;font-weight:780;letter-spacing:-1rpx;margin-top:8rpx}.profile-panel{background:#f2eadc;border-radius:34rpx;padding:28rpx}.profile-top{display:flex;align-items:center;gap:22rpx}.avatar{width:126rpx;height:126rpx;background:#fffaf5;border:4rpx solid #fffaf5;border-radius:34rpx;padding:0;overflow:hidden;flex-shrink:0}.profile-avatar{width:100%;height:100%}.profile-copy{flex:1;min-width:0}.name{display:block;font-size:32rpx;font-weight:750;word-break:break-all}.hint{display:block;font-size:23rpx;color:#858b7d;line-height:1.6;margin-top:8rpx}.edit-profile{font-size:23rpx;color:var(--accent-dark);padding:10rpx 0;line-height:1.5;text-align:left}.login-main{width:100%;margin-top:26rpx;gap:35rpx}.guest-note{display:block;text-align:center;font-size:21rpx;color:#8d8d7b;line-height:1.7;margin-top:14rpx}.account-state{display:flex;align-items:center;gap:10rpx;font-size:21rpx;color:#758876;border-top:2rpx solid #e3decb;margin-top:22rpx;padding-top:18rpx}.state-dot{width:10rpx;height:10rpx;border-radius:50%;background:#7eab8d;flex-shrink:0}.section-heading{display:flex;align-items:center;justify-content:space-between;margin:38rpx 0 18rpx}.section-heading>text:first-child{font-size:30rpx;font-weight:700}.feature-grid{display:flex;gap:18rpx}.feature-card{flex:1;min-width:0;background:white;border:2rpx solid var(--line);border-radius:30rpx;text-align:left;padding:24rpx;line-height:1.5}.feature-icon{width:72rpx;height:72rpx;border-radius:24rpx;display:flex;align-items:center;justify-content:center;font-size:42rpx;margin-bottom:18rpx}.history-icon{background:#edf2e9;color:#6b8d74}.favorite-icon{background:var(--peach);color:var(--accent-dark)}.feature-title{display:block;font-size:29rpx;font-weight:700;color:var(--ink)}.feature-desc{display:block;font-size:22rpx;color:#92978c;margin-top:5rpx}.count{display:block;font-size:35rpx;color:#4d6566;font-weight:700;margin-top:22rpx}.count>text{font-size:20rpx;font-weight:400;color:#99a08e}.recent-link{display:flex;align-items:center;gap:20rpx;width:100%;text-align:left;background:white;border:2rpx solid var(--line);border-radius:28rpx;padding:22rpx 24rpx;margin-top:18rpx;line-height:1.5;color:var(--ink);font-size:27rpx}.recent-icon{width:66rpx;height:66rpx;background:#fff3d4;color:#b1954b;border-radius:22rpx;display:flex;align-items:center;justify-content:center;font-size:38rpx}.recent-link>view:nth-child(2){flex:1}.recent-desc{display:block;font-size:21rpx;color:#9a9e90;margin-top:5rpx}.recent-link>text{font-size:34rpx;color:#a7ad9e}.sync-message{font-size:23rpx;color:#ad6b4e;background:#fff0e4;line-height:1.6;padding:18rpx;border-radius:22rpx;margin-top:20rpx}.account-footer{text-align:center;margin-top:36rpx}.analytics-note{display:block;font-size:21rpx;color:#9da292;line-height:1.8;white-space:pre-line}.logout{font-size:25rpx;color:#b16c58;padding:22rpx 32rpx;line-height:1.6;min-height:90rpx;margin:16rpx auto 0;border:2rpx solid #ebdbcd;border-radius:24rpx;display:inline-flex;align-items:center}.brand-foot{display:block;font-size:20rpx;letter-spacing:1rpx;color:#b2b4a7;margin-top:28rpx}.login-mask{position:fixed;inset:0;z-index:3000;background:rgba(29,43,47,.46);display:flex;align-items:center;justify-content:center;padding:28rpx}.login-dialog{width:100%;max-width:670rpx;max-height:calc(100% - env(safe-area-inset-top) - env(safe-area-inset-bottom));overflow-y:auto;background:var(--paper);border-radius:38rpx;padding:28rpx;animation:ui-sheet .24s ease-out}.dialog-header{display:flex;align-items:center;justify-content:space-between;gap:12rpx}.login-title{display:block;font-size:34rpx;font-weight:750;margin-top:7rpx}.login-subtitle{display:block;font-size:23rpx;line-height:1.7;color:#8e9688;margin-top:18rpx}.choose-avatar{position:relative;display:flex;align-items:center;gap:20rpx;margin:24rpx 0;padding:0;font-size:24rpx;color:var(--accent-dark);text-align:left;line-height:1.6}.chosen-image{width:110rpx;height:110rpx;border-radius:30rpx;border:2rpx solid var(--line)}.field-label{display:block;font-size:24rpx;font-weight:600;margin:14rpx 0}.nickname{width:100%;height:96rpx;background:white;border:2rpx solid var(--line);border-radius:24rpx;padding:0 22rpx;font-size:28rpx;color:var(--ink)}.login-dialog .ui-primary{margin-top:26rpx;width:100%}.login-note{display:block;text-align:center;font-size:21rpx;color:#a2a694;margin-top:18rpx}.login-error{display:block;font-size:24rpx;color:#b65e4b;line-height:1.6;margin-top:16rpx}
+.my-page{padding-top:calc(76rpx + env(safe-area-inset-top));padding-left:30rpx;padding-right:30rpx}.profile-panel{position:relative;background:linear-gradient(130deg,#fbf4ed,#faf2e9);border:3rpx solid #fff;border-radius:38rpx;box-shadow:0 8rpx 0 #f0e6da;padding:30rpx;overflow:hidden}.profile-panel:before{content:'✧';position:absolute;right:10rpx;top:-30rpx;font-size:140rpx;color:rgba(137,120,216,.12);transform:rotate(12deg);pointer-events:none}.avatar{box-shadow:0 6rpx 0 #eadccb;transform:rotate(-6deg);border-color:white}.name{color:#415b64}.hint{color:#aba093}.guest-note{color:#b0a69b}.account-state{border-color:#ede1d3;color:#a79b8e}.state-dot{background:#ce9d8b}.feature-card{border:3rpx solid #fff;box-shadow:0 7rpx 0 #f0e8df;background:linear-gradient(145deg,#fff,#fefdfb);padding:27rpx;border-radius:33rpx}.feature-icon{transform:rotate(-7deg);border:2rpx solid rgba(255,255,255,.6);box-shadow:inset 0 3rpx 0 rgba(255,255,255,.7),0 6rpx 0 #ede0d1}.history-icon{background:linear-gradient(135deg,#f9eee2,#eec7b9);color:#be7e67}.favorite-icon{background:linear-gradient(135deg,#ffe0df,#f2b8bf);color:#c97d91;box-shadow:inset 0 3rpx 0 #ffe9ed,0 6rpx 0 #e0a6b2;transform:rotate(9deg)}.feature-desc{color:#b7aea3}.count{color:#9c8f81}.count>text{color:#bbb2a8}.recent-link{border:3rpx solid #fff;box-shadow:0 6rpx 0 #f0e9e0;border-radius:30rpx}.recent-icon{background:linear-gradient(135deg,#f9ede0,#e9c0b1);color:#c0836d;box-shadow:0 4rpx 0 #d1a493,inset 0 2rpx 0 #faf3ea;transform:rotate(-6deg)}.recent-desc{color:#bbb3a9}.logout{color:#a79c90;background:#f7f1ea;border-color:#ede5db;box-shadow:0 4rpx 0 #eae1d7}.login-dialog{border:3rpx solid #fff;box-shadow:0 12rpx 0 rgba(123,106,151,.25)}.login-main{margin-bottom:7rpx}.account-footer .analytics-note{color:#bab2a8}.brand-foot{color:#c4bdb5}
+.profile-panel{background:linear-gradient(130deg,#f7eddd,#f0e5d4);box-shadow:0 8rpx 0 #e7d7bd}.profile-panel:before{color:rgba(195,155,83,.13)}.name{color:#4c605a}.account-state{border-color:#e1d8bf;color:#99a181}.state-dot{background:#99b18c}.history-icon{background:linear-gradient(135deg,#e5eedc,#c8ddbd);color:#90a97e;box-shadow:inset 0 3rpx 0 #f8fff1,0 6rpx 0 #b9cba6}.favorite-icon{background:linear-gradient(135deg,#ffe1cc,#f4c3a6);color:#cd9272;box-shadow:inset 0 3rpx 0 #fff2e6,0 6rpx 0 #ddb296}.recent-icon{background:linear-gradient(135deg,#fff1c3,#ead187);color:#b3964f;box-shadow:0 4rpx 0 #d2b76c,inset 0 2rpx 0 #fff7d8}.count{color:#8b9c7a}
+.feature-card:nth-child(2){animation-delay:.08s}.recent-link{animation-delay:.12s}.feature-card:active .feature-icon{transform:translateY(-5rpx) rotate(9deg)}.feature-icon{transition:transform .2s ease-out}.profile-avatar{animation:ui-reveal .4s ease-out both}.login-error{animation:ui-nudge .35s ease-out both}
+.logout{display:flex;justify-content:center;gap:12rpx;width:100%;border-radius:24rpx;background:#fff7ef;color:#b87355;box-shadow:none;border:2rpx solid #edddce;min-height:84rpx;font-weight:600}.logout:before{content:"↪";font-size:30rpx}.logout:active{background:#f8e8d9}.queue-badge{display:inline-block;font-size:19rpx;background:#ef6a59;color:white;border-radius:20rpx;padding:1rpx 12rpx;margin-left:8rpx;vertical-align:middle;animation:ui-pop .3s ease-out}</style>

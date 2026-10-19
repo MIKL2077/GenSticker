@@ -21,6 +21,7 @@ const library = ref(load(owner()))
 const syncError = ref('')
 const loggingIn = ref(false)
 let syncing = null
+let accountEpoch = 0
 let sequence = 0
 let lastSyncedAt = 0
 let accountConfig = null
@@ -43,16 +44,16 @@ const enqueue = op => {
 }
 
 async function flush() {
-  const id = owner()
+  const id = owner(), epoch = accountEpoch
   if (id === 'guest') return
   const header = { Authorization: `Bearer ${session.value.access_token}` }
-  while (owner() === id && library.value.pending.length) {
+  while (owner() === id && epoch === accountEpoch && library.value.pending.length) {
     const op = library.value.pending[0]
     if (op.type === 'favorite') await apiRequest(`/account/favorites/${encodeURIComponent(op.key)}`, { method: op.value ? 'PUT' : 'DELETE', header })
     if (op.type === 'visit') await apiRequest(`/account/history/${encodeURIComponent(op.key)}`, { method: 'PUT', header })
     if (op.type === 'clear') await apiRequest('/account/history', { method: 'DELETE', header })
-    if (op.type === 'merge') { await apiRequest('/account/library/merge', { method: 'POST', data: op.data, header }); uni.removeStorageSync(GUEST_KEY) }
-    if (owner() !== id) return
+    if (op.type === 'merge') { await apiRequest('/account/library/merge', { method: 'POST', data: op.data, header }); if (owner() === id && epoch === accountEpoch) uni.removeStorageSync(GUEST_KEY) }
+    if (owner() !== id || epoch !== accountEpoch) return
     library.value.pending = library.value.pending.filter(p => p.id !== op.id)
     persist()
   }
@@ -62,20 +63,22 @@ function syncLibrary(force = false) {
   if (!session.value) return Promise.resolve()
   if (syncing) return syncing
   if (!force && !syncError.value && !library.value.pending.length && Date.now() - lastSyncedAt < 30000) return Promise.resolve()
-  const id = owner()
+  const id = owner(), epoch = accountEpoch
   syncing = (async () => {
     try {
       await flush()
-      if (owner() !== id) return
+      if (owner() !== id || epoch !== accountEpoch) return
       const data = await apiRequest('/account/library')
+      if (owner() !== id || epoch !== accountEpoch) return
       // Do not overwrite new optimistic edits made during the fetch.
       if (owner() === id && !library.value.pending.length) { library.value = { ...empty(), ...data }; persist() }
       lastSyncedAt = Date.now()
       syncError.value = ''
     } catch (e) {
+      if (owner() !== id || epoch !== accountEpoch) return
       syncError.value = e.statusCode === 401 ? '登录已过期，请重新登录；本机记录已保留' : '记录已保存在本机，联网后可重试同步'
       if (e.statusCode === 401 && owner() === id) { session.value = null; uni.removeStorageSync(SESSION_KEY); library.value = load('guest') }
-    } finally { syncing = null }
+    } finally { if (epoch === accountEpoch) syncing = null }
   })()
   return syncing
 }
@@ -107,11 +110,16 @@ async function loginWeChat() {
     throw new Error('请在微信小程序中登录')
     // #endif
     // #ifdef MP-WEIXIN
+    const runtimeAppId = uni.getAccountInfoSync?.()?.miniProgram?.appId
+    if (config.app_id && runtimeAppId && config.app_id !== runtimeAppId) {
+      throw new Error('当前小程序身份与服务配置不一致，请联系开发者更新配置；本机收藏和历史仍保留')
+    }
     const credentials = await new Promise((resolve, reject) => uni.login({ provider: 'weixin', success: resolve, fail: reject }))
     if (!credentials.code) throw new Error('未获得微信登录凭证，请重试')
     const account = await apiRequest('/auth/wechat', { method: 'POST', data: { code: credentials.code }, auth: false }, 1)
     const guest = load('guest')
     account.profile = await localProfile(account.profile)
+    accountEpoch++; syncing = null
     session.value = account; uni.setStorageSync(SESSION_KEY, account)
     lastSyncedAt = 0
     library.value = load(owner())
@@ -149,16 +157,20 @@ async function saveProfile(name, avatarPath) {
   }
   const data = await apiRequest('/account/profile', { method: 'PUT', data: { name, ...(avatar ? { avatar } : {}) } }, 1)
   const updated = await localProfile(data)
-  if (session.value?.profile.id === updated.id) { session.value.profile = updated; uni.setStorageSync(SESSION_KEY, session.value) }
+  if (session.value?.profile?.id === updated.id) { session.value.profile = updated; uni.setStorageSync(SESSION_KEY, session.value) }
 }
 
-async function logout() {
-  await syncLibrary()
-  if (session.value) {
-    try { await apiRequest('/auth/session', { method: 'DELETE' }) }
-    catch (e) { if (e.statusCode && e.statusCode !== 401) throw e }
+function logout() {
+  // Keep pending library edits in this account's local cache; logout is immediate.
+  const previous = session.value
+  persist()
+  accountEpoch++; syncing = null
+  session.value = null; uni.removeStorageSync(SESSION_KEY)
+  library.value = load('guest'); syncError.value = ''; lastSyncedAt = 0
+  if (previous?.access_token) {
+    // Revocation uses the captured token, never a later account's token.
+    apiRequest('/auth/session', { method:'DELETE', auth:false, header:{Authorization:`Bearer ${previous.access_token}`}, timeout:5000 }, 1).catch(() => {})
   }
-  session.value = null; uni.removeStorageSync(SESSION_KEY); library.value = load('guest'); syncError.value = ''; lastSyncedAt = 0
 }
 
 export function useLibrary() {

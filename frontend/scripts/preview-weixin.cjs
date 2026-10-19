@@ -7,7 +7,8 @@ try {
   if(args.length && (openOnly || args.length!==2 || args[0]!=='--qr-output' || !args[1]))throw Error('Usage: node scripts/preview-weixin.cjs [--open-only | --qr-output /absolute/path.png]')
   run(process.platform==='win32'?'npm.cmd':'npm',['run','build:mp-weixin'])
   const source=path.join(root,'dist/build/mp-weixin'),config=JSON.parse(fs.readFileSync(path.join(source,'project.config.json'),'utf8'))
-  if(config.appid!=='wx2e3a058ed0117034'||config.setting?.urlCheck!==true)throw Error('Preview requires the GenSticker AppID and enabled domain validation')
+  const expectedAppId=JSON.parse(fs.readFileSync(path.join(root,'src/manifest.json'),'utf8'))['mp-weixin']?.appid
+  if(!/^wx[a-f0-9]{16}$/.test(expectedAppId||'') || config.appid!==expectedAppId || config.setting?.urlCheck!==true)throw Error('Preview requires the manifest AppID and enabled domain validation')
   const project=fs.mkdtempSync(path.join(os.tmpdir(),'gensticker-weixin-preview-'))
   // Import the current build normally. Never copy stale private project settings
   // or edit DevTools' permission records; WeChat supplies the domain metadata.

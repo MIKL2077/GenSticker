@@ -17,8 +17,23 @@ from .store import connect, root
 
 router = APIRouter(prefix="/recommend")
 normalization_slots = asyncio.Semaphore(2)
-USER_LIMIT = int(os.getenv("GENSTICKER_DAILY_LIMIT", "3"))
-GLOBAL_LIMIT = int(os.getenv("GENSTICKER_GLOBAL_LIMIT", "100"))
+# Zero means unlimited; operators may still opt into a daily budget.
+USER_LIMIT = max(0, int(os.getenv("GENSTICKER_DAILY_LIMIT", "0")))
+GLOBAL_LIMIT = max(0, int(os.getenv("GENSTICKER_GLOBAL_LIMIT", "0")))
+
+
+def admit_generation(db, user_id, identifier, stamp):
+    """Call inside BEGIN IMMEDIATE. Reservations survive job deletion/restarts."""
+    db.execute("CREATE TABLE IF NOT EXISTS generation_admissions(id TEXT PRIMARY KEY,user_id TEXT NOT NULL,created REAL NOT NULL)")
+    db.execute("CREATE INDEX IF NOT EXISTS generation_admissions_user_time ON generation_admissions(user_id,created)")
+    if db.execute('SELECT 1 FROM generation_admissions WHERE id=?',(identifier,)).fetchone():return
+    db.execute("DELETE FROM generation_admissions WHERE created<?", (stamp-3600,))
+    for window, limit in ((60, 8), (3600, 80)):
+        recent = list(db.execute("SELECT created FROM generation_admissions WHERE user_id=? AND created>? ORDER BY created", (user_id,stamp-window)))
+        if len(recent) >= limit:
+            retry = max(1, int(recent[0]['created']+window-stamp)+1)
+            raise HTTPException(429, f"生成有点快，{retry} 秒后再来，已有作品都还在", headers={'Retry-After':str(retry)})
+    db.execute("INSERT INTO generation_admissions VALUES(?,?,?)", (identifier,user_id,stamp))
 
 
 def day():
@@ -46,20 +61,12 @@ def normalize(raw):
 async def upload(file: UploadFile = File(...), user=Depends(current_user)):
     raw = await file.read(3 * 1024 * 1024 + 1)
     if normalization_slots.locked():
-        raise HTTPException(503, "照片处理繁忙，请稍后重试，未扣除次数")
+        raise HTTPException(503, "照片处理繁忙，请稍后重试")
     async with normalization_slots:
         normalized = await asyncio.to_thread(normalize, raw)
     identifier = uuid.uuid4().hex
     db = connect()
     try:
-        if (
-            db.execute(
-                "SELECT COUNT(*) FROM assets WHERE user_id=? AND created>?",
-                (user["id"], time.time() - 86400),
-            ).fetchone()[0]
-            >= 12
-        ):
-            raise HTTPException(429, "今天上传的照片较多，请明天再试")
         digest = hashlib.sha256(normalized).hexdigest()
         duplicate = db.execute(
             "SELECT * FROM assets WHERE user_id=? AND hash=? AND created>?",
@@ -70,10 +77,18 @@ async def upload(file: UploadFile = File(...), user=Depends(current_user)):
                 "asset_id": duplicate["id"],
                 "expires_at": duplicate["created"] + 86400,
             }
+        if db.execute(
+            "SELECT COUNT(*) FROM assets WHERE user_id=? AND created>?",
+            (user["id"], time.time() - 60),
+        ).fetchone()[0] >= 6:
+            raise HTTPException(429, "上传太快啦，请一分钟后再试")
         directory = root() / "private" / user["id"]
         directory.mkdir(parents=True, exist_ok=True, mode=0o700)
         path = directory / (identifier + ".png")
         path.write_bytes(normalized)
+        thumbs=root()/"history_thumbs";thumbs.mkdir(exist_ok=True)
+        with Image.open(BytesIO(normalized)) as image:
+            image.thumbnail((160,160));image.convert("RGB").save(thumbs/(identifier+".jpg"),"JPEG",quality=70)
         with db:
             db.execute(
                 "INSERT INTO assets VALUES(?,?,?,?,?)",
@@ -84,30 +99,52 @@ async def upload(file: UploadFile = File(...), user=Depends(current_user)):
     return {"asset_id": identifier, "expires_at": time.time() + 86400}
 
 
+@router.get('/jobs/{identifier}/source-preview')
+def source_preview(identifier:str,user=Depends(current_user)):
+    db=connect()
+    try:
+        job=db.execute('SELECT asset_id FROM jobs WHERE id=? AND user_id=? AND created>?',(identifier,user['id'],time.time()-7*86400)).fetchone()
+        if not job:raise HTTPException(404,'记录不存在')
+        path=root()/'history_thumbs'/(job['asset_id']+'.jpg')
+        if not path.exists():
+            source=db.execute('SELECT path FROM assets WHERE id=? AND user_id=?',(job['asset_id'],user['id'])).fetchone()
+            if not source or not Path(source['path']).exists():raise HTTPException(404,'原图缩略图已过期')
+            path.parent.mkdir(exist_ok=True)
+            with Image.open(source['path']) as image:
+                image.thumbnail((160,160));image.convert('RGB').save(path,'JPEG',quality=70)
+        return FileResponse(path,media_type='image/jpeg',headers={'Cache-Control':'private, no-store'})
+    finally:db.close()
+
 @router.get("/quota")
 def quota(user=Depends(current_user)):
     db = connect()
     try:
-        used = db.execute(
-            "SELECT COUNT(*) FROM quotas WHERE user_id=? AND day=? AND status!='refunded'",
-            (user["id"], day()),
-        ).fetchone()[0]
+        used = (
+            db.execute(
+                "SELECT COUNT(*) FROM quotas WHERE user_id=? AND day=? AND status!='refunded'",
+                (user["id"], day()),
+            ).fetchone()[0]
+            if USER_LIMIT else 0
+        )
         enabled = db.execute(
             "SELECT enabled FROM preferences WHERE user_id=?", (user["id"],)
         ).fetchone()
         return {
             "limit": USER_LIMIT,
-            "remaining": max(0, USER_LIMIT - used),
+            "remaining": max(0, USER_LIMIT - used) if USER_LIMIT else None,
+            "unlimited": USER_LIMIT == 0,
             "day": day(),
             "personalization": bool(enabled["enabled"]) if enabled else True,
             "paid_ai_enabled": False,
+            "features": {"reroll": True},
         }
     finally:
         db.close()
 
 
 class CreateJob(BaseModel):
-    asset_id: str = Field(pattern=r"^[a-f0-9]{32}$")
+    asset_id: str | None = Field(default=None, pattern=r"^[a-f0-9]{32}$")
+    previous_job_id: str | None = Field(default=None, pattern=r"^[a-f0-9]{32}$")
     idempotency_key: str = Field(min_length=8, max_length=100)
 
 
@@ -124,15 +161,41 @@ def create(params: CreateJob, user=Depends(current_user)):
                 (user["id"], params.idempotency_key),
             ).fetchone()
             if old:
-                if old["asset_id"] != params.asset_id:
+                variation = db.execute(
+                    "SELECT parent_id FROM job_variations WHERE job_id=?", (old["id"],)
+                ).fetchone()
+                same_photo = not params.asset_id or old["asset_id"] == params.asset_id
+                same_parent = (variation["parent_id"] if variation else None) == params.previous_job_id
+                if not same_photo or not same_parent:
                     raise HTTPException(409, "重试标识与照片不一致")
                 return {"job_id": old["id"], "status": old["status"]}
+            asset_id = params.asset_id
+            excluded, previous = set(), set()
+            if params.previous_job_id:
+                parent = owned(db, params.previous_job_id, user)
+                if parent["status"] not in ("completed", "failed"):
+                    raise HTTPException(409, "上一批还在生成，请稍候")
+                if asset_id and asset_id != parent["asset_id"]:
+                    raise HTTPException(409, "换一批需要使用同一张照片")
+                asset_id = parent["asset_id"]
+                previous = {
+                    r["key"] for r in db.execute(
+                        "SELECT key FROM results WHERE job_id=?", (parent["id"],)
+                    )
+                }
+                prior = db.execute(
+                    "SELECT excluded_keys FROM job_variations WHERE job_id=?", (parent["id"],)
+                ).fetchone()
+                excluded = set(json.loads(prior["excluded_keys"])) if prior else set()
+                excluded.update(previous)
+            if not asset_id:
+                raise HTTPException(422, "请上传照片或选择上一批生成记录")
             heartbeat = db.execute("SELECT * FROM worker_state WHERE id=1").fetchone()
             if not heartbeat or heartbeat["updated"] < stamp - 60:
-                raise HTTPException(503, "生成服务正在准备，请稍后再试，未扣除次数")
+                raise HTTPException(503, "生成服务正在准备，请稍后再试")
             asset = db.execute(
                 "SELECT * FROM assets WHERE id=? AND user_id=? AND created>?",
-                (params.asset_id, user["id"], stamp - 86400),
+                (asset_id, user["id"], stamp - 86400),
             ).fetchone()
             if not asset:
                 raise HTTPException(404, "照片不存在或已过期，请重新上传")
@@ -147,8 +210,8 @@ def create(params: CreateJob, user=Depends(current_user)):
                 ).fetchone()[0]
                 >= 10
             ):
-                raise HTTPException(503, "服务繁忙，请稍后再试，未扣除次数")
-            if (
+                raise HTTPException(503, "服务繁忙，请稍后再试")
+            if USER_LIMIT and (
                 db.execute(
                     "SELECT COUNT(*) FROM quotas WHERE user_id=? AND day=? AND status!='refunded'",
                     (user["id"], day()),
@@ -156,7 +219,7 @@ def create(params: CreateJob, user=Depends(current_user)):
                 >= USER_LIMIT
             ):
                 raise HTTPException(429, "今日次数已用完，明天再来试试")
-            if (
+            if GLOBAL_LIMIT and (
                 db.execute(
                     "SELECT COUNT(*) FROM quotas WHERE day=? AND status!='refunded'",
                     (day(),),
@@ -164,24 +227,30 @@ def create(params: CreateJob, user=Depends(current_user)):
                 >= GLOBAL_LIMIT
             ):
                 raise HTTPException(429, "今天服务额度已用完，请明天再试")
+            admit_generation(db, user['id'], identifier, stamp)
             db.execute(
                 "INSERT INTO jobs(id,user_id,idempotency,asset_id,day,status,created,updated,algorithm) VALUES(?,?,?,?,?,?,?,?,?)",
                 (
                     identifier,
                     user["id"],
                     params.idempotency_key,
-                    params.asset_id,
+                    asset_id,
                     day(),
                     "queued",
                     stamp,
                     stamp,
-                    "tags-position-heat-v3",
+                    "rotation-history-v4",
                 ),
             )
             db.execute(
                 "INSERT INTO quotas VALUES(?,?,?,?)",
                 (identifier, user["id"], day(), "reserved"),
             )
+            if params.previous_job_id:
+                db.execute(
+                    "INSERT INTO job_variations VALUES(?,?,?,?)",
+                    (identifier, params.previous_job_id, json.dumps(sorted(excluded)), json.dumps(sorted(previous))),
+                )
         return {"job_id": identifier, "status": "queued"}
     finally:
         db.close()
@@ -203,6 +272,7 @@ def history(user=Depends(current_user)):
         return [
             {
                 "job_id": r["id"],
+                "source_preview_url": f"/recommend/jobs/{r['id']}/source-preview",
                 "status": r["status"],
                 "created_at": r["created"],
                 "count": db.execute(
@@ -210,7 +280,7 @@ def history(user=Depends(current_user)):
                 ).fetchone()[0],
             }
             for r in db.execute(
-                "SELECT * FROM jobs WHERE user_id=? ORDER BY created DESC LIMIT 20",
+                "SELECT * FROM jobs WHERE user_id=? AND created>strftime('%s','now')-604800 ORDER BY created DESC LIMIT 100",
                 (user["id"],),
             )
         ]
@@ -245,6 +315,10 @@ def status(identifier: str, user=Depends(current_user)):
                     "preview_url": f"/recommend/jobs/{identifier}/results/{result['slot']}?preview=true",
                 }
             )
+        asset = db.execute(
+            "SELECT created,path FROM assets WHERE id=? AND user_id=?",
+            (r["asset_id"], user["id"]),
+        ).fetchone()
         return {
             "job_id": identifier,
             "status": r["status"],
@@ -253,6 +327,7 @@ def status(identifier: str, user=Depends(current_user)):
             "results": results,
             "selected_slots": json.loads(r["selection"]),
             "algorithm": r["algorithm"],
+            "reroll_available": bool(asset and asset["created"] > time.time() - 86400 and Path(asset["path"]).is_file()),
         }
     finally:
         db.close()
@@ -427,6 +502,7 @@ def delete(identifier: str, user=Depends(current_user)):
             db.execute("DELETE FROM events WHERE job_id=?", (identifier,))
             db.execute("DELETE FROM feedback_history WHERE job_id=?", (identifier,))
             db.execute("DELETE FROM results WHERE job_id=?", (identifier,))
+            db.execute("DELETE FROM job_variations WHERE job_id=?", (identifier,))
             db.execute("DELETE FROM jobs WHERE id=?", (identifier,))
             if (
                 asset
@@ -439,6 +515,7 @@ def delete(identifier: str, user=Depends(current_user)):
                         Path(asset["path"]),
                         Path(asset["path"]).with_suffix(".subject.png"),
                         Path(asset["path"]).with_suffix(".analysis.json"),
+                        root()/"history_thumbs"/(r["asset_id"]+".jpg"),
                     ]
                 )
                 db.execute("DELETE FROM assets WHERE id=?", (r["asset_id"],))

@@ -11,6 +11,8 @@ async function verify(){
   assert.equal(c.requestError({errMsg:'request:fail ssl hand shake error'}).code,'TLS_ERROR')
   assert.equal(c.requestError({errMsg:'request:fail net::ERR_CERT_AUTHORITY_INVALID'}).code,'TLS_ERROR')
   assert.equal(c.requestError({errMsg:'request:fail net::ERR_NAME_NOT_RESOLVED'}).code,'DNS_ERROR')
+  c.uni.request=async()=>({statusCode:429,data:{detail:'请稍后再试'},header:{'Retry-After':'47'}})
+  await assert.rejects(c.apiRequest('/recommend/jobs',{method:'POST'},3),e=>e.statusCode===429 && e.retryAfter===47)
   c.uni.request=async()=>({statusCode:200,data:{all:['one']}});assert.deepEqual(JSON.parse(JSON.stringify(await c.apiRequest('/memes/categories'))),{all:['one']})
   console.log('PASS domain failure stops retries, gateway denial, timeout, TLS diagnostics and successful requests')
 }

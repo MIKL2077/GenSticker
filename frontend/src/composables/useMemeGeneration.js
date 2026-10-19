@@ -1,4 +1,6 @@
 import { ref } from 'vue'
+import {shareOriginalImage} from '@/services/wechatSharing'
+import {submitManual,getStudioJob,privateImage,rememberGuestMeme,supportsStudio,viewStudioJob} from '@/services/studioService'
 import { prepareImage, prepareImages } from '@/services/imagePreparation'
 import { tryClientRender } from '@/services/clientRenderer'
 import { visitorHeaders } from '@/services/popularityService'
@@ -12,6 +14,8 @@ export function useMemeGeneration(showStatusMessage) {
   const generatedMeme = ref('')
   let lastGeneratedFile = ''
   let generationEpoch = 0
+  let backgrounded = false
+  let retrySubmission=null
 
   const h5UploadMultipart = async (url, localPaths, extra) => {
     const form = new FormData()
@@ -84,7 +88,7 @@ export function useMemeGeneration(showStatusMessage) {
     const filePath = `${uni.env.USER_DATA_PATH}/generated_meme_${Date.now()}.${getFileExtensionFromContentType(ct)}`
     await new Promise((resolve, reject) => fs.writeFile({ filePath, data: response.data, success: resolve, fail: reject }))
     if(epoch!==generationEpoch){fs.unlink({filePath,fail:()=>{}});return ''}
-    if (lastGeneratedFile) fs.unlink({ filePath: lastGeneratedFile, fail: () => {} })
+    // Completed files remain available in the seven-day local queue.
     lastGeneratedFile = filePath
     return filePath
   }
@@ -92,15 +96,35 @@ export function useMemeGeneration(showStatusMessage) {
   const generateFromTemplate = async (templateKey, imagesToUpload, texts = [], args = {}, options = {}) => {
     if (isGenerating.value) return false
     const epoch = ++generationEpoch
+    backgrounded = false
+    let acceptedManual=''
     showPreview.value = true; isGenerating.value = true; generatedMeme.value = ''
     try {
+      if(uni.getStorageSync('gensticker.session.v1')?.access_token && await supportsStudio().catch(()=>false)){
+        const signature=JSON.stringify([uni.getStorageSync('gensticker.session.v1')?.profile?.id,templateKey,imagesToUpload,texts,args,!!options.extractSubject])
+        if(retrySubmission?.signature!==signature)retrySubmission={signature,key:`${Date.now()}-${Math.random().toString(36).slice(2)}`}
+        const item=await submitManual(templateKey,imagesToUpload,texts,args,{...options,idempotencyKey:retrySubmission.key})
+        acceptedManual=item.id;retrySubmission=null
+        if(backgrounded){isGenerating.value=false;showStatusMessage?.('已放进生成队列，小窝继续做～');return true}
+        let job=item
+        for(let count=0;count<180 && ['queued','running'].includes(job.status);count++){
+          await new Promise(resolve=>setTimeout(resolve,1200))
+          if(backgrounded){isGenerating.value=false;return true}
+          job=await getStudioJob(item.id)
+        }
+        if(job.status!=='completed'){if(['queued','running'].includes(job.status)){showPreview.value=false;isGenerating.value=false;showStatusMessage?.('任务还在继续，可到我的生成队列查看');return true}acceptedManual='';throw Error(job.message)}
+        const output=await privateImage(job.result_url)
+        if(backgrounded){isGenerating.value=false;return true}
+        generatedMeme.value=output;isGenerating.value=false;viewStudioJob(job).catch(()=>{});showStatusMessage?.('损图出炉啦！');return true
+      }
       const isH5 = typeof window !== 'undefined' && typeof document !== 'undefined'
       if (!isH5 && !options.extractSubject) {
         const local = await tryClientRender(templateKey, await prepareImages(imagesToUpload), texts, args)
         if(epoch!==generationEpoch){if(local)uni.getFileSystemManager().unlink({filePath:local,fail:()=>{}});return false}
         if (local) {
-          if (lastGeneratedFile) uni.getFileSystemManager().unlink({filePath:lastGeneratedFile,fail:()=>{}})
+          rememberGuestMeme(local,!backgrounded)
           lastGeneratedFile = local; generatedMeme.value = local; isGenerating.value = false
+          if(backgrounded){showStatusMessage?.('小窝做好啦，去生成队列收图');return true}
           showStatusMessage && showStatusMessage('表情已在本机生成！'); return true
         }
       }
@@ -108,11 +132,14 @@ export function useMemeGeneration(showStatusMessage) {
         ? await h5UploadMultipart(`${API_BASE_URL}${getGenerateUrl(templateKey)}`, imagesToUpload, { args, texts, options })
         : await weixinGenerate(templateKey, imagesToUpload, texts, args, epoch, options)
       if(epoch!==generationEpoch)return false
+      rememberGuestMeme(output,!backgrounded)
+      if(backgrounded){isGenerating.value=false;showStatusMessage?.('小窝做好啦，去生成队列收图');return true}
       generatedMeme.value = output; isGenerating.value = false
       showStatusMessage && showStatusMessage('表情包生成成功！')
       return true
     } catch (error) {
       if(epoch!==generationEpoch)return false
+      if(acceptedManual){isGenerating.value=false;showPreview.value=false;showStatusMessage?.('任务已在生成队列，稍后到我的小窝收图');return true}
       console.error('生成表情包失败:', error)
       isGenerating.value = false; showPreview.value = false
       const message = /timeout/i.test(error.errMsg || error.message || '') ? '网络传输超时，请检查连接后重试；大图会自动压缩' : error.message || error.errMsg || '请稍后重试'
@@ -121,7 +148,10 @@ export function useMemeGeneration(showStatusMessage) {
     }
   }
 
-  const closePreview = () => { generationEpoch++; showPreview.value = false; isGenerating.value = false; generatedMeme.value = '' }
+  const closePreview = () => {
+    if(isGenerating.value){backgrounded=true;showPreview.value=false;showStatusMessage?.(uni.getStorageSync('gensticker.session.v1')?'小窝继续做，完成后喊你收图～':'正在继续制作，完成后到我的生成队列收图');return}
+    showPreview.value=false;generatedMeme.value=''
+  }
 
   const saveMeme = () => {
     if (!generatedMeme.value) return
@@ -205,10 +235,7 @@ export function useMemeGeneration(showStatusMessage) {
   const shareMeme = () => {
     if (generatedMeme.value) {
       // #ifdef MP-WEIXIN
-      uni.showShareImageMenu({
-        path: generatedMeme.value,
-        fail: () => showStatusMessage && showStatusMessage('请先保存到相册，再从微信发送图片'),
-      })
+      shareOriginalImage(generatedMeme.value,showStatusMessage)
       return
       // #endif
       // #ifndef MP-WEIXIN

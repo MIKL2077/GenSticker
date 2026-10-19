@@ -123,7 +123,7 @@ export function useTemplateInput() {
       const record=records[index] || (records[index]={original:path,history:[]})
       record.history.push(path)
       if(record.history.length>4){const old=record.history.shift();if(old!==record.original)release(old)}
-      templateImages.value[index]=output;extractSubject.value=false;syncUndo()
+      templateImages.value[index]=output;extractSubject.value=false;syncUndo();if(operation.complete)closeImageEditor();return true
     } catch(e) {if(epoch===editEpoch)editorError.value=e.message || e.errMsg || '编辑失败，原图已保留'}
     finally {if(epoch===editEpoch)editorBusy.value=false}
   }

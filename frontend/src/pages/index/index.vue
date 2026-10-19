@@ -1,17 +1,13 @@
 <template>
-  <view class="container">
-    <app-header>
-      <view class="floating-emoji" style="top: 10%; left: 10%; animation-delay: 0s;">😀</view>
-      <view class="floating-emoji" style="top: 20%; right: 15%; animation-delay: 1s;">😂</view>
-      <view class="floating-emoji" style="bottom: 30%; left: 5%; animation-delay: 2s;">🤣</view>
-      <view class="floating-emoji" style="bottom: 20%; right: 10%; animation-delay: 0.5s;">😍</view>
-    </app-header>
-
-    <view v-if="trialTemplate" class="trial-card" @click="onSelectTemplate(trialTemplate.key)"><image v-if="trialTemplate.previewImage" :src="trialTemplate.previewImage" mode="aspectFit"/><view><text class="trial-label">新模板试用</text><text class="trial-title">{{ trialTemplate.name }}</text><text class="trial-hint">上传头像替换狗头 · 可选主体提取 →</text></view></view>
-    <view class="heat-hero"><view class="hero-heading"><view><text class="hero-eyebrow">THE REACTION CLUB</text><text class="hero-title">今日，谁最有梗？</text></view><text class="hero-mark">✦</text></view><text class="hero-sub">大家的点击、收藏与制作，让好玩的表情浮上来</text><view class="spotlight"><view v-for="(item,index) in spotlight" :key="item.key" class="spotlight-card" @click="onSelectTemplate(item.key)"><text class="spotlight-rank">0{{ index+1 }}</text><image v-if="item.previewImage" :src="item.previewImage" mode="aspectFit" class="spotlight-image"/><text class="spotlight-name">{{ item.name }}</text><text class="spotlight-heat">{{ item.heat ? '热力 '+item.heat : '等你点燃' }}</text></view></view></view>
+  <view class="container" :class="{'motion-paused':!sceneActive,'scene-enter':sceneActive}">
+    <app-header />
+    <view class="welcome-card ui-enter"><view class="welcome-copy-block"><view class="studio-tag fx-enter"><view/>私有造梗神器 · 今日也营业</view><text class="welcome-title">一键套模板，<text class="title-pop">把 Ta 玩成梗。</text></text><text class="welcome-copy">紧跟热梗，简单几步就能整活。</text><button class="welcome-action" @click="openRecommend">为 Ta 生成 9 张 <text>↗</text></button></view><view class="hero-toys"><mood-toy :active="sceneActive && !showTemplateDetail && !showPreview"/></view><text class="hero-serial">GENSTICKER / MOOD LAB 001</text></view>
+    <popularity-stage v-if="!loadError && (spotlight.length || !isLoadingTemplates)" :items="spotlight" :active="sceneActive && !showTemplateDetail && !showPreview" @select="onSelectTemplate"/>
+    <view v-if="trialTemplate" class="trial-card fx-enter" @click="onSelectTemplate(trialTemplate.key)"><image v-if="trialTemplate.previewImage" :src="trialTemplate.previewImage" mode="aspectFit"/><view><text class="trial-label">新模板试用</text><text class="trial-title">{{ trialTemplate.name }}</text><text class="trial-hint">换上你的照片，给它一个新表情 ↗</text></view></view>
+    <button class="live-entry" @click="openLive"><ui-icon name="video" tone="accent" :size="52"/><view><text>Live 图转 GIF</text><text>留住一秒快乐 · 触控裁剪 + 自己配文</text></view><ui-icon name="arrow" :size="30"/></button>
     <view class="meme-templates">
-      <view class="template-header">
-        <text class="section-title">🎭 选择表情模板</text>
+      <view class="template-header fx-enter">
+        <text class="section-title">模板仓库</text>
         <view class="pagination-info">
           <text class="page-info">{{ currentPage }}/{{ totalPages }}</text>
           <view v-if="isLoadingTemplates" class="loading-indicator">
@@ -21,7 +17,9 @@
       </view>
 
       <category-tabs :categories="categories" :selected-category="selectedCategory" @select="onSelectCategory" />
-      <view class="sort-row"><view class="sort-switch"><button :class="{chosen:sortMode==='hot'}" @click="changeSort('hot')">热力榜</button><button :class="{chosen:sortMode==='explore'}" @click="changeSort('explore')">全部探索</button></view><text class="sort-note">{{ sortMode==='hot' ? '近7日热度 · 新鲜反应' : '完整模板库' }}</text></view>
+      <view class="sort-row"><view class="sort-switch"><button :class="{chosen:libraryMode==='warehouse'}" @click="changeLibrary('warehouse')">模板仓库</button><button :class="{chosen:libraryMode==='mine'}" @click="changeLibrary('mine')">我的模板</button></view><picker :range="sortLabels" :value="sortIndex" @change="chooseSort"><view class="sort-note">{{sortLabels[sortIndex]}} ⌄</view></picker></view>
+      <button class="create-entry fx-enter" @click="openCreator"><view class="create-symbol"><ui-icon name="plus" tone="accent" :size="34"/></view><view><text>我的梗，我来造</text><text>拖拽做模板 / AI 一键识图 · 私藏或发布都行</text></view><text>↗</text></button>
+      <template v-if="libraryMode==='mine'"><text v-if="!accountSession" class="mine-note">先在“我的”登录，就能收好自己制作与收藏的模板。</text><view v-for="item in mineTemplates.filter(t=>t.status!=='published')" :key="item.id" class="template-state"><text>{{item.name}} · {{templateStatus[item.status]||item.status}}</text><button @click="retryPublish(item)">提交发布 ↗</button><text class="state-message">{{item.message}}</text></view><view v-for="task in templateTasks" :key="task.id" class="template-state"><text>{{task.status==='needs_manual'?'需要手动调整':'AI 正在拆解模板 ✦'}}</text><text class="state-message">{{task.message || '稍后再来，小窝做好会喊你'}}</text><button v-if="task.status==='needs_manual'" @click="openCreator">去手动制作 ↗</button></view></template>
       <view v-if="loadError" class="load-error"><text>{{ loadError }}</text><button @click="retryTemplates">重试</button></view>
 
       <template-grid
@@ -42,6 +40,7 @@
       </view>
     </view>
 
+    <text class="home-footer fx-enter">热梗追得上，私梗造得出。</text>
     <template-detail-modal
       :show="showTemplateDetail"
       :detail="selectedTemplateDetail"
@@ -79,6 +78,7 @@
       @close="closePreview"
       @save="saveMeme"
       @share="shareMeme"
+      @edit="continueEditing"
     />
 
     <status-message :message="statusMessage" :show="showStatus" />
@@ -88,7 +88,10 @@
 
 <script>
 import { onMounted, onUnmounted, watch, ref, computed } from 'vue'
-import { onShow } from '@dcloudio/uni-app'
+import { onShow, onHide, onShareAppMessage, onLoad } from '@dcloudio/uni-app'
+import UiIcon from '@/components/UiIcon.vue'
+import MoodToy from '@/components/MoodToy.vue'
+import PopularityStage from '@/components/PopularityStage.vue'
 import AppHeader from '@/components/AppHeader.vue'
 import CategoryTabs from '@/components/CategoryTabs.vue'
 import TemplateGrid from '@/components/TemplateGrid.vue'
@@ -99,6 +102,8 @@ import BottomTabs from '@/components/BottomTabs.vue'
 import { useLibrary } from '@/composables/useLibrary'
 import { prefetchClientTemplate } from '@/services/clientRenderer'
 import { trackTemplate } from '@/services/popularityService'
+import { openRecommend } from '@/services/navigation'
+import {listStudioJobs,publishTemplate,trackStudioJob} from '@/services/studioService'
 
 import { useStatusMessage } from '@/composables/useStatusMessage'
 import { useTemplateData } from '@/composables/useTemplateData'
@@ -107,7 +112,7 @@ import { useMemeGeneration } from '@/composables/useMemeGeneration'
 
 export default {
   name: 'Index',
-  components: { AppHeader, CategoryTabs, TemplateGrid, TemplateDetailModal, PreviewModal, StatusMessage, BottomTabs },
+  components: { UiIcon,MoodToy, PopularityStage, AppHeader, CategoryTabs, TemplateGrid, TemplateDetailModal, PreviewModal, StatusMessage, BottomTabs },
   setup() {
     const { statusMessage, showStatus, showStatusMessage } = useStatusMessage()
     const account = useLibrary()
@@ -121,6 +126,7 @@ export default {
       totalPages,
       currentPageTemplates,
       sortMode,
+      libraryMode,loadMine,mineTemplates,
       templateDetails,
       spotlight,
       fetchMemeCategories,
@@ -139,7 +145,10 @@ export default {
     const { showPreview, isGenerating, generatedMeme, generateFromTemplate, closePreview, saveMeme, shareMeme } = useMemeGeneration(showStatusMessage)
 
     const trialTemplate = computed(() => [...templateDetails.value.values()].find(item => item.featuredTrial))
+    const sceneActive = ref(true)
+    onHide(()=>{sceneActive.value=false})
     const selectedTemplate = ref('')
+    onShareAppMessage(()=>({title:generatedMeme.value?'我刚造的梗，你也来整一张？':'私有造梗神器，一键为 Ta 生成损图',path:'/pages/index/index'+(selectedTemplate.value && (!selectedTemplateDetail.value?.ownPreview || selectedTemplateDetail.value?.status==='published')?'?template='+encodeURIComponent(selectedTemplate.value):''),...(generatedMeme.value?{imageUrl:generatedMeme.value}:{})}))
     const showTemplateDetail = ref(false)
 
     const onSelectCategory = async (key) => {
@@ -152,7 +161,7 @@ export default {
       const detail = (await fetchMemeInfo(key)) || null
       if (detail && !detail.previewImage) fetchMemePreview(key)
       if (!detail) { showStatusMessage('模板暂时不可用，请稍后重试'); return }
-      account.recordVisit(key)
+      if(!detail.ownPreview)account.recordVisit(key)
       trackTemplate(key, 'click')
       selectedTemplateDetail.value = detail
       initializeTemplateInputs(detail)
@@ -169,9 +178,8 @@ export default {
       const success=await generateFromTemplate(key, templateImages.value, texts, {}, {extractSubject:extractSubject.value})
       if(!success || selectedTemplate.value!==key)return
       showTemplateDetail.value = false
-      selectedTemplateDetail.value = null
-      resetInputs()
     }
+    const continueEditing = () => { closePreview(); showTemplateDetail.value = true }
 
     const closeTemplateDetail = () => {
       showTemplateDetail.value = false
@@ -180,25 +188,40 @@ export default {
     }
 
     const favoriteTemplate = () => {
+      if(selectedTemplateDetail.value?.ownPreview){showStatusMessage('这张模板已经在我的模板里啦');return}
       try { const saved = account.toggleFavorite(selectedTemplate.value); if (saved && !account.session.value) trackTemplate(selectedTemplate.value,'favorite'); showStatusMessage(saved ? '已收藏模板' : '已取消收藏') }
       catch (e) { showStatusMessage(e.message) }
     }
+    const templateTasks=ref([]),sortLabels=['人气从高到低','人气从低到高','最新创建优先','最早创建优先'],sortValues=['hot','cold','new','old']
+    const sortIndex=computed(()=>Math.max(0,sortValues.indexOf(sortMode.value)))
+    const refreshMine=async()=>{try{await loadMine(account.library.value.favorite_keys);if(account.session.value)templateTasks.value=(await listStudioJobs()).filter(j=>j.kind==='template' && ['queued','running','needs_manual'].includes(j.status));else templateTasks.value=[]}catch(e){showStatusMessage(e.message)}}
+    const changeLibrary=async mode=>{libraryMode.value=mode;currentPage.value=1;if(mode==='mine')await refreshMine();await ensurePageLoaded(selectedCategory.value,1)}
+    const openCreator=()=>uni.navigateTo({url:'/pages/create/index'})
+    const retryPublish=async item=>{try{const task=await publishTemplate(item.id);trackStudioJob(task);showStatusMessage('已提交内容检查，完成后小窝会喊你');await refreshMine()}catch(e){showStatusMessage(e.message)}}
+    const completed=async()=>{await fetchMemeCategories(true);await refreshMine();await ensurePageLoaded(selectedCategory.value,currentPage.value)}
+    uni.$on('studio-completed',completed);onUnmounted(()=>uni.$off('studio-completed',completed))
     const pageNumbers = computed(() => {
       const start = Math.max(1, Math.min(currentPage.value - 2, totalPages.value - 4))
       return Array.from({ length: Math.min(5, totalPages.value) }, (_, i) => start + i)
     })
     const retryTemplates = async () => { await fetchMemeCategories(); await ensurePageLoaded(selectedCategory.value, currentPage.value) }
     onShow(() => {
+      sceneActive.value=true
       uni.hideTabBar({ animation: false, fail: () => {} })
+      if(uni.getStorageSync('gensticker.open-mine')){uni.removeStorageSync('gensticker.open-mine');changeLibrary('mine')}
+      else if(libraryMode.value==='mine')refreshMine()
+      if(uni.getStorageSync('gensticker.templates.changed')){uni.removeStorageSync('gensticker.templates.changed');fetchMemeCategories(true).then(refreshMine)}
       const key = uni.getStorageSync('gensticker.open-template')
       if (key) { uni.removeStorageSync('gensticker.open-template'); onSelectTemplate(key) }
     })
 
-    watch([selectedCategory, currentPage, sortMode], async ([cat, page]) => {
+    watch(()=>account.session.value?.profile?.id,()=>{closeTemplateDetail();closePreview();refreshMine()})
+    watch([selectedCategory, currentPage, sortMode, libraryMode], async ([cat, page]) => {
       await ensurePageLoaded(cat, page)
       prefetchAdjacent(cat, page)
     })
 
+    onLoad(query=>{if(query?.template)uni.setStorageSync('gensticker.open-template',query.template)})
     onMounted(async () => {
       try {
         await fetchMemeCategories()
@@ -216,7 +239,9 @@ export default {
       // 分类/分页
       isLoadingTemplates,
       loadError,
-      openRecommend: () => uni.navigateTo({ url: '/pages/recommend/index' }),
+      sceneActive,
+      openRecommend,openLive:()=>uni.navigateTo({url:"/pages/live/index"}),
+      continueEditing,
       pageNumbers,
       retryTemplates,
       favoriteTemplate,
@@ -227,6 +252,7 @@ export default {
       totalPages,
       currentPageTemplates,
       sortMode,
+      libraryMode,mineTemplates,changeLibrary,sortLabels,sortIndex,chooseSort:e=>{sortMode.value=sortValues[Number(e.detail.value)];currentPage.value=1},openCreator,templateTasks,retryPublish,accountSession:account.session,templateStatus:{private:"私藏",pending:"待检查",rejected:"检查未通过"},
       spotlight,
       changeSort: mode => { sortMode.value = mode; currentPage.value = 1 },
       prevPage,
@@ -268,13 +294,8 @@ export default {
 </script>
 
 <style scoped>
-.trial-card{margin:0 0 24rpx;padding:22rpx;background:#fff6ed;border:2rpx solid #ffd0b8;border-radius:30rpx;display:flex;align-items:center;gap:24rpx;box-shadow:0 8rpx 24rpx rgba(163,79,33,.08)}
-.trial-card image{width:144rpx;height:144rpx;border-radius:20rpx;flex-shrink:0}.trial-card text{display:block}.trial-label{color:#d96843;font-size:20rpx}.trial-title{font-size:34rpx;color:#49352b;font-weight:700;margin:8rpx 0}.trial-hint{font-size:22rpx;color:#967563}.trial-card:active{transform:scale(.98)}
-.heat-hero{background:#fff9f2;border-radius:36rpx;padding:30rpx;margin:0 0 36rpx;box-shadow:0 14rpx 38rpx rgba(101,49,25,.08)}.hero-heading{display:flex;justify-content:space-between;align-items:center}.hero-eyebrow{display:block;font-size:17rpx;letter-spacing:3rpx;color:#a88572}.hero-title{display:block;font-size:38rpx;font-weight:750;color:#3a2c29;margin-top:10rpx}.hero-mark{font-size:64rpx;color:#d97b55}.hero-sub{display:block;color:#9b7e6e;font-size:21rpx;line-height:1.7;margin:16rpx 0 24rpx}.spotlight{display:flex;gap:14rpx}.spotlight-card{flex:1;min-width:0;position:relative;border-radius:24rpx;background:#fff;padding:20rpx 10rpx 16rpx;text-align:center;transition:transform .2s}.spotlight-card:active{transform:scale(.95)}.spotlight-rank{position:absolute;left:12rpx;top:10rpx;font-size:20rpx;color:#bda08d;font-style:italic}.spotlight-image{width:102rpx;height:102rpx;margin:6rpx 0 14rpx}.spotlight-name{display:block;font-size:23rpx;color:#493a34;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.spotlight-heat{display:block;font-size:18rpx;color:#b76c49;margin-top:8rpx}.sort-row{display:flex;align-items:center;justify-content:space-between;margin:24rpx 0}.sort-switch{display:flex;background:rgba(255,255,255,.3);padding:5rpx;border-radius:25rpx}.sort-switch button{margin:0;background:transparent;border:0;font-size:22rpx;padding:0 23rpx;line-height:2.5;color:#6d4635;border-radius:22rpx}.sort-switch .chosen{background:#fffaf6;color:#9c4e35;font-weight:700}.sort-note{font-size:19rpx;color:#73442e}
-
-.container{min-height:100vh;background:linear-gradient(150deg,#ff8c78 0%,#ffa849 100%);padding:calc(120rpx + env(safe-area-inset-top)) 30rpx calc(180rpx + env(safe-area-inset-bottom));position:relative;overflow:hidden}
-.meme-templates{margin-bottom:32rpx}.template-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24rpx}.section-title{color:#432e29;font-size:30rpx;font-weight:700}.pagination-info{display:flex;align-items:center;gap:12rpx;background:#fff8ef;padding:10rpx 20rpx;border-radius:18rpx}.page-info{color:#826951;font-size:23rpx}.loading-text{color:#b97350;font-size:19rpx}
-.page-numbers{display:flex;justify-content:center;align-items:center;gap:12rpx;margin:30rpx 0}.page-button{margin:0;width:54rpx;height:54rpx;border-radius:18rpx;background:#fff7f2;color:#97735b;font-size:24rpx;line-height:54rpx;padding:0}.page-button.active{background:#6f548a;color:white;box-shadow:0 4rpx 14rpx rgba(81,46,100,.15)}
-.load-error{background:#fff8f5;border-radius:24rpx;padding:38rpx;text-align:center;color:#777;font-size:24rpx}.load-error button{margin-top:20rpx;color:#bc6a46}
-.floating-emoji{position:absolute;font-size:36rpx;opacity:.08;pointer-events:none;animation:drift 7s ease-in-out infinite}@keyframes drift{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-10rpx) rotate(4deg)}}
-</style>
+.container{min-height:100vh;background:var(--paper);padding:calc(76rpx + env(safe-area-inset-top)) 30rpx calc(186rpx + env(safe-area-inset-bottom));overflow-x:hidden}.welcome-card{position:relative;isolation:isolate;background:linear-gradient(120deg,#fcf7f1,#faf3ea 65%,#faf3ea);border:3rpx solid #fff;border-radius:42rpx;padding:30rpx 26rpx 55rpx;box-shadow:inset 0 -6rpx 0 #f4e6d7,0 12rpx 24rpx rgba(69,72,138,.05);min-height:365rpx;display:flex;align-items:center;overflow:hidden}.welcome-card:before{content:'';position:absolute;width:360rpx;height:360rpx;border:2rpx solid rgba(255,255,255,.7);border-radius:50%;right:-120rpx;top:-130rpx;z-index:-1}.welcome-copy-block{position:relative;z-index:2;width:67%}.studio-tag{display:inline-flex;align-items:center;gap:8rpx;font-size:18rpx;color:#938575;border:2rpx solid #fff;background:rgba(255,255,255,.65);border-radius:30rpx;padding:6rpx 13rpx;letter-spacing:1rpx}.studio-tag>view{width:7rpx;height:7rpx;background:#e59c82;border-radius:50%}.welcome-title{display:block;font-size:49rpx;font-weight:850;letter-spacing:-2rpx;line-height:1.32;color:#2d4a53;margin-top:20rpx}.title-pop{display:block;color:#dd7752}.welcome-copy{display:block;color:#928474;font-size:22rpx;margin-top:15rpx}.welcome-action{display:inline-flex;gap:20rpx;align-items:center;color:white;background:linear-gradient(155deg,#eda991,#e4805c);font-size:24rpx;font-weight:700;border:2rpx solid #efb29b;border-radius:22rpx;padding:16rpx 22rpx;line-height:1.4;margin-top:24rpx;box-shadow:0 6rpx 0 #b86243,inset 0 2rpx 0 #f2dcc2;transition:transform .18s}.welcome-action:active{transform:translateY(5rpx)}.hero-toys{position:absolute;width:285rpx;height:310rpx;right:-3rpx;top:42rpx;z-index:1}.hero-serial{position:absolute;bottom:18rpx;left:28rpx;font-size:15rpx;color:#b1a79c;letter-spacing:3rpx}.trial-card{display:flex;align-items:center;gap:18rpx;margin:0 0 28rpx;padding:16rpx 20rpx;background:#fffdf7;border:2rpx solid #f0e5ce;border-radius:28rpx;box-shadow:0 5rpx 0 #eee4ce}.trial-card image{width:80rpx;height:80rpx;border-radius:18rpx;flex-shrink:0}.trial-card text{display:block}.trial-label{font-size:18rpx;color:#a58135;letter-spacing:2rpx}.trial-title{font-size:26rpx;font-weight:750;color:var(--ink)}.trial-hint{font-size:21rpx;color:#989080;margin-top:3rpx}.template-header{display:flex;align-items:center;justify-content:space-between;margin-top:30rpx}.section-title{font-size:36rpx;font-weight:800;color:var(--ink);letter-spacing:-1rpx}.pagination-info{display:flex;align-items:center;gap:10rpx}.page-info{font-size:22rpx;color:#9c948a;background:#f3eee9;padding:5rpx 13rpx;border-radius:14rpx}.loading-text{font-size:20rpx;color:#c68e79}.sort-row{display:flex;align-items:center;justify-content:space-between;gap:10rpx;margin:22rpx 0}.sort-switch{display:flex;gap:24rpx}.sort-switch button{font-size:23rpx;color:#a39b92;padding:10rpx 0;line-height:1.4;border-radius:0}.sort-switch .chosen{color:#b46b50;font-weight:750;border-bottom:4rpx solid #d49179}.sort-note{font-size:20rpx;color:#aba39a}.page-numbers{display:flex;justify-content:center;gap:12rpx;margin:30rpx 0 12rpx}.page-button{width:65rpx;height:66rpx;line-height:60rpx;padding:0;font-size:24rpx;border-radius:21rpx;color:#928a80;background:#fff;border:2rpx solid #edebe8;box-shadow:0 4rpx 0 #ebe9e6}.page-button.active{background:#c98870;color:white;border-color:#e0a28c;box-shadow:0 4rpx 0 #ab6349,inset 0 2rpx 0 #edb5a1}.load-error{margin:25rpx 0;padding:26rpx;background:#fff0ea;border-radius:25rpx;font-size:24rpx;color:#aa6753;line-height:1.7}.load-error button{color:#c0765b;font-size:24rpx}.home-footer{display:block;text-align:center;font-size:21rpx;letter-spacing:1rpx;color:#b5aea7;margin:45rpx 0 10rpx}
+.welcome-card{background:linear-gradient(125deg,#fff1df,#f6e8d7 65%,#f8eddc);box-shadow:inset 0 -6rpx 0 #e9d8c0,0 12rpx 24rpx rgba(113,86,44,.05)}.welcome-title{color:#29454c}.title-pop{color:#dd7654}.studio-tag{color:#a2835f;background:#fffaf0}.studio-tag>view{background:#c1a46d}.welcome-action{background:linear-gradient(145deg,#ffa37f,#f17f5c);border-color:#ffb292;box-shadow:0 6rpx 0 #cd6648,inset 0 2rpx 0 #ffc7a7;color:#fff}.welcome-copy{color:#a18b70}.hero-serial{color:#b7a38a}.hero-toys{top:31rpx;right:4rpx}.sort-switch .chosen{color:#b56f50;border-color:#e3a17a}.page-button.active{background:linear-gradient(145deg,#f7ac88,#ec8b68);border-color:#ffc6a4;box-shadow:0 4rpx 0 #cd7654,inset 0 2rpx 0 #ffd1b3}.home-footer{color:#b3a08e}
+.welcome-action{position:relative;overflow:hidden}.welcome-action:after{content:'';position:absolute;inset:0;width:100%;height:100%;border-radius:inherit;pointer-events:none;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.24),transparent 65%);animation:ui-shimmer 1.2s ease-out .7s 2}.page-button.active{animation:ui-pop .3s ease-out both}.load-error{animation:ui-nudge .35s ease-out both}.loading-indicator{animation:ui-breathe 1.6s ease-in-out infinite}
+.create-entry{display:flex;align-items:center;gap:18rpx;width:100%;text-align:left;background:linear-gradient(125deg,#fff1dc,#ffebe1);border:3rpx solid white;border-radius:26rpx;padding:22rpx;margin:12rpx 0 25rpx;color:#b78057;line-height:1.6}.create-entry>view:nth-child(2){flex:1}.create-entry text{display:block;font-size:26rpx;font-weight:650}.create-entry>view text:nth-child(2){font-size:20rpx;font-weight:400;color:#b19576}.create-symbol{width:62rpx;height:62rpx;background:#fffcf5;border-radius:21rpx;display:flex;align-items:center;justify-content:center;font-size:36rpx;box-shadow:0 4rpx 0 #e7cbb0}.create-entry:active .create-symbol{transform:rotate(90deg);transition:transform .25s}.mine-note{display:block;color:#a38d70;font-size:24rpx;padding:20rpx}.template-state{display:flex;align-items:center;flex-wrap:wrap;gap:10rpx;background:#f4efe3;border-radius:22rpx;padding:18rpx 22rpx;margin-bottom:15rpx;font-size:24rpx;color:#8e815f}.template-state button{font-size:22rpx;color:#c48058;margin-left:auto}.state-message{display:block;width:100%;font-size:21rpx;color:#a49a85}.sort-note{font-size:22rpx}.sort-row{gap:8rpx}
+.live-entry{display:flex;align-items:center;gap:20rpx;background:linear-gradient(120deg,#fff4df,#f2eddd);border:3rpx solid white;border-radius:28rpx;padding:24rpx;width:100%;margin-bottom:25rpx;box-shadow:0 5rpx 0 #e9dfcc;text-align:left}.live-entry>view{flex:1}.live-entry text{display:block;font-size:28rpx;color:#667b64;font-weight:700}.live-entry>view text:nth-child(2){font-size:21rpx;color:#a39c80;font-weight:400;margin-top:6rpx}</style>

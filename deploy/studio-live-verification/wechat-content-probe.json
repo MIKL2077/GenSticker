@@ -1,0 +1,6 @@
+{
+  "access_token_ready": true,
+  "image_api_code": 0,
+  "text_api_code": 40003,
+  "text_test": "Intentionally invalid synthetic openid; real login still needs device verification"
+}

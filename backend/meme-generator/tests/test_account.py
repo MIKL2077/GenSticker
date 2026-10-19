@@ -42,6 +42,14 @@ class AccountTests(unittest.TestCase):
         self.assertNotIn('must-not-leak', result.text)
         return {'Authorization': 'Bearer ' + result.json()['access_token']}
 
+    def test_public_app_identity_does_not_expose_credentials(self):
+        with patch.dict(os.environ, {'WX_APPID': 'wx1234567890abcdef', 'WX_APP_SECRET': 'private-secret'}):
+            response = self.client.get('/account/config')
+            self.assertTrue(response.json()['login_enabled'])
+            self.assertEqual(response.json()['app_id'], 'wx1234567890abcdef')
+            self.assertNotIn('private-secret', response.text)
+            self.assertNotIn('APP_SECRET', response.text)
+
     def test_profile_validation_and_isolation(self):
         import base64
         from io import BytesIO

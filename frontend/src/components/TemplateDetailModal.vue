@@ -1,72 +1,36 @@
 <template>
-  <view v-if="show" class="template-detail-modal">
+  <view v-if="show" class="template-detail-modal" @touchmove.stop>
     <view class="detail-content">
-      <view class="detail-header">
-        <button class="favorite-corner" :class="{saved:favorite}" :aria-label="favorite ? '取消收藏' : '收藏模板'" @click="$emit('favorite')">{{ favorite ? '★' : '☆' }}</button>
-        <text class="detail-title">模板详情</text>
-        <button class="close-btn" @click="$emit('close')">✕</button>
-      </view>
-      <view class="detail-body">
-        <view class="example-section">
-          <text class="detail-label">示例图</text>
-          <image v-if="detail?.previewImage" :src="detail.previewImage" class="example-image" mode="aspectFit" />
-          <text v-else class="requirement-text">预览正在加载，仍可填写并生成</text>
-        </view>
-        <view class="template-info-section">
-          <text class="detail-label">模板信息</text>
-          <view class="info-item"><text class="info-key">名称：</text><text class="info-value">{{ detail?.name || detail?.key }}</text></view>
-          <text v-if="detail?.localCapable" class="local-note">✦ 优先本机快制，不兼容时自动使用云端合成</text>
-          <view class="info-item"><text class="info-key">关键词：</text><text class="info-value">{{ (detail?.keywords||[]).join(', ') || '无' }}</text></view>
-          <view class="info-item"><text class="info-key">标签：</text><text class="info-value">{{ (detail?.tags||[]).join(', ') || '无' }}</text></view>
-        </view>
-        <view class="requirements-section">
-          <text class="detail-label">输入要求</text>
-          <view class="requirements-list">
-            <text class="requirement-text">📷 图片数量：{{ detail?.imageCount || '0-0' }} 张</text>
-            <text class="requirement-text">📝 文本数量：{{ detail?.textCount || '0-0' }} 个</text>
-            <text v-if="detail?.defaultTexts?.length" class="requirement-text">默认文本：{{ detail.defaultTexts.join(', ') }}</text>
+      <view class="sheet-grip"/>
+      <view class="detail-header"><view class="heading-copy"><text class="ui-kicker">YOUR PRIVATE MEME LAB</text><text class="detail-title">{{detail?.name || '制作表情包'}}</text></view><button class="favorite-corner" :class="{saved:favorite}" :aria-label="favorite?'取消收藏':'收藏模板'" @click="$emit('favorite')">{{favorite?'♥':'♡'}}</button><button class="ui-close" aria-label="关闭制作" @click="$emit('close')">×</button></view>
+      <scroll-view scroll-y class="detail-body" :style="{height:bodyHeight+'px'}" :show-scrollbar="false">
+        <view class="body-inner">
+          <view class="template-summary"><image v-if="detail?.previewImage" :src="detail.previewImage" mode="aspectFit" class="example-image"/><view v-else class="example-pending">☺</view><view class="summary-copy"><text class="summary-title">套个模板，一键造梗</text><text class="summary-hint">图片 {{detail?.imageCount || '0-0'}} 张 · 文字 {{detail?.textCount || '0-0'}} 段</text><text class="summary-caption">换照片、改文字，马上变你的梗</text></view></view>
+          <view v-if="detail?.creator?.name" class="creator-credit"><image v-if="detail.creator.avatar" :src="'data:image/jpeg;base64,'+detail.creator.avatar"/><text>造梗人 · {{detail.creator.name}}</text></view>
+          <view v-if="imageInputCount>0" class="image-input-section">
+            <view class="section-heading"><text class="detail-label">添加图片</text><text class="step-tag">{{templateImages.length}} / {{imageInputCount}}</text></view>
+            <button v-if="!templateImages.length" class="image-upload-area" @click="$emit('chooseImages')"><view class="upload-icon">＋</view><text class="upload-title">选一张喜欢的照片</text><text class="upload-text">{{imageUploadText}}</text></button>
+            <view v-else class="photo-card"><view class="photo-toolbar"><text>图片 {{activeImageIndex+1}}</text><button class="remove-image-btn" aria-label="移除当前图片" @click="$emit('removeImage',activeImageIndex)">移除 ×</button></view><image :src="templateImages[activeImageIndex] || templateImages[0]" class="uploaded-photo" mode="aspectFit" @click="$emit('editImage',activeImageIndex)"/><button class="edit-photo-btn" @click="$emit('editImage',activeImageIndex)"><text>⌗ 编辑这张图片</text><text class="edit-tools">裁剪 · 翻转 · 去背景 ›</text></button></view>
+            <scroll-view v-if="templateImages.length>1" scroll-x class="template-images-strip"><view class="template-images-grid"><button v-for="(image,index) in templateImages" :key="index" class="template-image-item" :class="{chosen:index===activeImageIndex}" :aria-label="'编辑图片'+(index+1)" @click="$emit('editImage',index)"><image :src="image" class="template-image" mode="aspectFill"/><text>{{index+1}}</text></button></view></scroll-view>
+            <button v-if="templateImages.length && templateImages.length<imageInputCount" class="add-images-btn" @click="$emit('chooseImages')">＋ {{imageUploadText}}</button>
+            <text class="editing-note">原图会保留，修改后也能随时还原。</text>
           </view>
+          <view v-if="textMax>0" class="text-input-section"><view class="section-heading"><text class="detail-label">写点什么</text><text class="step-tag">{{textRange.min===textRange.max ? textRange.max+'段文字' : textRange.min+'–'+textRange.max+'段'}}</text></view><view v-for="(val,idx) in textInputs" :key="idx" class="text-input-item"><view class="field-row"><text>文字 {{idx+1}} · {{idx<textRange.min?'必填':'可选'}}</text><text>{{(val||'').length}} / {{getTextMaxLength(idx)}}</text></view><input class="text-input" type="text" :placeholder="getTextPlaceholder(idx)" v-model="textInputs[idx]" :maxlength="getTextMaxLength(idx)" :cursor-spacing="100"/></view></view>
+          <button class="more-info" @click="moreInfo=!moreInfo">模板说明与素材来源 <text>{{moreInfo?'−':'＋'}}</text></button>
+          <view v-if="moreInfo" class="template-info-section"><text>关键词：{{(detail?.keywords||[]).join('、') || '无'}}</text><text>标签：{{(detail?.tags||[]).join('、') || '无'}}</text><text v-if="detail?.defaultTexts?.length">默认文字：{{detail.defaultTexts.join('、')}}</text><text v-if="detail?.localCapable">支持本机快制，不兼容时自动使用云端合成。</text><view v-if="detail?.attribution?.source_url" class="source-credit"><text>来源：{{detail.attribution.author || '原作者'}} · {{detail.attribution.license}}</text><text selectable class="source-url">{{detail.attribution.source_url}}</text></view></view>
         </view>
-        <view v-if="imageInputCount > 0" class="image-input-section">
-          <text class="detail-label">图片上传</text>
-          <view v-if="!templateImages.length" class="image-upload-area" @click="$emit('chooseImages')">
-            <view class="upload-icon">📷</view>
-            <text class="upload-text">{{ imageUploadText }}</text>
-          </view>
-          <view v-else class="uploaded-preview" @click="$emit('editImage',activeImageIndex)"><image :src="templateImages[activeImageIndex] || templateImages[0]" class="uploaded-photo" mode="aspectFit"/><view class="preview-edit-hint"><text>✦ 点击编辑图片</text><text>裁剪 · 翻转 · 去背景</text></view></view>
-          <view v-if="templateImages.length > 0" class="template-images-grid">
-            <view v-for="(image, index) in templateImages" :key="`template-image-${index}`" class="template-image-item">
-              <image :src="image" class="template-image" mode="aspectFill" @click="$emit('editImage',index)" />
-              <button class="crop-image-btn" @click.stop="$emit('editImage', index)">编辑图片</button>
-              <button class="remove-image-btn" @click.stop="$emit('removeImage', index)">✕</button>
-            </view>
-          </view>
-          <button v-if="templateImages.length && templateImages.length < imageInputCount" class="add-images-btn" @click="$emit('chooseImages')">＋ {{ imageUploadText }}</button>
-          <text class="editing-note">编辑后立即预览，去背景保留主要主体；原图可随时还原</text>
-        </view>
-        <view v-if="textMax > 0" class="text-input-section">
-          <text class="detail-label">文本输入（至少{{ textRange.min }}个，至多{{ textRange.max }}个）</text>
-          <view class="text-input-grid">
-            <view v-for="(val, idx) in textInputs" :key="`template-text-${idx}`" class="text-input-item">
-              <input class="text-input" type="text" :placeholder="getTextPlaceholder(idx)" v-model="textInputs[idx]" :maxlength="getTextMaxLength(idx)" />
-            </view>
-          </view>
-        </view>
-        <view class="detail-actions">
-          <button class="btn btn-primary" :disabled="!canGenerate" @click="$emit('generate')">生成表情包</button>
-          <button class="btn btn-secondary" @click="$emit('close')">取消</button>
-        </view>
-        <view v-if="detail?.attribution?.source_url" class="source-credit"><text>来源：{{ detail.attribution.author || '原作者' }} · {{ detail.attribution.license }}</text><text class="source-url" selectable>{{ detail.attribution.source_url }}</text></view>
-      </view>
+      </scroll-view>
+      <view class="detail-actions"><text class="action-hint">{{inputHint}}</text><button class="ui-primary" :disabled="!canGenerate" @click="$emit('generate')">一键生成损图 <text>✦</text></button></view>
     </view>
-    <image-editor v-if="editorOpen && templateImages[activeImageIndex]" :src="templateImages[activeImageIndex]" :images="templateImages" :active-index="activeImageIndex" :busy="editorBusy" :error="editorError" :can-undo="editorCanUndo" @close="$emit('closeEditor')" @select="$emit('editImage',$event)" @edit="$emit('applyEdit',$event)" @undo="$emit('undoEdit')" @restore="$emit('restoreImage')"/>
+    <image-editor v-if="editorOpen && templateImages[activeImageIndex]" :src="templateImages[activeImageIndex]" :template-key="detail?.key" :preview-image="detail?.previewImage" :images="templateImages" :active-index="activeImageIndex" :busy="editorBusy" :error="editorError" :can-undo="editorCanUndo" @close="$emit('closeEditor')" @select="$emit('editImage',$event)" @edit="$emit('applyEdit',$event)" @undo="$emit('undoEdit')" @restore="$emit('restoreImage')"/>
   </view>
 </template>
-
 <script>
 import ImageEditor from '@/components/ImageEditor.vue'
 export default {
   name: 'TemplateDetailModal',
+  data:()=>({moreInfo:false}),
+  computed:{bodyHeight(){const win=uni.getWindowInfo?.()||uni.getSystemInfoSync();return Math.max(120,Math.min(win.windowHeight-330,140+(this.imageInputCount?280:0)+this.textInputs.length*105+(this.moreInfo?160:50)))},inputHint(){if(this.editorBusy)return '图片处理中，请稍等一下';const min=Number(String(this.detail?.imageCount||'0-0').split('-')[0]);if(this.templateImages.length<min)return `再添加 ${min-this.templateImages.length} 张图片就好`;const filled=this.textInputs.filter(t=>String(t||'').trim()).length;if(filled<this.textRange.min)return `还需要 ${this.textRange.min-filled} 段文字`;return '准备好了，让表情出场吧'}},
   components: { ImageEditor },
   props: {
     show: { type: Boolean, required: true },
@@ -88,42 +52,12 @@ export default {
 }
 </script>
 
+
 <style scoped>
-.uploaded-preview{position:relative;background-color:#fff;background-image:linear-gradient(45deg,#efe8df 25%,transparent 25%),linear-gradient(-45deg,#efe8df 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#efe8df 75%),linear-gradient(-45deg,transparent 75%,#efe8df 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0;border-radius:22rpx;overflow:hidden}.uploaded-photo{display:block;width:100%;height:350rpx}.preview-edit-hint{display:flex;justify-content:space-between;background:rgba(255,246,235,.95);padding:16rpx;color:#9c6b50;font-size:23rpx}.preview-edit-hint text:last-child{font-size:21rpx;color:#b3917a}.add-images-btn{background:#fff1e5;color:#a77d61;font-size:23rpx;border-radius:16rpx;margin:18rpx 0 0;line-height:1.7;padding:12rpx}.editing-note{display:block;color:#b29a88;font-size:21rpx;line-height:1.7;margin-top:14rpx}
-.crop-image-btn{position:absolute;bottom:0;left:0;right:0;width:100%;margin:0;background:rgba(64,40,27,.65);color:white;font-size:21rpx;border-radius:0;line-height:1.8;padding:5rpx}
-.extraction-choice{display:flex;align-items:center;justify-content:space-between;gap:16rpx;padding:22rpx;background:#fff5ec;border-radius:18rpx;margin-bottom:20rpx}.extraction-title{display:block;color:#674739;font-size:25rpx;font-weight:600}.extraction-hint{display:block;color:#ad8370;font-size:21rpx;line-height:1.5;margin-top:6rpx}
-.local-note{display:block;color:#8b699e;background:#faf5ff;border-radius:14rpx;padding:14rpx 18rpx;font-size:21rpx;line-height:1.6;margin:12rpx 0 20rpx}
-.template-detail-modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(30,25,23,.55); display:flex; align-items:center; justify-content:center; z-index:2000 }
-.detail-content { background:#fff; border-radius:32rpx; width:90%; max-width:700rpx; max-height:80%; overflow:hidden; position:relative }
-.detail-header { display:flex; justify-content:center; align-items:center; padding:30rpx; border-bottom:2rpx solid #eee }
-.detail-title { font-size:32rpx; font-weight:bold; color:#333 }
-.close-btn { position:absolute; top:16rpx; right:16rpx; width:72rpx; height:48rpx; background:#f5f1ed; color:#77685e; border:none; border-radius:12rpx; font-size:28rpx; display:flex; align-items:center; justify-content:center;  z-index:10 }
-.detail-body { padding:30rpx; max-height:600rpx; overflow-y:auto; position:relative; z-index:1 }
-.example-section { margin-bottom:40rpx; text-align:center }
-.detail-label { font-size:28rpx; font-weight:bold; color:#333; margin-bottom:20rpx; display:block }
-.example-image { width:100%; max-height:300rpx; border-radius:16rpx; background:#f5f5f5 }
-.template-info-section { margin-bottom:40rpx }
-.info-item { display:flex; margin-bottom:16rpx }
-.info-key { font-size:26rpx; color:#666; width:140rpx; flex-shrink:0 }
-.info-value { font-size:26rpx; color:#333; flex:1 }
-.requirements-list { display:flex; flex-direction:column; gap:12rpx }
-.requirement-text { font-size:24rpx; color:#666; background:#f8f9fa; padding:16rpx 20rpx; border-radius:12rpx }
-.image-input-section { margin-bottom:40rpx }
-.image-upload-area { background:#f8f9fa; border:4rpx dashed #ddd; border-radius:20rpx; padding:40rpx; text-align:center; transition:all .3s ease }
-.template-images-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:20rpx; margin-top:20rpx }
-.template-image-item { position:relative; aspect-ratio:1; border-radius:16rpx; overflow:hidden; box-shadow:0 4rpx 12rpx rgba(0,0,0,.1) }
-.template-image { width:100%; height:100%; border-radius:16rpx }
-.remove-image-btn { position:absolute; top:8rpx; right:8rpx; width:40rpx; height:40rpx; background:rgba(255,0,0,.8); color:#fff; border:none; border-radius:50%; font-size:24rpx; display:flex; align-items:center; justify-content:center; box-shadow:0 2rpx 8rpx rgba(0,0,0,.3); transition:all .2s ease }
-.text-input-section { margin-bottom:40rpx }
-.text-input-grid { display:grid; grid-template-columns:1fr; gap:16rpx }
-.text-input-item { background:#f8f9fa; border:2rpx solid #e5e7eb; border-radius:16rpx; padding:12rpx 16rpx }
-.text-input { width:100%; font-size:26rpx; color:#333 }
-.detail-actions { display:flex; gap:20rpx; margin-top:30rpx }
-.btn { flex:1; padding:24rpx; border:none; border-radius:40rpx; font-size:28rpx; font-weight:bold; transition:all .3s ease }
-.btn-primary { background:linear-gradient(45deg, #ff6b6b, #ff8e53); color:#fff }
-.btn-secondary { background:#f8f9fa; color:#666; border:2rpx solid #ddd }
-.source-credit {font-size:20rpx;color:#9b897a;line-height:1.6;margin-bottom:18rpx}
-.source-credit{margin:30rpx 0 0;color:#a89b93;font-size:19rpx}.source-url{display:block;word-break:break-all;font-size:18rpx;margin-top:4rpx}
-.favorite-corner{position:absolute;left:18rpx;top:14rpx;width:66rpx;height:60rpx;line-height:60rpx;padding:0;margin:0;border:0;border-radius:18rpx;background:#fff5ed;color:#a59181;font-size:42rpx;transition:transform .2s,color .2s}.favorite-corner.saved{color:#f4a32b}.favorite-corner:active{transform:scale(.85)}
-.detail-content{animation:detail-enter .22s ease-out}.btn:active{transform:scale(.97)}@keyframes detail-enter{from{opacity:0;transform:translateY(24rpx) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-</style>
+.template-detail-modal{position:fixed;inset:0;z-index:2000;background:rgba(29,43,47,.42);display:flex;align-items:flex-end;justify-content:center}.detail-content{width:100%;max-width:820rpx;height:calc(100% - 40rpx - env(safe-area-inset-top));max-height:94vh;background:var(--paper);border-radius:40rpx 40rpx 0 0;display:flex;flex-direction:column;overflow:hidden;animation:ui-sheet .24s ease-out}.sheet-grip{width:64rpx;height:7rpx;border-radius:7rpx;background:#ded9cf;margin:15rpx auto 4rpx;flex-shrink:0}.detail-header{display:flex;align-items:center;gap:12rpx;padding:16rpx 28rpx 22rpx;flex-shrink:0}.heading-copy{flex:1;min-width:0}.detail-title{display:block;font-size:34rpx;font-weight:750;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:5rpx}.favorite-corner{width:80rpx;height:80rpx;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#ffede2;color:#c88061;font-size:38rpx;padding:0;flex-shrink:0}.favorite-corner.saved{color:var(--accent-dark)}.detail-body{flex:1;height:0;min-height:0}.body-inner{padding:0 28rpx 24rpx}.template-summary{display:flex;gap:22rpx;padding:20rpx;background:#f2f0e8;border-radius:26rpx;margin:4rpx 0 28rpx}.example-image,.example-pending{width:128rpx;height:128rpx;background:#fff;border-radius:18rpx;flex-shrink:0}.example-pending{display:flex;align-items:center;justify-content:center;font-size:60rpx;color:#bda77b}.summary-copy{display:flex;flex-direction:column;justify-content:center;gap:7rpx;min-width:0}.summary-title{font-weight:650;font-size:26rpx}.summary-hint{font-size:23rpx;color:#687878}.summary-caption{font-size:21rpx;color:#8b938b}.section-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:16rpx}.detail-label{font-size:29rpx;font-weight:700}.step-tag{font-size:23rpx;color:#849088}.image-input-section,.text-input-section{margin-bottom:28rpx}.image-upload-area{width:100%;min-height:250rpx;background:#fff;border:2rpx dashed #e2d6c8;border-radius:28rpx;padding:28rpx 24rpx;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12rpx;line-height:1.5}.upload-icon{width:64rpx;height:64rpx;border-radius:22rpx;background:var(--peach);font-size:38rpx;color:var(--accent-dark)}.upload-title{font-size:27rpx;font-weight:600;color:var(--ink)}.upload-text{font-size:22rpx;color:#8c938a}.photo-card{background:#fff;border:2rpx solid var(--line);border-radius:26rpx;overflow:hidden}.photo-toolbar{display:flex;align-items:center;justify-content:space-between;padding:0 16rpx 0 22rpx;font-size:23rpx;color:#78847e}.remove-image-btn{font-size:23rpx;color:#b65e4e;padding:16rpx 12rpx;min-height:76rpx;line-height:1.6}.uploaded-photo{width:100%;height:280rpx;background:#f4f2ed}.edit-photo-btn{width:100%;min-height:80rpx;padding:18rpx 20rpx;display:flex;align-items:center;justify-content:space-between;gap:12rpx;font-size:25rpx;color:var(--accent-dark);line-height:1.5;background:#fff4ea}.edit-tools{font-size:21rpx;color:#947f6e}.template-images-strip{white-space:nowrap;margin-top:14rpx}.template-images-grid{display:flex;gap:12rpx;padding:4rpx}.template-image-item{width:100rpx;height:100rpx;border:3rpx solid transparent;border-radius:20rpx;position:relative;padding:0;overflow:hidden;flex-shrink:0}.template-image-item.chosen{border-color:var(--accent)}.template-image{width:100%;height:100%}.template-image-item text{position:absolute;bottom:0;left:0;background:#2f474b;color:#fff;font-size:20rpx;padding:0 10rpx;border-radius:0 10rpx 0 0}.editing-note{display:block;font-size:22rpx;color:#8b938c;margin-top:13rpx}.add-images-btn{font-size:24rpx;color:var(--accent-dark);background:var(--peach);padding:16rpx;margin-top:14rpx;border-radius:20rpx;line-height:1.6}.text-input-item{background:#fff;border:2rpx solid var(--line);border-radius:24rpx;padding:18rpx 22rpx;margin-bottom:14rpx}.field-row{display:flex;justify-content:space-between;gap:10rpx;font-size:21rpx;color:#89938b;margin-bottom:12rpx}.text-input{width:100%;height:64rpx;font-size:28rpx;color:var(--ink)}.more-info{width:100%;display:flex;justify-content:space-between;font-size:23rpx;color:#7b8984;padding:18rpx 4rpx;line-height:1.5}.template-info-section{font-size:23rpx;color:#7b8984;line-height:1.8;padding:10rpx 4rpx 20rpx}.template-info-section text{display:block}.source-credit{margin-top:12rpx}.source-url{word-break:break-all;font-size:21rpx}.detail-actions{flex-shrink:0;background:#fffdfa;border-top:2rpx solid var(--line);padding:14rpx 28rpx calc(22rpx + env(safe-area-inset-bottom))}.action-hint{display:block;text-align:center;color:#889085;font-size:22rpx;margin-bottom:10rpx}.detail-actions .ui-primary{gap:16rpx}
+@media(max-width:350px){.edit-tools{font-size:19rpx}.detail-header{gap:8rpx}.ui-close,.favorite-corner{width:72rpx;height:72rpx}}
+.detail-content{border:3rpx solid #fff;box-shadow:0 -10rpx 35rpx rgba(57,40,90,.12);background:var(--paper)}.template-summary{background:linear-gradient(125deg,#fbf4eb,#faf2e8);border:2rpx solid white;box-shadow:0 5rpx 0 #efe5d9}.example-image{border:3rpx solid white;box-shadow:0 5rpx 0 #e7d9ca;transform:rotate(-5deg)}.detail-actions{background:#fefefd;border-top:2rpx solid #f4ede5;padding-bottom:calc(28rpx + env(safe-area-inset-bottom))}.photo-card{border-color:#f0e8df;box-shadow:0 5rpx 0 #f3ece4}.edit-photo-btn{background:#f7f1ea;color:#9d9082}.edit-tools{color:#b3aa9f}.image-upload-area{border-color:#e7dacb;background:#fcf7f1}.upload-icon{background:linear-gradient(140deg,#ecc4b6,#cb9582);color:white;box-shadow:0 5rpx 0 #b9755c,inset 0 2rpx 0 #f8ecde}.text-input{background:white;border-color:#efe7de;box-shadow:inset 0 3rpx 0 #fcf8f3}.summary-title{color:#847667}.summary-hint,.summary-caption,.editing-note,.field-row{color:#aea499}
+.template-summary{animation:ui-enter .35s ease-out both}.image-upload-area{animation:ui-enter .4s ease-out .06s both}.image-upload-area .upload-icon{animation:upload-invite 1.4s ease-in-out 2}.photo-card{animation:ui-reveal .25s ease-out both}.text-input-item{animation:ui-enter .35s ease-out .1s both}.favorite-corner.saved{animation:ui-pop .4s ease-out both}.text-input:focus{border-color:#e3aa87}.detail-actions{animation:ui-enter .3s ease-out both}@keyframes upload-invite{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6rpx) rotate(6deg)}}
+
+.detail-content{height:auto;max-height:calc(100vh - 110px)}.detail-body{flex:initial;height:auto;max-height:calc(100vh - 350px)}.detail-header{padding-top:24rpx}.detail-header .ui-close,.favorite-corner{width:68rpx;height:68rpx;min-height:68rpx;font-size:34rpx}.summary-title{color:var(--ink)}.summary-hint,.summary-caption,.field-row{color:#8c8b7d}
+.creator-credit{display:flex;align-items:center;gap:12rpx;margin:-5rpx 0 24rpx;color:#9b8c72;font-size:23rpx}.creator-credit image{width:46rpx;height:46rpx;border-radius:16rpx}</style>

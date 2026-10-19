@@ -29,13 +29,34 @@
         "navigationBarTitleText": "照片一键配表情",
         "navigationBarTextStyle": "black"
       }
+    },
+    {
+      "path": "pages/queue/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "生成队列"
+      }
+    },
+    {
+      "path": "pages/create/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "创作模板"
+      }
+    },
+    {
+      "path": "pages/live/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "Live 图转 GIF"
+      }
     }
   ],
   "globalStyle": {
-    "navigationBarTextStyle": "white",
+    "navigationBarTextStyle": "black",
     "navigationBarTitleText": "表情包生成器",
-    "navigationBarBackgroundColor": "#ff6b6b",
-    "backgroundColor": "#F8F8F8"
+    "navigationBarBackgroundColor": "#fffaf5",
+    "backgroundColor": "#fffaf5"
   },
   "tabBar": {
     "color": "#888888",

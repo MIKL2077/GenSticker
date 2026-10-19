@@ -13,6 +13,7 @@ from pathlib import Path
 
 import filetype
 from PIL import Image
+from fastapi.responses import JSONResponse
 from fastapi import Depends, FastAPI, Form, HTTPException, Response, UploadFile, Request
 from pydantic import BaseModel, Field, ValidationError
 
@@ -81,7 +82,8 @@ def healthz():
 
 
 class SubjectPreviewRequest(BaseModel):
-    image: str = Field(min_length=1, max_length=6 * 1024 * 1024)
+    image: str = Field(min_length=1, max_length=12 * 1024 * 1024)
+    delivery: str = "binary"
 
 
 @app.post('/images/subject')
@@ -93,8 +95,8 @@ async def subject_preview(params: SubjectPreviewRequest, request: Request):
         raw = base64.b64decode(params.image, validate=True)
     except (ValueError, binascii.Error):
         raise HTTPException(status_code=422, detail='图片格式无效，请重新选择')
-    if len(raw) > 4 * 1024 * 1024:
-        raise HTTPException(status_code=413, detail='图片不能超过 4 MB，请先裁剪或压缩')
+    if len(raw) > 8 * 1024 * 1024:
+        raise HTTPException(status_code=413, detail='图片过大，先缩小后再试')
     if generation_slots.locked():
         raise HTTPException(status_code=503, detail='图片处理繁忙，请稍后再试')
     async with generation_slots:
@@ -104,6 +106,9 @@ async def subject_preview(params: SubjectPreviewRequest, request: Request):
             raise HTTPException(status_code=exc.status_code, detail=exc.message)
         except (UnidentifiedImageError, Image.DecompressionBombError, ValueError, OSError):
             raise HTTPException(status_code=422, detail='图片无法读取，请选择静态图片')
+    if params.delivery=='url':
+        from meme_generator.features.editor import deliver_foreground
+        return JSONResponse(deliver_foreground(content,request),headers={'Cache-Control':'private, no-store'})
     return Response(content=content, media_type='image/png', headers={'Cache-Control': 'private, no-store'})
 
 
@@ -174,6 +179,8 @@ class MemeInfoResponse(BaseModel):
     version: int = 1
     input_hint: str = ''
     attribution: dict[str,str] = Field(default_factory=dict)
+    creator: dict = Field(default_factory=dict)
+    created_at: float = 0
     params_type: MemeParamsResponse
     keywords: list[str]
     shortcuts: list[CommandShortcut]
@@ -315,6 +322,8 @@ def register_routers():
             version=catalog_entry['version'] if catalog_entry else 1,
             input_hint=json.loads(catalog_entry['metadata']).get('input_hint','') if catalog_entry else '',
             attribution=attribution,
+            creator=json.loads(catalog_entry['metadata']).get('creator',{}) if catalog_entry else {},
+            created_at=json.loads(catalog_entry['metadata']).get('created_at',0) if catalog_entry else 0,
             params_type=MemeParamsResponse(
                 min_images=meme.params_type.min_images,
                 max_images=meme.params_type.max_images,
@@ -447,7 +456,7 @@ def register_routers():
             attribution = {k:metadata.get(k,'') for k in ('author','license','source_url','license_url')}
             if not attribution['source_url']:
                 attribution = {'author':'MemeCrafters 模板合集','license':'素材权利信息见上游','source_url':'https://github.com/MemeCrafters/meme-generator','license_url':''}
-            cards.append({'key':meme.key, 'name':(meme.keywords or [meme.key])[0], 'keywords':meme.keywords, 'tags':sorted(meme.tags)[:6], 'template_id':entry.get('id',''), 'version':entry.get('version',1), 'featured_trial':bool(metadata.get('featured_trial')), 'input_hint':metadata.get('input_hint',''), 'attribution':attribution, 'params_type':{'min_images':params.min_images,'max_images':params.max_images,'min_texts':params.min_texts,'max_texts':params.max_texts,'default_texts':params.default_texts}, **popularity.get(meme.key, {'heat':0, 'counts':{}})})
+            cards.append({'key':meme.key, 'name':(meme.keywords or [meme.key])[0], 'keywords':meme.keywords, 'tags':sorted(meme.tags)[:6], 'template_id':entry.get('id',''), 'version':entry.get('version',1), 'creator':metadata.get('creator',{}),'created_at':metadata.get('created_at',0),'featured_trial':bool(metadata.get('featured_trial')), 'input_hint':metadata.get('input_hint',''), 'attribution':attribution, 'params_type':{'min_images':params.min_images,'max_images':params.max_images,'min_texts':params.min_texts,'max_texts':params.max_texts,'default_texts':params.default_texts}, **popularity.get(meme.key, {'heat':0, 'counts':{}})})
             if params.min_images == 0 and params.max_images == 0 and params.min_texts >= 1:
                 text_only.append(meme.key)
             elif params.min_texts == 0 and params.max_texts == 0 and params.min_images >= 1:
@@ -491,6 +500,23 @@ from meme_generator.features.popularity import router as popularity_router
 app.include_router(popularity_router)
 from meme_generator.features.client_render import router as client_render_router
 app.include_router(client_render_router)
+from meme_generator.features.studio import router as studio_router
+app.include_router(studio_router)
+from meme_generator.features.editor import router as editor_router
+app.include_router(editor_router)
+from meme_generator.features.livegif import router as live_router
+app.include_router(live_router)
+
+
+@app.post('/memes/{key}/')
+async def generate_dynamic_multipart(key: str, request: Request, images: list[UploadFile] = [], texts: list[str] = Form(default=[]), extract_subject: bool = Form(default=False)):
+    # Published user templates are loaded after startup and share the existing renderer.
+    encoded=[];total=0
+    for image in images:
+        raw=await image.read(10*1024*1024+1);total+=len(raw)
+        if total>10*1024*1024:raise HTTPException(413,'图片总大小不能超过 10 MB')
+        encoded.append(base64.b64encode(raw).decode())
+    return await generate_json(key,GenerateRequest(images=encoded,texts=texts,extract_subject=extract_subject),request)
 
 
 if __name__ == "__main__":
