@@ -1,0 +1,11 @@
+{
+  "status": "partial",
+  "scope": "WeChat production build with synthetic account, geometrical photo and application transport stubs; excludes physical devices and real recognition accuracy",
+  "cardsRendered": true,
+  "cachedRowsVisibleMs": 407,
+  "rowsBeforeDelayedNetwork": true,
+  "runtimeErrors": [],
+  "pickerLayout": "two candidate boxes, three editing tools and confirmation visible in screenshot",
+  "pending": "automator could not reliably locate across native custom-component boundaries; full tap/edit/reselect sequence remains physical-device acceptance",
+  "timing_scope": "automator polling observation, not a device first-paint metric or SLA"
+}

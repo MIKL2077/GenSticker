@@ -1,0 +1,27 @@
+{
+  "status": "passed",
+  "samples": [
+    {
+      "template": "always",
+      "original_bytes": 165635,
+      "original_frames": 1,
+      "thumbnail_bytes": 3199,
+      "original_ms": 8.464,
+      "thumbnail_cold_ms": 19.032,
+      "thumbnail_warm_ms": 8.773
+    },
+    {
+      "template": "petpet",
+      "original_bytes": 21630,
+      "original_frames": 5,
+      "thumbnail_bytes": 2777,
+      "original_ms": 11.695,
+      "thumbnail_cold_ms": 11.257,
+      "thumbnail_warm_ms": 8.93
+    }
+  ],
+  "publishes": 0,
+  "empty_metadata_ms": 9.172,
+  "ownership_and_deletion": "passed",
+  "fixture_cleaned": true
+}

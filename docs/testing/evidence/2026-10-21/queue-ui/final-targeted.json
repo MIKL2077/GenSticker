@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "checks": [
+    "subject-picker editable preview, reselect, undo, PNG alpha, cancellation",
+    "queue preload deduplication, concurrency and account/session isolation",
+    "my login/profile/logout and recommendation workflows",
+    "original image preservation and template edit cancellation",
+    "final WeChat build"
+  ],
+  "scope": "targeted checks after final transparent-output and viewport adjustments; full 20 frontend / 97 backend regression in regression.json"
+}
