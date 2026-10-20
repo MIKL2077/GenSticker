@@ -19,3 +19,10 @@ output/
 .DS_Store
 deploy/backend-update-package/
 deploy/editor-live-update/
+
+# Local state and CI artifacts; checked-in QA evidence must be sanitized.
+artifacts/
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+.env

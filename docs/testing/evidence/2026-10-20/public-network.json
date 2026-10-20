@@ -1,0 +1,53 @@
+{
+  "origin": "developer workstation through public HTTPS; not mainland mobile-device latency",
+  "samples": [
+    {
+      "route": "/healthz",
+      "seconds": 3.5677,
+      "status": 200,
+      "decoded_bytes": 31,
+      "wire_body_bytes": 31,
+      "encoding": "identity"
+    },
+    {
+      "route": "/healthz",
+      "seconds": 1.7817,
+      "status": 200,
+      "decoded_bytes": 31,
+      "wire_body_bytes": 31,
+      "encoding": "identity"
+    },
+    {
+      "route": "/healthz",
+      "seconds": 0.5853,
+      "status": 200,
+      "decoded_bytes": 31,
+      "wire_body_bytes": 31,
+      "encoding": "identity"
+    },
+    {
+      "route": "/memes/categories",
+      "seconds": 5.182,
+      "status": 200,
+      "decoded_bytes": 161853,
+      "wire_body_bytes": 24358,
+      "encoding": "gzip"
+    },
+    {
+      "route": "/memes/categories",
+      "seconds": 7.7426,
+      "status": 200,
+      "decoded_bytes": 161853,
+      "wire_body_bytes": 24357,
+      "encoding": "gzip"
+    },
+    {
+      "route": "/memes/categories",
+      "seconds": 7.5564,
+      "status": 200,
+      "decoded_bytes": 161853,
+      "wire_body_bytes": 24360,
+      "encoding": "gzip"
+    }
+  ]
+}

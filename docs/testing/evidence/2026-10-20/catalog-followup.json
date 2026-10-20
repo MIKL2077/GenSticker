@@ -1,0 +1,103 @@
+{
+  "scope": "rerender declared-minimum failures with explicit optional name/text values; diagnoses metadata UX mismatch, does not erase the original failures",
+  "results": [
+    {
+      "key": "alipay",
+      "status": "passed",
+      "result": {
+        "key": "alipay",
+        "status": "passed",
+        "render_seconds": 0.0768,
+        "format": "JPEG",
+        "width": 1080,
+        "height": 1620,
+        "frames": 1,
+        "bytes": 134108
+      }
+    },
+    {
+      "key": "always_like",
+      "status": "passed",
+      "result": {
+        "key": "always_like",
+        "status": "passed",
+        "render_seconds": 0.0342,
+        "format": "JPEG",
+        "width": 830,
+        "height": 599,
+        "frames": 1,
+        "bytes": 34900
+      }
+    },
+    {
+      "key": "ask",
+      "status": "passed",
+      "result": {
+        "key": "ask",
+        "status": "passed",
+        "render_seconds": 0.0806,
+        "format": "PNG",
+        "width": 700,
+        "height": 800,
+        "frames": 1,
+        "bytes": 58002
+      }
+    },
+    {
+      "key": "google_captcha",
+      "status": "passed",
+      "result": {
+        "key": "google_captcha",
+        "status": "passed",
+        "render_seconds": 0.0538,
+        "format": "JPEG",
+        "width": 1004,
+        "height": 1539,
+        "frames": 1,
+        "bytes": 87863
+      }
+    },
+    {
+      "key": "make_friend",
+      "status": "passed",
+      "result": {
+        "key": "make_friend",
+        "status": "passed",
+        "render_seconds": 0.056,
+        "format": "JPEG",
+        "width": 1000,
+        "height": 1000,
+        "frames": 1,
+        "bytes": 36349
+      }
+    },
+    {
+      "key": "wechat_pay",
+      "status": "passed",
+      "result": {
+        "key": "wechat_pay",
+        "status": "passed",
+        "render_seconds": 0.0856,
+        "format": "JPEG",
+        "width": 1242,
+        "height": 1692,
+        "frames": 1,
+        "bytes": 120602
+      }
+    },
+    {
+      "key": "why_have_hands",
+      "status": "passed",
+      "result": {
+        "key": "why_have_hands",
+        "status": "passed",
+        "render_seconds": 0.135,
+        "format": "JPEG",
+        "width": 1500,
+        "height": 1495,
+        "frames": 1,
+        "bytes": 166635
+      }
+    }
+  ]
+}

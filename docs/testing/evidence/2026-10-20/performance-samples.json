@@ -1,0 +1,1376 @@
+{
+  "scope": "bounded synthetic acceptance samples on a 4-vCPU/16-GB Linux test host; source/API time, not phone or capacity measurements",
+  "baseline": {
+    "measurements": [
+      {
+        "name": "read:/healthz",
+        "seconds": 0.0041,
+        "bytes": 31
+      },
+      {
+        "name": "read:/healthz",
+        "seconds": 0.002,
+        "bytes": 31
+      },
+      {
+        "name": "read:/healthz",
+        "seconds": 0.0015,
+        "bytes": 31
+      },
+      {
+        "name": "read:/healthz",
+        "seconds": 0.0015,
+        "bytes": 31
+      },
+      {
+        "name": "read:/healthz",
+        "seconds": 0.0015,
+        "bytes": 31
+      },
+      {
+        "name": "read:/memes/categories",
+        "seconds": 0.0343,
+        "bytes": 161852
+      },
+      {
+        "name": "read:/memes/categories",
+        "seconds": 0.0303,
+        "bytes": 161852
+      },
+      {
+        "name": "read:/memes/categories",
+        "seconds": 0.0307,
+        "bytes": 161852
+      },
+      {
+        "name": "read:/memes/categories",
+        "seconds": 0.0306,
+        "bytes": 161852
+      },
+      {
+        "name": "read:/memes/categories",
+        "seconds": 0.0309,
+        "bytes": 161852
+      },
+      {
+        "name": "read:/templates/popularity",
+        "seconds": 0.0041,
+        "bytes": 7455
+      },
+      {
+        "name": "read:/templates/popularity",
+        "seconds": 0.0039,
+        "bytes": 7455
+      },
+      {
+        "name": "read:/templates/popularity",
+        "seconds": 0.0037,
+        "bytes": 7455
+      },
+      {
+        "name": "read:/templates/popularity",
+        "seconds": 0.0035,
+        "bytes": 7455
+      },
+      {
+        "name": "read:/templates/popularity",
+        "seconds": 0.0032,
+        "bytes": 7455
+      },
+      {
+        "name": "health-concurrency-2",
+        "seconds": 0.0023
+      },
+      {
+        "name": "health-concurrency-2",
+        "seconds": 0.0024
+      },
+      {
+        "name": "health-concurrency-2",
+        "seconds": 0.0017
+      },
+      {
+        "name": "health-concurrency-2",
+        "seconds": 0.0016
+      },
+      {
+        "name": "health-concurrency-2",
+        "seconds": 0.0014
+      },
+      {
+        "name": "health-concurrency-2",
+        "seconds": 0.0015
+      },
+      {
+        "name": "health-concurrency-2",
+        "seconds": 0.0018
+      },
+      {
+        "name": "health-concurrency-2",
+        "seconds": 0.0031
+      },
+      {
+        "name": "health-concurrency-2",
+        "seconds": 0.0026
+      },
+      {
+        "name": "health-concurrency-2",
+        "seconds": 0.0013
+      },
+      {
+        "name": "manual:always",
+        "seconds": 0.4061,
+        "cache": "miss",
+        "format": "JPEG",
+        "bytes": 21661,
+        "width": 500,
+        "height": 809,
+        "frames": 1,
+        "duration_ms": 0
+      },
+      {
+        "name": "manual:always",
+        "seconds": 0.0114,
+        "cache": "hit",
+        "format": "JPEG",
+        "bytes": 21661,
+        "width": 500,
+        "height": 809,
+        "frames": 1,
+        "duration_ms": 0
+      },
+      {
+        "name": "manual:always",
+        "seconds": 0.0111,
+        "cache": "hit",
+        "format": "JPEG",
+        "bytes": 21661,
+        "width": 500,
+        "height": 809,
+        "frames": 1,
+        "duration_ms": 0
+      },
+      {
+        "name": "manual:petpet",
+        "seconds": 0.0381,
+        "cache": "miss",
+        "format": "GIF",
+        "bytes": 16090,
+        "width": 112,
+        "height": 112,
+        "frames": 5,
+        "duration_ms": 300
+      },
+      {
+        "name": "manual:petpet",
+        "seconds": 0.0108,
+        "cache": "hit",
+        "format": "GIF",
+        "bytes": 16090,
+        "width": 112,
+        "height": 112,
+        "frames": 5,
+        "duration_ms": 300
+      },
+      {
+        "name": "manual:petpet",
+        "seconds": 0.0102,
+        "cache": "hit",
+        "format": "GIF",
+        "bytes": 16090,
+        "width": 112,
+        "height": 112,
+        "frames": 5,
+        "duration_ms": 300
+      },
+      {
+        "name": "subject-detection",
+        "seconds": 0.4916,
+        "candidates": 2
+      },
+      {
+        "name": "ai-batch",
+        "seconds": 1.6381,
+        "batch": 1,
+        "results": 9,
+        "output_bytes": 462962,
+        "animated": 3,
+        "subject_selected": true,
+        "framing": "user-selection"
+      },
+      {
+        "name": "ai-batch",
+        "seconds": 4.4257,
+        "batch": 2,
+        "results": 9,
+        "output_bytes": 2178024,
+        "animated": 2,
+        "subject_selected": true,
+        "framing": "user-selection"
+      },
+      {
+        "name": "private-template-queue",
+        "seconds": 0.9211
+      },
+      {
+        "name": "video-upload-prepare",
+        "seconds": 0.1605,
+        "source_bytes": 34894
+      },
+      {
+        "name": "video-nine-seconds",
+        "seconds": 3.0977,
+        "complex_scene": false,
+        "format": "GIF",
+        "bytes": 313056,
+        "width": 240,
+        "height": 180,
+        "frames": 45,
+        "duration_ms": 9000
+      },
+      {
+        "name": "video-upload-prepare",
+        "seconds": 0.1566,
+        "source_bytes": 371416
+      },
+      {
+        "name": "video-nine-seconds",
+        "seconds": 3.4065,
+        "complex_scene": true,
+        "format": "GIF",
+        "bytes": 378076,
+        "width": 240,
+        "height": 180,
+        "frames": 45,
+        "duration_ms": 9000
+      }
+    ],
+    "checks": [
+      {
+        "name": "authentication-library-account-isolation",
+        "status": "passed"
+      },
+      {
+        "name": "manual-static-and-animated-output",
+        "status": "passed"
+      },
+      {
+        "name": "actual-model-nine-results-reroll-animation-ownership",
+        "status": "passed",
+        "batches": 2,
+        "adjacent_overlap": 0,
+        "candidates": 2
+      },
+      {
+        "name": "private-template-background-is-private-queue-completes",
+        "status": "passed"
+      },
+      {
+        "name": "video-crop-rotation-caption-full-duration-size-local-sync-idempotency",
+        "status": "passed"
+      },
+      {
+        "name": "input-bounds-private-access-rights-consent-rolling-rate-limit",
+        "status": "passed"
+      }
+    ],
+    "fixture_cleaned": true
+  },
+  "extended": {
+    "measurements": [
+      {
+        "name": "read:/healthz",
+        "seconds": 0.004,
+        "bytes": 31
+      },
+      {
+        "name": "read:/healthz",
+        "seconds": 0.0018,
+        "bytes": 31
+      },
+      {
+        "name": "read:/healthz",
+        "seconds": 0.0015,
+        "bytes": 31
+      },
+      {
+        "name": "read:/healthz",
+        "seconds": 0.0013,
+        "bytes": 31
+      },
+      {
+        "name": "read:/healthz",
+        "seconds": 0.0013,
+        "bytes": 31
+      },
+      {
+        "name": "read:/memes/categories",
+        "seconds": 0.1164,
+        "bytes": 161857
+      },
+      {
+        "name": "read:/memes/categories",
+        "seconds": 0.0317,
+        "bytes": 161857
+      },
+      {
+        "name": "read:/memes/categories",
+        "seconds": 0.0304,
+        "bytes": 161857
+      },
+      {
+        "name": "read:/memes/categories",
+        "seconds": 0.0315,
+        "bytes": 161857
+      },
+      {
+        "name": "read:/memes/categories",
+        "seconds": 0.0323,
+        "bytes": 161857
+      },
+      {
+        "name": "read:/templates/popularity",
+        "seconds": 0.0038,
+        "bytes": 7460
+      },
+      {
+        "name": "read:/templates/popularity",
+        "seconds": 0.0035,
+        "bytes": 7460
+      },
+      {
+        "name": "read:/templates/popularity",
+        "seconds": 0.0033,
+        "bytes": 7460
+      },
+      {
+        "name": "read:/templates/popularity",
+        "seconds": 0.0032,
+        "bytes": 7460
+      },
+      {
+        "name": "read:/templates/popularity",
+        "seconds": 0.0032,
+        "bytes": 7460
+      },
+      {
+        "name": "health-concurrency-2",
+        "seconds": 0.0025
+      },
+      {
+        "name": "health-concurrency-2",
+        "seconds": 0.0024
+      },
+      {
+        "name": "health-concurrency-2",
+        "seconds": 0.0014
+      },
+      {
+        "name": "health-concurrency-2",
+        "seconds": 0.0019
+      },
+      {
+        "name": "health-concurrency-2",
+        "seconds": 0.0017
+      },
+      {
+        "name": "health-concurrency-2",
+        "seconds": 0.0014
+      },
+      {
+        "name": "health-concurrency-2",
+        "seconds": 0.0019
+      },
+      {
+        "name": "health-concurrency-2",
+        "seconds": 0.0018
+      },
+      {
+        "name": "health-concurrency-2",
+        "seconds": 0.0014
+      },
+      {
+        "name": "health-concurrency-2",
+        "seconds": 0.0016
+      },
+      {
+        "name": "manual:always",
+        "seconds": 0.0623,
+        "cache": "miss",
+        "format": "JPEG",
+        "bytes": 21661,
+        "width": 500,
+        "height": 809,
+        "frames": 1,
+        "duration_ms": 0
+      },
+      {
+        "name": "manual:always",
+        "seconds": 0.0113,
+        "cache": "hit",
+        "format": "JPEG",
+        "bytes": 21661,
+        "width": 500,
+        "height": 809,
+        "frames": 1,
+        "duration_ms": 0
+      },
+      {
+        "name": "manual:always",
+        "seconds": 0.0109,
+        "cache": "hit",
+        "format": "JPEG",
+        "bytes": 21661,
+        "width": 500,
+        "height": 809,
+        "frames": 1,
+        "duration_ms": 0
+      },
+      {
+        "name": "manual:petpet",
+        "seconds": 0.04,
+        "cache": "miss",
+        "format": "GIF",
+        "bytes": 16090,
+        "width": 112,
+        "height": 112,
+        "frames": 5,
+        "duration_ms": 300
+      },
+      {
+        "name": "manual:petpet",
+        "seconds": 0.0114,
+        "cache": "hit",
+        "format": "GIF",
+        "bytes": 16090,
+        "width": 112,
+        "height": 112,
+        "frames": 5,
+        "duration_ms": 300
+      },
+      {
+        "name": "manual:petpet",
+        "seconds": 0.0113,
+        "cache": "hit",
+        "format": "GIF",
+        "bytes": 16090,
+        "width": 112,
+        "height": 112,
+        "frames": 5,
+        "duration_ms": 300
+      },
+      {
+        "name": "background-removal-preview",
+        "seconds": 0.3659,
+        "format": "PNG",
+        "bytes": 12970,
+        "width": 267,
+        "height": 421,
+        "frames": 1,
+        "duration_ms": 0
+      },
+      {
+        "name": "subject-detection",
+        "seconds": 0.489,
+        "candidates": 2
+      },
+      {
+        "name": "ai-batch",
+        "seconds": 3.5166,
+        "batch": 1,
+        "results": 9,
+        "output_bytes": 2430647,
+        "animated": 4,
+        "subject_selected": true,
+        "framing": "user-selection"
+      },
+      {
+        "name": "ai-batch",
+        "seconds": 1.9982,
+        "batch": 2,
+        "results": 9,
+        "output_bytes": 1539090,
+        "animated": 2,
+        "subject_selected": true,
+        "framing": "user-selection"
+      },
+      {
+        "name": "private-template-queue",
+        "seconds": 0.9201
+      },
+      {
+        "name": "queue-regeneration",
+        "seconds": 0.9203
+      },
+      {
+        "name": "video-upload-prepare",
+        "seconds": 0.1536,
+        "source_bytes": 34894
+      },
+      {
+        "name": "video-nine-seconds",
+        "seconds": 2.4891,
+        "complex_scene": false,
+        "format": "GIF",
+        "bytes": 313056,
+        "width": 240,
+        "height": 180,
+        "frames": 45,
+        "duration_ms": 9000
+      },
+      {
+        "name": "video-upload-prepare",
+        "seconds": 0.1563,
+        "source_bytes": 371416
+      },
+      {
+        "name": "video-nine-seconds",
+        "seconds": 3.4084,
+        "complex_scene": true,
+        "format": "GIF",
+        "bytes": 378076,
+        "width": 240,
+        "height": 180,
+        "frames": 45,
+        "duration_ms": 9000
+      }
+    ],
+    "request_metrics": [
+      {
+        "method": "GET",
+        "route": "/healthz",
+        "seconds": 0.0039,
+        "status": 200,
+        "response_bytes": 31
+      },
+      {
+        "method": "GET",
+        "route": "/healthz",
+        "seconds": 0.0017,
+        "status": 200,
+        "response_bytes": 31
+      },
+      {
+        "method": "GET",
+        "route": "/healthz",
+        "seconds": 0.0015,
+        "status": 200,
+        "response_bytes": 31
+      },
+      {
+        "method": "GET",
+        "route": "/healthz",
+        "seconds": 0.0013,
+        "status": 200,
+        "response_bytes": 31
+      },
+      {
+        "method": "GET",
+        "route": "/healthz",
+        "seconds": 0.0012,
+        "status": 200,
+        "response_bytes": 31
+      },
+      {
+        "method": "GET",
+        "route": "/memes/categories",
+        "seconds": 0.1164,
+        "status": 200,
+        "response_bytes": 161857
+      },
+      {
+        "method": "GET",
+        "route": "/memes/categories",
+        "seconds": 0.0317,
+        "status": 200,
+        "response_bytes": 161857
+      },
+      {
+        "method": "GET",
+        "route": "/memes/categories",
+        "seconds": 0.0304,
+        "status": 200,
+        "response_bytes": 161857
+      },
+      {
+        "method": "GET",
+        "route": "/memes/categories",
+        "seconds": 0.0315,
+        "status": 200,
+        "response_bytes": 161857
+      },
+      {
+        "method": "GET",
+        "route": "/memes/categories",
+        "seconds": 0.0323,
+        "status": 200,
+        "response_bytes": 161857
+      },
+      {
+        "method": "GET",
+        "route": "/templates/popularity",
+        "seconds": 0.0038,
+        "status": 200,
+        "response_bytes": 7460
+      },
+      {
+        "method": "GET",
+        "route": "/templates/popularity",
+        "seconds": 0.0035,
+        "status": 200,
+        "response_bytes": 7460
+      },
+      {
+        "method": "GET",
+        "route": "/templates/popularity",
+        "seconds": 0.0033,
+        "status": 200,
+        "response_bytes": 7460
+      },
+      {
+        "method": "GET",
+        "route": "/templates/popularity",
+        "seconds": 0.0032,
+        "status": 200,
+        "response_bytes": 7460
+      },
+      {
+        "method": "GET",
+        "route": "/templates/popularity",
+        "seconds": 0.0032,
+        "status": 200,
+        "response_bytes": 7460
+      },
+      {
+        "method": "GET",
+        "route": "/healthz",
+        "seconds": 0.0025,
+        "status": 200,
+        "response_bytes": 31
+      },
+      {
+        "method": "GET",
+        "route": "/healthz",
+        "seconds": 0.0024,
+        "status": 200,
+        "response_bytes": 31
+      },
+      {
+        "method": "GET",
+        "route": "/healthz",
+        "seconds": 0.0014,
+        "status": 200,
+        "response_bytes": 31
+      },
+      {
+        "method": "GET",
+        "route": "/healthz",
+        "seconds": 0.0019,
+        "status": 200,
+        "response_bytes": 31
+      },
+      {
+        "method": "GET",
+        "route": "/healthz",
+        "seconds": 0.0017,
+        "status": 200,
+        "response_bytes": 31
+      },
+      {
+        "method": "GET",
+        "route": "/healthz",
+        "seconds": 0.0014,
+        "status": 200,
+        "response_bytes": 31
+      },
+      {
+        "method": "GET",
+        "route": "/healthz",
+        "seconds": 0.0019,
+        "status": 200,
+        "response_bytes": 31
+      },
+      {
+        "method": "GET",
+        "route": "/healthz",
+        "seconds": 0.0018,
+        "status": 200,
+        "response_bytes": 31
+      },
+      {
+        "method": "GET",
+        "route": "/healthz",
+        "seconds": 0.0014,
+        "status": 200,
+        "response_bytes": 31
+      },
+      {
+        "method": "GET",
+        "route": "/healthz",
+        "seconds": 0.0016,
+        "status": 200,
+        "response_bytes": 31
+      },
+      {
+        "method": "GET",
+        "route": "/account/library",
+        "seconds": 0.0015,
+        "status": 401,
+        "response_bytes": 25
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs",
+        "seconds": 0.002,
+        "status": 401,
+        "response_bytes": 25
+      },
+      {
+        "method": "GET",
+        "route": "/studio/jobs",
+        "seconds": 0.0019,
+        "status": 401,
+        "response_bytes": 25
+      },
+      {
+        "method": "GET",
+        "route": "/auth/me",
+        "seconds": 0.0032,
+        "status": 200,
+        "response_bytes": 87
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/quota",
+        "seconds": 0.0039,
+        "status": 200,
+        "response_bytes": 138
+      },
+      {
+        "method": "GET",
+        "route": "/studio/quota",
+        "seconds": 0.0037,
+        "status": 200,
+        "response_bytes": 56
+      },
+      {
+        "method": "PUT",
+        "route": "/account/profile",
+        "seconds": 0.0078,
+        "status": 200,
+        "response_bytes": 85
+      },
+      {
+        "method": "PUT",
+        "route": "/account/favorites/petpet",
+        "seconds": 0.013,
+        "status": 200,
+        "response_bytes": 32
+      },
+      {
+        "method": "PUT",
+        "route": "/account/history/petpet",
+        "seconds": 0.008,
+        "status": 200,
+        "response_bytes": 16
+      },
+      {
+        "method": "GET",
+        "route": "/account/library",
+        "seconds": 0.0035,
+        "status": 200,
+        "response_bytes": 84
+      },
+      {
+        "method": "GET",
+        "route": "/account/library",
+        "seconds": 0.0032,
+        "status": 200,
+        "response_bytes": 33
+      },
+      {
+        "method": "POST",
+        "route": "/account/library/merge",
+        "seconds": 0.0092,
+        "status": 200,
+        "response_bytes": 137
+      },
+      {
+        "method": "DELETE",
+        "route": "/account/favorites/petpet",
+        "seconds": 0.0078,
+        "status": 204,
+        "response_bytes": 0
+      },
+      {
+        "method": "DELETE",
+        "route": "/account/history",
+        "seconds": 0.0077,
+        "status": 204,
+        "response_bytes": 0
+      },
+      {
+        "method": "POST",
+        "route": "/memes/always/generate",
+        "seconds": 0.0622,
+        "status": 200,
+        "response_bytes": 21661
+      },
+      {
+        "method": "POST",
+        "route": "/memes/always/generate",
+        "seconds": 0.0112,
+        "status": 200,
+        "response_bytes": 21661
+      },
+      {
+        "method": "POST",
+        "route": "/memes/always/generate",
+        "seconds": 0.0109,
+        "status": 200,
+        "response_bytes": 21661
+      },
+      {
+        "method": "POST",
+        "route": "/memes/petpet/generate",
+        "seconds": 0.04,
+        "status": 200,
+        "response_bytes": 16090
+      },
+      {
+        "method": "POST",
+        "route": "/memes/petpet/generate",
+        "seconds": 0.0114,
+        "status": 200,
+        "response_bytes": 16090
+      },
+      {
+        "method": "POST",
+        "route": "/memes/petpet/generate",
+        "seconds": 0.0113,
+        "status": 200,
+        "response_bytes": 16090
+      },
+      {
+        "method": "POST",
+        "route": "/images/subject",
+        "seconds": 0.3659,
+        "status": 200,
+        "response_bytes": 12970
+      },
+      {
+        "method": "POST",
+        "route": "/recommend/subjects/detect",
+        "seconds": 0.489,
+        "status": 200,
+        "response_bytes": 227
+      },
+      {
+        "method": "POST",
+        "route": "/recommend/assets",
+        "seconds": 0.0663,
+        "status": 201,
+        "response_bytes": 78
+      },
+      {
+        "method": "POST",
+        "route": "/recommend/jobs",
+        "seconds": 0.0105,
+        "status": 202,
+        "response_bytes": 63
+      },
+      {
+        "method": "POST",
+        "route": "/recommend/jobs",
+        "seconds": 0.0043,
+        "status": 202,
+        "response_bytes": 63
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/0",
+        "seconds": 0.0042,
+        "status": 200,
+        "response_bytes": 27338
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/0",
+        "seconds": 0.0035,
+        "status": 404,
+        "response_bytes": 40
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/1",
+        "seconds": 0.0039,
+        "status": 200,
+        "response_bytes": 29599
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/1",
+        "seconds": 0.0035,
+        "status": 404,
+        "response_bytes": 40
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/2",
+        "seconds": 0.0083,
+        "status": 200,
+        "response_bytes": 1239866
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/2",
+        "seconds": 0.0049,
+        "status": 404,
+        "response_bytes": 40
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/3",
+        "seconds": 0.0047,
+        "status": 200,
+        "response_bytes": 17006
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/3",
+        "seconds": 0.0039,
+        "status": 404,
+        "response_bytes": 40
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/4",
+        "seconds": 0.0047,
+        "status": 200,
+        "response_bytes": 47902
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/4",
+        "seconds": 0.0038,
+        "status": 404,
+        "response_bytes": 40
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/5",
+        "seconds": 0.0053,
+        "status": 200,
+        "response_bytes": 239905
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/5",
+        "seconds": 0.0049,
+        "status": 404,
+        "response_bytes": 40
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/6",
+        "seconds": 0.0062,
+        "status": 200,
+        "response_bytes": 573531
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/6",
+        "seconds": 0.0048,
+        "status": 404,
+        "response_bytes": 40
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/7",
+        "seconds": 0.0047,
+        "status": 200,
+        "response_bytes": 103065
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/7",
+        "seconds": 0.0041,
+        "status": 404,
+        "response_bytes": 40
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/8",
+        "seconds": 0.0046,
+        "status": 200,
+        "response_bytes": 152435
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/8",
+        "seconds": 0.0036,
+        "status": 404,
+        "response_bytes": 40
+      },
+      {
+        "method": "POST",
+        "route": "/recommend/jobs",
+        "seconds": 0.0094,
+        "status": 202,
+        "response_bytes": 63
+      },
+      {
+        "method": "POST",
+        "route": "/recommend/jobs",
+        "seconds": 0.0042,
+        "status": 202,
+        "response_bytes": 63
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/0",
+        "seconds": 0.0048,
+        "status": 200,
+        "response_bytes": 19426
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/0",
+        "seconds": 0.004,
+        "status": 404,
+        "response_bytes": 40
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/1",
+        "seconds": 0.0044,
+        "status": 200,
+        "response_bytes": 17645
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/1",
+        "seconds": 0.0038,
+        "status": 404,
+        "response_bytes": 40
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/2",
+        "seconds": 0.004,
+        "status": 200,
+        "response_bytes": 10289
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/2",
+        "seconds": 0.0035,
+        "status": 404,
+        "response_bytes": 40
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/3",
+        "seconds": 0.0078,
+        "status": 200,
+        "response_bytes": 1267011
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/3",
+        "seconds": 0.0049,
+        "status": 404,
+        "response_bytes": 40
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/4",
+        "seconds": 0.0043,
+        "status": 200,
+        "response_bytes": 43290
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/4",
+        "seconds": 0.0036,
+        "status": 404,
+        "response_bytes": 40
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/5",
+        "seconds": 0.0043,
+        "status": 200,
+        "response_bytes": 9026
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/5",
+        "seconds": 0.0036,
+        "status": 404,
+        "response_bytes": 40
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/6",
+        "seconds": 0.0039,
+        "status": 200,
+        "response_bytes": 17405
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/6",
+        "seconds": 0.0035,
+        "status": 404,
+        "response_bytes": 40
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/7",
+        "seconds": 0.0042,
+        "status": 200,
+        "response_bytes": 105059
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/7",
+        "seconds": 0.0042,
+        "status": 404,
+        "response_bytes": 40
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/8",
+        "seconds": 0.0041,
+        "status": 200,
+        "response_bytes": 49939
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/jobs/:id/results/8",
+        "seconds": 0.0036,
+        "status": 404,
+        "response_bytes": 40
+      },
+      {
+        "method": "POST",
+        "route": "/recommend/jobs/:id/selections",
+        "seconds": 0.0101,
+        "status": 200,
+        "response_bytes": 14
+      },
+      {
+        "method": "PUT",
+        "route": "/recommend/preferences",
+        "seconds": 0.0117,
+        "status": 200,
+        "response_bytes": 17
+      },
+      {
+        "method": "GET",
+        "route": "/recommend/quota",
+        "seconds": 0.0042,
+        "status": 200,
+        "response_bytes": 139
+      },
+      {
+        "method": "POST",
+        "route": "/studio/templates",
+        "seconds": 0.038,
+        "status": 201,
+        "response_bytes": 1433
+      },
+      {
+        "method": "GET",
+        "route": "/studio/templates/:id",
+        "seconds": 0.0042,
+        "status": 404,
+        "response_bytes": 40
+      },
+      {
+        "method": "GET",
+        "route": "/template-assets/:id.png",
+        "seconds": 0.0037,
+        "status": 404,
+        "response_bytes": 28
+      },
+      {
+        "method": "POST",
+        "route": "/studio/jobs",
+        "seconds": 0.0211,
+        "status": 201,
+        "response_bytes": 169
+      },
+      {
+        "method": "GET",
+        "route": "/studio/jobs/:id/image",
+        "seconds": 0.0044,
+        "status": 200,
+        "response_bytes": 13907
+      },
+      {
+        "method": "POST",
+        "route": "/studio/jobs/:id/view",
+        "seconds": 0.0093,
+        "status": 204,
+        "response_bytes": 0
+      },
+      {
+        "method": "GET",
+        "route": "/studio/unread",
+        "seconds": 0.004,
+        "status": 200,
+        "response_bytes": 11
+      },
+      {
+        "method": "POST",
+        "route": "/studio/jobs/:id/regenerate",
+        "seconds": 0.0114,
+        "status": 201,
+        "response_bytes": 169
+      },
+      {
+        "method": "DELETE",
+        "route": "/studio/jobs/:id",
+        "seconds": 0.0104,
+        "status": 204,
+        "response_bytes": 0
+      },
+      {
+        "method": "GET",
+        "route": "/studio/jobs/:id",
+        "seconds": 0.0041,
+        "status": 404,
+        "response_bytes": 40
+      },
+      {
+        "method": "POST",
+        "route": "/studio/live/assets",
+        "seconds": 0.1535,
+        "status": 201,
+        "response_bytes": 162
+      },
+      {
+        "method": "POST",
+        "route": "/studio/live/jobs",
+        "seconds": 0.0153,
+        "status": 201,
+        "response_bytes": 170
+      },
+      {
+        "method": "GET",
+        "route": "/studio/jobs/:id/image",
+        "seconds": 0.0053,
+        "status": 200,
+        "response_bytes": 313056
+      },
+      {
+        "method": "GET",
+        "route": "/studio/jobs/:id/image",
+        "seconds": 0.005,
+        "status": 404,
+        "response_bytes": 40
+      },
+      {
+        "method": "POST",
+        "route": "/studio/live/assets",
+        "seconds": 0.1563,
+        "status": 201,
+        "response_bytes": 162
+      },
+      {
+        "method": "POST",
+        "route": "/studio/live/jobs",
+        "seconds": 0.0155,
+        "status": 201,
+        "response_bytes": 170
+      },
+      {
+        "method": "GET",
+        "route": "/studio/jobs/:id/image",
+        "seconds": 0.0057,
+        "status": 200,
+        "response_bytes": 378076
+      },
+      {
+        "method": "GET",
+        "route": "/studio/jobs/:id/image",
+        "seconds": 0.0049,
+        "status": 404,
+        "response_bytes": 40
+      },
+      {
+        "method": "POST",
+        "route": "/studio/live/results",
+        "seconds": 0.0353,
+        "status": 201,
+        "response_bytes": 169
+      },
+      {
+        "method": "POST",
+        "route": "/studio/live/results",
+        "seconds": 0.025,
+        "status": 201,
+        "response_bytes": 191
+      },
+      {
+        "method": "POST",
+        "route": "/recommend/assets",
+        "seconds": 0.0137,
+        "status": 413,
+        "response_bytes": 55
+      },
+      {
+        "method": "POST",
+        "route": "/studio/live/jobs",
+        "seconds": 0.0034,
+        "status": 422,
+        "response_bytes": 141
+      },
+      {
+        "method": "POST",
+        "route": "/studio/templates/ai",
+        "seconds": 0.0033,
+        "status": 422,
+        "response_bytes": 61
+      },
+      {
+        "method": "POST",
+        "route": "/recommend/jobs",
+        "seconds": 0.0057,
+        "status": 429,
+        "response_bytes": 70
+      }
+    ],
+    "checks": [
+      {
+        "name": "authentication-library-account-isolation",
+        "status": "passed"
+      },
+      {
+        "name": "manual-static-and-animated-output",
+        "status": "passed"
+      },
+      {
+        "name": "actual-model-nine-results-reroll-animation-ownership",
+        "status": "passed",
+        "batches": 2,
+        "adjacent_overlap": 0,
+        "candidates": 2
+      },
+      {
+        "name": "private-template-background-is-private-queue-completes",
+        "status": "passed"
+      },
+      {
+        "name": "video-crop-rotation-caption-full-duration-size-local-sync-idempotency",
+        "status": "passed"
+      },
+      {
+        "name": "input-bounds-private-access-rights-consent-rolling-rate-limit",
+        "status": "passed"
+      }
+    ],
+    "fixture_cleaned": true
+  }
+}

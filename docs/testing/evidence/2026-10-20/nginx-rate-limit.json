@@ -1,0 +1,12 @@
+{
+  "requests": 6,
+  "input": "invalid empty login code; provider not called",
+  "statuses": [
+    422,
+    422,
+    422,
+    429,
+    429,
+    429
+  ]
+}

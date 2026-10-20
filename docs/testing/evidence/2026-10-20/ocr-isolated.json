@@ -1,0 +1,12 @@
+{
+  "scope": "isolated temporary state on production hardware; real OCR; no provider moderation, public publishing or production DB access",
+  "ocr_seconds": 0.8385,
+  "recognized": [
+    {
+      "text": "WHY NO?",
+      "confidence": 0.895520533834185
+    }
+  ],
+  "status": "needs_manual",
+  "reason": "reaction intent not confidently recoverable"
+}

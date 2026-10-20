@@ -8,13 +8,15 @@ const automator = require('miniprogram-automator')
 const args = process.argv.slice(2)
 const options = {}
 for (let i = 0; i < args.length; i += 2) {
-  if (!['--project', '--ws-endpoint', '--output-dir'].includes(args[i]) || !args[i + 1]) {
-    throw Error('Usage: node scripts/verify-weixin.cjs [--project path] [--ws-endpoint ws://127.0.0.1:port] [--output-dir path]')
+  if (!['--project', '--ws-endpoint', '--output-dir', '--screenshots'].includes(args[i]) || !args[i + 1]) {
+    throw Error('Usage: node scripts/verify-weixin.cjs [--project path] [--ws-endpoint ws://127.0.0.1:port] [--output-dir path] [--screenshots on|off]')
   }
   options[args[i].slice(2)] = args[i + 1]
 }
 const build = path.resolve(options.project || path.join(__dirname, '../dist/build/mp-weixin'))
 const output = path.resolve(options['output-dir'] || fs.mkdtempSync(path.join(os.tmpdir(), 'gensticker-weixin-check-')))
+if (options.screenshots && !['on', 'off'].includes(options.screenshots)) throw Error('--screenshots must be on or off')
+const screenshots = options.screenshots !== 'off'
 const pause = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 async function verify() {
@@ -86,7 +88,7 @@ async function verify() {
     })
     assert.equal(templates.error, '', 'real template API must load')
     assert.ok(templates.count > 0, 'home must render templates')
-    await app.screenshot({ path: path.join(output, 'home.png') })
+    if (screenshots) await app.screenshot({ path: path.join(output, 'home.png') })
 
     await (await home.$('.live-entry')).tap()
     const video = await pageReady('.live-tip', 'pages/live/index')
@@ -95,7 +97,7 @@ async function verify() {
     assert.equal((await welcome.$$('button')).length, 1, 'only the video picker remains')
     assert.match(await (await welcome.$('button')).text(), /从相册选视频/)
     assert.match(await (await video.$('.live-tip')).text(), /手机相册.*存储为视频/)
-    await app.screenshot({ path: path.join(output, 'video.png') })
+    if (screenshots) await app.screenshot({ path: path.join(output, 'video.png') })
 
     await app.switchTab('/pages/my/index')
     await pageReady('.my-page', 'pages/my/index')
@@ -103,12 +105,21 @@ async function verify() {
     await pageReady('.recommend-page', 'pages/recommend/index')
     await app.navigateTo('/pages/queue/index')
     await pageReady('.queue-page', 'pages/queue/index')
+    await app.reLaunch('/pages/create/index')
+    await pageReady('.create-page', 'pages/create/index')
+    await app.navigateTo('/pages/library/index?type=history')
+    await pageReady('.library-page', 'pages/library/index')
     await app.reLaunch('/pages/index/index')
     await pageReady('.live-entry', 'pages/index/index')
     assert.deepEqual(errors, [], 'no WeChat initialization errors across pages')
-    const report = { status: 'passed', templateCount: templates.count, pages: ['index', 'live', 'my', 'recommend', 'queue'], videoPickerCount: 1, liveGuidance: true, runtimeErrors: errors, domainValidation: true }
+    const performanceEntries = await app.evaluate(() => {
+      try {
+        return wx.getPerformance().getEntries().filter(entry => ['navigation', 'render', 'script'].includes(entry.entryType)).map(entry => ({ name: entry.name, type: entry.entryType, startTime: entry.startTime, duration: entry.duration }))
+      } catch (_) { return [] }
+    })
+    const report = { status: 'passed', templateCount: templates.count, pages: ['index', 'live', 'my', 'recommend', 'queue', 'create', 'library'], videoPickerCount: 1, liveGuidance: true, runtimeErrors: errors, domainValidation: true, screenshots, performanceScope: 'WeChat simulator entries; not physical-device or SDK-wait wall time', performanceEntries }
     fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2) + '\n')
-    console.log('PASS WeChat production startup, real templates, video-only entry, Live guidance and five pages')
+    console.log('PASS WeChat production startup, real templates, video-only entry, Live guidance and seven pages')
     console.log('Evidence:', output)
   } finally {
     await app.disconnect()

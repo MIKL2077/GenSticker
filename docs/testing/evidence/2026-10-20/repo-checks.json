@@ -1,0 +1,6 @@
+{
+  "scope": "tracked and nonignored text files in current working tree; filenames only, no secret values; not Git history, binaries, cloud credentials or proof of absence",
+  "text_files_scanned": 555,
+  "findings": [],
+  "status": "passed"
+}
