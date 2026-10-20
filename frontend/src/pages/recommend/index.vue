@@ -26,7 +26,7 @@
    <view v-for="item in visibleHistory" :key="item.job_id" class="history-row fx-enter"><button class="history-open" :disabled="uploading || saving" @click="open(item.job_id)"><view class="history-symbol"><image v-if="historyPreviews[item.job_id]" :src="historyPreviews[item.job_id]" mode="aspectFill"/><ui-icon v-else name="image" :size="40" tone="accent"/></view><view><text>{{formatTime(item.created_at)}}</text><text class="history-meta">{{labels[item.status] || item.status}} · {{item.count}} 张</text></view></button><button class="link delete-link" :disabled="uploading || saving" @click="deleteHistory(item)">删除</button></view>
    <view v-if="historyPages>1" class="history-paging"><button :disabled="historyPage===1" @click="changeHistoryPage(-1)">上一页</button><text>{{historyPage}} / {{historyPages}}</text><button :disabled="historyPage===historyPages" @click="changeHistoryPage(1)">下一页</button></view>
   </template>
-  <subject-picker :show="subjectPicker" :src="photoOriginal" :initial-rect="subjectRect" @cancel="subjectPicker=false" @confirm="confirmSubject"/>
+  <subject-picker editable :show="subjectPicker" :src="photoOriginal" :initial-rect="subjectRect" @cancel="subjectPicker=false" @confirm="confirmSubject"/>
   <preview-modal :show="shareSlot!==null" :is-generating="false" :image="shareImage" :allow-edit="false" @close="shareSlot=null" @share="shareCurrent" @save="saveCurrent"/>
   <view class="privacy-note"><text>放心制作，照片只用于本次处理。</text><text>原图24小时后清理，原图缩略图和结果保留7天。</text><text>每次换一批，都会保留上一组结果。</text></view>
   <bottom-tabs active="ai"/>

@@ -47,6 +47,20 @@ class StudioTests(unittest.TestCase):
         db=studio.init()
         with db:db.execute('UPDATE studio_jobs SET created=?',(time.time()-8*86400,))
         db.close();studio.cleanup();self.assertFalse((studio.root()/'studio_results'/identifier).exists())
+    def test_queue_thumbnail_is_small_static_private_and_expires(self):
+        item=self.creation();job=self.client.post('/studio/jobs',json={'template_key':item['id'],'images':[self.image()],'texts':['hello'],'idempotency_key':'queue-thumb-test'}).json()
+        identifier=job['id'];self.assertTrue(studio.work_one())
+        url='/studio/jobs/'+identifier+'/thumbnail';response=self.client.get(url)
+        self.assertEqual(response.status_code,200);self.assertLess(len(response.content),20000)
+        with Image.open(BytesIO(response.content)) as image:
+            self.assertEqual(image.format,'JPEG');self.assertLessEqual(max(image.size),144)
+        self.assertEqual(self.client.get(url).content,response.content)
+        self.app.dependency_overrides[account.current_user]=lambda:{'id':'bob'}
+        self.assertEqual(self.client.get(url).status_code,404,'cached thumbnail still checks ownership')
+        self.app.dependency_overrides[account.current_user]=lambda:{'id':'alice'}
+        self.assertEqual(self.client.delete('/studio/jobs/'+identifier).status_code,204)
+        self.assertEqual(self.client.get(url).status_code,404,'cache cannot resurrect a deleted result')
+
     def test_ai_quota_atomic_daily_and_failed_identification_never_publishes(self):
         payload={'image':self.image(),'idempotency_key':'ai-first-job','rights_attested':True}
         r=self.client.post('/studio/templates/ai',json=payload);self.assertEqual(r.status_code,201,r.text)

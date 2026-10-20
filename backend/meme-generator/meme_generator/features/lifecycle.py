@@ -53,6 +53,9 @@ def clear_private_caches():
     import sys
 
     app = sys.modules.get("meme_generator.app")
+    with studio.thumbnail_cache.lock:
+        studio.thumbnail_cache.items.clear()
+        studio.thumbnail_cache.bytes = 0
     for name in ("render_cache", "subject_cache"):
         cache = getattr(app, name, None)
         if cache:

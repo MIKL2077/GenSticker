@@ -1,6 +1,6 @@
 <template>
  <view class="data-controls">
-  <button class="manage" @click="open">管理素材与账号</button>
+  <account-action-card class="manage" icon="layers" title="管理素材与账号" description="整理作品与账号数据" @click="open"/>
   <view v-if="visible" class="mask" @touchmove.stop>
    <view class="panel">
     <view class="heading"><text>我的素材与数据</text><button @click="visible=false">关闭</button></view>
@@ -23,6 +23,7 @@
 </template>
 <script setup>
 import {ref} from 'vue'
+import AccountActionCard from '@/components/AccountActionCard.vue'
 import {apiRequest} from '@/services/apiService'
 import {useLibrary} from '@/composables/useLibrary'
 import {privateImage,trackStudioJob} from '@/services/studioService'
@@ -58,7 +59,7 @@ const removeAccount=async()=>{
 }
 </script>
 <style scoped>
-.manage{font-size:25rpx;padding:22rpx;color:var(--accent-dark)}.mask{position:fixed;inset:0;background:rgba(29,43,47,.5);z-index:3100;display:flex;align-items:center;padding:28rpx}.panel{background:var(--paper);border-radius:30rpx;padding:28rpx;width:100%;max-height:85vh;overflow-y:auto}.heading{display:flex;justify-content:space-between;align-items:center;font-size:31rpx;font-weight:650}.heading button{font-size:24rpx;padding:15rpx}.note{display:block;color:#858b7d;font-size:22rpx;line-height:1.7;margin:10rpx 0}.items{max-height:42vh}.section{display:block;font-size:27rpx;font-weight:650;margin:20rpx 0}.item{display:flex;flex-wrap:wrap;align-items:center;gap:12rpx;padding:16rpx 0;border-bottom:1rpx solid var(--line);font-size:25rpx}.item>view{flex:1}.item button{font-size:23rpx;padding:14rpx;color:var(--accent-dark)}.danger{color:#b65e4b;font-size:26rpx;padding:24rpx;margin-top:18rpx;border:1rpx solid var(--line);border-radius:20rpx}.error{display:block;color:#b65e4b;font-size:24rpx;line-height:1.7}
+.data-controls{height:100%}.manage{display:block;height:100%}.mask{position:fixed;inset:0;background:rgba(29,43,47,.5);z-index:3100;display:flex;align-items:center;padding:28rpx}.panel{background:var(--paper);border-radius:30rpx;padding:28rpx;width:100%;max-height:85vh;overflow-y:auto}.heading{display:flex;justify-content:space-between;align-items:center;font-size:31rpx;font-weight:650}.heading button{font-size:24rpx;padding:15rpx}.note{display:block;color:#858b7d;font-size:22rpx;line-height:1.7;margin:10rpx 0}.items{max-height:42vh}.section{display:block;font-size:27rpx;font-weight:650;margin:20rpx 0}.item{display:flex;flex-wrap:wrap;align-items:center;gap:12rpx;padding:16rpx 0;border-bottom:1rpx solid var(--line);font-size:25rpx}.item>view{flex:1}.item button{font-size:23rpx;padding:14rpx;color:var(--accent-dark)}.danger{color:#b65e4b;font-size:26rpx;padding:24rpx;margin-top:18rpx;border:1rpx solid var(--line);border-radius:20rpx}.error{display:block;color:#b65e4b;font-size:24rpx;line-height:1.7}
 </style>
 
 <style scoped>.review{flex:0 0 100%!important}.review input{background:white;border:1rpx solid var(--line);border-radius:12rpx;padding:14rpx;margin:12rpx 0;font-size:26rpx}.review image{display:block;width:100%;height:280rpx}.review button{margin-top:10rpx;border:1rpx solid var(--line);border-radius:14rpx}</style>

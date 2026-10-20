@@ -8,7 +8,7 @@ const clone = value => JSON.parse(JSON.stringify(value))
 function page(file, extra) {
   let code = fs.readFileSync(path.join(__dirname, '../src/pages', file), 'utf8').split('<script>')[1].split('</script>')[0]
   code = code.replace(/^import .*$/gm, '').replace('export default', 'const component =')
-  const c = { BottomTabs:{}, DataControls:{}, MoodToy:{}, UiIcon:{}, PreviewModal:{}, SubjectPicker:{}, ref, computed, watch:()=>{}, nextTick:()=>{}, unreadCount:ref(0),refreshUnread:async()=>{},getCurrentInstance:()=>({proxy:{}}), onUnmounted:()=>{}, onShow:()=>{}, onHide:()=>{}, onUnload:()=>{}, console, setTimeout, clearTimeout, ...extra }
+  const c = { BottomTabs:{}, DataControls:{}, AccountActionCard:{}, MoodToy:{}, UiIcon:{}, PreviewModal:{}, SubjectPicker:{}, ref, computed, watch:()=>{}, nextTick:()=>{}, unreadCount:ref(0),refreshUnread:async()=>{},getCurrentInstance:()=>({proxy:{}}), onUnmounted:()=>{}, onShow:()=>{}, onHide:()=>{}, onUnload:()=>{}, console, setTimeout, clearTimeout, ...extra }
   vm.createContext(c); vm.runInContext(code + '\nthis.app = component.setup()', c)
   return c.app
 }

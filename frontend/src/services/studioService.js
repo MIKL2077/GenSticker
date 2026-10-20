@@ -3,14 +3,62 @@ import { apiRequest } from '@/services/apiService'
 import { API_BASE_URL } from '@/constants'
 import { prepareImage } from '@/services/imagePreparation'
 import { downloadResult } from '@/services/recommendService'
-export const listStudioJobs=()=>apiRequest('/studio/jobs',{},1).then(items=>items.filter(item=>!(uni.getStorageSync(deletedLocalKey())||[]).includes(item.id)))
+// Keep small metadata separate from full images. Account + session generation
+// prevents late preloads from repopulating another account after a switch.
+let queueOwner='',queueToken='',queueItems=[],queueAt=0,queueRequest=null,queueRevision=0
+const queueImages=new Map(),queueImageRequests=new Map()
+const queueStorage=owner=>`gensticker.studio.queue.${owner}.v1`
+function queueIdentity(){
+ const session=uni.getStorageSync('gensticker.session.v1'),owner=session?.profile?.id||'',token=session?.access_token||''
+ if(owner!==queueOwner||token!==queueToken){
+  queueOwner=owner;queueToken=token;queueItems=[];queueAt=0;queueRequest=null;queueRevision++;queueImages.clear();queueImageRequests.clear()
+  if(owner)try{const saved=uni.getStorageSync(queueStorage(owner));if(saved?.savedAt>Date.now()-7*86400000 && Array.isArray(saved.items))queueItems=saved.items.filter(j=>j.created_at>Date.now()/1000-7*86400).slice(0,100)}catch(_){}
+ }
+ return {owner,token,revision:queueRevision}
+}
+const sameQueue=identity=>{queueIdentity();return identity.revision===queueRevision}
+function saveQueue(){try{uni.setStorageSync(queueStorage(queueOwner),{savedAt:Date.now(),items:queueItems})}catch(_){} }
+export function cachedStudioJobs(){queueIdentity();const deleted=uni.getStorageSync(deletedLocalKey())||[];return queueItems.filter(j=>!deleted.includes(j.id)).map(j=>({...j}))}
+export async function listStudioJobs({force=false,maxAge=5000}={}){
+ const identity=queueIdentity();if(!identity.owner)return []
+ if(queueRequest)return queueRequest
+ if(!force&&queueAt&&Date.now()-queueAt<maxAge)return cachedStudioJobs()
+ const request=apiRequest('/studio/jobs',{header:{Authorization:'Bearer '+identity.token}},1).then(items=>{
+  if(!sameQueue(identity))return []
+  queueItems=(Array.isArray(items)?items:[]).slice(0,100).map(j=>Object.fromEntries(['id','kind','status','created_at','message','viewed','can_regenerate','result_url'].map(k=>[k,j[k]])))
+  queueAt=Date.now();saveQueue();return cachedStudioJobs()
+ }).finally(()=>{if(sameQueue(identity)&&queueRequest===request)queueRequest=null})
+ queueRequest=request;return request
+}
+let thumbnailActive=0
+const thumbnailTasks=[]
+function scheduleThumbnail(task){return new Promise((resolve,reject)=>{thumbnailTasks.push({task,resolve,reject});drainThumbnails()})}
+function drainThumbnails(){while(thumbnailActive<3&&thumbnailTasks.length){const next=thumbnailTasks.shift();thumbnailActive++;Promise.resolve().then(next.task).then(next.resolve,next.reject).finally(()=>{thumbnailActive--;drainThumbnails()})}}
+export async function queueThumbnail(item){
+ const identity=queueIdentity(),url=item.thumbnail_url||`/studio/jobs/${item.id}/thumbnail`,key='thumb:'+item.id
+ if(item.localPath)return item.localPath
+ if(queueImages.has(key))return queueImages.get(key)
+ if(queueImageRequests.has(key))return queueImageRequests.get(key)
+ const request=scheduleThumbnail(()=>{if(!sameQueue(identity))throw Error('账号已切换');return downloadResult(url)}).then(path=>{if(!sameQueue(identity))throw Error('账号已切换');queueImages.set(key,path);while(queueImages.size>40)queueImages.delete(queueImages.keys().next().value);return path}).finally(()=>{if(sameQueue(identity)&&queueImageRequests.get(key)===request)queueImageRequests.delete(key)})
+ queueImageRequests.set(key,request);return request
+}
+export function cachedQueueThumbnail(item){queueIdentity();return item.localPath||queueImages.get('thumb:'+item.id)||''}
+export async function preloadStudioQueue(){const items=await listStudioJobs({maxAge:15000});const first=items.filter(j=>j.result_url).slice(0,4);void warmQueueThumbnails(first);return items}
+export async function warmQueueThumbnails(items,onImage=()=>{},isCurrent=()=>true){
+ let next=0
+ await Promise.all(Array.from({length:Math.min(3,items.length)},async()=>{
+  while(isCurrent()&&next<items.length){const item=items[next++];try{const path=await queueThumbnail(item);if(isCurrent())onImage(item,path)}catch(_){} }
+ }))
+}
+function invalidateQueue(){queueIdentity();queueAt=0}
+
 export const getStudioJob=id=>apiRequest(`/studio/jobs/${id}`,{},1)
 export const listMyTemplates=()=>apiRequest('/studio/templates',{},1)
 export const getMyTemplate=id=>apiRequest(`/studio/templates/${id}`,{},1)
 export const createTemplate=data=>apiRequest('/studio/templates',{method:'POST',data,timeout:60000},1)
 export const publishTemplate=id=>apiRequest(`/studio/templates/${id}/publish`,{method:'POST',data:{rights_attested:true}},1)
 export const templateQuota=()=>apiRequest('/studio/quota',{},1)
-export const deleteStudioJob=id=>apiRequest(`/studio/jobs/${id}`,{method:'DELETE'},1)
+export const deleteStudioJob=async id=>{const identity=queueIdentity();await apiRequest(`/studio/jobs/${id}`,{method:'DELETE',header:{Authorization:'Bearer '+identity.token}},1);if(sameQueue(identity)){queueItems=queueItems.filter(j=>j.id!==id);queueImages.delete('thumb:'+id);queueAt=0;saveQueue()}}
 export const uniqueKey=()=>`${Date.now()}-${Math.random().toString(36).slice(2)}`
 export async function encodePhoto(path){
  path=await prepareImage(path)
@@ -24,7 +72,7 @@ export async function encodePhoto(path){
  return new Promise((resolve,reject)=>fs.readFile({filePath:path,encoding:'base64',success:r=>resolve(r.data),fail:reject}))
 }
 const pendingKey=()=>`gensticker.studio.pending.${uni.getStorageSync('gensticker.session.v1')?.profile?.id||'guest'}`
-export function trackStudioJob(item,owner=uni.getStorageSync('gensticker.session.v1')?.profile?.id){if(owner!==uni.getStorageSync('gensticker.session.v1')?.profile?.id)return item;const pending=uni.getStorageSync(pendingKey())||[];uni.setStorageSync(pendingKey(),[...new Set([...pending,item.id])].slice(-50));return item}
+export function trackStudioJob(item,owner=uni.getStorageSync('gensticker.session.v1')?.profile?.id){if(owner!==uni.getStorageSync('gensticker.session.v1')?.profile?.id)return item;invalidateQueue();const pending=uni.getStorageSync(pendingKey())||[];uni.setStorageSync(pendingKey(),[...new Set([...pending,item.id])].slice(-50));return item}
 export async function submitManual(template_key,paths,texts,args,options){
  const session=uni.getStorageSync('gensticker.session.v1'),owner=session?.profile?.id
  const images=[];for(const path of paths)images.push(await encodePhoto(path))
@@ -46,7 +94,7 @@ export function startStudioNotifications(){
    if(finished.length){uni.setStorageSync(key,pending.filter(id=>!finished.some(j=>j.id===id)));uni.$emit('studio-completed',finished);uni.showToast({title:finished.some(j=>j.status==='completed')?'小窝喊你收图啦！':'有个任务需要看看',icon:'none',duration:3000})}
   }catch(_){}finally{checking=false}
  }
- check();notificationTimer=setInterval(check,5000)
+ preloadStudioQueue().catch(()=>{});check();notificationTimer=setInterval(check,5000)
 }
 
 const localOwner=()=>uni.getStorageSync('gensticker.session.v1')?.profile?.id||'guest'
@@ -94,5 +142,5 @@ export function supportsStudio(){if(!supportPromise || Date.now()-supportTime>30
 
 export const unreadCount=ref(0)
 export const refreshUnread=async()=>{const owner=uni.getStorageSync('gensticker.session.v1')?.profile?.id;if(!owner){unreadCount.value=guestResults().filter(r=>!r.viewedAt).length;return}try{const data=await apiRequest('/studio/unread',{},1);if(owner===uni.getStorageSync('gensticker.session.v1')?.profile?.id)unreadCount.value=data.count+guestResults().filter(r=>r.status==='completed'&&!r.serverId&&!r.viewedAt).length}catch(_){}}
-export async function viewStudioJob(item){if(item.localPath){uni.setStorageSync(localResultsKey(),guestResults().map(r=>r.id===item.id?{...r,viewedAt:Date.now()}:r));if(item.serverId)try{await apiRequest(`/studio/jobs/${item.serverId}/view`,{method:'POST'},1);updateLocalResult(item.id,{viewSynced:true})}catch(_){}}else await apiRequest(`/studio/jobs/${item.id}/view`,{method:'POST'},1);await refreshUnread()}
+export async function viewStudioJob(item){const identity=queueIdentity();if(item.localPath){uni.setStorageSync(localResultsKey(),guestResults().map(r=>r.id===item.id?{...r,viewedAt:Date.now()}:r));if(item.serverId)try{await apiRequest(`/studio/jobs/${item.serverId}/view`,{method:'POST'},1);updateLocalResult(item.id,{viewSynced:true})}catch(_){}}else await apiRequest(`/studio/jobs/${item.id}/view`,{method:'POST'},1);if(sameQueue(identity)){queueItems=queueItems.map(j=>j.id===(item.serverId||item.id)?{...j,viewed:true}:j);saveQueue()}await refreshUnread()}
 export const regenerateStudioJob=id=>apiRequest(`/studio/jobs/${id}/regenerate`,{method:'POST',data:{idempotency_key:uniqueKey()}},1).then(trackStudioJob)

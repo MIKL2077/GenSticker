@@ -172,6 +172,30 @@ def get_job(identifier:str,user=Depends(current_user)):
     return job_view(row)
 
 
+# Separate bounded thumbnail cache: queue entry never needs full animated bytes.
+from .render_cache import RenderCache
+thumbnail_cache=RenderCache(max_bytes=2*1024*1024,max_entries=100,ttl=300)
+thumbnail_slots=threading.BoundedSemaphore(2)
+
+@router.get('/jobs/{identifier}/thumbnail')
+def job_thumbnail(identifier:str,user=Depends(current_user)):
+    item=get_job(identifier,user)
+    if item['status']!='completed' or item['kind'] not in ('manual','livegif'):raise HTTPException(404,'图片还没出炉')
+    path=root()/'studio_results'/identifier
+    if not path.exists():raise HTTPException(404,'图片已过期')
+    stat=path.stat();key=(str(root()),identifier,stat.st_mtime_ns,stat.st_size)
+    raw=thumbnail_cache.get(key)
+    if raw is None:
+        if not thumbnail_slots.acquire(False):raise HTTPException(503,'缩略图准备中，请稍后再试')
+        try:
+            with open_image(path) as image:
+                frame=image.convert('RGBA');frame.thumbnail((144,144))
+                plate=Image.new('RGB',frame.size,'white');plate.paste(frame,mask=frame.getchannel('A'))
+                buf=BytesIO();plate.save(buf,'JPEG',quality=72,optimize=True);raw=buf.getvalue()
+            thumbnail_cache.put(key,raw)
+        finally:thumbnail_slots.release()
+    return Response(raw,media_type='image/jpeg',headers={'Cache-Control':'private, no-store'})
+
 @router.get('/jobs/{identifier}/image')
 def job_image(identifier:str,user=Depends(current_user)):
     item=get_job(identifier,user)
