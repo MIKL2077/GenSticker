@@ -1,0 +1,17 @@
+{
+  "scope": "same-host isolated restore copy; no external WeChat calls; source state untouched",
+  "status": "passed",
+  "references_checked": 509,
+  "missing_references": 0,
+  "returncode": 0,
+  "private_manual_job": "passed",
+  "account_delete": "passed",
+  "models_verified": true,
+  "model_warmup_seconds": 0.618,
+  "ocr": {
+    "status": "private_draft",
+    "min_confidence": 0.895520533834185,
+    "protected_pixel_mae": 0.0,
+    "seconds": 1.187
+  }
+}

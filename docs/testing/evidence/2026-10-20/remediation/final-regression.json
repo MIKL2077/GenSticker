@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "suites": [
+    {
+      "suite": "account",
+      "status": "passed",
+      "cases": 6
+    },
+    {
+      "suite": "features",
+      "status": "passed",
+      "cases": 77
+    }
+  ],
+  "code_bundle_sha256": "196594dc1dab6a97ad0dfc3ba11f88c13aaf29bb3a08c88c7e7335ca4d89c863"
+}

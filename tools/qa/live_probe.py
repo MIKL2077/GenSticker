@@ -38,7 +38,7 @@ def sample():
     while not sample_stop.wait(0.5):
         row = {'elapsed_s': round(time.perf_counter() - started, 2), 'available_memory': mem_available(), 'load1': os.getloadavg()[0]}
         for name in ('gensticker', 'gensticker-worker'):
-            p = Path('/sys/fs/cgroup/system.slice') / (name + '.service')
+            p = Path('/sys/fs/cgroup/gensticker.slice') / (name + '.service')
             try:
                 row[name + '_memory'] = int((p / 'memory.current').read_text())
                 row[name + '_cpu_usec'] = int(dict((line.split() for line in (p / 'cpu.stat').read_text().splitlines()))['usage_usec'])
@@ -97,36 +97,11 @@ def cleanup():
     if active:
         db.close()
         return False
+    db.close()
+    from meme_generator.features.lifecycle import Deletion, delete_account
     for user in users:
-        jobs = [r['id'] for r in db.execute('SELECT id FROM jobs WHERE user_id=?', (user,))]
-        paths = [Path(r[k]) for j in jobs for r in db.execute('SELECT path,preview FROM results WHERE job_id=?', (j,)) for k in ('path', 'preview')]
-        studio_jobs = [r['id'] for r in db.execute('SELECT id FROM studio_jobs WHERE user_id=?', (user,))]
-        assets = [r['id'] for r in db.execute('SELECT id FROM assets WHERE user_id=?', (user,))]
-        with db:
-            for table in ('results', 'job_variations', 'quotas', 'cost_ledger', 'feedback_history'):
-                for j in jobs:
-                    db.execute('DELETE FROM ' + table + ' WHERE job_id=?', (j,))
-            for table in ('jobs', 'assets', 'events', 'preferences', 'generation_admissions', 'studio_jobs', 'studio_views', 'studio_templates', 'studio_ai_daily'):
-                if db.execute('SELECT 1 FROM sqlite_master WHERE name=?', (table,)).fetchone():
-                    db.execute('DELETE FROM ' + table + ' WHERE user_id=?', (user,))
-        for p in paths:
-            p.unlink(missing_ok=True)
-        for j in studio_jobs:
-            (root() / 'studio_results' / j).unlink(missing_ok=True)
-            (root() / 'studio_replays' / (j + '.json')).unlink(missing_ok=True)
-        for a in assets:
-            (root() / 'history_thumbs' / (a + '.jpg')).unlink(missing_ok=True)
-        shutil.rmtree(root() / 'private' / user, ignore_errors=True)
-        for p in livegif.directory().glob('*.json'):
-            if json.loads(p.read_text()).get('user_id') == user:
-                for suffix in ('.json', '.jpg', '.media'):
-                    p.with_suffix(suffix).unlink(missing_ok=True)
-        adb = account.connection()
-        with adb:
-            for table in ('favorites', 'history', 'sessions'):
-                adb.execute('DELETE FROM ' + table + ' WHERE user_id=?', (user,))
-            adb.execute('DELETE FROM users WHERE id=?', (user,))
-        adb.close()
+        delete_account(Deletion(confirmation='注销账号'), {'id': user})
+    db = connect()
     references = [r['spec'] for r in db.execute('SELECT spec FROM templates WHERE spec IS NOT NULL')] + [r['spec'] for r in db.execute('SELECT spec FROM studio_templates')]
     db.close()
     for digest in asset_hashes:

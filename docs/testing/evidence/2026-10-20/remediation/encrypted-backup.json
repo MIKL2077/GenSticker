@@ -1,0 +1,8 @@
+{
+  "status": "passed",
+  "scope": "first unprivileged scheduled-backup artifact decrypted off-host; SHA256 manifest and SQLite quick_check; not a new-host disaster recovery",
+  "files": 633,
+  "databases": 3,
+  "encryption": "OpenSSL CMS AES-256-GCM; RSA recipient private key only off-host",
+  "encrypted_archive_sha256": "b21898709395485dbe9962ff5d9e8411f1ee6710274aecdbe746187d2b1d7a85"
+}

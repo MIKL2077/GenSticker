@@ -1,0 +1,62 @@
+{
+  "status": "passed",
+  "templateCount": 9,
+  "pages": [
+    "index",
+    "live",
+    "my",
+    "recommend",
+    "queue",
+    "create",
+    "library"
+  ],
+  "videoPickerCount": 1,
+  "liveGuidance": true,
+  "runtimeErrors": [],
+  "domainValidation": true,
+  "screenshots": false,
+  "performanceScope": "WeChat simulator entries; not physical-device or SDK-wait wall time",
+  "performanceEntries": [
+    {
+      "name": "firstPaint",
+      "type": "render",
+      "startTime": 1792488425044
+    },
+    {
+      "name": "firstContentfulPaint",
+      "type": "render",
+      "startTime": 1792488425084
+    },
+    {
+      "name": "largestContentfulPaint",
+      "type": "render",
+      "startTime": 1792488425084
+    },
+    {
+      "name": "route",
+      "type": "navigation",
+      "startTime": 1792488428220
+    },
+    {
+      "name": "firstRender",
+      "type": "render",
+      "startTime": 1792488428300,
+      "duration": 74
+    },
+    {
+      "name": "firstPaint",
+      "type": "render",
+      "startTime": 1792488428305
+    },
+    {
+      "name": "firstContentfulPaint",
+      "type": "render",
+      "startTime": 1792488428413
+    },
+    {
+      "name": "largestContentfulPaint",
+      "type": "render",
+      "startTime": 1792488428445
+    }
+  ]
+}

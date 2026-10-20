@@ -1,0 +1,30 @@
+{
+  "status": "passed",
+  "checks": [
+    "configured-storage-budget",
+    "wechat-export-preserves-duration-with-size-budget",
+    "generator-user-info-bound",
+    "private-template-owner-delete-withdraw",
+    "authenticated-report",
+    "quality-modes-and-owner-video-delete",
+    "account-deletion-revokes-session"
+  ],
+  "videos": [
+    {
+      "quality": "smooth",
+      "seconds": 0.991,
+      "frames": 30,
+      "duration_ms": 3000,
+      "bytes": 296582
+    },
+    {
+      "quality": "clear",
+      "seconds": 1.602,
+      "frames": 30,
+      "duration_ms": 3000,
+      "bytes": 296582
+    }
+  ],
+  "publishes": 0,
+  "fixture_cleaned": true
+}

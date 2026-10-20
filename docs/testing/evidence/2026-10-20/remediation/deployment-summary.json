@@ -1,0 +1,22 @@
+{
+  "application_revision": "ac38785",
+  "application_switch": "passed",
+  "services": {
+    "api": "active",
+    "worker": "active",
+    "homepage": "active",
+    "openclaw": "active"
+  },
+  "app_shared_slice": {
+    "cpu_quota_percent": 200,
+    "memory_high_bytes": 3221225472,
+    "memory_max_bytes": 4294967296
+  },
+  "monitor_timer": "active",
+  "backup_timer": "active",
+  "backup_next_verified": "2026-10-21 03:28:00 Asia/Shanghai",
+  "shared_host_health_checks": "passed",
+  "trusted_host_rebuild": "not performed; remains launch blocker",
+  "external_provider_credential_rotation": "not performed; remains launch blocker",
+  "scope": "sanitized observed deployment state; no production secrets or host audit"
+}

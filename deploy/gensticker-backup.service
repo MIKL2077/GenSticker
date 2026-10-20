@@ -1,0 +1,26 @@
+[Unit]
+Description=GenSticker encrypted local snapshot (private key off-host)
+[Service]
+Type=oneshot
+User=gensticker
+Group=gensticker
+WorkingDirectory=/opt/gensticker-current/meme-generator
+Environment=HOME=/var/lib/gensticker
+Environment=XDG_CONFIG_HOME=/var/lib/gensticker/.config
+Environment=XDG_CACHE_HOME=/var/cache/gensticker
+Environment=GENSTICKER_STATE_DIR=/var/lib/gensticker
+LoadCredential=gensticker.env:/etc/gensticker.env
+Environment=PYTHONPATH=/opt/gensticker-current/meme-generator
+ExecStart=/opt/gensticker-current/api-venv/bin/python /usr/local/lib/gensticker/daily-backup.py
+CPUQuota=50%
+MemoryMax=768M
+TasksMax=64
+Nice=15
+IOSchedulingClass=idle
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/backups/gensticker-daily /var/lib/gensticker
+UMask=0077
+TimeoutStartSec=900

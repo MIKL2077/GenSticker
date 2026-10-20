@@ -1,0 +1,1495 @@
+{
+  "time_utc": "2026-10-20T09:28:53.021636+00:00",
+  "status": "passed",
+  "checks": [
+    {
+      "name": "authentication-library-account-isolation",
+      "status": "passed"
+    },
+    {
+      "name": "manual-static-and-animated-output",
+      "status": "passed"
+    },
+    {
+      "name": "actual-model-nine-results-reroll-animation-ownership",
+      "status": "passed",
+      "batches": 2,
+      "adjacent_overlap": 0,
+      "candidates": 0
+    },
+    {
+      "name": "private-template-background-is-private-queue-completes",
+      "status": "passed"
+    },
+    {
+      "name": "video-crop-rotation-caption-full-duration-size-local-sync-idempotency",
+      "status": "passed"
+    },
+    {
+      "name": "input-bounds-private-access-rights-consent-rolling-rate-limit",
+      "status": "passed"
+    }
+  ],
+  "measurements": [
+    {
+      "name": "read:/healthz",
+      "seconds": 0.0049,
+      "bytes": 31
+    },
+    {
+      "name": "read:/healthz",
+      "seconds": 0.0057,
+      "bytes": 31
+    },
+    {
+      "name": "read:/healthz",
+      "seconds": 0.0063,
+      "bytes": 31
+    },
+    {
+      "name": "read:/healthz",
+      "seconds": 0.0049,
+      "bytes": 31
+    },
+    {
+      "name": "read:/healthz",
+      "seconds": 0.0042,
+      "bytes": 31
+    },
+    {
+      "name": "read:/memes/categories",
+      "seconds": 0.0418,
+      "bytes": 162213
+    },
+    {
+      "name": "read:/memes/categories",
+      "seconds": 0.0361,
+      "bytes": 162213
+    },
+    {
+      "name": "read:/memes/categories",
+      "seconds": 0.0347,
+      "bytes": 162213
+    },
+    {
+      "name": "read:/memes/categories",
+      "seconds": 0.0341,
+      "bytes": 162213
+    },
+    {
+      "name": "read:/memes/categories",
+      "seconds": 0.0375,
+      "bytes": 162213
+    },
+    {
+      "name": "read:/templates/popularity",
+      "seconds": 0.0159,
+      "bytes": 7468
+    },
+    {
+      "name": "read:/templates/popularity",
+      "seconds": 0.0067,
+      "bytes": 7468
+    },
+    {
+      "name": "read:/templates/popularity",
+      "seconds": 0.0066,
+      "bytes": 7468
+    },
+    {
+      "name": "read:/templates/popularity",
+      "seconds": 0.0068,
+      "bytes": 7468
+    },
+    {
+      "name": "read:/templates/popularity",
+      "seconds": 0.0063,
+      "bytes": 7468
+    },
+    {
+      "name": "health-concurrency-2",
+      "seconds": 0.0048
+    },
+    {
+      "name": "health-concurrency-2",
+      "seconds": 0.0087
+    },
+    {
+      "name": "health-concurrency-2",
+      "seconds": 0.0083
+    },
+    {
+      "name": "health-concurrency-2",
+      "seconds": 0.008
+    },
+    {
+      "name": "health-concurrency-2",
+      "seconds": 0.0085
+    },
+    {
+      "name": "health-concurrency-2",
+      "seconds": 0.0084
+    },
+    {
+      "name": "health-concurrency-2",
+      "seconds": 0.0084
+    },
+    {
+      "name": "health-concurrency-2",
+      "seconds": 0.0087
+    },
+    {
+      "name": "health-concurrency-2",
+      "seconds": 0.009
+    },
+    {
+      "name": "health-concurrency-2",
+      "seconds": 0.0079
+    },
+    {
+      "name": "manual:always",
+      "seconds": 0.4729,
+      "cache": "miss",
+      "format": "JPEG",
+      "bytes": 21701,
+      "width": 500,
+      "height": 809,
+      "frames": 1,
+      "duration_ms": 0
+    },
+    {
+      "name": "manual:always",
+      "seconds": 0.0154,
+      "cache": "hit",
+      "format": "JPEG",
+      "bytes": 21701,
+      "width": 500,
+      "height": 809,
+      "frames": 1,
+      "duration_ms": 0
+    },
+    {
+      "name": "manual:always",
+      "seconds": 0.0161,
+      "cache": "hit",
+      "format": "JPEG",
+      "bytes": 21701,
+      "width": 500,
+      "height": 809,
+      "frames": 1,
+      "duration_ms": 0
+    },
+    {
+      "name": "manual:petpet",
+      "seconds": 0.0429,
+      "cache": "miss",
+      "format": "GIF",
+      "bytes": 16090,
+      "width": 112,
+      "height": 112,
+      "frames": 5,
+      "duration_ms": 300
+    },
+    {
+      "name": "manual:petpet",
+      "seconds": 0.0139,
+      "cache": "hit",
+      "format": "GIF",
+      "bytes": 16090,
+      "width": 112,
+      "height": 112,
+      "frames": 5,
+      "duration_ms": 300
+    },
+    {
+      "name": "manual:petpet",
+      "seconds": 0.016,
+      "cache": "hit",
+      "format": "GIF",
+      "bytes": 16090,
+      "width": 112,
+      "height": 112,
+      "frames": 5,
+      "duration_ms": 300
+    },
+    {
+      "name": "background-removal-preview",
+      "seconds": 0.7426,
+      "format": "PNG",
+      "bytes": 12970,
+      "width": 267,
+      "height": 421,
+      "frames": 1,
+      "duration_ms": 0
+    },
+    {
+      "name": "subject-detection",
+      "seconds": 0.1758,
+      "candidates": 0
+    },
+    {
+      "name": "ai-batch",
+      "seconds": 3.6142,
+      "batch": 1,
+      "results": 9,
+      "output_bytes": 658835,
+      "animated": 2,
+      "subject_selected": true,
+      "framing": "user-selection"
+    },
+    {
+      "name": "ai-batch",
+      "seconds": 5.8914,
+      "batch": 2,
+      "results": 9,
+      "output_bytes": 4202288,
+      "animated": 4,
+      "subject_selected": true,
+      "framing": "user-selection"
+    },
+    {
+      "name": "private-template-queue",
+      "seconds": 0.6215
+    },
+    {
+      "name": "queue-regeneration",
+      "seconds": 0.9288
+    },
+    {
+      "name": "video-upload-prepare",
+      "seconds": 0.1941,
+      "source_bytes": 34894
+    },
+    {
+      "name": "video-nine-seconds",
+      "seconds": 2.8454,
+      "complex_scene": false,
+      "format": "GIF",
+      "bytes": 313056,
+      "width": 240,
+      "height": 180,
+      "frames": 45,
+      "duration_ms": 9000
+    },
+    {
+      "name": "video-upload-prepare",
+      "seconds": 0.1856,
+      "source_bytes": 371416
+    },
+    {
+      "name": "video-nine-seconds",
+      "seconds": 2.5365,
+      "complex_scene": true,
+      "format": "GIF",
+      "bytes": 378076,
+      "width": 240,
+      "height": 180,
+      "frames": 45,
+      "duration_ms": 9000
+    }
+  ],
+  "request_metrics": [
+    {
+      "method": "GET",
+      "route": "/healthz",
+      "seconds": 0.0048,
+      "status": 200,
+      "response_bytes": 31
+    },
+    {
+      "method": "GET",
+      "route": "/healthz",
+      "seconds": 0.0057,
+      "status": 200,
+      "response_bytes": 31
+    },
+    {
+      "method": "GET",
+      "route": "/healthz",
+      "seconds": 0.0063,
+      "status": 200,
+      "response_bytes": 31
+    },
+    {
+      "method": "GET",
+      "route": "/healthz",
+      "seconds": 0.0049,
+      "status": 200,
+      "response_bytes": 31
+    },
+    {
+      "method": "GET",
+      "route": "/healthz",
+      "seconds": 0.0042,
+      "status": 200,
+      "response_bytes": 31
+    },
+    {
+      "method": "GET",
+      "route": "/memes/categories",
+      "seconds": 0.0418,
+      "status": 200,
+      "response_bytes": 162213
+    },
+    {
+      "method": "GET",
+      "route": "/memes/categories",
+      "seconds": 0.036,
+      "status": 200,
+      "response_bytes": 162213
+    },
+    {
+      "method": "GET",
+      "route": "/memes/categories",
+      "seconds": 0.0347,
+      "status": 200,
+      "response_bytes": 162213
+    },
+    {
+      "method": "GET",
+      "route": "/memes/categories",
+      "seconds": 0.0341,
+      "status": 200,
+      "response_bytes": 162213
+    },
+    {
+      "method": "GET",
+      "route": "/memes/categories",
+      "seconds": 0.0375,
+      "status": 200,
+      "response_bytes": 162213
+    },
+    {
+      "method": "GET",
+      "route": "/templates/popularity",
+      "seconds": 0.0159,
+      "status": 200,
+      "response_bytes": 7468
+    },
+    {
+      "method": "GET",
+      "route": "/templates/popularity",
+      "seconds": 0.0067,
+      "status": 200,
+      "response_bytes": 7468
+    },
+    {
+      "method": "GET",
+      "route": "/templates/popularity",
+      "seconds": 0.0066,
+      "status": 200,
+      "response_bytes": 7468
+    },
+    {
+      "method": "GET",
+      "route": "/templates/popularity",
+      "seconds": 0.0068,
+      "status": 200,
+      "response_bytes": 7468
+    },
+    {
+      "method": "GET",
+      "route": "/templates/popularity",
+      "seconds": 0.0063,
+      "status": 200,
+      "response_bytes": 7468
+    },
+    {
+      "method": "GET",
+      "route": "/healthz",
+      "seconds": 0.0048,
+      "status": 200,
+      "response_bytes": 31
+    },
+    {
+      "method": "GET",
+      "route": "/healthz",
+      "seconds": 0.0087,
+      "status": 200,
+      "response_bytes": 31
+    },
+    {
+      "method": "GET",
+      "route": "/healthz",
+      "seconds": 0.0083,
+      "status": 200,
+      "response_bytes": 31
+    },
+    {
+      "method": "GET",
+      "route": "/healthz",
+      "seconds": 0.008,
+      "status": 200,
+      "response_bytes": 31
+    },
+    {
+      "method": "GET",
+      "route": "/healthz",
+      "seconds": 0.0085,
+      "status": 200,
+      "response_bytes": 31
+    },
+    {
+      "method": "GET",
+      "route": "/healthz",
+      "seconds": 0.0084,
+      "status": 200,
+      "response_bytes": 31
+    },
+    {
+      "method": "GET",
+      "route": "/healthz",
+      "seconds": 0.0084,
+      "status": 200,
+      "response_bytes": 31
+    },
+    {
+      "method": "GET",
+      "route": "/healthz",
+      "seconds": 0.0086,
+      "status": 200,
+      "response_bytes": 31
+    },
+    {
+      "method": "GET",
+      "route": "/healthz",
+      "seconds": 0.009,
+      "status": 200,
+      "response_bytes": 31
+    },
+    {
+      "method": "GET",
+      "route": "/healthz",
+      "seconds": 0.0079,
+      "status": 200,
+      "response_bytes": 31
+    },
+    {
+      "method": "GET",
+      "route": "/account/library",
+      "seconds": 0.006,
+      "status": 401,
+      "response_bytes": 25
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs",
+      "seconds": 0.0055,
+      "status": 401,
+      "response_bytes": 25
+    },
+    {
+      "method": "GET",
+      "route": "/studio/jobs",
+      "seconds": 0.0147,
+      "status": 401,
+      "response_bytes": 25
+    },
+    {
+      "method": "GET",
+      "route": "/auth/me",
+      "seconds": 0.008,
+      "status": 200,
+      "response_bytes": 87
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/quota",
+      "seconds": 0.0131,
+      "status": 200,
+      "response_bytes": 138
+    },
+    {
+      "method": "GET",
+      "route": "/studio/quota",
+      "seconds": 0.0061,
+      "status": 200,
+      "response_bytes": 56
+    },
+    {
+      "method": "PUT",
+      "route": "/account/profile",
+      "seconds": 0.0118,
+      "status": 200,
+      "response_bytes": 85
+    },
+    {
+      "method": "PUT",
+      "route": "/account/favorites/petpet",
+      "seconds": 0.0182,
+      "status": 200,
+      "response_bytes": 32
+    },
+    {
+      "method": "PUT",
+      "route": "/account/history/petpet",
+      "seconds": 0.012,
+      "status": 200,
+      "response_bytes": 16
+    },
+    {
+      "method": "GET",
+      "route": "/account/library",
+      "seconds": 0.0086,
+      "status": 200,
+      "response_bytes": 84
+    },
+    {
+      "method": "GET",
+      "route": "/account/library",
+      "seconds": 0.0069,
+      "status": 200,
+      "response_bytes": 33
+    },
+    {
+      "method": "POST",
+      "route": "/account/library/merge",
+      "seconds": 0.0127,
+      "status": 200,
+      "response_bytes": 137
+    },
+    {
+      "method": "DELETE",
+      "route": "/account/favorites/petpet",
+      "seconds": 0.0116,
+      "status": 204,
+      "response_bytes": 0
+    },
+    {
+      "method": "DELETE",
+      "route": "/account/history",
+      "seconds": 0.009,
+      "status": 204,
+      "response_bytes": 0
+    },
+    {
+      "method": "POST",
+      "route": "/memes/always/generate",
+      "seconds": 0.4729,
+      "status": 200,
+      "response_bytes": 21701
+    },
+    {
+      "method": "POST",
+      "route": "/memes/always/generate",
+      "seconds": 0.0154,
+      "status": 200,
+      "response_bytes": 21701
+    },
+    {
+      "method": "POST",
+      "route": "/memes/always/generate",
+      "seconds": 0.016,
+      "status": 200,
+      "response_bytes": 21701
+    },
+    {
+      "method": "POST",
+      "route": "/memes/petpet/generate",
+      "seconds": 0.0429,
+      "status": 200,
+      "response_bytes": 16090
+    },
+    {
+      "method": "POST",
+      "route": "/memes/petpet/generate",
+      "seconds": 0.0138,
+      "status": 200,
+      "response_bytes": 16090
+    },
+    {
+      "method": "POST",
+      "route": "/memes/petpet/generate",
+      "seconds": 0.016,
+      "status": 200,
+      "response_bytes": 16090
+    },
+    {
+      "method": "POST",
+      "route": "/images/subject",
+      "seconds": 0.7426,
+      "status": 200,
+      "response_bytes": 12970
+    },
+    {
+      "method": "POST",
+      "route": "/recommend/subjects/detect",
+      "seconds": 0.1758,
+      "status": 200,
+      "response_bytes": 42
+    },
+    {
+      "method": "POST",
+      "route": "/recommend/assets",
+      "seconds": 0.0609,
+      "status": 201,
+      "response_bytes": 78
+    },
+    {
+      "method": "POST",
+      "route": "/recommend/jobs",
+      "seconds": 0.0356,
+      "status": 202,
+      "response_bytes": 63
+    },
+    {
+      "method": "POST",
+      "route": "/recommend/jobs",
+      "seconds": 0.0291,
+      "status": 202,
+      "response_bytes": 63
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/0",
+      "seconds": 0.0117,
+      "status": 200,
+      "response_bytes": 30739
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/0",
+      "seconds": 0.009,
+      "status": 404,
+      "response_bytes": 40
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/1",
+      "seconds": 0.0083,
+      "status": 200,
+      "response_bytes": 10151
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/1",
+      "seconds": 0.0092,
+      "status": 404,
+      "response_bytes": 40
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/2",
+      "seconds": 0.0092,
+      "status": 200,
+      "response_bytes": 108766
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/2",
+      "seconds": 0.0085,
+      "status": 404,
+      "response_bytes": 40
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/3",
+      "seconds": 0.008,
+      "status": 200,
+      "response_bytes": 57080
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/3",
+      "seconds": 0.0081,
+      "status": 404,
+      "response_bytes": 40
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/4",
+      "seconds": 0.0088,
+      "status": 200,
+      "response_bytes": 17215
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/4",
+      "seconds": 0.0084,
+      "status": 404,
+      "response_bytes": 40
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/5",
+      "seconds": 0.0091,
+      "status": 200,
+      "response_bytes": 185357
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/5",
+      "seconds": 0.0057,
+      "status": 404,
+      "response_bytes": 40
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/6",
+      "seconds": 0.01,
+      "status": 200,
+      "response_bytes": 86340
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/6",
+      "seconds": 0.0054,
+      "status": 404,
+      "response_bytes": 40
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/7",
+      "seconds": 0.0088,
+      "status": 200,
+      "response_bytes": 18043
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/7",
+      "seconds": 0.008,
+      "status": 404,
+      "response_bytes": 40
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/8",
+      "seconds": 0.0086,
+      "status": 200,
+      "response_bytes": 145144
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/8",
+      "seconds": 0.0082,
+      "status": 404,
+      "response_bytes": 40
+    },
+    {
+      "method": "POST",
+      "route": "/recommend/jobs",
+      "seconds": 0.0347,
+      "status": 202,
+      "response_bytes": 63
+    },
+    {
+      "method": "POST",
+      "route": "/recommend/jobs",
+      "seconds": 0.0298,
+      "status": 202,
+      "response_bytes": 63
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/0",
+      "seconds": 0.0216,
+      "status": 200,
+      "response_bytes": 3365102
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/0",
+      "seconds": 0.0072,
+      "status": 404,
+      "response_bytes": 40
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/1",
+      "seconds": 0.0104,
+      "status": 200,
+      "response_bytes": 23374
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/1",
+      "seconds": 0.0098,
+      "status": 404,
+      "response_bytes": 40
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/2",
+      "seconds": 0.011,
+      "status": 200,
+      "response_bytes": 520809
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/2",
+      "seconds": 0.0064,
+      "status": 404,
+      "response_bytes": 40
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/3",
+      "seconds": 0.0103,
+      "status": 200,
+      "response_bytes": 91641
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/3",
+      "seconds": 0.0097,
+      "status": 404,
+      "response_bytes": 40
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/4",
+      "seconds": 0.0109,
+      "status": 200,
+      "response_bytes": 44050
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/4",
+      "seconds": 0.0089,
+      "status": 404,
+      "response_bytes": 40
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/5",
+      "seconds": 0.0087,
+      "status": 200,
+      "response_bytes": 79131
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/5",
+      "seconds": 0.0089,
+      "status": 404,
+      "response_bytes": 40
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/6",
+      "seconds": 0.0096,
+      "status": 200,
+      "response_bytes": 15997
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/6",
+      "seconds": 0.009,
+      "status": 404,
+      "response_bytes": 40
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/7",
+      "seconds": 0.0101,
+      "status": 200,
+      "response_bytes": 12741
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/7",
+      "seconds": 0.0086,
+      "status": 404,
+      "response_bytes": 40
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/8",
+      "seconds": 0.0108,
+      "status": 200,
+      "response_bytes": 49443
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/jobs/:id/results/8",
+      "seconds": 0.0087,
+      "status": 404,
+      "response_bytes": 40
+    },
+    {
+      "method": "POST",
+      "route": "/recommend/jobs/:id/selections",
+      "seconds": 0.0159,
+      "status": 200,
+      "response_bytes": 14
+    },
+    {
+      "method": "PUT",
+      "route": "/recommend/preferences",
+      "seconds": 0.0151,
+      "status": 200,
+      "response_bytes": 17
+    },
+    {
+      "method": "GET",
+      "route": "/recommend/quota",
+      "seconds": 0.0078,
+      "status": 200,
+      "response_bytes": 139
+    },
+    {
+      "method": "POST",
+      "route": "/studio/templates",
+      "seconds": 0.0996,
+      "status": 201,
+      "response_bytes": 1492
+    },
+    {
+      "method": "GET",
+      "route": "/studio/templates/:id",
+      "seconds": 0.0086,
+      "status": 404,
+      "response_bytes": 40
+    },
+    {
+      "method": "GET",
+      "route": "/template-assets/:id.png",
+      "seconds": 0.0073,
+      "status": 404,
+      "response_bytes": 28
+    },
+    {
+      "method": "POST",
+      "route": "/studio/jobs",
+      "seconds": 0.0513,
+      "status": 201,
+      "response_bytes": 169
+    },
+    {
+      "method": "GET",
+      "route": "/studio/jobs/:id/image",
+      "seconds": 0.0096,
+      "status": 200,
+      "response_bytes": 13855
+    },
+    {
+      "method": "POST",
+      "route": "/studio/jobs/:id/view",
+      "seconds": 0.0142,
+      "status": 204,
+      "response_bytes": 0
+    },
+    {
+      "method": "GET",
+      "route": "/studio/unread",
+      "seconds": 0.0058,
+      "status": 200,
+      "response_bytes": 11
+    },
+    {
+      "method": "POST",
+      "route": "/studio/jobs/:id/regenerate",
+      "seconds": 0.0455,
+      "status": 201,
+      "response_bytes": 169
+    },
+    {
+      "method": "DELETE",
+      "route": "/studio/jobs/:id",
+      "seconds": 0.0143,
+      "status": 204,
+      "response_bytes": 0
+    },
+    {
+      "method": "GET",
+      "route": "/studio/jobs/:id",
+      "seconds": 0.0056,
+      "status": 404,
+      "response_bytes": 40
+    },
+    {
+      "method": "POST",
+      "route": "/studio/live/assets",
+      "seconds": 0.1941,
+      "status": 201,
+      "response_bytes": 162
+    },
+    {
+      "method": "POST",
+      "route": "/studio/live/jobs",
+      "seconds": 0.0446,
+      "status": 201,
+      "response_bytes": 169
+    },
+    {
+      "method": "GET",
+      "route": "/studio/jobs/:id/image",
+      "seconds": 0.0095,
+      "status": 200,
+      "response_bytes": 313056
+    },
+    {
+      "method": "GET",
+      "route": "/studio/jobs/:id/image",
+      "seconds": 0.0063,
+      "status": 404,
+      "response_bytes": 40
+    },
+    {
+      "method": "POST",
+      "route": "/studio/live/assets",
+      "seconds": 0.1856,
+      "status": 201,
+      "response_bytes": 162
+    },
+    {
+      "method": "POST",
+      "route": "/studio/live/jobs",
+      "seconds": 0.0421,
+      "status": 201,
+      "response_bytes": 169
+    },
+    {
+      "method": "GET",
+      "route": "/studio/jobs/:id/image",
+      "seconds": 0.0109,
+      "status": 200,
+      "response_bytes": 378076
+    },
+    {
+      "method": "GET",
+      "route": "/studio/jobs/:id/image",
+      "seconds": 0.0062,
+      "status": 404,
+      "response_bytes": 40
+    },
+    {
+      "method": "POST",
+      "route": "/studio/live/results",
+      "seconds": 0.1796,
+      "status": 201,
+      "response_bytes": 170
+    },
+    {
+      "method": "POST",
+      "route": "/studio/live/results",
+      "seconds": 0.0976,
+      "status": 201,
+      "response_bytes": 192
+    },
+    {
+      "method": "POST",
+      "route": "/recommend/assets",
+      "seconds": 0.017,
+      "status": 413,
+      "response_bytes": 55
+    },
+    {
+      "method": "POST",
+      "route": "/studio/live/jobs",
+      "seconds": 0.0091,
+      "status": 422,
+      "response_bytes": 141
+    },
+    {
+      "method": "POST",
+      "route": "/studio/templates/ai",
+      "seconds": 0.0071,
+      "status": 422,
+      "response_bytes": 61
+    },
+    {
+      "method": "POST",
+      "route": "/recommend/jobs",
+      "seconds": 0.0295,
+      "status": 429,
+      "response_bytes": 70
+    }
+  ],
+  "limits": {
+    "read_concurrency": 2,
+    "ai_batches": 2,
+    "video_cases": 2,
+    "publishes": 0
+  },
+  "elapsed_s": 21.998,
+  "resources": [
+    {
+      "elapsed_s": 0.5,
+      "available_memory": 13835005952,
+      "load1": 0.54443359375,
+      "gensticker_memory": 100388864,
+      "gensticker_cpu_usec": 3435304,
+      "gensticker-worker_memory": 173297664,
+      "gensticker-worker_cpu_usec": 2777878
+    },
+    {
+      "elapsed_s": 1.0,
+      "available_memory": 13832126464,
+      "load1": 0.54443359375,
+      "gensticker_memory": 111087616,
+      "gensticker_cpu_usec": 3835984,
+      "gensticker-worker_memory": 173297664,
+      "gensticker-worker_cpu_usec": 2777878
+    },
+    {
+      "elapsed_s": 1.5,
+      "available_memory": 13804937216,
+      "load1": 0.54443359375,
+      "gensticker_memory": 157044736,
+      "gensticker_cpu_usec": 4151918,
+      "gensticker-worker_memory": 173297664,
+      "gensticker-worker_cpu_usec": 2781396
+    },
+    {
+      "elapsed_s": 2.0,
+      "available_memory": 13501132800,
+      "load1": 0.54443359375,
+      "gensticker_memory": 442642432,
+      "gensticker_cpu_usec": 5043927,
+      "gensticker-worker_memory": 173297664,
+      "gensticker-worker_cpu_usec": 2781396
+    },
+    {
+      "elapsed_s": 2.5,
+      "available_memory": 13476823040,
+      "load1": 0.54443359375,
+      "gensticker_memory": 468344832,
+      "gensticker_cpu_usec": 5296398,
+      "gensticker-worker_memory": 173555712,
+      "gensticker-worker_cpu_usec": 2784601
+    },
+    {
+      "elapsed_s": 3.0,
+      "available_memory": 13476835328,
+      "load1": 0.54443359375,
+      "gensticker_memory": 468344832,
+      "gensticker_cpu_usec": 5309838,
+      "gensticker-worker_memory": 173297664,
+      "gensticker-worker_cpu_usec": 2784601
+    },
+    {
+      "elapsed_s": 3.5,
+      "available_memory": 13212930048,
+      "load1": 0.5810546875,
+      "gensticker_memory": 468340736,
+      "gensticker_cpu_usec": 5323191,
+      "gensticker-worker_memory": 437043200,
+      "gensticker-worker_cpu_usec": 3387291
+    },
+    {
+      "elapsed_s": 4.0,
+      "available_memory": 13202964480,
+      "load1": 0.5810546875,
+      "gensticker_memory": 468099072,
+      "gensticker_cpu_usec": 5329862,
+      "gensticker-worker_memory": 442925056,
+      "gensticker-worker_cpu_usec": 4003402
+    },
+    {
+      "elapsed_s": 4.51,
+      "available_memory": 13165023232,
+      "load1": 0.5810546875,
+      "gensticker_memory": 468094976,
+      "gensticker_cpu_usec": 5343331,
+      "gensticker-worker_memory": 490106880,
+      "gensticker-worker_cpu_usec": 4657484
+    },
+    {
+      "elapsed_s": 5.01,
+      "available_memory": 13099216896,
+      "load1": 0.5810546875,
+      "gensticker_memory": 468344832,
+      "gensticker_cpu_usec": 5357288,
+      "gensticker-worker_memory": 513400832,
+      "gensticker-worker_cpu_usec": 5194275
+    },
+    {
+      "elapsed_s": 5.51,
+      "available_memory": 13102686208,
+      "load1": 0.5810546875,
+      "gensticker_memory": 468103168,
+      "gensticker_cpu_usec": 5364970,
+      "gensticker-worker_memory": 514441216,
+      "gensticker-worker_cpu_usec": 5645303
+    },
+    {
+      "elapsed_s": 6.01,
+      "available_memory": 13100224512,
+      "load1": 0.5810546875,
+      "gensticker_memory": 468480000,
+      "gensticker_cpu_usec": 5542245,
+      "gensticker-worker_memory": 514224128,
+      "gensticker-worker_cpu_usec": 5645303
+    },
+    {
+      "elapsed_s": 6.51,
+      "available_memory": 13100265472,
+      "load1": 0.5810546875,
+      "gensticker_memory": 468230144,
+      "gensticker_cpu_usec": 5555409,
+      "gensticker-worker_memory": 515010560,
+      "gensticker-worker_cpu_usec": 5710902
+    },
+    {
+      "elapsed_s": 7.01,
+      "available_memory": 13100941312,
+      "load1": 0.5810546875,
+      "gensticker_memory": 468230144,
+      "gensticker_cpu_usec": 5562268,
+      "gensticker-worker_memory": 514400256,
+      "gensticker-worker_cpu_usec": 6248559
+    },
+    {
+      "elapsed_s": 7.51,
+      "available_memory": 13104484352,
+      "load1": 0.5810546875,
+      "gensticker_memory": 468471808,
+      "gensticker_cpu_usec": 5575549,
+      "gensticker-worker_memory": 514662400,
+      "gensticker-worker_cpu_usec": 6749460
+    },
+    {
+      "elapsed_s": 8.01,
+      "available_memory": 13104484352,
+      "load1": 0.5810546875,
+      "gensticker_memory": 468484096,
+      "gensticker_cpu_usec": 5588250,
+      "gensticker-worker_memory": 514662400,
+      "gensticker-worker_cpu_usec": 7249369
+    },
+    {
+      "elapsed_s": 8.51,
+      "available_memory": 13104226304,
+      "load1": 0.61474609375,
+      "gensticker_memory": 468230144,
+      "gensticker_cpu_usec": 5595028,
+      "gensticker-worker_memory": 514412544,
+      "gensticker-worker_cpu_usec": 7750281
+    },
+    {
+      "elapsed_s": 9.01,
+      "available_memory": 13103452160,
+      "load1": 0.61474609375,
+      "gensticker_memory": 468484096,
+      "gensticker_cpu_usec": 5609112,
+      "gensticker-worker_memory": 515198976,
+      "gensticker-worker_cpu_usec": 8251235
+    },
+    {
+      "elapsed_s": 9.51,
+      "available_memory": 13102419968,
+      "load1": 0.61474609375,
+      "gensticker_memory": 468230144,
+      "gensticker_cpu_usec": 5615938,
+      "gensticker-worker_memory": 519958528,
+      "gensticker-worker_cpu_usec": 8751126
+    },
+    {
+      "elapsed_s": 10.01,
+      "available_memory": 13114503168,
+      "load1": 0.61474609375,
+      "gensticker_memory": 468709376,
+      "gensticker_cpu_usec": 5629101,
+      "gensticker-worker_memory": 523960320,
+      "gensticker-worker_cpu_usec": 9329946
+    },
+    {
+      "elapsed_s": 10.51,
+      "available_memory": 13111463936,
+      "load1": 0.61474609375,
+      "gensticker_memory": 468627456,
+      "gensticker_cpu_usec": 5643845,
+      "gensticker-worker_memory": 525066240,
+      "gensticker-worker_cpu_usec": 9829134
+    },
+    {
+      "elapsed_s": 11.01,
+      "available_memory": 13087571968,
+      "load1": 0.61474609375,
+      "gensticker_memory": 469344256,
+      "gensticker_cpu_usec": 5662726,
+      "gensticker-worker_memory": 550326272,
+      "gensticker-worker_cpu_usec": 10388982
+    },
+    {
+      "elapsed_s": 11.51,
+      "available_memory": 13078884352,
+      "load1": 0.61474609375,
+      "gensticker_memory": 470081536,
+      "gensticker_cpu_usec": 5714269,
+      "gensticker-worker_memory": 549986304,
+      "gensticker-worker_cpu_usec": 10488492
+    },
+    {
+      "elapsed_s": 12.01,
+      "available_memory": 13079306240,
+      "load1": 0.61474609375,
+      "gensticker_memory": 474439680,
+      "gensticker_cpu_usec": 5975028,
+      "gensticker-worker_memory": 549986304,
+      "gensticker-worker_cpu_usec": 10488492
+    },
+    {
+      "elapsed_s": 12.51,
+      "available_memory": 13087604736,
+      "load1": 0.61474609375,
+      "gensticker_memory": 475004928,
+      "gensticker_cpu_usec": 5997939,
+      "gensticker-worker_memory": 550010880,
+      "gensticker-worker_cpu_usec": 10559107
+    },
+    {
+      "elapsed_s": 13.02,
+      "available_memory": 13087338496,
+      "load1": 0.61474609375,
+      "gensticker_memory": 474611712,
+      "gensticker_cpu_usec": 6054685,
+      "gensticker-worker_memory": 550010880,
+      "gensticker-worker_cpu_usec": 10559107
+    },
+    {
+      "elapsed_s": 13.52,
+      "available_memory": 13095104512,
+      "load1": 0.64599609375,
+      "gensticker_memory": 474976256,
+      "gensticker_cpu_usec": 6074320,
+      "gensticker-worker_memory": 550019072,
+      "gensticker-worker_cpu_usec": 10630771
+    },
+    {
+      "elapsed_s": 14.02,
+      "available_memory": 13036507136,
+      "load1": 0.64599609375,
+      "gensticker_memory": 474210304,
+      "gensticker_cpu_usec": 6081340,
+      "gensticker-worker_memory": 550010880,
+      "gensticker-worker_cpu_usec": 10630771
+    },
+    {
+      "elapsed_s": 14.52,
+      "available_memory": 13060603904,
+      "load1": 0.64599609375,
+      "gensticker_memory": 474550272,
+      "gensticker_cpu_usec": 6311138,
+      "gensticker-worker_memory": 550010880,
+      "gensticker-worker_cpu_usec": 10634659
+    },
+    {
+      "elapsed_s": 15.02,
+      "available_memory": 13057318912,
+      "load1": 0.64599609375,
+      "gensticker_memory": 474812416,
+      "gensticker_cpu_usec": 6325542,
+      "gensticker-worker_memory": 550010880,
+      "gensticker-worker_cpu_usec": 10634659
+    },
+    {
+      "elapsed_s": 15.52,
+      "available_memory": 13039763456,
+      "load1": 0.64599609375,
+      "gensticker_memory": 474300416,
+      "gensticker_cpu_usec": 6332505,
+      "gensticker-worker_memory": 551510016,
+      "gensticker-worker_cpu_usec": 10986895
+    },
+    {
+      "elapsed_s": 16.02,
+      "available_memory": 13050953728,
+      "load1": 0.64599609375,
+      "gensticker_memory": 474300416,
+      "gensticker_cpu_usec": 6345057,
+      "gensticker-worker_memory": 551337984,
+      "gensticker-worker_cpu_usec": 11487849
+    },
+    {
+      "elapsed_s": 16.52,
+      "available_memory": 13049438208,
+      "load1": 0.64599609375,
+      "gensticker_memory": 474562560,
+      "gensticker_cpu_usec": 6357666,
+      "gensticker-worker_memory": 551264256,
+      "gensticker-worker_cpu_usec": 11987784
+    },
+    {
+      "elapsed_s": 17.02,
+      "available_memory": 13055135744,
+      "load1": 0.64599609375,
+      "gensticker_memory": 474308608,
+      "gensticker_cpu_usec": 6364778,
+      "gensticker-worker_memory": 550428672,
+      "gensticker-worker_cpu_usec": 12263446
+    },
+    {
+      "elapsed_s": 17.52,
+      "available_memory": 13060419584,
+      "load1": 0.64599609375,
+      "gensticker_memory": 474300416,
+      "gensticker_cpu_usec": 6385321,
+      "gensticker-worker_memory": 550428672,
+      "gensticker-worker_cpu_usec": 12263446
+    },
+    {
+      "elapsed_s": 18.02,
+      "available_memory": 13112979456,
+      "load1": 0.64599609375,
+      "gensticker_memory": 475078656,
+      "gensticker_cpu_usec": 6411686,
+      "gensticker-worker_memory": 550428672,
+      "gensticker-worker_cpu_usec": 12267328
+    },
+    {
+      "elapsed_s": 18.52,
+      "available_memory": 13103849472,
+      "load1": 0.6748046875,
+      "gensticker_memory": 474787840,
+      "gensticker_cpu_usec": 6608340,
+      "gensticker-worker_memory": 550428672,
+      "gensticker-worker_cpu_usec": 12267328
+    },
+    {
+      "elapsed_s": 19.03,
+      "available_memory": 13086208000,
+      "load1": 0.6748046875,
+      "gensticker_memory": 474714112,
+      "gensticker_cpu_usec": 6621262,
+      "gensticker-worker_memory": 572870656,
+      "gensticker-worker_cpu_usec": 12619510
+    },
+    {
+      "elapsed_s": 19.53,
+      "available_memory": 13093773312,
+      "load1": 0.6748046875,
+      "gensticker_memory": 475189248,
+      "gensticker_cpu_usec": 6633771,
+      "gensticker-worker_memory": 552321024,
+      "gensticker-worker_cpu_usec": 13158824
+    },
+    {
+      "elapsed_s": 20.03,
+      "available_memory": 13093781504,
+      "load1": 0.6748046875,
+      "gensticker_memory": 474963968,
+      "gensticker_cpu_usec": 6641411,
+      "gensticker-worker_memory": 552583168,
+      "gensticker-worker_cpu_usec": 13658793
+    },
+    {
+      "elapsed_s": 20.54,
+      "available_memory": 13095600128,
+      "load1": 0.6748046875,
+      "gensticker_memory": 474714112,
+      "gensticker_cpu_usec": 6653702,
+      "gensticker-worker_memory": 552583168,
+      "gensticker-worker_cpu_usec": 14159750
+    },
+    {
+      "elapsed_s": 21.04,
+      "available_memory": 13118337024,
+      "load1": 0.6748046875,
+      "gensticker_memory": 478642176,
+      "gensticker_cpu_usec": 6895852,
+      "gensticker-worker_memory": 550842368,
+      "gensticker-worker_cpu_usec": 14273610
+    },
+    {
+      "elapsed_s": 21.54,
+      "available_memory": 13118337024,
+      "load1": 0.6748046875,
+      "gensticker_memory": 478302208,
+      "gensticker_cpu_usec": 6904242,
+      "gensticker-worker_memory": 550842368,
+      "gensticker-worker_cpu_usec": 14273610
+    }
+  ],
+  "fixture_cleaned": true
+}
