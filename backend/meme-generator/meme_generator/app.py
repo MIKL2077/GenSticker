@@ -77,7 +77,7 @@ def prepare_inputs(images, identity):
 class GenerateRequest(BaseModel):
     images: list[str] = Field(default_factory=list, max_length=10)
     texts: list[str] = Field(default_factory=list, max_length=20)
-    args: dict[str, Any] = Field(default_factory=dict)
+    args: dict[str, Any] = Field(default_factory=dict,max_length=32)
     extract_subject: bool = Field(default=False,strict=True)
 
 
@@ -134,6 +134,7 @@ async def generate_json(key: str, params: GenerateRequest, request: Request):
         images = [base64.b64decode(image, validate=True) for image in params.images]
     except (ValueError, binascii.Error):
         raise HTTPException(status_code=422, detail='图片必须为有效的 base64')
+    if len(json.dumps(params.args).encode())>32768:raise HTTPException(413,'模板参数过大，请减少参数后重试')
     args_model = meme.params_type.args_type.args_model if meme.params_type.args_type else MemeArgsModel
     try:
         args = type_validate_python(args_model, params.args)

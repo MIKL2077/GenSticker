@@ -98,8 +98,19 @@ def user_usage(user_id, db):
     return extra + sum(size(p) for p in paths), count
 
 
-def state_bytes():
-    return sum(size(p) for p in root().rglob("*"))
+def state_usage():
+    total = 0
+    files = 0
+    for path in root().rglob("*"):
+        if path.is_symlink():
+            continue
+        value = size(path)
+        if path.is_file():
+            files += 1
+            total += value
+        if files > limit("STATE_MAX_FILES", 100000):
+            break
+    return total, files
 
 
 @contextmanager
@@ -164,9 +175,17 @@ def write_guard(
                 raise HTTPException(413, "你的小窝空间不足，请先删除旧视频、任务或模板")
             if template and count >= limit("USER_TEMPLATE_LIMIT", 100):
                 raise HTTPException(409, "最多保留 100 个自制模板，请先删除一些")
+            total_bytes, total_files = state_usage()
+            if (
+                total_files >= limit("STATE_MAX_FILES", 100000)
+                or os.statvfs(root()).f_favail < 100000
+            ):
+                raise HTTPException(
+                    507, "文件数量接近安全上限，暂缓新写入，请联系维护者整理"
+                )
             if shutil.disk_usage(root()).free - incoming < limit(
                 "MIN_FREE_BYTES", 10 * 1024**3
-            ) or state_bytes() + incoming > limit("STATE_MAX_BYTES", 12 * 1024**3):
+            ) or total_bytes + incoming > limit("STATE_MAX_BYTES", 12 * 1024**3):
                 raise HTTPException(
                     507, "存储空间正在整理，暂不接收新素材，已有作品仍可领取"
                 )

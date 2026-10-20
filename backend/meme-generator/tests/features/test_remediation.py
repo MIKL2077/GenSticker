@@ -73,6 +73,10 @@ class RemediationTests(unittest.TestCase):
             Image.new("RGB", (40, 40)).save(out, fmt)
             with open_image(BytesIO(out.getvalue())) as result:
                 self.assertEqual(result.size, (40, 40))
+        from meme_generator.meme import MemeArgsModel
+
+        with self.assertRaises(ValueError):
+            MemeArgsModel(user_infos=[{"name": "x"}] * 11)
         from meme_generator.safe_images import open_input_image
 
         frames = [
@@ -115,6 +119,13 @@ class RemediationTests(unittest.TestCase):
                 self.client.get("/account/storage").json()["used_bytes"], 4000
             )
             self.assertEqual(self.client.get("/studio/templates").status_code, 200)
+        with patch.dict(os.environ, {"GENSTICKER_STATE_MAX_FILES": "2"}):
+            self.assertEqual(
+                self.client.post(
+                    "/studio/templates", json={"name": "new", "spec": self.spec}
+                ).status_code,
+                507,
+            )
         with patch.dict(os.environ, {"GENSTICKER_MIN_FREE_BYTES": str(10**20)}):
             self.assertEqual(
                 self.client.post(

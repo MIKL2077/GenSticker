@@ -86,7 +86,7 @@ class ManualJob(BaseModel):
     template_key: str=Field(min_length=1,max_length=100)
     images: list[str]=Field(default_factory=list,max_length=10)
     texts: list[str]=Field(default_factory=list,max_length=20)
-    args: dict=Field(default_factory=dict)
+    args: dict=Field(default_factory=dict,max_length=32)
     extract_subject: bool=False
     idempotency_key: str=Field(min_length=8,max_length=100)
 
@@ -142,6 +142,7 @@ def job_view(row):
 @router.post('/jobs',status_code=201)
 def create_manual(params:ManualJob,user=Depends(current_user)):
     if sum(len(i) for i in params.images)>14*1024*1024 or any(len(t)>2000 for t in params.texts):raise HTTPException(413,'素材过大，请先裁剪')
+    if len(json.dumps(params.args).encode())>32768:raise HTTPException(413,'模板参数过大，请减少参数后重试')
     # Validate ownership before persisting a job. Published built-ins stay unchanged.
     spec=get_spec(params.template_key,user['id'])
     if spec is None:

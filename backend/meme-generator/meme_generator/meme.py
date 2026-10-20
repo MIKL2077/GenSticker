@@ -7,7 +7,7 @@ from typing import Any, Callable, Literal, Optional, TypeVar, Union
 from arclet.alconna import ArgFlag, Args, Empty, Option
 from arclet.alconna.action import Action
 from pil_utils import BuildImage
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, ValidationError, Field
 
 from .compat import type_validate_python
 from .exception import (
@@ -22,12 +22,12 @@ from .safe_images import open_input_image
 
 
 class UserInfo(BaseModel):
-    name: str = ""
+    name: str = Field(default="",max_length=64)
     gender: Literal["male", "female", "unknown"] = "unknown"
 
 
 class MemeArgsModel(BaseModel):
-    user_infos: list[UserInfo] = []
+    user_infos: list[UserInfo] = Field(default_factory=list,max_length=10)
 
 
 ArgsModel = TypeVar("ArgsModel", bound=MemeArgsModel)
