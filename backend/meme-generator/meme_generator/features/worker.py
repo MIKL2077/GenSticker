@@ -79,52 +79,10 @@ def candidates(job, analysis):
     from .popularity import snapshot
     global_heat = snapshot()
     available = []
-    # Conservative latency-safe templates from the existing catalog; ingestion extends this set.
-    safe = {
-        "always",
-        "petpet",
-        "my_friend",
-        "look_flat",
-        "look_this_icon",
-        "think_what",
-        "confuse",
-        "little_angel",
-        "support",
-        "perfect",
-        "like",
-        "love_you",
-        "hug_leg",
-        "kiss",
-        "rub",
-        "why_at_me",
-        "addiction",
-        "applaud",
-        "cover_face",
-        "dog_dislike",
-        "distracted",
-        "dont_touch",
-        "garbage",
-        "interview",
-        "make_friend",
-        "police",
-        "read_book",
-        "worship",
-    }
+    from .recommendation import exclusion_reason
     for row in rows():
         m = json.loads(row["metadata"])
-        # The early foreground-only sample can lose the original expression.
-        # Keep manual compatibility, but exclude it from automatic matching.
-        if m.get('conversion') == 'foreground-slot-v1':
-            continue
-        if not (m["min_images"] <= 1 <= m["max_images"]) or m.get("min_texts", 0) > len(
-            m.get("default_texts", [])
-        ):
-            continue
-        if not row["spec"] and row["key"] not in safe:
-            continue
-        if analysis.get("subject", "unknown") not in m.get(
-            "subject_types", ["person", "animal", "object", "unknown"]
-        ):
+        if exclusion_reason(row, analysis.get('subject', 'unknown')) is not None:
             continue
         tags = m["tags"]
         score = sum(weights.get(t, 0) for t in tags)

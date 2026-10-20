@@ -1,19 +1,33 @@
-"""Restore only the reviewed, openly licensed template fixtures shipped with code."""
+"""Restore reviewed fixtures and explicitly requested source batches shipped with code."""
 from meme_generator.safe_images import open_image
 
 import base64
 import hashlib
 import json
 from pathlib import Path
-from PIL import Image
 from .store import connect, root
 from .declarative import TemplateSpec
 
 
-def restore():
+def restore(*, include_batches=True):
     from .catalog import publish
 
     manifest = json.loads(Path(__file__).with_name("template_seed.json").read_text())
+    if include_batches:
+        for path in sorted(Path(__file__).with_name('template_batches').glob('*.json')):
+            batch = json.loads(path.read_text())
+            for item in batch['templates']:
+                m = item['metadata']; q = m.get('quality', {})
+                from urllib.parse import urlsplit
+                source = urlsplit(m.get('source_url', ''))
+                allowed = (m.get('origin') == 'chinesebqb' and source.hostname == 'github.com' and source.path.startswith('/zhaoolee/ChineseBQB/blob/')) or (m.get('origin') == 'weshine' and source.hostname == 'u.weshineapp.com')
+                if not (allowed and source.scheme == 'https' and m.get('source_use') == 'explicit-user-request-with-attribution'
+                        and m.get('review', {}).get('visual_status') == 'approved'
+                        and m.get('conversion') == 'caption-preserved-v2'
+                        and q.get('observed_min_confidence', 0) >= .95
+                        and q.get('round_trip_mae', 100) <= 12 and q.get('protected_pixel_mae', 100) <= .1):
+                    raise ValueError('unreviewed source batch')
+            manifest['templates'].extend(batch['templates']); manifest['assets'].update(batch['assets'])
     retired = set(json.loads(Path(__file__).with_name("template_policy.json").read_text())["retired_keys"])
     db = connect()
     restored = 0
@@ -25,15 +39,16 @@ def restore():
             if item['key'] in retired:
                 continue
             metadata = item["metadata"]
+            source_reference = metadata.get('source_use') == 'explicit-user-request-with-attribution' and metadata.get('review', {}).get('visual_status') == 'approved' and metadata.get('origin') in {'chinesebqb', 'weshine'}
             user_test = metadata.get('origin') == 'user-provided' and metadata.get('review', {}).get('explicit_user_request') is True
-            if not user_test and metadata["license"] not in {"CC BY-SA 4.0", "Public domain"}:
+            if not user_test and not source_reference and metadata["license"] not in {"CC BY-SA 4.0", "Public domain"}:
                 raise ValueError("unreviewed seed license")
             if metadata["origin"] == "openmoji":
                 if not metadata["source_url"].startswith(
                     "https://github.com/hfg-gmuend/openmoji/blob/master/color/72x72/"
                 ):
                     raise ValueError("unreviewed seed origin")
-            elif not user_test and (
+            elif not user_test and not source_reference and (
                 metadata["source_url"]
                 != "https://commons.wikimedia.org/wiki/File:LEGO_%22Y_U_NO_%22_meme_(Free_to_use).jpg"
             ):

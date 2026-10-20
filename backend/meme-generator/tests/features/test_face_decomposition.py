@@ -58,14 +58,14 @@ class FaceDecompositionTests(unittest.TestCase):
         from meme_generator.features.seed import restore
         from meme_generator.features.catalog import rows, publish
         from meme_generator.features.store import connect
-        restore();current=rows()[0];meta=json.loads(current['metadata']);spec=json.loads(current['spec'])
+        restore(include_batches=False);current=rows()[0];meta=json.loads(current['metadata']);spec=json.loads(current['spec'])
         db=connect()
         with db:db.execute('DELETE FROM templates');db.execute('DELETE FROM template_versions')
         db.close()
         old=publish(current['key'],{**meta,'min_images':0,'max_images':0},{**spec,'layers':[l for l in spec['layers'] if l['type']!='face']})
-        self.assertEqual(old['version'],1);self.assertEqual(restore(),1)
+        self.assertEqual(old['version'],1);self.assertEqual(restore(include_batches=False),1)
         upgraded=rows()[0];self.assertEqual(upgraded['id'],old['id']);self.assertEqual(upgraded['version'],3)
-        self.assertEqual(json.loads(upgraded['metadata'])['min_images'],1);self.assertEqual(restore(),0)
+        self.assertEqual(json.loads(upgraded['metadata'])['min_images'],1);self.assertEqual(restore(include_batches=False),0)
 
 
 if __name__=='__main__':unittest.main()

@@ -1,0 +1,82 @@
+{
+  "status": "passed",
+  "scope": "four sequential batches, synthetic selected subject, real API and worker",
+  "batches": [
+    {
+      "index": 1,
+      "keys": [
+        "bite",
+        "blood_pressure",
+        "capoo_rub",
+        "flick",
+        "listen_music",
+        "police",
+        "rip",
+        "windmill_turn",
+        "worship"
+      ],
+      "seconds": 3.389,
+      "bytes": 1356458
+    },
+    {
+      "index": 2,
+      "keys": [
+        "garbage",
+        "guichu",
+        "hug_leg",
+        "hutao_bite",
+        "out",
+        "roll",
+        "support",
+        "this_chicken",
+        "twist"
+      ],
+      "seconds": 2.981,
+      "bytes": 1091634
+    },
+    {
+      "index": 3,
+      "keys": [
+        "anya_suki",
+        "back_to_work",
+        "dont_touch",
+        "gun",
+        "my_friend",
+        "paint",
+        "play_game",
+        "tom_tease",
+        "what_he_wants"
+      ],
+      "seconds": 2.161,
+      "bytes": 926924
+    },
+    {
+      "index": 4,
+      "keys": [
+        "decent_kiss",
+        "fade_away",
+        "jiji_king",
+        "little_angel",
+        "love_you",
+        "perfect",
+        "play",
+        "swirl_turn",
+        "trolley"
+      ],
+      "seconds": 5.023,
+      "bytes": 1242937
+    }
+  ],
+  "pool": {
+    "catalog_total": 303,
+    "photo_templates": 170,
+    "by_subject": {
+      "person": 170,
+      "animal": 170,
+      "object": 170,
+      "unknown": 170
+    }
+  },
+  "unique_templates": 36,
+  "fixture_cleaned": true
+}

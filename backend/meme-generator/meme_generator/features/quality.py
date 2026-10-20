@@ -11,7 +11,7 @@ from .declarative import TemplateSpec, render
 from .catalog import publish, emotion_tags
 
 _ocr = None
-REACTIONS = re.compile(r'笑|哭|怒|就这|开心|惊|累|困|无语|什么|不要|不想|上班|打工|下班|摸鱼|谢谢|好家伙|离谱|没事|懂|为什么|救命|哈哈|\b(?:bruh|why|lol|wtf|when|no|yes)\b|y\s*u\s*no',re.I)
+REACTIONS = re.compile(r'笑|哭|怒|就这|开心|惊|累|困|无语|什么|怎么|人呢|不可能|不好意思|在家办公|晚上好|早上好|早安|晚安|好的|不要|不想|上班|打工|下班|摸鱼|谢谢|好家伙|离谱|没事|懂|为什么|救命|哈哈|\b(?:bruh|why|lol|wtf|when|no|yes)\b|y\s*u\s*no',re.I)
 
 
 def perceptual_hash(image):
@@ -64,12 +64,24 @@ def convert_caption(raw, metadata, *, publish_result=True, allow_draft=False):
         if not (y1<=image.height*.35 or y0>=image.height*.65):continue
         if abs(int(points[0][1])-int(points[1][1]))>max(3,(y1-y0)*.15):continue
         if len(defaults)>=2:raise ValueError('complex caption layout')
-        cv2.rectangle(mask,(x0,y0),(x1-1,y1-1),255,-1)
-        layers.append({'type':'text','box':[x0,y0,x1-x0,y1-y0],'slot':len(defaults),'value':caption,'font_size':min(100,max(10,y1-y0-2))})
+        original_height=y1-y0
+        reviewed_mask=metadata.get('review', {}).get('caption_mask', 'box')
+        if reviewed_mask in {'light-glyph', 'dark-glyph'}:
+            # Explicit author review selects foreground polarity. Remove just
+            # caption glyphs and their outlines, retaining scene texture.
+            x0,y0=max(0,x0-2),max(0,y0-2);x1,y1=min(image.width,x1+2),min(image.height,y1+2)
+            region=np.asarray(image)[y0:y1,x0:x1]
+            selected=(region.min(axis=2)>175) if reviewed_mask=='light-glyph' else (region.max(axis=2)<110)
+            radius=max(1,min(3,int(metadata.get('review', {}).get('caption_erase_radius',1))))
+            glyphs=cv2.dilate(selected.astype('uint8')*255,np.ones((radius*2+1,radius*2+1),dtype='uint8'))
+            mask[y0:y1,x0:x1]=np.maximum(mask[y0:y1,x0:x1],glyphs)
+        else:
+            cv2.rectangle(mask,(x0,y0),(x1-1,y1-1),255,-1)
+        layers.append({'type':'text','box':[x0,y0,x1-x0,y1-y0],'slot':len(defaults),'value':caption,'font_size':min(100,max(10,original_height-2))})
         style = metadata.get('review', {}).get('caption_style', {})
         if style:
             # A reviewed style is explicit local input, not inferred model code.
-            layers[-1].update({k:style[k] for k in ('color','weight','align','stroke_color','stroke_width','font_size') if k in style})
+            layers[-1].update({k:style[k] for k in ('color','weight','align','stroke_color','stroke_width','font_size','max_lines') if k in style})
         defaults.append(caption);confidences.append(float(confidence))
     if not defaults or not REACTIONS.search(' '.join(defaults)):raise ValueError('reaction intent not confidently recoverable')
     if np.mean(mask>0)>.22:raise ValueError('caption removal would change too much of the scene')

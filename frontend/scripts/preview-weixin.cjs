@@ -30,6 +30,7 @@ try {
   run(cli,['open','--project',project])
   if(!openOnly) {
     run(cli,['preview','--project',project,'--qr-format','image','--qr-output',output])
+    if(!fs.existsSync(output) || !fs.statSync(output).size)throw Error('WeChat did not generate a QR image; inspect the preview error above')
     console.log('QR image:',output)
   }
 } catch(error){console.error(error.message);process.exitCode=1}

@@ -400,9 +400,9 @@ class FeatureTests(unittest.TestCase):
         from meme_generator.features.seed import restore
 
         before = len(catalog.rows())
-        self.assertEqual(restore(), 1)
+        self.assertEqual(restore(include_batches=False), 1)
         self.assertEqual(len(catalog.rows()), before + 1)
-        self.assertEqual(restore(), 0)
+        self.assertEqual(restore(include_batches=False), 0)
 
     def test_lease_recovery(self):
         self.create(self.upload())

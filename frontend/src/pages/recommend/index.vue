@@ -6,6 +6,7 @@
   <view v-if="!session" class="login-card fx-enter"><image src="/static/logo.png" mode="aspectFit" class="login-logo"/><text class="login-title">先登录，收好你的小表情</text><text class="login-copy">登录后就能开始，生成记录随时回来查看。</text><button class="ui-primary" :loading="loggingIn" :disabled="loggingIn" @click="login">微信一键登录 →</button><text class="hint">自动填好默认资料，之后随时修改。</text></view>
   <template v-else>
    <view class="quota-row"><text>{{quotaLoading?'正在连接工作室…':quotaReady?(unlimited?'日常使用不限次数，连续操作稍作间隔':'今日剩余 '+quota.remaining+' / '+quota.limit+' 次'):'工作室暂未连接'}}</text><text class="quota-badge">灵感持续供应</text></view>
+   <text v-if="quotaReady && quota.template_pool" class="hint generation-hint">当前有 {{quota.template_pool.photo_templates}} 个照片搭配模板；按照片匹配，每批优先使用未用过的模板。</text>
    <button v-if="quotaError" class="error retry-inline" @click="refresh">{{quotaError}} · 重试 ↗</button>
    <button class="upload-card fx-enter" :disabled="busy" @click="choose"><image v-if="photo" :src="photo" mode="aspectFit" class="photo"/><view v-else class="upload-illustration"><text>☺</text><text>＋</text></view><text class="upload-title">{{photo?'照片准备好了':'选一张喜欢的照片'}}</text><text class="upload-caption">{{photo?'点击更换照片':'建议上传包含单个主体的图片'}}</text></button>
    <button v-if="photo && photoOriginal" class="adjust-subject" :disabled="busy" @click="subjectPicker=true">调整选定主体 ↗</button>

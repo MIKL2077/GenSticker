@@ -38,6 +38,23 @@ The helper precomputes template background repair and stores a reference asset f
 
 Another model should be able to inspect a new reference, write the intent/regions/slots brief, run this helper and judge the comparison images without knowing the original conversation. Copy the skill folder plus use the compatible GenSticker runtime; the skill is not a standalone neural model. Record failure reasons in the brief/quality report, improve a specific mask or adapter and rerender. Do not weaken gates to inflate counts, copy example coordinates blindly, fabricate humour/accuracy claims or declare success solely because detection found a face.
 
+## Large ChineseBQB / Weshine batches
+
+Use `meme_generator.features.bulk_templates` for a resumable offline inventory, bounded downloads and strict caption drafts. ChineseBQB entries are pinned to an immutable Git revision, exact blobs are deduplicated, and categories rotate. Weshine public SSR state can be extracted with `node tools/collect/weshine-state.cjs PAGE.html STATE.json`; it accepts literal data nodes only and never evaluates page JavaScript. Pass `--weshine-state-file` and `--weshine-rank-file` to retain real source ranking and reaction categories. Do not invent per-image popularity for ChineseBQB or guess full-size URLs from thumbnails.
+
+```sh
+export GENSTICKER_STATE_DIR=/tmp/gensticker-template-authoring
+PYTHONPATH=backend/meme-generator .venv/bin/python -m meme_generator.features.bulk_templates inventory --target 1200 --output /tmp/candidates.json
+PYTHONPATH=backend/meme-generator .venv/bin/python -m meme_generator.features.bulk_templates download --manifest /tmp/candidates.json --output /tmp/template-review --limit 1200
+PYTHONPATH=backend/meme-generator .venv/bin/python -m meme_generator.features.bulk_templates prepare --manifest /tmp/candidates.json --rights /tmp/rights.json --output /tmp/template-review --cache-only --limit 1200
+```
+
+The normal route requires per-item rights metadata. If the human explicitly instructs using these two reference sources with attribution instead of a rights manifest, their instruction takes precedence: replace `--rights` with `--attributed-references`. Record `license: unverified` and `source_use: explicit-user-request-with-attribution`; never label attribution as a verified license or invent an original author. This option is limited to the two named sources and is not the default scheduled ingestion policy.
+
+Keep separate counts for indexed images, selected candidates, downloaded images, converted drafts, visually approved/published templates, and photo-compatible AI templates. Drafts do not publish automatically. Review source, default reconstruction and changed caption together; keep failed text removal/layout pending. A caption-only template cannot be added to the photo recommendation pool. Native pool admission uses `tools/qa/recommendation_pool.py`, `recommendation_policy.json` and Linux regression; `/recommend/catalog` reports actual eligible counts with the same rule as the worker.
+
+Use `tools/qa/review_templates.py` to create comparison sheets and `bulk_templates export-reviewed --decisions DECISIONS.json --version N` to export approved IDs. Every authoring step must use the same isolated state directory. Keep creation times stable, increment versions on updates, and split exports into batches of at most 100 templates / 32 MiB. Short-caption layouts may reject long text; verify a real short replacement and retain the clear overflow error instead of forcing multiple lines across the subject.
+
 ## Multi-layout regression
 
 Read [multi-sample observations](references/multi-sample-tests.md). The three image-free briefs in `references/regression-cases/` cover a two-caption cat meme, a scattered-text Doge with one safely editable phrase, and a farmer face replacement that protects the hat and fixed captions. Do not force every layout into a full head replacement.

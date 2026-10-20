@@ -38,6 +38,24 @@ class QualityTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'animated'):convert(buf.getvalue(),self.meta)
         with self.assertRaisesRegex(ValueError,'license'):convert(self.raw,{**self.meta,'license':'unknown'})
 
+    def test_reviewed_glyph_removal_keeps_scene_and_explicit_typography(self):
+        from meme_generator.features.quality import convert_caption
+        metadata={**self.meta,'review':{'caption_mask':'dark-glyph','caption_style':{'color':'#111111','weight':'bold','align':'center','max_lines':1}}}
+        with patch('meme_generator.features.quality.recognize',return_value=[(self.box,'WHY NO?',.99)]):
+            spec,review=convert_caption(self.raw,metadata,publish_result=False)
+        self.assertEqual(spec['layers'][1]['max_lines'],1)
+        self.assertEqual(spec['layers'][1]['weight'],'bold')
+        self.assertEqual(review['quality']['protected_pixel_mae'],0)
+        self.assertGreaterEqual(review['quality']['observed_min_confidence'],.95)
+
+    def test_observed_weshine_reactions_are_recognized_without_relaxing_confidence(self):
+        from meme_generator.features.quality import REACTIONS
+        for caption in ['你是怎么了？','人呢？','这不可能','让人怪不好意思的','晚上好','早上好','好的']:
+            self.assertIsNotNone(REACTIONS.search(caption))
+        self.assertIsNone(REACTIONS.search('sample filename'))
+        with patch('meme_generator.features.quality.recognize',return_value=[(self.box,'早上好',.94)]):
+            with self.assertRaisesRegex(ValueError,'intent'):convert(self.raw,self.meta)
+
     def test_discovery_metadata_only_and_idempotent(self):
         listing=[{'type':'dir','name':'010Cat_猫BQB','path':'010Cat_猫BQB'}]
         files=[{'type':'file','name':'one.png','path':'010Cat_猫BQB/one.png','size':100}]
@@ -72,7 +90,7 @@ class QualityTests(unittest.TestCase):
         from meme_generator.features.catalog import rows, publish
         from meme_generator.features.declarative import render, TemplateSpec
         from meme_generator.features.ingest import run_openmoji
-        self.assertEqual(restore(),1)
+        self.assertEqual(restore(include_batches=False),1)
         row=rows()[0];meta=json.loads(row['metadata']);spec=json.loads(row['spec'])
         self.assertEqual(meta['name'],'笑不出来');self.assertEqual(meta['min_images'],1)
         self.assertIn('sad',meta['tags']);self.assertNotIn('happy',meta['tags'])

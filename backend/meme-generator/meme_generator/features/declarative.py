@@ -61,14 +61,24 @@ class TemplateSpec(BaseModel):
 
 
 def font(size, bold=False):
+    from ..dirs import get_data_dir
+    filename = 'NotoSansSC-Bold.ttf' if bold else 'NotoSansSC-Regular.ttf'
+    # A directory's first font can be Latin-only. Prefer the named CJK face in
+    # both authoring and deployment so quality gates measure real glyphs.
+    for path in (root().parent / 'fonts' / filename,
+                 Path(__file__).resolve().parents[2] / 'resources/fonts' / filename,
+                 get_data_dir() / 'fonts' / filename):
+        if path.is_file():
+            return ImageFont.truetype(str(path), size)
     if bold:
         for path in [root().parent / "fonts/NotoSansSC-Bold.ttf", Path("/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc"), Path("/System/Library/Fonts/STHeiti Medium.ttc")]:
             if path.exists():
                 return ImageFont.truetype(str(path), size)
     for path in [
-        root().parent.parent / "fonts/NotoSansSC-Regular.ttf",
+        root().parent / "fonts/NotoSansSC-Regular.ttf",
         Path("/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc"),
         Path("/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"),
+        Path('/System/Library/Fonts/STHeiti Light.ttc'),
     ]:
         if path.exists():
             return ImageFont.truetype(str(path), size)

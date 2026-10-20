@@ -23,6 +23,13 @@ USER_LIMIT = max(0, int(os.getenv("GENSTICKER_DAILY_LIMIT", "0")))
 GLOBAL_LIMIT = max(0, int(os.getenv("GENSTICKER_GLOBAL_LIMIT", "0")))
 
 
+@router.get('/catalog')
+def recommendation_catalog():
+    from .catalog import rows
+    from .recommendation import pool_summary
+    return pool_summary(rows())
+
+
 def admit_generation(db, user_id, identifier, stamp):
     """Call inside BEGIN IMMEDIATE. Reservations survive job deletion/restarts."""
     db.execute("CREATE TABLE IF NOT EXISTS generation_admissions(id TEXT PRIMARY KEY,user_id TEXT NOT NULL,created REAL NOT NULL)")
@@ -160,6 +167,7 @@ def quota(user=Depends(current_user)):
             "personalization": bool(enabled["enabled"]) if enabled else True,
             "paid_ai_enabled": False,
             "features": {"reroll": True},
+            "template_pool": recommendation_catalog(),
         }
     finally:
         db.close()

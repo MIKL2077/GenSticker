@@ -10,7 +10,7 @@ from .recommend import day
 SOURCES = [
     {'id':'chinesebqb','name':'ChineseBQB','url':'https://github.com/zhaoolee/ChineseBQB/tree/master','mode':'metadata-discovery','license_status':'per-image-unverified','reason':'仓库代码许可不代表每张图片的改编与再分发许可'},
     {'id':'aigei','name':'爱给表情素材','url':'https://www.aigei.com/lib/sticker/','mode':'registered','license_status':'per-item-required','reason':'按素材页面区分 CC、版权购买与其他条件；当前页面访问不可用'},
-    {'id':'weshine','name':'闪萌','url':'https://u.weshineapp.com/','mode':'registered','license_status':'per-image-unverified','reason':'搜索第三方和用户上传内容需具体权利信息；当前页面访问不可用'},
+    {'id':'weshine','name':'闪萌','url':'https://u.weshineapp.com/','mode':'offline-bulk-discovery','license_status':'per-image-unverified','reason':'公开首页与榜单已接入离线批量采集；来源热度不代表改编许可，默认定时采集不自动发布'},
 ]
 
 
