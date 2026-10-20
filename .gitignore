@@ -26,3 +26,6 @@ artifacts/
 *.sqlite3-wal
 *.sqlite3-shm
 .env
+
+backend/pil-utils/build/
+**/*.egg-info/

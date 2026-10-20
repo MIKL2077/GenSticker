@@ -22,11 +22,14 @@ def connect():
     CREATE INDEX IF NOT EXISTS popularity_actor_time ON popularity_seen(actor,created);
     CREATE TABLE IF NOT EXISTS popularity_daily(key TEXT NOT NULL,day TEXT NOT NULL,kind TEXT NOT NULL,count INTEGER NOT NULL,PRIMARY KEY(key,day,kind));
     CREATE TABLE IF NOT EXISTS popularity_totals(key TEXT NOT NULL,kind TEXT NOT NULL,count INTEGER NOT NULL,PRIMARY KEY(key,kind));
+    CREATE TABLE IF NOT EXISTS template_blocks(key TEXT PRIMARY KEY,reason TEXT NOT NULL,created REAL NOT NULL);
     CREATE TABLE IF NOT EXISTS templates(id TEXT PRIMARY KEY,key TEXT UNIQUE NOT NULL,version INTEGER NOT NULL,fingerprint TEXT NOT NULL,metadata TEXT NOT NULL,spec TEXT,status TEXT NOT NULL DEFAULT 'published');
     CREATE TABLE IF NOT EXISTS template_versions(template_id TEXT NOT NULL,version INTEGER NOT NULL,fingerprint TEXT NOT NULL,metadata TEXT NOT NULL,spec TEXT,PRIMARY KEY(template_id,version));
     CREATE TABLE IF NOT EXISTS candidates(hash TEXT PRIMARY KEY,source TEXT NOT NULL,status TEXT NOT NULL,reason TEXT,created REAL NOT NULL);
     CREATE TABLE IF NOT EXISTS assets(id TEXT PRIMARY KEY,user_id TEXT NOT NULL,hash TEXT NOT NULL,created REAL NOT NULL,path TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS jobs(id TEXT PRIMARY KEY,user_id TEXT NOT NULL,idempotency TEXT NOT NULL,asset_id TEXT NOT NULL,day TEXT NOT NULL,status TEXT NOT NULL,created REAL NOT NULL,updated REAL NOT NULL,lease REAL NOT NULL DEFAULT 0,attempts INTEGER NOT NULL DEFAULT 0,selection TEXT NOT NULL DEFAULT '[]',message TEXT NOT NULL DEFAULT '',analysis TEXT NOT NULL DEFAULT '{}',algorithm TEXT NOT NULL DEFAULT 'tags-v1',UNIQUE(user_id,idempotency));
+    CREATE INDEX IF NOT EXISTS assets_user_time ON assets(user_id,created);
+    CREATE INDEX IF NOT EXISTS jobs_user_time ON jobs(user_id,created);
     CREATE TABLE IF NOT EXISTS results(job_id TEXT NOT NULL,slot INTEGER NOT NULL,template_id TEXT NOT NULL,version INTEGER NOT NULL,key TEXT NOT NULL,tags TEXT NOT NULL,path TEXT NOT NULL,preview TEXT NOT NULL,PRIMARY KEY(job_id,slot));
     CREATE TABLE IF NOT EXISTS job_variations(job_id TEXT PRIMARY KEY,parent_id TEXT NOT NULL,excluded_keys TEXT NOT NULL,previous_keys TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS quotas(job_id TEXT PRIMARY KEY,user_id TEXT NOT NULL,day TEXT NOT NULL,status TEXT NOT NULL);

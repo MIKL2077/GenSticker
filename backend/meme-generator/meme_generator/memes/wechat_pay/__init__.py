@@ -83,7 +83,7 @@ add_meme(
     wechat_pay,
     min_images=1,
     max_images=1,
-    min_texts=0,
+    min_texts=1,
     max_texts=1,
     args_type=args_type,
     keywords=["微信支付"],

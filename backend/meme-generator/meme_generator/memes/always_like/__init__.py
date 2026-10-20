@@ -88,7 +88,7 @@ add_meme(
     always_like,
     min_images=1,
     max_images=6,
-    min_texts=0,
+    min_texts=1,
     max_texts=6,
     keywords=["我永远喜欢"],
     date_created=datetime(2022, 3, 14),

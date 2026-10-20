@@ -14,11 +14,11 @@ exclude = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">=3.10,<4"
 httpx = ">=0.20.0,<1.0.0"
 loguru = ">=0.6.0,<1.0.0"
-pil-utils = "^0.2.0"
-Pillow = "^10.0.0"
+pil-utils = { path = "../pil-utils" }
+Pillow = ">=12.3.0,<13"
 toml = "^0.10.2"
 fastapi = ">=0.93.0,<1.0.0"
 uvicorn = ">=0.20.0,<1.0.0"

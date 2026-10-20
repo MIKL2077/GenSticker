@@ -1,0 +1,12 @@
+.git
+**/node_modules
+**/.venv
+**/__pycache__
+**/*.pyc
+**/*.sqlite3*
+**/*.env
+**/.env*
+**/meme_server.log
+backend/pil-utils/build
+backend/pil-utils/*.egg-info
+artifacts

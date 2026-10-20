@@ -1,4 +1,5 @@
 """Bounded, licensed MediaWiki adapter and deterministic conversion pipeline."""
+from meme_generator.safe_images import open_image, open_input_image
 
 import hashlib
 import html
@@ -84,7 +85,7 @@ def convert_foreground_legacy(raw, metadata):
 
     if vision._session is None:
         raise ValueError("segmentation model unavailable")
-    with Image.open(BytesIO(raw)) as original:
+    with open_input_image(BytesIO(raw)) as original:
         if original.width * original.height > 16000000:
             raise ValueError("image too large")
         image = original.convert("RGBA")
@@ -164,7 +165,7 @@ def convert_foreground_legacy(raw, metadata):
         }
     ).model_dump()
     # Round-trip gate catches badly reconstructed layouts before auto publication.
-    reconstruction = Image.open(render(spec, [cutout.crop(box)])).convert("RGB")
+    reconstruction = open_image(render(spec, [cutout.crop(box)])).convert("RGB")
     a = np.asarray(image.convert("RGB").resize((64, 64))).astype("float32")
     b = np.asarray(reconstruction.resize((64, 64))).astype("float32")
     if float(abs(a - b).mean()) > 28:

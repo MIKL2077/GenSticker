@@ -1,7 +1,9 @@
 """Bounded, private Live Photo motion/video -> editable GIF. No network protocols."""
+from meme_generator.safe_images import open_image
 import json,os,shutil,subprocess,tempfile,time,uuid,threading,hashlib
 from io import BytesIO
 from pathlib import Path
+from typing import Literal
 from PIL import Image,ImageDraw,ImageSequence
 from fastapi import APIRouter,Depends,HTTPException,UploadFile,File,Form
 from fastapi.responses import FileResponse
@@ -22,35 +24,37 @@ async def save_result(file:UploadFile=File(...),idempotency_key:str=Form(min_len
     return await to_thread(prepare_result,raw,idempotency_key,user)
 
 def prepare_result(raw,idem,user):
-    from .studio import enqueue
-    if not slots.acquire(False):raise HTTPException(503,'动图同步繁忙，请稍后再试')
-    try:
+    from meme_generator.features.storage import write_guard
+    with write_guard(user['id'], len(raw) * 2 + 1024, ingress=len(raw),media=True):
+        from .studio import enqueue
+        if not slots.acquire(False):raise HTTPException(503,'动图同步繁忙，请稍后再试')
         try:
-            with Image.open(BytesIO(raw)) as image:
-                if image.format!='GIF' or max(image.size)>240 or min(image.size)<2 or not 1<=image.n_frames<=100:raise ValueError()
-                duration=0
-                for frame in ImageSequence.Iterator(image):
-                    frame.load();duration+=frame.info.get('duration',100)
-                if not 100<=duration<=9100:raise ValueError()
-                width,height=image.size
-        except (OSError,ValueError,Image.DecompressionBombError):raise HTTPException(422,'请选择最长 9 秒、长边 240 px 以内的动态 GIF')
-        # Deterministic identifier makes interrupted upload retries idempotent.
-        identifier=hashlib.sha256((user['id']+':'+idem).encode()+raw).hexdigest()[:32]
-        path=directory()/(identifier+'.media');meta_path=directory()/(identifier+'.json')
-        if not meta_path.exists():
-            from .store import connect
-            db=connect()
             try:
-                # Count ingress before retaining another file; deleting jobs cannot bypass it.
-                from .recommend import admit_generation
-                with db:
-                    db.execute('BEGIN IMMEDIATE');admit_generation(db,user['id'],'live:'+identifier,time.time())
-            finally:db.close()
-            path.write_bytes(raw)
-            meta_path.write_text(json.dumps({'user_id':user['id'],'created':time.time(),'duration':duration/1000,'width':width,'height':height,'ready':True}))
-        job=enqueue('livegif',{'asset_id':identifier,'ready':True},idem,user)
-        return job
-    finally:slots.release()
+                with open_image(BytesIO(raw)) as image:
+                    if image.format!='GIF' or max(image.size)>240 or min(image.size)<2 or not 1<=image.n_frames<=100:raise ValueError()
+                    duration=0
+                    for frame in ImageSequence.Iterator(image):
+                        frame.load();duration+=frame.info.get('duration',100)
+                    if not 100<=duration<=9100:raise ValueError()
+                    width,height=image.size
+            except (OSError,ValueError,Image.DecompressionBombError):raise HTTPException(422,'请选择最长 9 秒、长边 240 px 以内的动态 GIF')
+            # Deterministic identifier makes interrupted upload retries idempotent.
+            identifier=hashlib.sha256((user['id']+':'+idem).encode()+raw).hexdigest()[:32]
+            path=directory()/(identifier+'.media');meta_path=directory()/(identifier+'.json')
+            if not meta_path.exists():
+                from .store import connect
+                db=connect()
+                try:
+                    # Count ingress before retaining another file; deleting jobs cannot bypass it.
+                    from .recommend import admit_generation
+                    with db:
+                        db.execute('BEGIN IMMEDIATE');admit_generation(db,user['id'],'live:'+identifier,time.time())
+                finally:db.close()
+                path.write_bytes(raw)
+                meta_path.write_text(json.dumps({'user_id':user['id'],'created':time.time(),'duration':duration/1000,'width':width,'height':height,'ready':True}))
+            job=enqueue('livegif',{'asset_id':identifier,'ready':True},idem,user)
+            return job
+        finally:slots.release()
 
 def directory():
     path=root()/'live_sources';path.mkdir(exist_ok=True);return path
@@ -91,33 +95,36 @@ async def upload(file:UploadFile=File(...),user=Depends(current_user)):
     return await to_thread(prepare,raw,user['id'])
 
 def prepare(raw,user):
-    if not slots.acquire(False):raise HTTPException(503,'动态素材正在准备，请稍后再传')
-    identifier=uuid.uuid4().hex;path=directory()/(identifier+'.media')
-    try:
-        # Per-user rolling ingress budget, independent of unlimited meme generation.
-        recent=[p for p in directory().glob('*.json') if p.stat().st_mtime>time.time()-60]
-        if sum(json.loads(p.read_text()).get('user_id')==user for p in recent)>=4:raise HTTPException(429,'视频上传有点快，休息一分钟再来')
-        path.write_bytes(motion(raw))
-        info=json.loads(run(['ffprobe','-v','error','-protocol_whitelist','file,pipe','-show_streams','-show_format','-of','json',str(path)]))
-        stream=next((s for s in info['streams'] if s.get('codec_type')=='video'),None)
-        if not stream or stream.get('width',0)*stream.get('height',0)>33_200_000:raise HTTPException(422,'视频分辨率过高，先导出 1080p 再试试')
-        duration=float(info.get('format',{}).get('duration') or stream.get('duration') or 3)
-        if not .08<=duration<=1800:raise HTTPException(422,'请选择 30 分钟以内的视频')
-        poster=directory()/(identifier+'.jpg')
-        run(['ffmpeg','-nostdin','-v','error','-threads','2','-protocol_whitelist','file,pipe','-i',str(path),'-frames:v','1','-vf','scale=640:640:force_original_aspect_ratio=decrease','-y',str(poster)])
-        with Image.open(poster) as image:width,height=image.size
-        meta={'user_id':user,'created':time.time(),'duration':duration,'width':width,'height':height}
-        (directory()/(identifier+'.json')).write_text(json.dumps(meta))
-        return {**{k:v for k,v in meta.items() if k not in ('user_id','created')},'asset_id':identifier,'poster_url':f'/studio/live/assets/{identifier}/poster'}
-    except Exception:
-        path.unlink(missing_ok=True);(directory()/(identifier+'.jpg')).unlink(missing_ok=True);raise
-    finally:slots.release()
+    from meme_generator.features.storage import write_guard
+    with write_guard(user, len(raw) + 1024 * 1024, ingress=len(raw),media=True):
+        if not slots.acquire(False):raise HTTPException(503,'动态素材正在准备，请稍后再传')
+        identifier=uuid.uuid4().hex;path=directory()/(identifier+'.media')
+        try:
+            # Per-user rolling ingress budget, independent of unlimited meme generation.
+            recent=[p for p in directory().glob('*.json') if p.stat().st_mtime>time.time()-60]
+            if sum(json.loads(p.read_text()).get('user_id')==user for p in recent)>=4:raise HTTPException(429,'视频上传有点快，休息一分钟再来')
+            path.write_bytes(motion(raw))
+            info=json.loads(run(['ffprobe','-v','error','-protocol_whitelist','file,pipe','-show_streams','-show_format','-of','json',str(path)]))
+            stream=next((s for s in info['streams'] if s.get('codec_type')=='video'),None)
+            if not stream or stream.get('width',0)*stream.get('height',0)>33_200_000:raise HTTPException(422,'视频分辨率过高，先导出 1080p 再试试')
+            duration=float(info.get('format',{}).get('duration') or stream.get('duration') or 3)
+            if not .08<=duration<=1800:raise HTTPException(422,'请选择 30 分钟以内的视频')
+            poster=directory()/(identifier+'.jpg')
+            run(['ffmpeg','-nostdin','-v','error','-threads','2','-protocol_whitelist','file,pipe','-i',str(path),'-frames:v','1','-vf','scale=640:640:force_original_aspect_ratio=decrease','-y',str(poster)])
+            with open_image(poster) as image:width,height=image.size
+            meta={'user_id':user,'created':time.time(),'duration':duration,'width':width,'height':height}
+            (directory()/(identifier+'.json')).write_text(json.dumps(meta))
+            return {**{k:v for k,v in meta.items() if k not in ('user_id','created')},'asset_id':identifier,'poster_url':f'/studio/live/assets/{identifier}/poster'}
+        except Exception:
+            path.unlink(missing_ok=True);(directory()/(identifier+'.jpg')).unlink(missing_ok=True);raise
+        finally:slots.release()
 
 @router.get('/assets/{identifier}/poster')
 def poster(identifier:str,user=Depends(current_user)):
     own(identifier,user['id']);return FileResponse(directory()/(identifier+'.jpg'),media_type='image/jpeg',headers={'Cache-Control':'private, no-store'})
 
 class LiveJob(BaseModel):
+    quality:Literal['balanced','smooth','clear']='balanced'
     asset_id:str=Field(pattern='^[a-f0-9]{32}$')
     idempotency_key:str=Field(min_length=8,max_length=100)
     start:float=Field(default=0,ge=0,le=1800)
@@ -165,16 +172,19 @@ def render_job(payload,user):
         run(['ffmpeg','-nostdin','-v','error','-threads','2','-filter_threads','2','-protocol_whitelist','file,pipe','-ss',str(params.start),'-i',str(source),'-t',str(params.duration),'-an','-vf',','.join(filters),'-frames:v','90','-y',pattern],timeout=30)
         frames=[]
         for file in sorted(Path(temp).glob('frame-*.png')):
-            with Image.open(file) as image:frame=image.convert('RGB')
+            with open_image(file) as image:frame=image.convert('RGB')
             if params.text:paint_caption(frame,params.text,params.caption_style)
             frames.append(frame)
         if not frames:raise ValueError('视频没有可读取的画面')
-        return fit_gif(frames)
+        return fit_gif(frames,params.quality)
 
-def fit_gif(frames):
+def fit_gif(frames,quality='balanced'):
     """Keep the whole selected interval. Bound size by resolution as well as color/fps."""
     # Never ask users to redo a valid edit merely because a busy scene has more entropy.
-    for edge,stride,colors in ((240,1,128),(240,2,128),(200,2,96),(160,2,64),(120,2,64),(96,3,48),(64,3,32),(32,3,16)):
+    attempts=((240,1,128),(240,2,128),(200,2,96),(160,2,64),(120,2,64),(96,3,48),(64,3,32),(32,3,16))
+    if quality=='smooth':attempts=((240,1,128),(240,1,64),(200,1,64),(160,1,48),(120,1,32),(96,1,16))+attempts[1:]
+    if quality=='clear':attempts=((240,1,128),(240,2,128),(240,3,96),(240,3,64))+attempts[2:]
+    for edge,stride,colors in attempts:
         reduced=[]
         for frame in frames[::stride]:
             image=frame.copy();image.thumbnail((edge,edge),Image.Resampling.LANCZOS)

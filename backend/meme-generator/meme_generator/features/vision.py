@@ -1,4 +1,5 @@
 """Local CPU processing; never sends users' photos to a hosted API."""
+from meme_generator.safe_images import open_image
 
 import os
 from pathlib import Path
@@ -74,7 +75,7 @@ def extract(image):
 
 
 def process(path,*,subject_selected=False):
-    with Image.open(path) as original:
+    with open_image(path) as original:
         image = ImageOps.exif_transpose(original).convert("RGBA")
     analysis = {
         "processor_version": PROCESSOR_VERSION,

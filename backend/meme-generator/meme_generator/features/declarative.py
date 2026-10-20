@@ -1,4 +1,5 @@
 """Bounded template DSL; no executable model output or remote asset references."""
+from meme_generator.safe_images import open_image
 
 from io import BytesIO
 from pathlib import Path
@@ -84,7 +85,7 @@ def render(spec, images, texts=None, *, preview=False):
     spec = TemplateSpec.model_validate(spec)
     canvas = Image.new("RGBA", (spec.width, spec.height), spec.background)
     if preview and spec.reference_asset:
-        with Image.open(root()/'template_assets'/(spec.reference_asset+'.png')) as reference:
+        with open_image(root()/'template_assets'/(spec.reference_asset+'.png')) as reference:
             canvas.alpha_composite(reference.convert('RGBA'))
     for layer in spec.layers:
         x, y, w, h = layer.box
@@ -102,7 +103,7 @@ def render(spec, images, texts=None, *, preview=False):
                     raise ValueError("missing subject")
                 image = images[layer.slot].convert("RGBA")
             else:
-                with Image.open(
+                with open_image(
                     root() / "template_assets" / (layer.value + ".png")
                 ) as source:
                     image = source.convert("RGBA")
@@ -154,7 +155,7 @@ def add_attribution(output, metadata):
         return output
     if not metadata.get("source_url"):
         return output
-    with Image.open(output) as original:
+    with open_image(output) as original:
         # Credits must be applied to each frame, never flatten a GIF to its cover.
         from PIL import ImageSequence
         frames=[];durations=[]

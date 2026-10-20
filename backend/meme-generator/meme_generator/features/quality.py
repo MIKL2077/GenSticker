@@ -1,4 +1,5 @@
 """Cheap intent-preserving conversion gates, without a paid vision model."""
+from meme_generator.safe_images import open_image, open_input_image
 import hashlib
 import json
 import re
@@ -44,18 +45,19 @@ def recognize(image):
     return recognized or []
 
 
-def convert_caption(raw, metadata, *, publish_result=True):
+def convert_caption(raw, metadata, *, publish_result=True, allow_draft=False):
     """Keep original expression/action intact; expose only reliable edge captions."""
     import cv2
-    with Image.open(BytesIO(raw)) as original:
+    with open_input_image(BytesIO(raw)) as original:
         if getattr(original,'n_frames',1)>1:raise ValueError('animated intent requires a dedicated converter')
         if original.width*original.height>16000000:raise ValueError('image too large')
         image=original.convert('RGB');image.thumbnail((768,768))
     if min(image.size)<64:raise ValueError('image too small')
     mask=np.zeros((image.height,image.width),dtype='uint8')
-    defaults=[];layers=[]
+    defaults=[];layers=[];confidences=[]
+    threshold=.80 if allow_draft and not publish_result else .95
     for polygon,caption,confidence in recognize(image):
-        if confidence<.95 or not 2<=len(caption)<=100:continue
+        if confidence<threshold or not 2<=len(caption)<=100:continue
         points=np.asarray(polygon,dtype='int32');x0,y0=points.min(axis=0);x1,y1=points.max(axis=0)
         x0,y0=max(0,int(x0)),max(0,int(y0));x1,y1=min(image.width,int(x1)),min(image.height,int(y1))
         if x1-x0<20 or y1-y0<12:continue
@@ -68,7 +70,7 @@ def convert_caption(raw, metadata, *, publish_result=True):
         if style:
             # A reviewed style is explicit local input, not inferred model code.
             layers[-1].update({k:style[k] for k in ('color','weight','align','stroke_color','stroke_width','font_size') if k in style})
-        defaults.append(caption)
+        defaults.append(caption);confidences.append(float(confidence))
     if not defaults or not REACTIONS.search(' '.join(defaults)):raise ValueError('reaction intent not confidently recoverable')
     if np.mean(mask>0)>.22:raise ValueError('caption removal would change too much of the scene')
     phash,signature=duplicate(image,defaults)
@@ -79,14 +81,15 @@ def convert_caption(raw, metadata, *, publish_result=True):
     asset_path=directory/(asset+'.png');existed=asset_path.exists();asset_path.write_bytes(output.getvalue())
     try:
         spec=TemplateSpec.model_validate({'width':image.width,'height':image.height,'layers':[{'type':'asset','box':[0,0,image.width,image.height],'value':asset}]+layers,'defaults':defaults}).model_dump()
-        rebuilt=Image.open(render(spec,[],defaults)).convert('RGB')
+        rebuilt=open_image(render(spec,[],defaults)).convert('RGB')
         error=float(np.abs(np.asarray(image.resize((128,128))).astype('float32')-np.asarray(rebuilt.resize((128,128))).astype('float32')).mean())
         if error>12:raise ValueError('caption reconstruction changes source intent layout')
         # All non-caption pixels are preserved in the lossless background asset.
         protected_error=float(np.abs(source.astype('float32')-np.array(background).astype('float32'))[mask==0].mean())
         if protected_error>.1:raise ValueError('protected expression or action changed')
         digest=hashlib.sha256(raw).hexdigest()
-        metadata={**metadata,'name':defaults[0][:40], 'min_images':0,'max_images':0,'min_texts':len(defaults),'max_texts':len(defaults),'default_texts':defaults,'tags':metadata.get('tags') or emotion_tags(' '.join(defaults)), 'original_hash':digest,'perceptual_hash':phash,'intent_signature':signature,'conversion':'caption-preserved-v2','intent':{'caption':defaults,'fixed':'original expression, action and scene','replaceable':'edge captions only'},'quality':{'round_trip_mae':round(error,2),'protected_pixel_mae':round(protected_error,3),'ocr_min_confidence':.95,'method':'conservative-local-gates'},'quality_score':round(max(0,1-error/12),3)}
+        metadata={**metadata,'name':defaults[0][:40], 'min_images':0,'max_images':0,'min_texts':len(defaults),'max_texts':len(defaults),'default_texts':defaults,'tags':metadata.get('tags') or emotion_tags(' '.join(defaults)), 'original_hash':digest,'perceptual_hash':phash,'intent_signature':signature,'conversion':'caption-preserved-v2','intent':{'caption':defaults,'fixed':'original expression, action and scene','replaceable':'edge captions only'},'quality':{'round_trip_mae':round(error,2),'protected_pixel_mae':round(protected_error,3),'ocr_min_confidence':threshold,'observed_min_confidence':min(confidences),'method':'conservative-local-gates'},'quality_score':round(max(0,1-error/12),3)}
+        metadata['requires_review']=bool(min(confidences)<.95)
         if publish_result:
             publish('auto_'+digest[:24],metadata,spec)
             return spec

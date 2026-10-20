@@ -1,4 +1,5 @@
 """Template replacement guides and private transient foreground delivery."""
+from meme_generator.safe_images import open_image
 import hashlib,json,secrets,time,threading
 from collections import OrderedDict
 from io import BytesIO
@@ -39,7 +40,7 @@ def guide(key,request):
         meta=json.loads(row['metadata']);spec=json.loads(row['spec']) if row.get('spec') else None
         slots=min(10,meta.get('max_images',1));samples=[Image.new('RGBA',(256,256),'white') for _ in range(max(1,slots))]
         if spec:
-            plate=Image.open(render(spec,samples)).convert('RGBA');windows=[]
+            plate=open_image(render(spec,samples)).convert('RGBA');windows=[]
             for layer in spec['layers']:
                 if layer['type'] in ('subject','face'):windows.append({'slot':layer['slot'],'box':layer['box']})
             alpha=Image.new('L',plate.size,255)
@@ -51,11 +52,11 @@ def guide(key,request):
         else:
             refresh();meme=get_meme(key);texts=meta.get('default_texts',[]) or ['示例文字']*meta.get('min_texts',0)
             base=meme(images=[_png(i) for i in samples[:slots]],texts=texts,args={})
-            plate=Image.open(base).convert('RGBA');windows=[];alpha=np.full((plate.height,plate.width),255,dtype='uint8')
+            plate=open_image(base).convert('RGBA');windows=[];alpha=np.full((plate.height,plate.width),255,dtype='uint8')
             import cv2
             for slot in range(slots):
                 inputs=[_png(i) for i in samples[:slots]];inputs[slot]=_png(Image.new('RGBA',(256,256),'black'))
-                other=Image.open(meme(images=inputs,texts=texts,args={})).convert('RGBA')
+                other=open_image(meme(images=inputs,texts=texts,args={})).convert('RGBA')
                 if other.size!=plate.size:continue
                 diff=np.max(np.abs(np.array(plate.convert('RGB')).astype('int16')-np.array(other.convert('RGB')).astype('int16')),axis=2)>30
                 coverage=float(diff.mean())

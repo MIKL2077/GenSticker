@@ -1,4 +1,5 @@
 """WeChat identity and a user-scoped template library. No uploaded images are stored."""
+from meme_generator.safe_images import open_input_image
 import base64
 import binascii
 from io import BytesIO
@@ -64,6 +65,14 @@ def current_user(credentials: HTTPAuthorizationCredentials = Depends(bearer)):
         row = db.execute('SELECT user_id FROM sessions WHERE hash=? AND expires>?', (digest, int(time.time()))).fetchone()
         if not row:
             raise HTTPException(401, '登录已过期，请重新登录', headers={'WWW-Authenticate': 'Bearer'})
+        from .features.store import connect
+        features = connect()
+        try:
+            exists = features.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='deleted_accounts'").fetchone()
+            if exists and features.execute('SELECT 1 FROM deleted_accounts WHERE user_id=?', (row['user_id'],)).fetchone():
+                raise HTTPException(401, '账号已注销，请重新登录')
+        finally:
+            features.close()
         return {'id': row['user_id'], 'token_hash': digest}
     finally:
         db.close()
@@ -154,7 +163,7 @@ def update_profile(params: ProfileRequest, user=Depends(current_user)):
     if params.avatar is not None:
         try:
             raw = base64.b64decode(params.avatar, validate=True)
-            with Image.open(BytesIO(raw)) as image:
+            with open_input_image(BytesIO(raw)) as image:
                 if image.width * image.height > 16000000:
                     raise ValueError('image too large')
                 image.thumbnail((128, 128))

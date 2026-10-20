@@ -1,3 +1,4 @@
+from meme_generator.safe_images import open_image
 import json
 import hashlib
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -174,12 +175,14 @@ def run_job(job):
             processed.is_file()
             and cached_analysis.get("processor_version") == PROCESSOR_VERSION
         ):
-            subject = Image.open(processed).convert("RGBA")
+            subject = open_image(processed).convert("RGBA")
             analysis = cached_analysis
         else:
             subject, analysis = process(asset["path"],subject_selected=True) if Path(asset["path"]).stem.endswith(".selected") else process(asset["path"])
-            subject.save(processed, "PNG")
-            analysis_file.write_text(json.dumps(analysis, ensure_ascii=False))
+            from .storage import write_bytes
+            prepared=BytesIO();subject.save(prepared,"PNG")
+            write_bytes(processed,prepared.getvalue(),job["user_id"])
+            write_bytes(analysis_file,json.dumps(analysis,ensure_ascii=False).encode(),job["user_id"])
         buf = BytesIO()
         subject.save(buf, "PNG")
         raw = buf.getvalue()
@@ -212,7 +215,7 @@ def run_job(job):
                 )
             output = add_attribution(output, metadata)
             from .animation import save_result_files
-            path,preview=save_result_files(output,directory,slot)
+            path,preview=save_result_files(output,directory,slot,job["user_id"])
             return slot, row, metadata, path, preview
 
         used = {r['key'] for r in db.execute('SELECT key FROM results WHERE job_id=?', (job['id'],))}

@@ -1,4 +1,5 @@
 """Keep animated template results animated; small previews retain timing."""
+from meme_generator.safe_images import open_image
 import math
 from io import BytesIO
 from PIL import Image,ImageSequence
@@ -18,9 +19,16 @@ def gif_frames(original,edge=192,max_frames=40):
 def save_gif(frames,durations,target,loop=0):
     frames[0].save(target,'GIF',save_all=True,append_images=frames[1:],duration=durations,loop=loop,optimize=True,disposal=2)
 
-def save_result_files(output,directory,slot):
+def save_result_files(output,directory,slot,user_id=None):
+    from .storage import write_guard
+    from contextlib import nullcontext
+    guard = write_guard(user_id, len(output.getvalue()) + 512*1024) if user_id else nullcontext()
+    with guard:
+        return _save_result_files(output,directory,slot)
+
+def _save_result_files(output,directory,slot):
     output.seek(0)
-    with Image.open(output) as original:
+    with open_image(output) as original:
         if getattr(original,'is_animated',False):
             path=directory/f'{slot}.gif';preview=directory/f'{slot}-preview.gif'
             frames,durations=gif_frames(original)

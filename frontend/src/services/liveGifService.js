@@ -82,9 +82,11 @@ export function resizeRgba(input,width,height,outWidth,outHeight) {
   }
   return output
 }
-export async function encodeGifFrames(frames,width,height,onProgress=()=>{},cancelled) {
+export async function encodeGifFrames(frames,width,height,onProgress=()=>{},cancelled,quality='balanced') {
   // Start at 128 colors. Reduce fps, then palette, preserving the selected duration.
-  for(const [stride,colors,edge] of [[1,128,240],[2,128,240],[2,64,180],[2,64,120],[3,32,96],[3,16,32]]) {
+  const balanced=[[1,128,240],[2,128,240],[2,64,180],[2,64,120],[3,32,96],[3,16,32]]
+  const attempts=quality==='smooth'?[[1,128,240],[1,64,240],[1,64,200],[1,48,160],[1,32,120],[1,16,96],...balanced.slice(1)]:quality==='clear'?[[1,128,240],[2,128,240],[3,96,240],[3,64,240],...balanced.slice(2)]:balanced
+  for(const [stride,colors,edge] of attempts) {
     const scale=Math.min(1,edge/Math.max(width,height)),outWidth=Math.max(2,Math.round(width*scale)),outHeight=Math.max(2,Math.round(height*scale))
     const encoder=GIFEncoder()
     for(let i=0;i<frames.length;i+=stride){
@@ -113,7 +115,7 @@ export async function renderLocalGif(path, options, onProgress=()=>{}, cancelled
       width=geo.width;height=geo.height;frames.push(output.getContext('2d').getImageData(0,0,width,height).data)
       onProgress(Math.round(65*(i+1)/count));await pause(0)
     }
-    const result=await encodeGifFrames(frames,width,height,onProgress,isCancelled)
+    const result=await encodeGifFrames(frames,width,height,onProgress,isCancelled,options.quality)
     checkCancelled(cancelled)
     let resultPath
     if(typeof document !== 'undefined')resultPath=registerTemporary(URL.createObjectURL(new Blob([result.bytes],{type:'image/gif'})))

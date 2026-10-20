@@ -1,3 +1,4 @@
+from meme_generator.safe_images import open_image, open_input_image
 import asyncio
 import hashlib
 import json
@@ -44,7 +45,7 @@ def normalize(raw):
     if len(raw) > 3 * 1024 * 1024:
         raise HTTPException(413, "照片不能超过3MB，请压缩后上传")
     try:
-        with Image.open(BytesIO(raw)) as original:
+        with open_input_image(BytesIO(raw)) as original:
             if original.width * original.height > 24000000:
                 raise ValueError("too many pixels")
             image = ImageOps.exif_transpose(original).convert("RGBA")
@@ -59,44 +60,46 @@ def normalize(raw):
 
 @router.post("/assets", status_code=201)
 async def upload(file: UploadFile = File(...), subject_selected:bool=Form(default=False), user=Depends(current_user)):
+    from meme_generator.features.storage import write_guard
     raw = await file.read(3 * 1024 * 1024 + 1)
     if normalization_slots.locked():
         raise HTTPException(503, "照片处理繁忙，请稍后重试")
     async with normalization_slots:
         normalized = await asyncio.to_thread(normalize, raw)
-    identifier = uuid.uuid4().hex
-    db = connect()
-    try:
-        digest = hashlib.sha256(normalized+(b':user-selected' if subject_selected else b'')).hexdigest()
-        duplicate = db.execute(
-            "SELECT * FROM assets WHERE user_id=? AND hash=? AND created>?",
-            (user["id"], digest, time.time() - 86400),
-        ).fetchone()
-        if duplicate and Path(duplicate["path"]).is_file():
-            return {
-                "asset_id": duplicate["id"],
-                "expires_at": duplicate["created"] + 86400,
-            }
-        if db.execute(
-            "SELECT COUNT(*) FROM assets WHERE user_id=? AND created>?",
-            (user["id"], time.time() - 60),
-        ).fetchone()[0] >= 6:
-            raise HTTPException(429, "上传太快啦，请一分钟后再试")
-        directory = root() / "private" / user["id"]
-        directory.mkdir(parents=True, exist_ok=True, mode=0o700)
-        path = directory / (identifier + (".selected.png" if subject_selected else ".png"))
-        path.write_bytes(normalized)
-        thumbs=root()/"history_thumbs";thumbs.mkdir(exist_ok=True)
-        with Image.open(BytesIO(normalized)) as image:
-            image.thumbnail((160,160));image.convert("RGB").save(thumbs/(identifier+".jpg"),"JPEG",quality=70)
-        with db:
-            db.execute(
-                "INSERT INTO assets VALUES(?,?,?,?,?)",
-                (identifier, user["id"], digest, time.time(), str(path)),
-            )
-    finally:
-        db.close()
-    return {"asset_id": identifier, "expires_at": time.time() + 86400}
+    with write_guard(user['id'], len(normalized) + 65536, ingress=len(raw),photo=True):
+        identifier = uuid.uuid4().hex
+        db = connect()
+        try:
+            digest = hashlib.sha256(normalized+(b':user-selected' if subject_selected else b'')).hexdigest()
+            duplicate = db.execute(
+                "SELECT * FROM assets WHERE user_id=? AND hash=? AND created>?",
+                (user["id"], digest, time.time() - 86400),
+            ).fetchone()
+            if duplicate and Path(duplicate["path"]).is_file():
+                return {
+                    "asset_id": duplicate["id"],
+                    "expires_at": duplicate["created"] + 86400,
+                }
+            if db.execute(
+                "SELECT COUNT(*) FROM assets WHERE user_id=? AND created>?",
+                (user["id"], time.time() - 60),
+            ).fetchone()[0] >= 6:
+                raise HTTPException(429, "上传太快啦，请一分钟后再试")
+            directory = root() / "private" / user["id"]
+            directory.mkdir(parents=True, exist_ok=True, mode=0o700)
+            path = directory / (identifier + (".selected.png" if subject_selected else ".png"))
+            path.write_bytes(normalized)
+            thumbs=root()/"history_thumbs";thumbs.mkdir(exist_ok=True)
+            with open_image(BytesIO(normalized)) as image:
+                image.thumbnail((160,160));image.convert("RGB").save(thumbs/(identifier+".jpg"),"JPEG",quality=70)
+            with db:
+                db.execute(
+                    "INSERT INTO assets VALUES(?,?,?,?,?)",
+                    (identifier, user["id"], digest, time.time(), str(path)),
+                )
+        finally:
+            db.close()
+        return {"asset_id": identifier, "expires_at": time.time() + 86400}
 
 
 # Detection is transient: return coordinates and discard photo bytes.
@@ -114,7 +117,7 @@ async def detect_subjects(file:UploadFile=File(...),user=Depends(current_user)):
     if normalization_slots.locked():raise HTTPException(503,'主体检测繁忙，可先手动框选')
     def detect():
         normalized=normalize(raw)
-        with Image.open(BytesIO(normalized)) as image:
+        with open_image(BytesIO(normalized)) as image:
             from .portrait import candidate_boxes
             return {'candidates':candidate_boxes(image),'method':'server-opencv'}
     async with normalization_slots:return await asyncio.to_thread(detect)
@@ -130,7 +133,7 @@ def source_preview(identifier:str,user=Depends(current_user)):
             source=db.execute('SELECT path FROM assets WHERE id=? AND user_id=?',(job['asset_id'],user['id'])).fetchone()
             if not source or not Path(source['path']).exists():raise HTTPException(404,'原图缩略图已过期')
             path.parent.mkdir(exist_ok=True)
-            with Image.open(source['path']) as image:
+            with open_image(source['path']) as image:
                 image.thumbnail((160,160));image.convert('RGB').save(path,'JPEG',quality=70)
         return FileResponse(path,media_type='image/jpeg',headers={'Cache-Control':'private, no-store'})
     finally:db.close()
@@ -170,110 +173,112 @@ class CreateJob(BaseModel):
 
 @router.post("/jobs", status_code=202)
 def create(params: CreateJob, user=Depends(current_user)):
-    db = connect()
-    stamp = time.time()
-    identifier = uuid.uuid4().hex
-    try:
-        with db:
-            db.execute("BEGIN IMMEDIATE")
-            old = db.execute(
-                "SELECT * FROM jobs WHERE user_id=? AND idempotency=?",
-                (user["id"], params.idempotency_key),
-            ).fetchone()
-            if old:
-                variation = db.execute(
-                    "SELECT parent_id FROM job_variations WHERE job_id=?", (old["id"],)
+    from .storage import write_guard
+    with write_guard(user['id'], 5 * 1024 * 1024,job=True):
+        db = connect()
+        stamp = time.time()
+        identifier = uuid.uuid4().hex
+        try:
+            with db:
+                db.execute("BEGIN IMMEDIATE")
+                old = db.execute(
+                    "SELECT * FROM jobs WHERE user_id=? AND idempotency=?",
+                    (user["id"], params.idempotency_key),
                 ).fetchone()
-                same_photo = not params.asset_id or old["asset_id"] == params.asset_id
-                same_parent = (variation["parent_id"] if variation else None) == params.previous_job_id
-                if not same_photo or not same_parent:
-                    raise HTTPException(409, "重试标识与照片不一致")
-                return {"job_id": old["id"], "status": old["status"]}
-            asset_id = params.asset_id
-            excluded, previous = set(), set()
-            if params.previous_job_id:
-                parent = owned(db, params.previous_job_id, user)
-                if parent["status"] not in ("completed", "failed"):
-                    raise HTTPException(409, "上一批还在生成，请稍候")
-                if asset_id and asset_id != parent["asset_id"]:
-                    raise HTTPException(409, "换一批需要使用同一张照片")
-                asset_id = parent["asset_id"]
-                previous = {
-                    r["key"] for r in db.execute(
-                        "SELECT key FROM results WHERE job_id=?", (parent["id"],)
-                    )
-                }
-                prior = db.execute(
-                    "SELECT excluded_keys FROM job_variations WHERE job_id=?", (parent["id"],)
+                if old:
+                    variation = db.execute(
+                        "SELECT parent_id FROM job_variations WHERE job_id=?", (old["id"],)
+                    ).fetchone()
+                    same_photo = not params.asset_id or old["asset_id"] == params.asset_id
+                    same_parent = (variation["parent_id"] if variation else None) == params.previous_job_id
+                    if not same_photo or not same_parent:
+                        raise HTTPException(409, "重试标识与照片不一致")
+                    return {"job_id": old["id"], "status": old["status"]}
+                asset_id = params.asset_id
+                excluded, previous = set(), set()
+                if params.previous_job_id:
+                    parent = owned(db, params.previous_job_id, user)
+                    if parent["status"] not in ("completed", "failed"):
+                        raise HTTPException(409, "上一批还在生成，请稍候")
+                    if asset_id and asset_id != parent["asset_id"]:
+                        raise HTTPException(409, "换一批需要使用同一张照片")
+                    asset_id = parent["asset_id"]
+                    previous = {
+                        r["key"] for r in db.execute(
+                            "SELECT key FROM results WHERE job_id=?", (parent["id"],)
+                        )
+                    }
+                    prior = db.execute(
+                        "SELECT excluded_keys FROM job_variations WHERE job_id=?", (parent["id"],)
+                    ).fetchone()
+                    excluded = set(json.loads(prior["excluded_keys"])) if prior else set()
+                    excluded.update(previous)
+                if not asset_id:
+                    raise HTTPException(422, "请上传照片或选择上一批生成记录")
+                heartbeat = db.execute("SELECT * FROM worker_state WHERE id=1").fetchone()
+                if not heartbeat or heartbeat["updated"] < stamp - 60:
+                    raise HTTPException(503, "生成服务正在准备，请稍后再试")
+                asset = db.execute(
+                    "SELECT * FROM assets WHERE id=? AND user_id=? AND created>?",
+                    (asset_id, user["id"], stamp - 86400),
                 ).fetchone()
-                excluded = set(json.loads(prior["excluded_keys"])) if prior else set()
-                excluded.update(previous)
-            if not asset_id:
-                raise HTTPException(422, "请上传照片或选择上一批生成记录")
-            heartbeat = db.execute("SELECT * FROM worker_state WHERE id=1").fetchone()
-            if not heartbeat or heartbeat["updated"] < stamp - 60:
-                raise HTTPException(503, "生成服务正在准备，请稍后再试")
-            asset = db.execute(
-                "SELECT * FROM assets WHERE id=? AND user_id=? AND created>?",
-                (asset_id, user["id"], stamp - 86400),
-            ).fetchone()
-            if not asset:
-                raise HTTPException(404, "照片不存在或已过期，请重新上传")
-            if db.execute(
-                "SELECT 1 FROM jobs WHERE user_id=? AND status IN ('queued','running')",
-                (user["id"],),
-            ).fetchone():
-                raise HTTPException(409, "已有任务正在生成，请稍候")
-            if (
+                if not asset:
+                    raise HTTPException(404, "照片不存在或已过期，请重新上传")
+                if db.execute(
+                    "SELECT 1 FROM jobs WHERE user_id=? AND status IN ('queued','running')",
+                    (user["id"],),
+                ).fetchone():
+                    raise HTTPException(409, "已有任务正在生成，请稍候")
+                if (
+                    db.execute(
+                        "SELECT COUNT(*) FROM jobs WHERE status IN ('queued','running')"
+                    ).fetchone()[0]
+                    >= 10
+                ):
+                    raise HTTPException(503, "服务繁忙，请稍后再试")
+                if USER_LIMIT and (
+                    db.execute(
+                        "SELECT COUNT(*) FROM quotas WHERE user_id=? AND day=? AND status!='refunded'",
+                        (user["id"], day()),
+                    ).fetchone()[0]
+                    >= USER_LIMIT
+                ):
+                    raise HTTPException(429, "今日次数已用完，明天再来试试")
+                if GLOBAL_LIMIT and (
+                    db.execute(
+                        "SELECT COUNT(*) FROM quotas WHERE day=? AND status!='refunded'",
+                        (day(),),
+                    ).fetchone()[0]
+                    >= GLOBAL_LIMIT
+                ):
+                    raise HTTPException(429, "今天服务额度已用完，请明天再试")
+                admit_generation(db, user['id'], identifier, stamp)
                 db.execute(
-                    "SELECT COUNT(*) FROM jobs WHERE status IN ('queued','running')"
-                ).fetchone()[0]
-                >= 10
-            ):
-                raise HTTPException(503, "服务繁忙，请稍后再试")
-            if USER_LIMIT and (
-                db.execute(
-                    "SELECT COUNT(*) FROM quotas WHERE user_id=? AND day=? AND status!='refunded'",
-                    (user["id"], day()),
-                ).fetchone()[0]
-                >= USER_LIMIT
-            ):
-                raise HTTPException(429, "今日次数已用完，明天再来试试")
-            if GLOBAL_LIMIT and (
-                db.execute(
-                    "SELECT COUNT(*) FROM quotas WHERE day=? AND status!='refunded'",
-                    (day(),),
-                ).fetchone()[0]
-                >= GLOBAL_LIMIT
-            ):
-                raise HTTPException(429, "今天服务额度已用完，请明天再试")
-            admit_generation(db, user['id'], identifier, stamp)
-            db.execute(
-                "INSERT INTO jobs(id,user_id,idempotency,asset_id,day,status,created,updated,algorithm) VALUES(?,?,?,?,?,?,?,?,?)",
-                (
-                    identifier,
-                    user["id"],
-                    params.idempotency_key,
-                    asset_id,
-                    day(),
-                    "queued",
-                    stamp,
-                    stamp,
-                    "rotation-history-v4",
-                ),
-            )
-            db.execute(
-                "INSERT INTO quotas VALUES(?,?,?,?)",
-                (identifier, user["id"], day(), "reserved"),
-            )
-            if params.previous_job_id:
-                db.execute(
-                    "INSERT INTO job_variations VALUES(?,?,?,?)",
-                    (identifier, params.previous_job_id, json.dumps(sorted(excluded)), json.dumps(sorted(previous))),
+                    "INSERT INTO jobs(id,user_id,idempotency,asset_id,day,status,created,updated,algorithm) VALUES(?,?,?,?,?,?,?,?,?)",
+                    (
+                        identifier,
+                        user["id"],
+                        params.idempotency_key,
+                        asset_id,
+                        day(),
+                        "queued",
+                        stamp,
+                        stamp,
+                        "rotation-history-v4",
+                    ),
                 )
-        return {"job_id": identifier, "status": "queued"}
-    finally:
-        db.close()
+                db.execute(
+                    "INSERT INTO quotas VALUES(?,?,?,?)",
+                    (identifier, user["id"], day(), "reserved"),
+                )
+                if params.previous_job_id:
+                    db.execute(
+                        "INSERT INTO job_variations VALUES(?,?,?,?)",
+                        (identifier, params.previous_job_id, json.dumps(sorted(excluded)), json.dumps(sorted(previous))),
+                    )
+            return {"job_id": identifier, "status": "queued"}
+        finally:
+            db.close()
 
 
 def owned(db, identifier, user):

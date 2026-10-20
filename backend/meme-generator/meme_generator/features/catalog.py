@@ -1,3 +1,4 @@
+from meme_generator.safe_images import open_image
 import os
 from pathlib import Path
 import hashlib
@@ -33,6 +34,10 @@ def emotion_tags(name):
 
 
 def publish(key, metadata, spec=None, *, minimum_version=1):
+    db=connect()
+    try:blocked=db.execute('SELECT 1 FROM template_blocks WHERE key=?',(key,)).fetchone()
+    finally:db.close()
+    if blocked:raise ValueError('template blocked by operator')
     retired=json.loads(Path(__file__).with_name("template_policy.json").read_text())["retired_keys"]
     if key in retired:
         raise ValueError("template withdrawn by owner")
@@ -81,7 +86,11 @@ def publish(key, metadata, spec=None, *, minimum_version=1):
 
 
 def bootstrap():
+    db=connect()
+    try:blocked={r[0] for r in db.execute('SELECT key FROM template_blocks')}
+    finally:db.close()
     for meme in get_memes():
+        if meme.key in blocked:continue
         if meme.key.startswith("auto_"):
             continue
         p = meme.params_type
@@ -90,6 +99,8 @@ def bootstrap():
             meme.key,
             {
                 "name": name,
+                "input_hint": "每张图片填写一个对应名字，按上传顺序填写" if meme.key=='always_like' else "请填写图片里主角的名字" if meme.key in {'alipay','ask','google_captcha','make_friend','wechat_pay','why_have_hands'} else '',
+
                 "tags": sorted(set(meme.tags) | set(emotion_tags(name))),
                 "min_images": p.min_images,
                 "max_images": p.max_images,
@@ -119,8 +130,19 @@ def rows():
 
 
 def refresh():
+    published = rows()
+    db=connect()
+    try:blocked={r[0] for r in db.execute('SELECT key FROM template_blocks')}
+    finally:db.close()
+    published=[row for row in published if row['key'] not in blocked]
+    current = {row['key'] for row in published}
+    from .. import manager
+    for key in set(loaded_versions) | blocked:
+        if key not in current:
+            manager._memes.pop(key, None)
+            loaded_versions.pop(key, None)
     keys = set(get_meme_keys())
-    for row in rows():
+    for row in published:
         if not row["spec"] or loaded_versions.get(row["key"]) == row["version"]:
             continue
         spec = json.loads(row["spec"])
@@ -219,7 +241,7 @@ def thumbnail(key):
     output = render(
         json.loads(r["spec"]), [Image.new("RGBA", (256, 256), "#ffcbad")] * 2, preview=True
     )
-    with Image.open(output) as image:
+    with open_image(output) as image:
         image.thumbnail((256, 256))
         from io import BytesIO
 

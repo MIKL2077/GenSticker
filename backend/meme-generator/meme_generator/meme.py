@@ -18,6 +18,7 @@ from .exception import (
     TextOrNameNotEnough,
 )
 from .utils import random_image, random_text
+from .safe_images import open_input_image
 
 
 class UserInfo(BaseModel):
@@ -139,7 +140,7 @@ class Meme:
             for image in images:
                 if isinstance(image, bytes):
                     image = BytesIO(image)
-                imgs.append(BuildImage.open(image))
+                imgs.append(BuildImage(open_input_image(image)))
         except Exception as e:
             raise OpenImageFailed(str(e))
 

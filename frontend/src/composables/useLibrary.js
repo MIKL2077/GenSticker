@@ -104,6 +104,7 @@ async function loginWeChat() {
   if (loggingIn.value) return
   loggingIn.value = true
   try {
+    if(typeof wx!=='undefined'&&wx.requirePrivacyAuthorize)await new Promise((resolve,reject)=>wx.requirePrivacyAuthorize({success:resolve,fail:()=>reject(new Error('请先阅读并同意微信隐私保护指引，之后再登录'))}))
     const config = await prefetchLogin()
     if (!config.login_enabled) throw new Error('微信登录尚未配置；历史与收藏仍可在本机使用')
     // #ifndef MP-WEIXIN

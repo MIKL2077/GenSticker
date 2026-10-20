@@ -1,0 +1,7 @@
+[Unit]
+Description=GenSticker combined budget on a shared four-core host
+[Slice]
+CPUQuota=200%
+MemoryHigh=3G
+MemoryMax=4G
+TasksMax=192

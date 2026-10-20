@@ -70,7 +70,7 @@ add_meme(
     google_captcha,
     min_images=1,
     max_images=1,
-    min_texts=0,
+    min_texts=1,
     max_texts=1,
     keywords=["谷歌验证码"],
     date_created=datetime(2024, 8, 15),

@@ -24,7 +24,7 @@
      <view v-if="tool==='crop'" class="crop-tools"><button class="crop-tool" @click="setRatio(1)">1:1</button><button class="crop-tool" @click="setRatio(.75)">3:4</button><button class="crop-tool" @click="setRatio(4/3)">4:3</button><button class="crop-tool" @click="rotation=(rotation+90)%360;crop=[0,0,1,1]">↻ 旋转</button><button class="crop-tool" @click="flip=!flip">⇆ 翻转</button><button class="crop-tool" @click="crop=[0,0,1,1];rotation=0;flip=false">复位</button></view>
      <view v-if="tool==='text'" class="text-tools"><input v-model="caption" maxlength="60" placeholder="加一句自己的梗，再拖动文字摆位置" :adjust-position="false" :hold-keyboard="true" confirm-type="done" @confirm="hideTextKeyboard"/><view class="text-palette"><button v-for="color in textColors" :key="color" :class="{chosen:captionStyle.color===color}" :style="{background:color}" :aria-label="'文字颜色 '+color" @click="captionStyle.color=color"/><button class="text-format" @click="captionStyle.bold=!captionStyle.bold">{{captionStyle.bold?'粗体':'常规'}}</button><button class="text-format" @click="cycleBackground">T 背景</button></view><view class="text-size"><text>字号</text><slider :value="Math.round(captionStyle.size*100)" :min="5" :max="25" :step="1" :block-size="16" activeColor="#f37557" @changing="captionStyle.size=$event.detail.value/100" @change="captionStyle.size=$event.detail.value/100"/><button @click="captionStyle.x=.5;captionStyle.y=.82">归位</button></view></view>
      <view class="tool-tabs"><button class="dock-tab" @click="changeClip"><ui-icon name="video" tone="accent"/><text>片段</text></button><button class="dock-tab" :class="{active:tool==='crop'}" @click="setTool('crop')"><ui-icon name="crop" tone="accent"/><text>裁剪</text></button><button class="dock-tab" :class="{active:tool==='text'}" @click="setTool('text')"><text class="text-icon">T</text><text>文字</text></button></view>
-     <button class="generate-button" :disabled="working||picking" :loading="working" @click="generate">{{working?progressText:'生成我的 GIF'}}</button><text class="export-hint">保留完整片段 · 自动压缩至 500 KB 内</text>
+     <view class="quality-choices"><button v-for="q in qualities" :key="q.id" :class="{chosen:quality===q.id}" :disabled="working" @click="quality=q.id">{{q.label}}</button></view><button class="generate-button" :disabled="working||picking" :loading="working" @click="generate">{{working?progressText:'生成我的 GIF'}}</button><text class="export-hint">建议选 3～6 秒 · 流畅优先可能缩小画面，清晰优先可能减少帧数</text>
     </view>
    </view>
    <view v-if="error" class="editor-error"><text>{{error}}</text><button @click="error=''">×</button></view>
@@ -53,6 +53,7 @@ const previewHeight=computed(()=>keyboardHeight.value?Math.max(80,Math.min(250,w
 const hideTextKeyboard=()=>{keyboardHeight.value=0;try{const task=uni.hideKeyboard?.();task?.catch?.(()=>{})}catch(_){}}
 const setTool=value=>{if(value!=='text')hideTextKeyboard();tool.value=value}
 const cycleBackground=()=>{const values=['none','dark','light','color'];captionStyle.value.background=values[(values.indexOf(captionStyle.value.background)+1)%values.length]}
+const quality=ref('balanced'),qualities=[{id:'balanced',label:'均衡'},{id:'smooth',label:'流畅优先'},{id:'clear',label:'清晰优先'}]
 const {session,loginWeChat}=useLibrary(),source=ref(null),mediaPath=ref(''),poster=ref(''),phase=ref('trim'),clip=ref({start:0,duration:3}),crop=ref([0,0,1,1]),rotation=ref(0),flip=ref(false),caption=ref(''),tool=ref('crop'),error=ref(''),working=ref(false),picking=ref(false),progressText=ref('')
 let disposed=false,backgrounded=false,localJob=null,localJobKey='',originalFile=null,wasNativeTrim=false,epoch=0,asset=null,assetOwner='',requestKey='',upload=null,postedJob=null
 const keyboardChanged=event=>{keyboardHeight.value=!disposed&&source.value&&tool.value==='text'&&!working.value?Math.max(0,event.height||0):0}
@@ -94,7 +95,7 @@ const generate=async()=>{
   if(!owner||!token)throw Error('登录尚未完成，请重试')
   if(postedJob){if(postedJob.resultPath){resultPath.value=postedJob.resultPath;return}showPreview.value=false;uni.showToast({title:'任务仍在队列中继续制作',icon:'none'});return}
   if(!requestKey)requestKey=uniqueKey()
-  const key=requestKey,options={...clip.value,crop:crop.value,rotation:rotation.value,flip:flip.value,text:caption.value,caption_style:{...captionStyle.value}}
+  const key=requestKey,options={quality:quality.value,...clip.value,crop:crop.value,rotation:rotation.value,flip:flip.value,text:caption.value,caption_style:{...captionStyle.value}}
   const alive=()=>request===epoch&&owner===session.value?.profile?.id
   if(!localJob||localJobKey!==requestKey){localJob=beginLocalLive(owner);localJobKey=requestKey}else updateLocalResult(localJob.id,{status:'running',message:'正在这台设备制作 GIF'},owner)
   pendingLocal=localJob
@@ -146,3 +147,5 @@ const back=()=>uni.navigateBack()
 .busy{pointer-events:none}.text-palette{display:flex;align-items:center;justify-content:space-between;gap:8rpx;margin-top:16rpx}.text-palette>button{width:35rpx;height:35rpx;border-radius:50%;border:2rpx solid #dccfc1;padding:0;flex-shrink:0}.text-palette>button.chosen{outline:4rpx solid #ffb292;outline-offset:3rpx}.text-palette .text-format{width:auto;height:auto;border:0;border-radius:10rpx;font-size:20rpx;padding:5rpx;color:var(--ink);background:var(--peach)}.text-size{display:flex;align-items:center;gap:8rpx;font-size:21rpx;color:var(--muted)}.text-size slider{flex:1;margin:14rpx 5rpx}.text-size button{padding:4rpx 10rpx;font-size:21rpx;color:var(--accent-dark)}
 .keyboard-open .tool-tabs,.keyboard-open .generate-button,.keyboard-open .export-hint,.keyboard-open .text-size,.keyboard-open .edit-tip{display:none}.keyboard-open .edit-dock{padding-bottom:14px}
 </style>
+
+<style scoped>.quality-choices{display:flex;gap:12rpx;margin:10rpx 0}.quality-choices button{flex:1;font-size:22rpx;padding:12rpx;color:var(--ink);border:1rpx solid var(--line);border-radius:16rpx}.quality-choices .chosen{color:var(--accent-dark);background:var(--peach)}</style>

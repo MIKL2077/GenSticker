@@ -37,13 +37,16 @@ export function useTemplateInput() {
   const getTextInputRange = () => {
     const info = selectedTemplateDetail.value
     if (!info) return { min: 0, max: 0 }
-    return parseRange(info.textCount)
+    const range=parseRange(info.textCount)
+    if(info.key==='always_like')range.min=Math.max(range.min,templateImages.value.length)
+    return range
   }
 
   const getTextInputMax = () => getTextInputRange().max
 
   const getTextPlaceholder = (index) => {
     const defaults = selectedTemplateDetail.value?.defaultTexts || []
+    if(['alipay','always_like','ask','google_captcha','make_friend','wechat_pay','why_have_hands'].includes(selectedTemplateDetail.value?.key))return `请输入图片 ${index+1} 对应的名字`
     return defaults[index] || `请输入文本${index + 1}`
   }
 

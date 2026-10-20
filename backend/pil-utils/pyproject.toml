@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "pil-utils"
+version = "0.2.2+gensticker.1"
+description = "GenSticker compatibility fork of pil-utils 0.2.2"
+requires-python = ">=3.10"
+license = "MIT"
+dependencies = ["Pillow>=12.3.0,<13", "numpy>=1.21", "opencv-python>=4,<5", "bbcode>=1.1,<2", "skia-python>=132.0b11", "msvc-runtime; sys_platform == 'win32'"]
+[tool.setuptools.packages.find]
+include = ["pil_utils*"]
+[tool.setuptools.package-data]
+pil_utils = ["**/*.json", "**/*.ttf", "**/*.otf"]

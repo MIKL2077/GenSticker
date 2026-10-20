@@ -6,7 +6,7 @@
   <view class="feature-grid"><button class="feature-card fx-enter" @click="openLibrary('history')"><view class="feature-icon history-icon"><ui-icon name="history"/></view><text class="feature-title">浏览历史</text><text class="feature-desc">再做一张喜欢的</text><text class="count">{{historyCount}} <text>个模板</text></text></button><button class="feature-card fx-enter" @click="openLibrary('favorites')"><view class="feature-icon favorite-icon"><ui-icon name="heart" tone="accent"/></view><text class="feature-title">收藏模板</text><text class="feature-desc">灵感都收好了</text><text class="count">{{favoritesCount}} <text>个模板</text></text></button></view>
   <button class="recent-link fx-enter" @click="openQueue"><view class="recent-icon"><ui-icon name="queue" tone="accent"/></view><view><text>生成队列 <text v-if="unreadCount" class="queue-badge">{{unreadCount}} 未查看</text></text><text class="recent-desc">手动制作的表情 · 保留近 7 天</text></view><text>›</text></button>
   <button v-if="syncError" class="sync-message" @click="syncLibrary">{{syncError}} · 点击重试</button>
-  <view class="account-footer"><text class="analytics-note">模板点击与制作的去重计数用于热力榜，
+  <data-controls v-if="session"/><view class="account-footer"><button class="logout" @click="openPrivacy">隐私保护指引</button><text class="analytics-note">模板点击与制作的去重计数用于热力榜，
 不记录照片或输入文字。</text><button v-if="session" class="logout" :disabled="loggingIn || submitting" @click="signOut">退出当前账号</button><text class="brand-foot">GenSticker · 给心情一个小表情</text></view>
   <view v-if="profileVisible" class="login-mask" @touchmove.stop><view class="login-dialog"><view class="dialog-header"><view><text class="ui-kicker">A LITTLE ABOUT YOU</text><text class="login-title">换个可爱的身份</text></view><button class="ui-close" :disabled="submitting" aria-label="关闭资料编辑" @click="profileVisible=false">×</button></view><text class="login-subtitle">默认资料已经填好，也可以换成你喜欢的。</text><button class="choose-avatar" open-type="chooseAvatar" @chooseavatar="chooseAvatar" aria-label="选择头像"><image :src="chosenAvatar || session?.profile.avatarPath || '/static/logo.png'" class="chosen-image" mode="aspectFit"/><text>换头像</text></button><text class="field-label">昵称</text><input class="nickname" type="nickname" v-model="nickname" maxlength="32" placeholder="给自己起个名字" @blur="onNickname" :cursor-spacing="120"/><text v-if="loginError" class="login-error">{{loginError}}</text><button class="ui-primary" :loading="submitting" :disabled="submitting" @click="saveProfile">保存资料 ✓</button><text class="login-note">头像与昵称仅用于个人资料展示</text></view></view>
   <bottom-tabs active="my"/>
@@ -14,13 +14,14 @@
 </template>
 <script>
 import {ref} from 'vue'
+import DataControls from '@/components/DataControls.vue'
 import {onShow,onHide} from '@dcloudio/uni-app'
 import BottomTabs from '@/components/BottomTabs.vue'
 import {useLibrary} from '@/composables/useLibrary'
 import UiIcon from '@/components/UiIcon.vue'
 import {unreadCount,refreshUnread} from '@/services/studioService'
 import {openRecommend} from '@/services/navigation'
-export default{components:{BottomTabs,UiIcon},setup(){
+export default{components:{BottomTabs,UiIcon,DataControls},setup(){
  const sceneActive=ref(true)
  onHide(()=>{sceneActive.value=false})
  const account=useLibrary(),profileVisible=ref(false),nickname=ref(''),chosenAvatar=ref(''),loginError=ref(''),submitting=ref(false)
@@ -33,8 +34,9 @@ export default{components:{BottomTabs,UiIcon},setup(){
  const openAI=()=>{if(!account.session.value){nextDestination='recommend';login();return}openRecommend()}
  onShow(()=>{sceneActive.value=true;refreshUnread();uni.hideTabBar({animation:false,fail:()=>{}});account.syncLibrary();if(!account.session.value)account.prefetchLogin().catch(()=>{});if(uni.getStorageSync('gensticker.open-recommend')){uni.removeStorageSync('gensticker.open-recommend');nextDestination='recommend';if(account.session.value)continueToDestination();else login()}})
  const saveProfile=async()=>{if(submitting.value)return;const name=nickname.value.trim();if(!name){loginError.value='写个昵称再保存吧';return}submitting.value=true;loginError.value='';try{await account.saveProfile(name,chosenAvatar.value);profileVisible.value=false;uni.showToast({title:'资料已更新',icon:'success'})}catch(e){loginError.value=e.message || '资料保存失败，请重试'}finally{submitting.value=false}}
+ const openPrivacy=()=>{if(typeof wx!=='undefined'&&wx.openPrivacyContract){wx.openPrivacyContract({fail:()=>uni.showToast({title:'平台隐私指引尚未配置，请联系维护者',icon:'none'})});return}uni.showModal({title:'数据与隐私',content:'图片用于制作表情；模型在服务器运行。发布模板需微信内容检查。可在管理素材与账号中删除数据。正式隐私指引需由运营者在微信平台配置。',showCancel:false})}
  const signOut=()=>{if(submitting.value || account.loggingIn.value)return;profileVisible.value=false;nextDestination='';uni.removeStorageSync('gensticker.open-recommend');account.logout();loginError.value='';uni.showToast({title:'已退出登录',icon:'none'})}
- return{sceneActive,unreadCount,...account,profileVisible,nickname,chosenAvatar,loginError,submitting,login,showProfile,saveProfile,openLibrary,openAI,openQueue,signOut,profileAction:()=>account.session.value?showProfile():login(),chooseAvatar:e=>chosenAvatar.value=e.detail.avatarUrl,onNickname:e=>nickname.value=e.detail.value}
+ return{sceneActive,unreadCount,...account,profileVisible,nickname,chosenAvatar,loginError,submitting,login,showProfile,saveProfile,openLibrary,openAI,openQueue,signOut,openPrivacy,profileAction:()=>account.session.value?showProfile():login(),chooseAvatar:e=>chosenAvatar.value=e.detail.avatarUrl,onNickname:e=>nickname.value=e.detail.value}
 }}
 </script>
 <style scoped>

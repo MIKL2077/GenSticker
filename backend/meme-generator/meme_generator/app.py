@@ -1,3 +1,4 @@
+from meme_generator.safe_images import open_image
 import json
 import base64
 import binascii
@@ -51,6 +52,10 @@ async def lifespan(app):
 
 
 app = FastAPI(lifespan=lifespan)
+from meme_generator.features.traffic import TrafficBudget
+app.add_middleware(TrafficBudget)
+from meme_generator.features.moderation import AvailabilityGuard
+app.add_middleware(AvailabilityGuard)
 app.include_router(account_router)
 generation_slots = asyncio.Semaphore(2)
 from meme_generator.features.render_cache import RenderCache
@@ -217,13 +222,18 @@ def register_router(meme: Meme):
     ):
         imgs: list[bytes] = []
         for image in images:
-            imgs.append(await image.read())
+            raw = await image.read(10 * 1024 * 1024 + 1)
+            if len(raw) > 10 * 1024 * 1024 or sum(map(len, imgs)) + len(raw) > 10 * 1024 * 1024:
+                raise HTTPException(413, '图片总大小不能超过 10 MB')
+            imgs.append(raw)
 
         texts = [text for text in texts if text]
 
         assert isinstance(args, args_model)
 
         try:
+            from meme_generator.features.catalog import refresh
+            refresh();get_meme(meme.key)
             if generation_slots.locked():raise HTTPException(503,'生成队列已满，请稍后重试')
             async with generation_slots:
                 if extract_subject:
@@ -357,7 +367,7 @@ def register_routers():
         directory = Path(__file__).parent / 'memes' / key
         example = next((directory / ('example' + ext) for ext in ['.gif', '.jpg', '.jpeg', '.png'] if (directory / ('example' + ext)).is_file()), None)
         source = example if example else meme.generate_preview()
-        with Image.open(source) as image:
+        with open_image(source) as image:
             image.seek(0)
             image = image.convert('RGBA')
             image.thumbnail((256, 256))
@@ -371,6 +381,8 @@ def register_routers():
             from meme_generator.features.catalog import thumbnail as declared_thumbnail
             return await run_sync(declared_thumbnail)(key)
         try:
+            from meme_generator.features.catalog import refresh
+            refresh();get_meme(key)
             content = await run_sync(thumbnail)(key)
         except MemeGeneratorException as e:
             raise HTTPException(status_code=e.status_code, detail=e.message)
@@ -506,6 +518,10 @@ from meme_generator.features.editor import router as editor_router
 app.include_router(editor_router)
 from meme_generator.features.livegif import router as live_router
 app.include_router(live_router)
+from meme_generator.features.lifecycle import router as lifecycle_router
+app.include_router(lifecycle_router)
+from meme_generator.features.export import router as export_router
+app.include_router(export_router)
 
 
 @app.post('/memes/{key}/')

@@ -1,4 +1,5 @@
 """Restore only the reviewed, openly licensed template fixtures shipped with code."""
+from meme_generator.safe_images import open_image
 
 import base64
 import hashlib
@@ -54,7 +55,7 @@ def restore():
             if item.get('prepare_background_from_reference'):
                 from .face_slot import prepared_background
                 from io import BytesIO
-                with Image.open(root()/'template_assets'/(spec['reference_asset']+'.png')) as source:
+                with open_image(root()/'template_assets'/(spec['reference_asset']+'.png')) as source:
                     prepared=prepared_background(source,TemplateSpec.model_validate(spec).layers)
                 output=BytesIO();prepared.save(output,'PNG');digest=hashlib.sha256(output.getvalue()).hexdigest()
                 (root()/'template_assets'/(digest+'.png')).write_bytes(output.getvalue())

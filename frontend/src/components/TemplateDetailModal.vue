@@ -4,8 +4,8 @@
       <view class="sheet-grip"/>
       <view class="detail-header"><view class="heading-copy"><text class="ui-kicker">YOUR PRIVATE MEME LAB</text><text class="detail-title">{{detail?.name || '制作表情包'}}</text></view><button class="favorite-corner" :class="{saved:favorite}" :aria-label="favorite?'取消收藏':'收藏模板'" @click="$emit('favorite')">{{favorite?'♥':'♡'}}</button><button class="ui-close" aria-label="关闭制作" @click="$emit('close')">×</button></view>
       <scroll-view scroll-y class="detail-body" :style="{height:bodyHeight+'px'}" :show-scrollbar="false">
-        <view class="body-inner">
-          <view class="template-summary"><image v-if="detail?.previewImage" :src="detail.previewImage" mode="aspectFit" class="example-image"/><view v-else class="example-pending">☺</view><view class="summary-copy"><text class="summary-title">套个模板，一键造梗</text><text class="summary-hint">图片 {{detail?.imageCount || '0-0'}} 张 · 文字 {{detail?.textCount || '0-0'}} 段</text><text class="summary-caption">换照片、改文字，马上变你的梗</text></view></view>
+        <view class="body-inner"><report-template v-if="detail?.key" :template-key="detail.key"/>
+          <view class="template-summary"><image v-if="detail?.previewImage" :src="detail.previewImage" mode="aspectFit" class="example-image"/><view v-else class="example-pending">☺</view><view class="summary-copy"><text class="summary-title">套个模板，一键造梗</text><text class="summary-hint">图片 {{detail?.imageCount || '0-0'}} 张 · 文字 {{detail?.textCount || '0-0'}} 段</text><text class="summary-caption">{{detail?.inputHint || '换照片、改文字，马上变你的梗'}}</text></view></view>
           <view v-if="detail?.creator?.name" class="creator-credit"><image v-if="detail.creator.avatar" :src="'data:image/jpeg;base64,'+detail.creator.avatar"/><text>造梗人 · {{detail.creator.name}}</text></view>
           <view v-if="imageInputCount>0" class="image-input-section">
             <view class="section-heading"><text class="detail-label">添加图片</text><text class="step-tag">{{templateImages.length}} / {{imageInputCount}}</text></view>
@@ -27,11 +27,12 @@
 </template>
 <script>
 import ImageEditor from '@/components/ImageEditor.vue'
+import ReportTemplate from '@/components/ReportTemplate.vue'
 export default {
   name: 'TemplateDetailModal',
   data:()=>({moreInfo:false}),
   computed:{bodyHeight(){const win=uni.getWindowInfo?.()||uni.getSystemInfoSync();return Math.max(120,Math.min(win.windowHeight-330,140+(this.imageInputCount?280:0)+this.textInputs.length*105+(this.moreInfo?160:50)))},inputHint(){if(this.editorBusy)return '图片处理中，请稍等一下';const min=Number(String(this.detail?.imageCount||'0-0').split('-')[0]);if(this.templateImages.length<min)return `再添加 ${min-this.templateImages.length} 张图片就好`;const filled=this.textInputs.filter(t=>String(t||'').trim()).length;if(filled<this.textRange.min)return `还需要 ${this.textRange.min-filled} 段文字`;return '准备好了，让表情出场吧'}},
-  components: { ImageEditor },
+  components: { ImageEditor, ReportTemplate },
   props: {
     show: { type: Boolean, required: true },
     detail: { type: Object, default: null },

@@ -9,7 +9,7 @@ export async function apiRequest(url, options = {}, retries = 3) {
         method: options.method || 'GET',
         data: options.data,
         header: {
-          ...((url.startsWith('/account/') || url.startsWith('/auth/') || url.startsWith('/recommend/') || url.startsWith('/studio/')) && options.auth !== false && uni.getStorageSync('gensticker.session.v1')?.access_token
+          ...((url === '/account' || url === '/templates/reports' || url.startsWith('/account/') || url.startsWith('/auth/') || url.startsWith('/recommend/') || url.startsWith('/studio/')) && options.auth !== false && uni.getStorageSync('gensticker.session.v1')?.access_token
             ? { Authorization: `Bearer ${uni.getStorageSync('gensticker.session.v1').access_token}` } : {}),
           ...options.header,
         },
@@ -34,7 +34,7 @@ export async function apiRequest(url, options = {}, retries = 3) {
         await new Promise(r => setTimeout(r, 1000 * (i + 1)))
         continue
       } else {
-        if(url.startsWith('/studio/') && response.statusCode===404 && !response.data?.detail?.includes?.('不存在')){const unavailable=new Error('模板工作室还在等待服务器更新，基础表情生成可继续使用');unavailable.statusCode=404;throw unavailable}
+        if(url.startsWith('/studio/') && response.statusCode===404 && (!response.data?.detail || response.data.detail==='Not Found')){const unavailable=new Error('模板工作室还在等待服务器更新，基础表情生成可继续使用');unavailable.statusCode=404;throw unavailable}
         const error = new Error(typeof response.data?.detail === 'string' ? response.data.detail : `请求失败: ${response.statusCode}`)
         error.statusCode = response.statusCode
         error.retryAfter = Number(response.header?.['Retry-After'] || response.header?.['retry-after']) || 0

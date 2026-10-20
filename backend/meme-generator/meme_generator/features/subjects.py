@@ -1,4 +1,5 @@
 """Optional one-pass foreground extraction, independent of template/person detection."""
+from meme_generator.safe_images import open_input_image
 from io import BytesIO
 from threading import RLock
 from PIL import Image, ImageOps
@@ -15,7 +16,7 @@ def extract_subject(raw):
     import numpy as np
     import cv2
     from . import vision
-    with Image.open(BytesIO(raw)) as original:
+    with open_input_image(BytesIO(raw)) as original:
         if original.width*original.height>40_000_000:raise SubjectError('图片过大，请先压缩')
         # Static editor works with the first frame of animated formats.
         image=ImageOps.exif_transpose(original).convert('RGBA')

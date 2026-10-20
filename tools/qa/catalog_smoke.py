@@ -1,8 +1,9 @@
 """Offline per-template smoke and shape checks. Local host only; never a load test."""
 import argparse, json, os, subprocess, sys, tempfile, time
 from pathlib import Path
-ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / 'backend/meme-generator'))
+ROOT = Path(__file__).resolve().parent.parent.parent
+BACKEND = Path(os.getenv('GENSTICKER_QA_BACKEND') or ROOT / 'backend/meme-generator')
+sys.path.insert(0, str(BACKEND))
 p = argparse.ArgumentParser()
 p.add_argument('--key')
 p.add_argument('--fill-optional', action='store_true')
@@ -33,15 +34,15 @@ if args.key:
     print('QA_RESULT ' + json.dumps(result))
     raise SystemExit()
 with tempfile.TemporaryDirectory(prefix='gensticker-catalog-qa-') as temp:
-    env = {**os.environ, 'GENSTICKER_STATE_DIR': temp, 'PYTHONPATH': str(ROOT / 'backend/meme-generator')}
+    env = {**os.environ, 'GENSTICKER_STATE_DIR': temp, 'PYTHONPATH': str(BACKEND)}
     code = 'import json;from meme_generator.manager import get_meme_keys;print("QA_KEYS "+json.dumps(get_meme_keys()))'
-    proc = subprocess.run([sys.executable, '-c', code], env=env, cwd=ROOT / 'backend/meme-generator', text=True, capture_output=True, timeout=30)
+    proc = subprocess.run([sys.executable, '-c', code], env=env, cwd=BACKEND, text=True, capture_output=True, timeout=30)
     keys = json.loads(next((x[8:] for x in proc.stdout.splitlines() if x.startswith('QA_KEYS '))))
     rows = []
     for i, key in enumerate(sorted(keys)):
         t = time.perf_counter()
         try:
-            r = subprocess.run([sys.executable, str(Path(__file__).resolve()), '--key', key], env=env, cwd=ROOT / 'backend/meme-generator', text=True, capture_output=True, timeout=15)
+            r = subprocess.run([sys.executable, str(Path(__file__).resolve()), '--key', key], env=env, cwd=BACKEND, text=True, capture_output=True, timeout=15)
             lines = [x[10:] for x in r.stdout.splitlines() if x.startswith('QA_RESULT ')]
             row = json.loads(lines[-1]) if r.returncode == 0 and lines else {'key': key, 'status': 'failed', 'error': (r.stderr + r.stdout)[-1400:].replace(str(Path.home()), '~')}
         except subprocess.TimeoutExpired:

@@ -1,0 +1,19 @@
+[Unit]
+Description=GenSticker private disk, memory and egress checks
+[Service]
+Type=oneshot
+User=gensticker
+Group=gensticker
+EnvironmentFile=-/etc/gensticker.env
+Environment=HOME=/var/lib/gensticker
+Environment=XDG_CONFIG_HOME=/var/lib/gensticker/.config
+Environment=GENSTICKER_STATE_DIR=/var/lib/gensticker
+WorkingDirectory=/opt/gensticker-current/meme-generator
+ExecStart=/opt/gensticker-current/api-venv/bin/python -m meme_generator.features.monitor
+Slice=gensticker.slice
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/gensticker
+UMask=0077

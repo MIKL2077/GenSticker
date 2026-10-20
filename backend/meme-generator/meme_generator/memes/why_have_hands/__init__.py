@@ -71,7 +71,7 @@ add_meme(
     why_have_hands,
     min_images=1,
     max_images=1,
-    min_texts=0,
+    min_texts=1,
     max_texts=1,
     keywords=["为什么要有手"],
     date_created=datetime(2023, 5, 18),

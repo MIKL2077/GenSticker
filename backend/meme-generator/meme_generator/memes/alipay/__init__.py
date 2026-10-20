@@ -80,7 +80,7 @@ add_meme(
     alipay,
     min_images=1,
     max_images=1,
-    min_texts=0,
+    min_texts=1,
     max_texts=1,
     args_type=args_type,
     keywords=["支付宝支付"],

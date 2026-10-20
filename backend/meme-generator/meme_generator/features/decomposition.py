@@ -1,4 +1,5 @@
 """Execute a reviewed visual decomposition; never executes model-authored code."""
+from meme_generator.safe_images import open_image, open_input_image
 import hashlib
 from io import BytesIO
 import numpy as np
@@ -32,7 +33,7 @@ def decompose(raw, brief, *, authorized_local=False, validation_photo=None, publ
     local=authorized_local and meta.get('origin')=='user-provided' and meta.get('review',{}).get('explicit_user_request') is True
     if not local and (meta.get('license') not in LICENSES or any(not meta.get(k) for k in ('source_url','author','license_url'))):
         raise ValueError('source attribution or derivative license missing')
-    with Image.open(BytesIO(raw)) as source:
+    with open_input_image(BytesIO(raw)) as source:
         if getattr(source,'n_frames',1)>1:raise ValueError('animated decomposition needs a frame-aware renderer')
         if source.size!=brief.canvas:raise ValueError('brief coordinates do not match original image dimensions')
         image=source.convert('RGB')
@@ -76,12 +77,12 @@ def decompose(raw, brief, *, authorized_local=False, validation_photo=None, publ
         if face_slots:
             clean=prepared_background(background,brief.slots);buf=BytesIO();clean.save(buf,'PNG');material=hashlib.sha256(buf.getvalue()).hexdigest();(directory/(material+'.png')).write_bytes(buf.getvalue())
         spec=TemplateSpec(width=image.width,height=image.height,layers=[Layer(type='asset',box=(0,0,image.width,image.height),value=material)]+brief.slots,defaults=defaults,background_prepared=face_slots,reference_asset=digest if face_slots else '').model_dump()
-        reference=Image.open(render(spec,[],defaults,preview=True)).convert('RGB')
+        reference=open_image(render(spec,[],defaults,preview=True)).convert('RGB')
         error=float(np.abs(np.asarray(image.resize((128,128))).astype(float)-np.asarray(reference.resize((128,128))).astype(float)).mean())
         if error>12:raise ValueError('default caption reconstruction failed; review typography')
         synthesis_error=None
         if face_slots and validation_photo is not None:
-            replacement=Image.open(render(spec,[validation_photo],defaults)).convert('RGB')
+            replacement=open_image(render(spec,[validation_photo],defaults)).convert('RGB')
             synthesis_error=float(np.abs(np.asarray(reference).astype(float)-np.asarray(replacement).astype(float))[editable==0].mean())
             if synthesis_error>2:raise ValueError('replacement changed the protected scene outside editable masks')
         if face_slots and publish and validation_photo is None:raise ValueError('publication requires an actual face test image')
