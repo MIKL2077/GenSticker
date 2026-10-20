@@ -9,7 +9,6 @@ from meme_generator.account import current_user
 from meme_generator.features import recommend,vision,worker,catalog,portrait
 from meme_generator.features.store import connect
 from meme_generator.features.animation import save_result_files
-from meme_generator.features.declarative import add_attribution
 
 class SubjectAnimationTests(unittest.TestCase):
     def setUp(self):
@@ -36,12 +35,12 @@ class SubjectAnimationTests(unittest.TestCase):
             db=connect();self.assertEqual(db.execute('SELECT COUNT(*) FROM assets').fetchone()[0],0);db.close()
             for _ in range(11):self.assertEqual(self.client.post('/recommend/subjects/detect',files={'file':('photo.jpg',self.photo)}).status_code,200)
             self.assertEqual(self.client.post('/recommend/subjects/detect',files={'file':('photo.jpg',self.photo)}).status_code,429)
-    def test_gif_results_previews_and_attribution_preserve_all_timing(self):
+    def test_gif_results_and_previews_preserve_dimensions_and_timing(self):
         frames=[Image.new('RGB',(100,80),color) for color in ('red','green','blue')];raw=BytesIO();frames[0].save(raw,'GIF',save_all=True,append_images=frames[1:],duration=[80,140,220],loop=0)
-        credited=add_attribution(raw,{'origin':'licensed','author':'Tester','license':'CC0','source_url':'https://example.test/source'})
-        path,preview=save_result_files(credited,Path(self.temp.name),0)
+        path,preview=save_result_files(raw,Path(self.temp.name),0)
+        self.assertEqual(path.read_bytes(),raw.getvalue())
         for target in (path,preview):
-            with Image.open(target) as image:self.assertEqual(image.n_frames,3);self.assertEqual(sum(frame.info['duration'] for frame in ImageSequence.Iterator(image)),440)
+            with Image.open(target) as image:self.assertEqual(image.size,(100,80));self.assertEqual(image.n_frames,3);self.assertEqual(sum(frame.info['duration'] for frame in ImageSequence.Iterator(image)),440)
         # API picks the actual content type and retains account isolation.
         db=connect();now=time.time()
         with db:

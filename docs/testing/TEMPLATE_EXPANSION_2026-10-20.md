@@ -58,3 +58,9 @@ PYTHONPATH=backend/meme-generator .venv/bin/python -m meme_generator.features.bu
 部署前备份应用文件和数据库，只重启小程序 API / worker；模板版本记录在线同步。API、worker、主页和 OpenClaw 最终均正常运行。没有提高共享主机配额，也没有进行压力测试或正式微信发布。
 
 证据位于 [template-expansion](evidence/2026-10-20/template-expansion/)，包括原始候选清单、转换结果、视觉处理结论、两平台单图回归和真实 worker 结果。待修复原图、比较图与完整素材缓存位于本机 `/private/tmp/gensticker-template-drafts`，不是长期备份。
+
+## 来源展示修正（同日）
+
+来源仅在模板详情中的“模板说明与素材来源”展示。已移除云端手动合成、AI worker 和本机快制绘入图片的来源页脚，以及 AI 推荐页的额外来源文字。来源元数据和详情入口保留；原素材自带文字不受影响。历史记录或相册中的既有成品含已合成像素，需要重新生成。
+
+本次 16 组前端检查、93 项后端测试和微信 / H5 构建通过；新增覆盖长来源 URL 的云端与本机画布尺寸，继续验证 GIF 帧数与时长。线上 56 个新增模板均检查默认及改字生成，实际 HTTP 生成及缓存命中尺寸也通过。API 和 worker 已备份更新并重启。新证据见 [source-detail-only](evidence/2026-10-20/source-detail-only/)；旧扩充证据中的页脚检查仅记录当时行为，已被本节需求取代。微信正式发布不在此次更新范围。

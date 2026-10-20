@@ -1,0 +1,458 @@
+{
+  "status": "passed",
+  "templates_checked": 56,
+  "catalog_total": 351,
+  "source_metadata_preserved": true,
+  "http_generate_and_cache": "passed",
+  "scope": "56 registered template renderers, default and changed captions; longest source URL via real HTTP generate twice",
+  "results": [
+    {
+      "key": "auto_baa5ed2bbf8888159edd7a12",
+      "status": "passed",
+      "size": [
+        400,
+        400
+      ]
+    },
+    {
+      "key": "auto_9cbba30c61217065b45f0f22",
+      "status": "passed",
+      "size": [
+        258,
+        257
+      ]
+    },
+    {
+      "key": "auto_8c2d782576cf161a3628b958",
+      "status": "passed",
+      "size": [
+        366,
+        270
+      ]
+    },
+    {
+      "key": "auto_e09cc57dc0b4749e54ad2167",
+      "status": "passed",
+      "size": [
+        240,
+        240
+      ]
+    },
+    {
+      "key": "auto_3c2f4fce26448b00d8669ce7",
+      "status": "passed",
+      "size": [
+        768,
+        563
+      ]
+    },
+    {
+      "key": "auto_8e37d3c9430efa0c0a560258",
+      "status": "passed",
+      "size": [
+        217,
+        217
+      ]
+    },
+    {
+      "key": "auto_940ce52b8f2fef48aa645399",
+      "status": "passed",
+      "size": [
+        200,
+        200
+      ]
+    },
+    {
+      "key": "auto_45dcb8bd07d11c59ca098b63",
+      "status": "passed",
+      "size": [
+        200,
+        200
+      ]
+    },
+    {
+      "key": "auto_1e643ffdd8b2405924d02447",
+      "status": "passed",
+      "size": [
+        200,
+        200
+      ]
+    },
+    {
+      "key": "auto_d8e585a53ff05e6886263e8c",
+      "status": "passed",
+      "size": [
+        472,
+        329
+      ]
+    },
+    {
+      "key": "auto_01c06a5631ed783d49b9caec",
+      "status": "passed",
+      "size": [
+        187,
+        269
+      ]
+    },
+    {
+      "key": "auto_8ffaf35df41208404153a518",
+      "status": "passed",
+      "size": [
+        440,
+        329
+      ]
+    },
+    {
+      "key": "auto_8305f99c81e52a496fd84e73",
+      "status": "passed",
+      "size": [
+        296,
+        297
+      ]
+    },
+    {
+      "key": "auto_f9e0e8f4595cbdb7e6ad342e",
+      "status": "passed",
+      "size": [
+        348,
+        328
+      ]
+    },
+    {
+      "key": "auto_a7c4e8bd570c38f28d14a910",
+      "status": "passed",
+      "size": [
+        730,
+        729
+      ]
+    },
+    {
+      "key": "auto_1d425595d1c7236f507057e6",
+      "status": "passed",
+      "size": [
+        120,
+        119
+      ]
+    },
+    {
+      "key": "auto_7cf8c52ce70d25a065b3c40f",
+      "status": "passed",
+      "size": [
+        200,
+        186
+      ]
+    },
+    {
+      "key": "auto_7551432ab2adc4ed0faa119d",
+      "status": "passed",
+      "size": [
+        546,
+        562
+      ]
+    },
+    {
+      "key": "auto_ef333301c4ff56a63d1674ac",
+      "status": "passed",
+      "size": [
+        440,
+        441
+      ]
+    },
+    {
+      "key": "auto_8cb81684afb6109b0c88e8df",
+      "status": "passed",
+      "size": [
+        768,
+        409
+      ]
+    },
+    {
+      "key": "auto_a35f4672e570293387b56891",
+      "status": "passed",
+      "size": [
+        413,
+        400
+      ]
+    },
+    {
+      "key": "auto_48a4d13da8749fe839304f4e",
+      "status": "passed",
+      "size": [
+        359,
+        359
+      ]
+    },
+    {
+      "key": "auto_5a4be972612194132ec90994",
+      "status": "passed",
+      "size": [
+        183,
+        198
+      ]
+    },
+    {
+      "key": "auto_81ac3b1b389f1a00ffcbc983",
+      "status": "passed",
+      "size": [
+        690,
+        650
+      ]
+    },
+    {
+      "key": "auto_fcad5c1b85e46c6b75e53000",
+      "status": "passed",
+      "size": [
+        200,
+        200
+      ]
+    },
+    {
+      "key": "auto_6e5ec2df39243d2a05e4dfb7",
+      "status": "passed",
+      "size": [
+        200,
+        200
+      ]
+    },
+    {
+      "key": "auto_83682cc5d3b7a1b74a3325ed",
+      "status": "passed",
+      "size": [
+        200,
+        200
+      ]
+    },
+    {
+      "key": "auto_26aa7c364976ab1c19badaca",
+      "status": "passed",
+      "size": [
+        746,
+        746
+      ]
+    },
+    {
+      "key": "auto_eae3b0cda3006b816edaa107",
+      "status": "passed",
+      "size": [
+        690,
+        690
+      ]
+    },
+    {
+      "key": "auto_707821084eac20f84b2cf01a",
+      "status": "passed",
+      "size": [
+        350,
+        336
+      ]
+    },
+    {
+      "key": "auto_5f5ca98825e1bf2f3f30522b",
+      "status": "passed",
+      "size": [
+        200,
+        200
+      ]
+    },
+    {
+      "key": "auto_8d6d83879f8ec3eebee4c687",
+      "status": "passed",
+      "size": [
+        377,
+        298
+      ]
+    },
+    {
+      "key": "auto_5d33acec73177ec932f43f65",
+      "status": "passed",
+      "size": [
+        440,
+        435
+      ]
+    },
+    {
+      "key": "auto_9c8fb9b136b4cb086b9c7641",
+      "status": "passed",
+      "size": [
+        293,
+        289
+      ]
+    },
+    {
+      "key": "auto_6bca765b3af470fb96b664ec",
+      "status": "passed",
+      "size": [
+        768,
+        768
+      ]
+    },
+    {
+      "key": "auto_e03603b150f8b9481858c074",
+      "status": "passed",
+      "size": [
+        594,
+        651
+      ]
+    },
+    {
+      "key": "auto_396c7930d4e5cf68a1a87375",
+      "status": "passed",
+      "size": [
+        350,
+        350
+      ]
+    },
+    {
+      "key": "auto_416c31fc6a93823ac77cbad1",
+      "status": "passed",
+      "size": [
+        250,
+        250
+      ]
+    },
+    {
+      "key": "auto_c33bac4092b453e95b3a9eb4",
+      "status": "passed",
+      "size": [
+        225,
+        225
+      ]
+    },
+    {
+      "key": "auto_69ede6073635f766f939e0e5",
+      "status": "passed",
+      "size": [
+        440,
+        331
+      ]
+    },
+    {
+      "key": "auto_7b3dd1076baabb4ad4160360",
+      "status": "passed",
+      "size": [
+        423,
+        234
+      ]
+    },
+    {
+      "key": "auto_5996f362e806c2ff95db3a84",
+      "status": "passed",
+      "size": [
+        234,
+        216
+      ]
+    },
+    {
+      "key": "auto_6afaf5d1d5640e019d865ca9",
+      "status": "passed",
+      "size": [
+        240,
+        240
+      ]
+    },
+    {
+      "key": "auto_cd19b5a091145ad0d1fb8775",
+      "status": "passed",
+      "size": [
+        392,
+        392
+      ]
+    },
+    {
+      "key": "auto_a7ec447dac8c74d2e35900aa",
+      "status": "passed",
+      "size": [
+        465,
+        433
+      ]
+    },
+    {
+      "key": "auto_cb0cee98dbf29f3d1a6e4ebd",
+      "status": "passed",
+      "size": [
+        768,
+        406
+      ]
+    },
+    {
+      "key": "auto_df03fcc89eba7b4c82bda1a4",
+      "status": "passed",
+      "size": [
+        225,
+        225
+      ]
+    },
+    {
+      "key": "auto_0e403816507d6da75fe3fbf2",
+      "status": "passed",
+      "size": [
+        352,
+        363
+      ]
+    },
+    {
+      "key": "auto_1e44959911b51e4d8e035438",
+      "status": "passed",
+      "size": [
+        250,
+        254
+      ]
+    },
+    {
+      "key": "auto_ec54fc79e4dcbfa649ecf50a",
+      "status": "passed",
+      "size": [
+        300,
+        300
+      ]
+    },
+    {
+      "key": "auto_c3219e14b86dec14a33dc1b8",
+      "status": "passed",
+      "size": [
+        694,
+        406
+      ]
+    },
+    {
+      "key": "auto_ebc5163922307630f08e3a7e",
+      "status": "passed",
+      "size": [
+        200,
+        200
+      ]
+    },
+    {
+      "key": "auto_8a8f28d99948f753f7b5d0b0",
+      "status": "passed",
+      "size": [
+        120,
+        120
+      ]
+    },
+    {
+      "key": "auto_12be5a79966b55b0f34d8d9e",
+      "status": "passed",
+      "size": [
+        161,
+        158
+      ]
+    },
+    {
+      "key": "auto_c2e036832a07f5c6772d3a6f",
+      "status": "passed",
+      "size": [
+        94,
+        120
+      ]
+    },
+    {
+      "key": "auto_55ab6f07356904e9664e203c",
+      "status": "passed",
+      "size": [
+        200,
+        200
+      ]
+    }
+  ]
+}

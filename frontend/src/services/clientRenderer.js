@@ -144,13 +144,9 @@ export async function tryClientRender(key,paths,texts,args={}) {
       const output=await new Promise((resolve,reject)=>wx.canvasToTempFilePath({canvas,fileType:'jpg',quality:.9,success:r=>resolve(r.tempFilePath),fail:reject}))
       reportSuccess(key,recipe);return output
     }
-    const s=recipe.spec,credit=recipe.attribution || {},width=credit.origin==='user-provided' ? s.width : Math.max(s.width,512)
-    canvas=wx.createOffscreenCanvas({type:'2d',width,height:s.height+256})
-    let ctx=canvas.getContext('2d');ctx.font='12px sans-serif'
-    const credits=credit.source_url && credit.origin!=='user-provided' ? [String(credit.author||'')+' · '+String(credit.license||''),credit.source_url,credit.license_url].flatMap(t=>wrap(ctx,String(t||'').slice(0,500),width-12)) : []
-    canvas.height=s.height+(credits.length ? credits.length*16+12 : 0)
-    ctx=canvas.getContext('2d');ctx.fillStyle='#ffffff';ctx.fillRect(0,0,canvas.width,canvas.height)
-    ctx.save();ctx.translate((width-s.width)/2,0);ctx.fillStyle=s.background;ctx.fillRect(0,0,s.width,s.height)
+    const s=recipe.spec
+    canvas=wx.createOffscreenCanvas({type:'2d',width:s.width,height:s.height})
+    const ctx=canvas.getContext('2d');ctx.fillStyle=s.background;ctx.fillRect(0,0,s.width,s.height)
     let decodedPixels=0
     for(const layer of s.layers) {
       if(layer.type!=='text') {
@@ -169,7 +165,6 @@ export async function tryClientRender(key,paths,texts,args={}) {
         ctx.textAlign='left'
       }
     }
-    ctx.restore();ctx.font='12px sans-serif';ctx.textBaseline='top';ctx.fillStyle='#666666';credits.forEach((line,i)=>ctx.fillText(line,6,s.height+5+i*16))
     const result=await new Promise((resolve,reject)=>wx.canvasToTempFilePath({canvas,fileType:'jpg',quality:.9,success:r=>resolve(r.tempFilePath),fail:reject}))
     reportSuccess(key,recipe)
     return result

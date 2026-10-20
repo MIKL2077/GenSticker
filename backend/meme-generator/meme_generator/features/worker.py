@@ -8,7 +8,7 @@ from io import BytesIO
 from PIL import Image
 from .store import connect, root
 from .catalog import bootstrap, refresh, rows
-from .declarative import render, add_attribution
+from .declarative import render
 from .vision import warmup, process, PROCESSOR_VERSION
 from ..manager import get_meme
 
@@ -171,7 +171,6 @@ def run_job(job):
                 output = get_meme(row["key"])(
                     images=[raw], texts=metadata.get("default_texts", [])
                 )
-            output = add_attribution(output, metadata)
             from .animation import save_result_files
             path,preview=save_result_files(output,directory,slot,job["user_id"])
             return slot, row, metadata, path, preview

@@ -88,6 +88,33 @@ class FeatureTests(unittest.TestCase):
             worker.run_job(job)
         return job["id"]
 
+    def test_source_metadata_stays_in_details_without_changing_generated_canvas(self):
+        import json
+        source = 'https://example.test/' + 'long-source-path/' * 30
+        metadata = {'name':'Source fixture','tags':[], 'min_images':1,'max_images':1,
+                    'origin':'chinesebqb','author':'Source author','license':'unverified','source_url':source}
+        spec = {'width':120,'height':80,'layers':[{'type':'subject','box':[0,0,120,80]}]}
+        row = catalog.publish('auto_source_footer_fixture', metadata, spec)
+        catalog.refresh()
+        from meme_generator.manager import get_meme
+        manual = get_meme(row['key'])(images=[self.photo],texts=[])
+        with Image.open(manual) as image:
+            self.assertEqual(image.size,(120,80))
+        self.assertEqual(json.loads(next(r for r in catalog.rows() if r['key']==row['key'])['metadata']).get('source_url'),source)
+        asset = self.upload()
+        identifier = self.create(asset,'source-footer-regression').json()['job_id']
+        with patch.object(worker,'candidates',return_value=[row]):
+            self.finish()
+        result = self.client.get('/recommend/jobs/'+identifier).json()
+        self.assertEqual(result['status'],'completed',result)
+        item = result['results'][0]
+        self.assertEqual(item['attribution']['source_url'],source)
+        for field in ('image_url','preview_url'):
+            response = self.client.get(item[field])
+            self.assertEqual(response.status_code,200)
+            with Image.open(BytesIO(response.content)) as image:
+                self.assertEqual(image.size,(120,80))
+
     def test_history_source_preview_is_private_survives_day_one_and_is_cleaned_with_job(self):
         from meme_generator.features.store import root
         asset=self.upload();response=self.create(asset,'history-preview-check');self.assertEqual(response.status_code,202,response.text)
