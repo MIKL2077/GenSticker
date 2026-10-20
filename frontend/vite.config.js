@@ -4,6 +4,12 @@ import { HttpsProxyAgent } from 'https-proxy-agent'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  build: process.env.UNI_PLATFORM === 'mp-weixin' ? {
+    // WeChat transpiles this output again. Mangling can reuse a hoisted optional
+    // chaining temporary's name for a nested const, which its Babel pass then
+    // treats as a read-only assignment and aborts page initialization.
+    terserOptions: { mangle: false },
+  } : undefined,
   plugins: [
     {
       name: 'gensticker-custom-navigation',

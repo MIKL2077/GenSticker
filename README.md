@@ -259,3 +259,17 @@ AI 抠图后新增人脸/猫脸头像构图和主体回退。视频改为优先�
 本地开发目录为 `source/`，前端使用 uni-app / Vue 3 / Vite；服务器 API 源码位于 `/opt/gensticker/meme-generator`，API 与独立生成 worker 共用私有状态目录。此次只读核验 API、worker、Nginx、Cloudflare Tunnel 均运行正常，健康接口返回 295 个模板。本次仅更新前端，无需部署后端。
 
 视频工作流、本机 GIF、队列同步三组现有检查及微信 / H5 构建通过；浏览器检查 390×844、320×568 下仅显示一个视频选择入口，提示无横向溢出或底栏遮挡。新版微信预览已生成，域名校验保持开启；小程序尚未正式发布，手机相册与原生选段仍需真机复测。
+
+### 微信启动白屏修复
+
+微信模拟器复现首页白屏、仅剩系统 tabBar。控制台报 `TypeError: "e" is read-only`，发生于 `composables/useLibrary.js` 导入时。Vite 生产构建的变量名混淆复用了可选链临时变量名，微信开发者工具的后续 Babel 转译将合法赋值错误替换为 `_readOnlyError("e")`，导致 Vue 页面初始化中断。H5 和单纯构建成功无法发现此问题。
+
+`frontend/vite.config.js` 仅对微信生产构建设置 `terserOptions.mangle: false`，保留代码压缩和域名校验；实际微信二次转译后首页恢复。新增官方 `miniprogram-automator` 启动回归，检查真实 API 模板加载、视频入口点击、单一视频选择按钮、Live 转存提示以及首页 / 视频 / 个人中心 / AI / 队列五页初始化，并检查运行异常和保存微信模拟器截图。
+
+```sh
+cd frontend
+npm run build:mp-weixin
+npm run test:mp-weixin
+```
+
+需要已登录的微信开发者工具并启用官方 CLI 服务端口。默认复制 `dist/build/mp-weixin` 到不带旧本机设置的临时目录后正常导入检查；可用 `--project` 指定已编译的预览目录，`--ws-endpoint` 连接现有官方自动化端口，`--output-dir` 指定本地截图与报告目录。验收通过：首页真实加载 9 个模板，五页初始化无运行异常，视频页仅保留相册视频按钮并显示 Live 转存说明。现有 library、ui-flows、video-workflow 检查和 H5 构建也通过；原生相册、选段和生成仍需真机复测。
