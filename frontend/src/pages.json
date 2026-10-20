@@ -48,7 +48,7 @@
       "path": "pages/live/index",
       "style": {
         "navigationStyle": "custom",
-        "navigationBarTitleText": "Live 图转 GIF"
+        "navigationBarTitleText": "视频转 GIF"
       }
     }
   ],

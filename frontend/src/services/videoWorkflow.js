@@ -1,22 +1,18 @@
 import { API_BASE_URL } from '@/constants'
 import { apiRequest } from '@/services/apiService'
 import { uniqueKey, trackStudioJob } from '@/services/studioService'
-import { albumMotion, localVideoInfo } from '@/services/liveGifService'
+import { localVideoInfo } from '@/services/liveGifService'
 
 export const isNativeVideo = () => typeof document==='undefined' && typeof wx!=='undefined'
 export const isCancelled = error => /cancel|取消/i.test(error?.errMsg||error?.message||'')
 const call = (api,options) => new Promise((resolve,reject)=>api({...options,success:resolve,fail:reject}))
-export async function chooseAlbumVideo(live=false) {
+export async function chooseAlbumVideo() {
   let file
   if(isNativeVideo()&&wx.chooseMedia){
-    // mix allows the system to return a Live clip as video when supported by that client.
-    const data=await call(wx.chooseMedia.bind(wx),{count:1,mediaType:live?['mix']:['video'],sourceType:['album'],sizeType:['original']})
+    const data=await call(wx.chooseMedia.bind(wx),{count:1,mediaType:['video'],sourceType:['album'],sizeType:['original']})
     file=data.tempFiles[0]
-  }else if(live){const data=await call(uni.chooseImage,{count:1,sizeType:['original'],sourceType:['album']});file={tempFilePath:data.tempFilePaths[0],fileType:'image'}}
-  else file=await call(uni.chooseVideo,{sourceType:['album'],compressed:false})
-  let path=file.tempFilePath||file.path
-  if(live&&file.fileType!=='video'&&!(file.duration>0))path=await albumMotion(path)
-  return {...file,tempFilePath:path}
+  }else file=await call(uni.chooseVideo,{sourceType:['album'],compressed:false})
+  return {...file,tempFilePath:file.tempFilePath||file.path}
 }
 export async function nativeTrim(file) {
   if(!isNativeVideo()||!wx.openVideoEditor)return {file,trimmed:false}

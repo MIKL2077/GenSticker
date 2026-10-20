@@ -4,7 +4,7 @@
     <view class="welcome-card ui-enter"><view class="welcome-copy-block"><view class="studio-tag fx-enter"><view/>私有造梗神器 · 今日也营业</view><text class="welcome-title">一键套模板，<text class="title-pop">把 Ta 玩成梗。</text></text><text class="welcome-copy">紧跟热梗，简单几步就能整活。</text><button class="welcome-action" @click="openRecommend">为 Ta 生成 9 张 <text>↗</text></button></view><view class="hero-toys"><mood-toy :active="sceneActive && !showTemplateDetail && !showPreview"/></view><text class="hero-serial">GENSTICKER / MOOD LAB 001</text></view>
     <popularity-stage v-if="!loadError && (spotlight.length || !isLoadingTemplates)" :items="spotlight" :active="sceneActive && !showTemplateDetail && !showPreview" @select="onSelectTemplate"/>
     <view v-if="trialTemplate" class="trial-card fx-enter" @click="onSelectTemplate(trialTemplate.key)"><image v-if="trialTemplate.previewImage" :src="trialTemplate.previewImage" mode="aspectFit"/><view><text class="trial-label">新模板试用</text><text class="trial-title">{{ trialTemplate.name }}</text><text class="trial-hint">换上你的照片，给它一个新表情 ↗</text></view></view>
-    <button class="live-entry" @click="openLive"><ui-icon name="video" tone="accent" :size="52"/><view><text>Live 图转 GIF</text><text>留住一秒快乐 · 触控裁剪 + 自己配文</text></view><ui-icon name="arrow" :size="30"/></button>
+    <button class="live-entry" @click="openLive"><ui-icon name="video" tone="accent" :size="52"/><view><text>视频转 GIF</text><text>选一段视频 · 自由裁剪 + 自己配文</text></view><ui-icon name="arrow" :size="30"/></button>
     <view class="meme-templates">
       <view class="template-header fx-enter">
         <text class="section-title">模板仓库</text>
