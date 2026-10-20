@@ -54,6 +54,31 @@ class SubjectPreviewTests(unittest.TestCase):
             self.assertEqual(self.client.get(path,headers=visitor).status_code,404)
         editor._foreground.clear()
 
+    def test_cached_subject_is_available_when_generation_slots_are_busy(self):
+        visitor={'X-Gensticker-Visitor':'cached-preview-12345678'}
+        first=self.client.post('/images/subject',json={'image':self.encoded},headers=visitor)
+        self.assertEqual(first.status_code,200)
+        self.assertEqual(first.headers['x-gensticker-cache'],'miss')
+        with patch.object(api,'generation_slots',asyncio.Semaphore(0)):
+            second=self.client.post('/images/subject',json={'image':self.encoded},headers=visitor)
+        self.assertEqual(second.status_code,200)
+        self.assertEqual(second.headers['x-gensticker-cache'],'hit')
+        self.assertEqual(second.content,first.content)
+
+    def test_parallel_identical_inputs_share_one_inference(self):
+        import threading,time
+        from concurrent.futures import ThreadPoolExecutor
+        calls=[];barrier=threading.Barrier(2)
+        def extract(raw):
+            calls.append(raw);time.sleep(.04);return b'foreground'
+        def prepare():
+            barrier.wait();return api.prepare_inputs([b'same-photo'],'same-owner')
+        with patch('meme_generator.features.subjects.extract_subject',side_effect=extract):
+            with ThreadPoolExecutor(max_workers=2) as pool:
+                futures=[pool.submit(prepare) for _ in range(2)]
+                self.assertEqual([f.result() for f in futures],[[b'foreground'],[b'foreground']])
+        self.assertEqual(len(calls),1)
+
     def test_invalid_images_and_busy_preview_do_not_render(self):
         for value in ['???', base64.b64encode(b'not an image').decode()]:
             self.assertEqual(self.client.post('/images/subject', json={'image': value}).status_code, 422)

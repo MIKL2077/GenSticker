@@ -10,7 +10,7 @@
           <view v-if="imageInputCount>0" class="image-input-section">
             <view class="section-heading"><text class="detail-label">添加图片</text><text class="step-tag">{{templateImages.length}} / {{imageInputCount}}</text></view>
             <button v-if="!templateImages.length" class="image-upload-area" @click="$emit('chooseImages')"><view class="upload-icon">＋</view><text class="upload-title">选一张喜欢的照片</text><text class="upload-text">{{imageUploadText}}</text></button>
-            <view v-else class="photo-card"><view class="photo-toolbar"><text>图片 {{activeImageIndex+1}}</text><button class="remove-image-btn" aria-label="移除当前图片" @click="$emit('removeImage',activeImageIndex)">移除 ×</button></view><image :src="templateImages[activeImageIndex] || templateImages[0]" class="uploaded-photo" mode="aspectFit" @click="$emit('editImage',activeImageIndex)"/><button class="edit-photo-btn" @click="$emit('editImage',activeImageIndex)"><text>⌗ 编辑这张图片</text><text class="edit-tools">裁剪 · 翻转 · 去背景 ›</text></button></view>
+            <view v-else class="photo-card"><view class="photo-toolbar"><text>图片 {{activeImageIndex+1}}</text><button class="remove-image-btn" aria-label="移除当前图片" @click="$emit('removeImage',activeImageIndex)">移除 ×</button></view><image :src="templateImages[activeImageIndex] || templateImages[0]" class="uploaded-photo" mode="aspectFit" @click="$emit('editImage',activeImageIndex)"/><button class="edit-photo-btn" @click="$emit('editImage',activeImageIndex)"><text>⌗ 编辑这张图片</text><text class="edit-tools">选主角 · 翻转 · 去背景 ›</text></button></view>
             <scroll-view v-if="templateImages.length>1" scroll-x class="template-images-strip"><view class="template-images-grid"><button v-for="(image,index) in templateImages" :key="index" class="template-image-item" :class="{chosen:index===activeImageIndex}" :aria-label="'编辑图片'+(index+1)" @click="$emit('editImage',index)"><image :src="image" class="template-image" mode="aspectFill"/><text>{{index+1}}</text></button></view></scroll-view>
             <button v-if="templateImages.length && templateImages.length<imageInputCount" class="add-images-btn" @click="$emit('chooseImages')">＋ {{imageUploadText}}</button>
             <text class="editing-note">原图会保留，修改后也能随时还原。</text>
@@ -22,11 +22,11 @@
       </scroll-view>
       <view class="detail-actions"><text class="action-hint">{{inputHint}}</text><button class="ui-primary" :disabled="!canGenerate" @click="$emit('generate')">一键生成损图 <text>✦</text></button></view>
     </view>
-    <image-editor v-if="editorOpen && templateImages[activeImageIndex]" :src="templateImages[activeImageIndex]" :template-key="detail?.key" :preview-image="detail?.previewImage" :images="templateImages" :active-index="activeImageIndex" :busy="editorBusy" :error="editorError" :can-undo="editorCanUndo" @close="$emit('closeEditor')" @select="$emit('editImage',$event)" @edit="$emit('applyEdit',$event)" @undo="$emit('undoEdit')" @restore="$emit('restoreImage')"/>
+    <image-editor v-if="editorOpen && templateImages[activeImageIndex]" :src="templateImages[activeImageIndex]" :images="templateImages" :active-index="activeImageIndex" :busy="editorBusy" :error="editorError" :can-undo="editorCanUndo" @close="$emit('closeEditor')" @select="$emit('editImage',$event)" @edit="$emit('applyEdit',$event)" @undo="$emit('undoEdit')" @restore="$emit('restoreImage')"/>
   </view>
 </template>
 <script>
-import ImageEditor from '@/components/ImageEditor.vue'
+import ImageEditor from '@/components/TemplateImageEditor.vue'
 import ReportTemplate from '@/components/ReportTemplate.vue'
 export default {
   name: 'TemplateDetailModal',

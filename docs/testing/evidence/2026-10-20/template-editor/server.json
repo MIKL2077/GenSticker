@@ -1,0 +1,51 @@
+{
+  "status": "passed",
+  "model_bytes": 4574861,
+  "model_checksum": "verified",
+  "model_cache": "public immutable",
+  "private_result_isolation": "passed",
+  "legacy_url_delivery": "passed",
+  "catalog_total": 351,
+  "scope": "loopback HTTP on warmed service with public logo; excludes phone/network time; no physical-device acceleration claim",
+  "samples": [
+    {
+      "kind": "inference",
+      "seconds": 0.6769,
+      "server_timing": "foreground;dur=672.0",
+      "cache": "miss",
+      "output_bytes": 661209
+    },
+    {
+      "kind": "cache",
+      "seconds": 0.0064,
+      "server_timing": "foreground;dur=0.3",
+      "cache": "hit"
+    },
+    {
+      "kind": "inference",
+      "seconds": 0.6181,
+      "server_timing": "foreground;dur=611.9",
+      "cache": "miss",
+      "output_bytes": 661209
+    },
+    {
+      "kind": "cache",
+      "seconds": 0.006,
+      "server_timing": "foreground;dur=0.3",
+      "cache": "hit"
+    },
+    {
+      "kind": "inference",
+      "seconds": 0.5629,
+      "server_timing": "foreground;dur=556.8",
+      "cache": "miss",
+      "output_bytes": 661209
+    },
+    {
+      "kind": "cache",
+      "seconds": 0.0065,
+      "server_timing": "foreground;dur=0.3",
+      "cache": "hit"
+    }
+  ]
+}

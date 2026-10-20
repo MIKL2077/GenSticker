@@ -12,9 +12,14 @@ class SubjectError(MemeGeneratorException):
     status_code=422
 
 
+def warm_subject_model():
+    from . import vision
+    with _initialisation:
+        return vision._session is not None or vision.warmup(include_emotion=False)
+
+
 def extract_subject(raw):
     import numpy as np
-    import cv2
     from . import vision
     with open_input_image(BytesIO(raw)) as original:
         if original.width*original.height>40_000_000:raise SubjectError('图片过大，请先压缩')
@@ -25,9 +30,8 @@ def extract_subject(raw):
     if not np.any(alpha>20):raise SubjectError('图片主体为空，请换图或关闭主体提取')
     if np.mean(alpha<240)<.02:
         try:
-            with _initialisation:
-                if vision._session is None and not vision.warmup(include_emotion=False):
-                    raise RuntimeError('local model unavailable')
+            if not warm_subject_model():
+                raise RuntimeError('local model unavailable')
             image=vision.extract(image)
         except Exception as exc:
             raise SubjectError('主体提取暂不可用；可关闭提取直接使用图片') from exc

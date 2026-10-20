@@ -23,6 +23,16 @@ async function verify(){
   await input.applyImageEdit({type:'rotate'});input.undoImageEdit();assert.equal(input.templateImages.value[1],'/original-b.png')
   input.openImageEditor(0);input.restoreImage();assert.equal(input.templateImages.value[0],'/original-a.png')
   assert.ok(!released.includes('/original-a.png')&&!released.includes('/original-b.png'))
+  const beforePrepared=calls.length
+  await input.applyImageEdit({type:'prepared',path:'/selected-subject.png',complete:true})
+  assert.equal(calls.length,beforePrepared,'confirmed subject must not be cropped a second time')
+  assert.equal(input.templateImages.value[0],'/selected-subject.png');assert.equal(input.showImageEditor.value,false)
+  input.openImageEditor(0);input.undoImageEdit();assert.equal(input.templateImages.value[0],'/original-a.png')
+  const selectionCutout=input.applyImageEdit({type:'background',rect:[.1,.2,.5,.6]})
+  await new Promise(resolve=>setImmediate(resolve));assert.equal(calls.at(-1)[1].type,'crop','background removal only receives the selected region')
+  const selectedCrop=calls.length;pending('/selection-cutout.png');await selectionCutout
+  assert.ok(released.includes('/edited-'+selectedCrop+'.png'),'intermediate selection crop is released')
+  input.restoreImage();assert.equal(input.templateImages.value[0],'/original-a.png')
   fail=true;await input.applyImageEdit({type:'flip'});assert.equal(input.templateImages.value[0],'/original-a.png');assert.equal(input.editorError.value,'failed edit')
   const request=input.applyImageEdit({type:'background'});assert.equal(input.isTemplateInputValid(),false)
   input.closeImageEditor();pending('/late-cutout.png');await request

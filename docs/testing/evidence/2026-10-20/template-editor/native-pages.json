@@ -1,0 +1,110 @@
+{
+  "status": "passed",
+  "templateCount": 9,
+  "pages": [
+    "index",
+    "live",
+    "my",
+    "recommend",
+    "queue",
+    "create",
+    "library"
+  ],
+  "videoPickerCount": 1,
+  "liveGuidance": true,
+  "runtimeErrors": [],
+  "domainValidation": true,
+  "screenshots": false,
+  "performanceScope": "WeChat simulator entries; not physical-device or SDK-wait wall time",
+  "performanceEntries": [
+    {
+      "name": "firstContentfulPaint",
+      "type": "render",
+      "startTime": 1792501177794
+    },
+    {
+      "name": "largestContentfulPaint",
+      "type": "render",
+      "startTime": 1792501177794
+    },
+    {
+      "name": "route",
+      "type": "navigation",
+      "startTime": 1792501180938
+    },
+    {
+      "name": "firstRender",
+      "type": "render",
+      "startTime": 1792501181030,
+      "duration": 26
+    },
+    {
+      "name": "firstPaint",
+      "type": "render",
+      "startTime": 1792501181046
+    },
+    {
+      "name": "firstContentfulPaint",
+      "type": "render",
+      "startTime": 1792501181078
+    },
+    {
+      "name": "largestContentfulPaint",
+      "type": "render",
+      "startTime": 1792501181078
+    },
+    {
+      "name": "route",
+      "type": "navigation",
+      "startTime": 1792501184115,
+      "duration": 130
+    },
+    {
+      "name": "firstRender",
+      "type": "render",
+      "startTime": 1792501184196,
+      "duration": 22
+    },
+    {
+      "name": "firstPaint",
+      "type": "render",
+      "startTime": 1792501184213
+    },
+    {
+      "name": "firstContentfulPaint",
+      "type": "render",
+      "startTime": 1792501184245
+    },
+    {
+      "name": "largestContentfulPaint",
+      "type": "render",
+      "startTime": 1792501184245
+    },
+    {
+      "name": "route",
+      "type": "navigation",
+      "startTime": 1792501187385
+    },
+    {
+      "name": "firstRender",
+      "type": "render",
+      "startTime": 1792501187474,
+      "duration": 76
+    },
+    {
+      "name": "firstPaint",
+      "type": "render",
+      "startTime": 1792501187480
+    },
+    {
+      "name": "firstContentfulPaint",
+      "type": "render",
+      "startTime": 1792501187596
+    },
+    {
+      "name": "largestContentfulPaint",
+      "type": "render",
+      "startTime": 1792501187628
+    }
+  ]
+}

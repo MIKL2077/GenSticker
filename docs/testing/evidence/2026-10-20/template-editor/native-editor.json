@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "domainValidation": true,
+  "source": "packaged public logo; picker fixture only",
+  "sharedSubjectStage": true,
+  "tools": [
+    "flip",
+    "rotate",
+    "background"
+  ],
+  "undo": true,
+  "restore": true,
+  "pngSubjectConfirmation": true,
+  "physicalDeviceInference": false,
+  "runtimeErrors": []
+}

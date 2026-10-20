@@ -5,6 +5,7 @@ import binascii
 import asyncio
 import hashlib
 import time
+import threading
 from contextlib import asynccontextmanager, suppress
 from functools import lru_cache
 from io import BytesIO
@@ -39,10 +40,21 @@ async def lifespan(app):
             await asyncio.sleep(30)
             render_cache.prune()
             subject_cache.prune()
+    from meme_generator.features.subjects import warm_subject_model
+    async def warm_foreground():
+        try:
+            await run_sync(warm_subject_model)()
+        except Exception:
+            import logging
+            logging.getLogger(__name__).warning('foreground model warmup unavailable; retry on demand')
+    warm_task = asyncio.create_task(warm_foreground())
     task = asyncio.create_task(expire_private_cache())
     try:
         yield
     finally:
+        warm_task.cancel()
+        with suppress(asyncio.CancelledError):
+            await warm_task
         task.cancel()
         with suppress(asyncio.CancelledError):
             await task
@@ -61,15 +73,20 @@ generation_slots = asyncio.Semaphore(2)
 from meme_generator.features.render_cache import RenderCache
 render_cache = RenderCache()
 subject_cache = RenderCache(max_entries=8)
+_subject_locks = [threading.RLock() for _ in range(16)]
+
+def subject_key(identity, raw):
+    return hashlib.sha256(identity.encode()+b'\0u2netp-subject-v1\0'+raw).hexdigest()
 
 def prepare_inputs(images, identity):
     from meme_generator.features.subjects import extract_subject
     output=[]
     for raw in images:
-        key=hashlib.sha256(identity.encode()+b'\0u2netp-subject-v1\0'+raw).hexdigest()
-        value=subject_cache.get(key)
-        if value is None:
-            value=extract_subject(raw);subject_cache.put(key,value)
+        key=subject_key(identity,raw)
+        with _subject_locks[int(key[:2],16)%len(_subject_locks)]:
+            value=subject_cache.get(key)
+            if value is None:
+                value=extract_subject(raw);subject_cache.put(key,value)
         output.append(value)
     return output
 
@@ -102,19 +119,25 @@ async def subject_preview(params: SubjectPreviewRequest, request: Request):
         raise HTTPException(status_code=422, detail='图片格式无效，请重新选择')
     if len(raw) > 8 * 1024 * 1024:
         raise HTTPException(status_code=413, detail='图片过大，先缩小后再试')
-    if generation_slots.locked():
-        raise HTTPException(status_code=503, detail='图片处理繁忙，请稍后再试')
-    async with generation_slots:
-        try:
-            content = (await run_sync(prepare_inputs)([raw], actor(request)))[0]
-        except MemeGeneratorException as exc:
-            raise HTTPException(status_code=exc.status_code, detail=exc.message)
-        except (UnidentifiedImageError, Image.DecompressionBombError, ValueError, OSError):
-            raise HTTPException(status_code=422, detail='图片无法读取，请选择静态图片')
+    started=time.perf_counter()
+    identity=actor(request)
+    content=subject_cache.get(subject_key(identity,raw))
+    cached=content is not None
+    if not cached:
+        if generation_slots.locked():
+            raise HTTPException(status_code=503, detail='图片处理繁忙，请稍后再试')
+        async with generation_slots:
+            try:
+                content = (await run_sync(prepare_inputs)([raw], identity))[0]
+            except MemeGeneratorException as exc:
+                raise HTTPException(status_code=exc.status_code, detail=exc.message)
+            except (UnidentifiedImageError, Image.DecompressionBombError, ValueError, OSError):
+                raise HTTPException(status_code=422, detail='图片无法读取，请选择静态图片')
+    headers={'Cache-Control':'private, no-store','X-Gensticker-Cache':'hit' if cached else 'miss','Server-Timing':f'foreground;dur={(time.perf_counter()-started)*1000:.1f}'}
     if params.delivery=='url':
         from meme_generator.features.editor import deliver_foreground
-        return JSONResponse(deliver_foreground(content,request),headers={'Cache-Control':'private, no-store'})
-    return Response(content=content, media_type='image/png', headers={'Cache-Control': 'private, no-store'})
+        return JSONResponse(deliver_foreground(content,request),headers=headers)
+    return Response(content=content, media_type='image/png', headers=headers)
 
 
 @app.post('/memes/{key}/generate')
@@ -517,6 +540,8 @@ from meme_generator.features.studio import router as studio_router
 app.include_router(studio_router)
 from meme_generator.features.editor import router as editor_router
 app.include_router(editor_router)
+from meme_generator.features.subject_model import router as subject_model_router
+app.include_router(subject_model_router)
 from meme_generator.features.livegif import router as live_router
 app.include_router(live_router)
 from meme_generator.features.lifecycle import router as lifecycle_router

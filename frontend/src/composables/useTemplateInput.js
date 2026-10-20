@@ -27,7 +27,7 @@ export function useTemplateInput() {
     if (!info) return '请上传图片'
     const { min, max } = parseRange(info.imageCount)
     if (max === 0) return '此模板不需要图片'
-    if (!templateImages.value.length) return '选择图片或拍照，随后可裁剪、翻转和去背景'
+    if (!templateImages.value.length) return '选择图片或拍照，选好主角后可翻转、旋转和去背景'
     const current = templateImages.value.length
     if (current >= max) return `已上传 ${current} 张图片（最多${max}张）`
     if (min > 0 && current < min) return `还需要上传 ${min - current} 张图片（最少${min}张，最多${max}张）`
@@ -117,10 +117,13 @@ export function useTemplateInput() {
   const closeImageEditor = () => {editEpoch++;showImageEditor.value=false;editorBusy.value=false;editorError.value=''}
   const applyImageEdit = async operation => {
     const index=activeImageIndex.value, path=templateImages.value[index]
-    if(editorBusy.value || !path)return
+    if(editorBusy.value || !path){if(operation.type==='prepared')disposeEditedImage(operation.path);return}
     const epoch=++editEpoch;editorBusy.value=true;editorError.value=''
+    let cropped=''
     try {
-      const output=operation.type==='background' ? await removeImageBackground(path) : await editImage(path,operation)
+      if(operation.rect && operation.type!=='crop')cropped=await editImage(path,{type:'crop',rect:operation.rect})
+      const input=cropped || path
+      const output=operation.type==='prepared' ? operation.path : operation.type==='background' ? await removeImageBackground(input) : await editImage(input,operation)
       if(epoch!==editEpoch || templateImages.value[index]!==path){disposeEditedImage(output);return}
       owned.add(output)
       const record=records[index] || (records[index]={original:path,history:[]})
@@ -128,7 +131,7 @@ export function useTemplateInput() {
       if(record.history.length>4){const old=record.history.shift();if(old!==record.original)release(old)}
       templateImages.value[index]=output;extractSubject.value=false;syncUndo();if(operation.complete)closeImageEditor();return true
     } catch(e) {if(epoch===editEpoch)editorError.value=e.message || e.errMsg || '编辑失败，原图已保留'}
-    finally {if(epoch===editEpoch)editorBusy.value=false}
+    finally {if(cropped)disposeEditedImage(cropped);if(epoch===editEpoch)editorBusy.value=false}
   }
   const undoImageEdit = () => {
     if(editorBusy.value)return
