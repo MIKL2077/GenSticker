@@ -485,10 +485,10 @@ def register_routers():
     def _():
         """按输入需求对表情进行分类并返回各分类的 key 列表。
         
-        分类规则（基于最小需求）：
-        - 仅文字: min_images == 0 且 max_images == 0 且 min_texts >= 1
-        - 仅图片: min_texts == 0 且 max_texts == 0 且 min_images >= 1
-        - 图文混合: min_images >= 1 且 min_texts >= 1
+        分类规则（基于支持的输入类型，含可选文字）：
+        - 仅文字: max_images == 0 且 max_texts > 0
+        - 仅图片: max_texts == 0 且 max_images > 0
+        - 图文混合: max_images > 0 且 max_texts > 0
         - 全部: 所有表情
         其他（既不需要图片也不需要文字）仅计入“全部”。
         """
@@ -512,12 +512,12 @@ def register_routers():
             attribution = {k:metadata.get(k,'') for k in ('author','license','source_url','license_url')}
             if not attribution['source_url']:
                 attribution = {'author':'MemeCrafters 模板合集','license':'素材权利信息见上游','source_url':'https://github.com/MemeCrafters/meme-generator','license_url':''}
-            cards.append({'key':meme.key, 'name':(meme.keywords or [meme.key])[0], 'keywords':meme.keywords, 'tags':sorted(meme.tags)[:6], 'template_id':entry.get('id',''), 'version':entry.get('version',1), 'creator':metadata.get('creator',{}),'created_at':metadata.get('created_at',0),'featured_trial':bool(metadata.get('featured_trial')), 'input_hint':metadata.get('input_hint',''), 'attribution':attribution, 'params_type':{'min_images':params.min_images,'max_images':params.max_images,'min_texts':params.min_texts,'max_texts':params.max_texts,'default_texts':params.default_texts}, **popularity.get(meme.key, {'heat':0, 'counts':{}})})
-            if params.min_images == 0 and params.max_images == 0 and params.min_texts >= 1:
+            cards.append({'key':meme.key, 'name':(meme.keywords or [meme.key])[0], 'animated':bool(metadata.get('animated')), 'keywords':meme.keywords, 'tags':sorted(meme.tags)[:6], 'template_id':entry.get('id',''), 'version':entry.get('version',1), 'creator':metadata.get('creator',{}),'created_at':metadata.get('created_at',0),'featured_trial':bool(metadata.get('featured_trial')), 'input_hint':metadata.get('input_hint',''), 'attribution':attribution, 'params_type':{'min_images':params.min_images,'max_images':params.max_images,'min_texts':params.min_texts,'max_texts':params.max_texts,'default_texts':params.default_texts}, **popularity.get(meme.key, {'heat':0, 'counts':{}})})
+            if params.max_images == 0 and params.max_texts > 0:
                 text_only.append(meme.key)
-            elif params.min_texts == 0 and params.max_texts == 0 and params.min_images >= 1:
+            elif params.max_texts == 0 and params.max_images > 0:
                 image_only.append(meme.key)
-            elif params.min_images >= 1 and params.min_texts >= 1:
+            elif params.max_images > 0 and params.max_texts > 0:
                 mixed.append(meme.key)
 
         from meme_generator.features.client_render import public_recipes

@@ -1,0 +1,29 @@
+{
+  "status": "passed",
+  "project": "/var/folders/h5/m6p8phbn7799tx4wjrmx6cvr0000gn/T/gensticker-search-check-u6kYJy",
+  "checks": [
+    {
+      "name": "native keyword input and pagination reset",
+      "total": 1000,
+      "count": 84,
+      "page": 1
+    },
+    {
+      "name": "empty result and native clear button",
+      "passed": true
+    },
+    {
+      "name": "live GIF keyword intersection",
+      "count": 53,
+      "allAnimated": true
+    },
+    {
+      "name": "native multiline entry in both independent slots",
+      "values": [
+        "上方第一行\n上方第二行",
+        "下方第一行\n下方第二行"
+      ]
+    }
+  ],
+  "runtimeErrors": []
+}

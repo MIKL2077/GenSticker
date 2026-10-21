@@ -144,7 +144,7 @@ class ExpansionTests(unittest.TestCase):
             self.assertEqual(metadata["license"], "unverified")
             self.assertEqual(metadata["review"]["visual_status"], "approved")
             self.assertGreater(metadata["created_at"], 0)
-            self.assertEqual(exclusion_reason(row), "requires-different-image-count")
+            self.assertEqual(exclusion_reason(row), None if metadata.get('conversion')=='reaction-story-v1' and metadata.get('max_images')==1 else 'requires-different-image-count')
         self.assertEqual(restore(), 0)
 
 

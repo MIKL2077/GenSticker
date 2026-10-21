@@ -55,6 +55,7 @@ def asset_refs(spec):
     refs = {l["value"] for l in spec.get("layers", []) if l.get("type") == "asset"}
     if spec.get("reference_asset"):
         refs.add(spec["reference_asset"])
+    if spec.get('animation_asset'):refs.add(spec['animation_asset'])
     return {r for r in refs if len(r) == 64 and all(c in "0123456789abcdef" for c in r)}
 
 
@@ -256,7 +257,8 @@ def collect_orphans(min_age=86400):
         finally:
             db.close()
         removed = 0
-        for path in (root() / "template_assets").glob("*.png"):
+        for path in (root() / "template_assets").iterdir() if (root()/'template_assets').exists() else []:
+            if path.suffix not in {'.png','.gif'} or path.is_symlink():continue
             if path.stem not in refs and path.stat().st_mtime < time.time() - min_age:
                 path.unlink()
                 removed += 1

@@ -21,12 +21,14 @@ def restore(*, include_batches=True):
                 from urllib.parse import urlsplit
                 source = urlsplit(m.get('source_url', ''))
                 allowed = (m.get('origin') == 'chinesebqb' and source.hostname == 'github.com' and source.path.startswith('/zhaoolee/ChineseBQB/blob/')) or (m.get('origin') == 'weshine' and source.hostname == 'u.weshineapp.com')
+                caption=(m.get('conversion')=='caption-preserved-v2' and q.get('observed_min_confidence',0)>=.95 and q.get('round_trip_mae',100)<=12 and q.get('protected_pixel_mae',100)<=.1)
+                story=(m.get('conversion')=='reaction-story-v1' and q.get('reference_preserved') is True and q.get('replacement_verified') is True and q.get('slot_overlap_pixels',1)==0 and (not m.get('animated') or q.get('motion_verified') is True))
                 if not (allowed and source.scheme == 'https' and m.get('source_use') == 'explicit-user-request-with-attribution'
-                        and m.get('review', {}).get('visual_status') == 'approved'
-                        and m.get('conversion') == 'caption-preserved-v2'
-                        and q.get('observed_min_confidence', 0) >= .95
-                        and q.get('round_trip_mae', 100) <= 12 and q.get('protected_pixel_mae', 100) <= .1):
+                        and m.get('review', {}).get('visual_status') == 'approved' and (caption or story)):
                     raise ValueError('unreviewed source batch')
+                if story:
+                    from .reaction_templates import validate_story
+                    validate_story(item['spec'],m)
             manifest['templates'].extend(batch['templates']); manifest['assets'].update(batch['assets'])
     retired = set(json.loads(Path(__file__).with_name("template_policy.json").read_text())["retired_keys"])
     db = connect()
@@ -59,6 +61,7 @@ def restore(*, include_batches=True):
             spec = TemplateSpec.model_validate(item["spec"]).model_dump()
             hashes={layer['value'] for layer in spec['layers'] if layer['type']=='asset'}
             if spec.get('reference_asset'):hashes.add(spec['reference_asset'])
+            if spec.get('animation_asset'):hashes.add(spec['animation_asset'])
             for digest in hashes:
                 if digest in manifest['assets']:
                     raw = base64.b64decode(manifest["assets"][digest], validate=True)
@@ -66,7 +69,8 @@ def restore(*, include_batches=True):
                         raise ValueError("seed asset checksum mismatch")
                     directory = root() / "template_assets"
                     directory.mkdir(exist_ok=True)
-                    (directory / (digest + ".png")).write_bytes(raw)
+                    suffix='.gif' if digest==spec.get('animation_asset') else '.png'
+                    (directory / (digest + suffix)).write_bytes(raw)
             if item.get('prepare_background_from_reference'):
                 from .face_slot import prepared_background
                 from io import BytesIO

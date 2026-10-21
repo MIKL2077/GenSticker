@@ -1,0 +1,70 @@
+{
+  "status": "passed",
+  "templates": 649,
+  "animated": 319,
+  "assets_verified": 658,
+  "modified_multiline_templates": 454,
+  "direct_render_seconds": {
+    "median": 0.0835,
+    "p95": 0.4077,
+    "max": 0.524
+  },
+  "elapsed_seconds": 110.4,
+  "http_cases": [
+    {
+      "key": "auto_story_7e4ee13006b043132e8094b0",
+      "kind": "image",
+      "animated": true,
+      "mime": "image/gif",
+      "bytes": 685296
+    },
+    {
+      "key": "auto_story_833921d81e1695da8cec5aa6",
+      "kind": "mixed",
+      "animated": true,
+      "mime": "image/gif",
+      "bytes": 590325
+    },
+    {
+      "key": "auto_story_729933b7e8a850ad87f06d51",
+      "kind": "text",
+      "animated": true,
+      "mime": "image/gif",
+      "bytes": 207947
+    },
+    {
+      "key": "auto_story_641006ece756fbab6e0cd830",
+      "kind": "image",
+      "animated": false,
+      "mime": "image/jpeg",
+      "bytes": 33731
+    },
+    {
+      "key": "auto_story_944ef8c62dd43debeaeaebfd",
+      "kind": "mixed",
+      "animated": false,
+      "mime": "image/jpeg",
+      "bytes": 25941
+    },
+    {
+      "key": "auto_story_f24a9163bc5f93571daf38f7",
+      "kind": "text",
+      "animated": false,
+      "mime": "image/jpeg",
+      "bytes": 31507
+    }
+  ],
+  "worker_gif": {
+    "status": "passed",
+    "frames": 16,
+    "subject_preprocessing": "synthetic input; vision model not exercised"
+  },
+  "live_total": 1000,
+  "live_animated": 437,
+  "categories": {
+    "image_only": 370,
+    "mixed": 380,
+    "text_only": 250
+  }
+}
+

@@ -108,6 +108,7 @@ def bootstrap():
                 "max_texts": p.max_texts,
                 "default_texts": p.default_texts,
                 "origin": "bundled",
+                "animated": (Path(__file__).resolve().parents[1]/'memes'/meme.key/'example.gif').is_file(),
                 "subject_types": ["person", "animal", "object", "unknown"],
                 "slot_aspect": 1.0,
             },

@@ -38,9 +38,16 @@ class TemplateSpec(BaseModel):
     defaults: list[str] = Field(default_factory=list, max_length=5)
     background_prepared: bool = False
     reference_asset: str = Field(default='',pattern=r'^(?:[a-f0-9]{64})?$')
+    animation_asset: str = Field(default='',pattern=r'^(?:[a-f0-9]{64})?$')
+    animation_box: tuple[int,int,int,int] | None = None
 
     @model_validator(mode="after")
     def bounds(self):
+        if bool(self.animation_asset) != (self.animation_box is not None):raise ValueError('animation requires an asset and box')
+        if self.animation_box:
+            x,y,w,h=self.animation_box
+            if min(x,y)<0 or min(w,h)<1 or x+w>self.width or y+h>self.height:raise ValueError('animation outside canvas')
+            if self.reference_asset or any(l.type=='face' for l in self.layers):raise ValueError('animated reaction cannot mix head replacement')
         for layer in self.layers:
             x, y, w, h = layer.box
             if (
@@ -91,9 +98,12 @@ def font(size, bold=False):
     return ImageFont.load_default(size=size)
 
 
-def render(spec, images, texts=None, *, preview=False):
+def render(spec, images, texts=None, *, preview=False, _transparent=False):
     spec = TemplateSpec.model_validate(spec)
-    canvas = Image.new("RGBA", (spec.width, spec.height), spec.background)
+    if spec.animation_asset:
+        from .reaction_animation import render_animation
+        return render_animation(spec,images,texts,preview=preview)
+    canvas = Image.new("RGBA", (spec.width, spec.height), (0,0,0,0) if _transparent else spec.background)
     if preview and spec.reference_asset:
         with open_image(root()/'template_assets'/(spec.reference_asset+'.png')) as reference:
             canvas.alpha_composite(reference.convert('RGBA'))
@@ -156,5 +166,6 @@ def render(spec, images, texts=None, *, preview=False):
                 left = x + (w-length)/2 if layer.align == "center" else x+w-length if layer.align == "right" else x
                 draw.text((left-bbox[0], y + index*(line_height+4)-bbox[1]), line, font=face, fill=layer.color, stroke_width=layer.stroke_width, stroke_fill=layer.stroke_color)
     output = BytesIO()
-    canvas.convert("RGB").save(output, "JPEG", quality=90)
+    if _transparent:canvas.save(output,'PNG')
+    else:canvas.convert("RGB").save(output, "JPEG", quality=90)
     return output
