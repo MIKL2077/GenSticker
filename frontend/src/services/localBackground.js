@@ -10,10 +10,11 @@ const call=(fn,options)=>new Promise((resolve,reject)=>fn({...options,success:re
 function supported(){return typeof document==='undefined' && typeof wx!=='undefined' && !!wx.createInferenceSession && !!wx.createOffscreenCanvas && !!uni.env?.USER_DATA_PATH && (uni.getDeviceInfo?.().platform || uni.getSystemInfoSync?.().platform)!=='devtools'}
 function releaseSession(){clearTimeout(idleTimer);try{session?.destroy()}catch(_){}session=null;sessionTask=null}
 function keepAlive(){clearTimeout(idleTimer);idleTimer=setTimeout(()=>{if(!localBusy)releaseSession();else keepAlive()},90000)}
-async function modelFile(){
+async function modelFile(allowDownload=true){
  const fs=uni.getFileSystemManager(),path=uni.env.USER_DATA_PATH+'/gensticker_u2netp_'+MODEL_SHA.slice(0,12)+'.onnx'
  const verify=async file=>{const info=await call(fs.getFileInfo.bind(fs),{filePath:file,digestAlgorithm:'sha1'});if(info.size!==MODEL_BYTES || info.digest!==MODEL_SHA1)throw Error('模型校验失败')}
  try{await verify(path);return path}catch(_){await call(fs.unlink.bind(fs),{filePath:path}).catch(()=>{})}
+ if(!allowDownload)throw Error('模型尚未缓存')
  let temporary=''
  try{
   const result=await call(uni.downloadFile.bind(uni),{url:API_BASE_URL+'/images/subject-model/'+MODEL_SHA+'.onnx',timeout:30000})
@@ -23,11 +24,11 @@ async function modelFile(){
   return path
  }finally{if(temporary)fs.unlink({filePath:temporary,fail:()=>{}})}
 }
-export function warmLocalBackground(){
+export function warmLocalBackground({allowDownload=true}={}){
  if(!supported() || Date.now()<unavailableUntil)return Promise.reject(Error('使用云端处理'))
  if(sessionTask){keepAlive();return sessionTask}
  sessionTask=(async()=>{
-  const model=await modelFile()
+  const model=await modelFile(allowDownload)
   // Some iOS devices expose NPU support but reject individual operators.
   // Retry the same verified model with NPU disabled before leaving the device.
   for(const allowNPU of [true,false]){
@@ -38,7 +39,7 @@ export function warmLocalBackground(){
     session=loading;keepAlive();return session
    }catch(error){try{loading?.destroy()}catch(_){}if(!allowNPU)throw error}
   }
- })().catch(error=>{sessionTask=null;unavailableUntil=Date.now()+60000;throw error})
+ })().catch(error=>{sessionTask=null;if(allowDownload)unavailableUntil=Date.now()+60000;throw error})
  return sessionTask
 }
 export function modelInput(rgba){
@@ -62,7 +63,7 @@ export function predictionMask(tensor){
  return rgba
 }
 function newCanvas(width,height){const canvas=typeof document!=='undefined'?document.createElement('canvas'):wx.createOffscreenCanvas?.({type:'2d',width,height});if(!canvas)throw Error('当前设备使用云端处理');canvas.width=width;canvas.height=height;return canvas}
-async function drawSource(path){
+async function drawSource(path,rect=[0,0,1,1]){
  const info=await call(uni.getImageInfo.bind(uni),{src:path})
  if(info.width*info.height>40000000)throw Error('图片过大，请先缩小')
  const scale=Math.min(1,1280/Math.max(info.width,info.height)),canvas=newCanvas(Math.max(1,Math.round(info.width*scale)),Math.max(1,Math.round(info.height*scale)))
@@ -70,9 +71,10 @@ async function drawSource(path){
   const image=typeof document!=='undefined'?new Image():canvas.createImage()
   await deadline(new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=reject;image.src=path}),5000)
   // The decoded image is upright, unlike getImageInfo's EXIF sensor dimensions.
-  const decodedScale=Math.min(1,1280/Math.max(image.width,image.height))
-  canvas.width=Math.max(1,Math.round(image.width*decodedScale));canvas.height=Math.max(1,Math.round(image.height*decodedScale))
-  canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);return canvas
+  if(!Array.isArray(rect)||rect.length!==4||rect.some(v=>!Number.isFinite(v))||rect[0]<0||rect[1]<0||rect[2]<=0||rect[3]<=0||rect[0]+rect[2]>1.00001||rect[1]+rect[3]>1.00001)throw Error('裁剪区域无效')
+  const sw=image.width*rect[2],sh=image.height*rect[3],decodedScale=Math.min(1,1280/Math.max(sw,sh))
+  canvas.width=Math.max(1,Math.round(sw*decodedScale));canvas.height=Math.max(1,Math.round(sh*decodedScale))
+  canvas.getContext('2d').drawImage(image,image.width*rect[0],image.height*rect[1],sw,sh,0,0,canvas.width,canvas.height);return canvas
  }catch(error){canvas.width=canvas.height=1;throw error}
 }
 async function trimmedExport(canvas,exportCanvas){
@@ -84,10 +86,27 @@ async function trimmedExport(canvas,exportCanvas){
  const cropped=newCanvas(right-left+1,bottom-top+1)
  try{cropped.getContext('2d').drawImage(canvas,left,top,cropped.width,cropped.height,0,0,cropped.width,cropped.height);return await exportCanvas(cropped,'png')}finally{cropped.width=cropped.height=1}
 }
-export async function prepareForeground(path,exportCanvas){
+export async function applyForegroundMask(path,maskPath,exportCanvas,{rect}={}){
+ let canvas
+ try{
+  canvas=await drawSource(path,rect)
+  const ctx=canvas.getContext('2d'),pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data
+  let clear=0
+  for(let i=3;i<pixels.length;i+=4)if(pixels[i]<240)clear++
+  if(clear/(pixels.length/4)>=.02)return await trimmedExport(canvas,exportCanvas)
+  const mask=typeof document!=='undefined'?new Image():canvas.createImage()
+  await deadline(new Promise((resolve,reject)=>{mask.onload=resolve;mask.onerror=reject;mask.src=maskPath}),3000)
+  if(mask.width!==EDGE || mask.height!==EDGE)throw Error('去背景结果尺寸无效')
+  ctx.globalCompositeOperation='destination-in';ctx.drawImage(mask,0,0,canvas.width,canvas.height);ctx.globalCompositeOperation='source-over'
+  return await trimmedExport(canvas,exportCanvas)
+ }finally{if(canvas)canvas.width=canvas.height=1}
+}
+
+export async function prepareForeground(path,exportCanvas,{rect,localOnly=false}={}){
  let canvas,inputCanvas,maskCanvas,hasTransparency=false
  try{
-  canvas=await drawSource(path)
+  if(localOnly && (!session || localBusy))return {method:'unavailable'}
+  canvas=await drawSource(path,rect)
   const ctx=canvas.getContext('2d'),pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data
   let clear=0,visible=0
   for(let i=3;i<pixels.length;i+=4){if(pixels[i]<240)clear++;if(pixels[i]>20)visible++;if(pixels[i]<255)hasTransparency=true}
@@ -97,10 +116,12 @@ export async function prepareForeground(path,exportCanvas){
    localBusy=true;clearTimeout(idleTimer)
    let inference
    try{
-    inference=await deadline(warmLocalBackground(),1200)
+    // Only use an already loaded model or a very short remaining compile.
+    // Never spend the foreground operation downloading the model first.
+    inference=session || await deadline(warmLocalBackground({allowDownload:false}),150)
     inputCanvas=newCanvas(EDGE,EDGE);const inputCtx=inputCanvas.getContext('2d');inputCtx.drawImage(canvas,0,0,EDGE,EDGE)
     const input=modelInput(inputCtx.getImageData(0,0,EDGE,EDGE).data)
-    const output=await deadline(inference.run({'input.1':{type:'float32',shape:[1,3,EDGE,EDGE],data:input.buffer}}),4000)
+    const output=await deadline(inference.run({'input.1':{type:'float32',shape:[1,3,EDGE,EDGE],data:input.buffer}}),localOnly?4000:2500)
     const mask=predictionMask(output['1959'])
     maskCanvas=newCanvas(EDGE,EDGE);const maskCtx=maskCanvas.getContext('2d'),image=maskCtx.createImageData(EDGE,EDGE);image.data.set(mask);maskCtx.putImageData(image,0,0)
     ctx.globalCompositeOperation='destination-in';ctx.drawImage(maskCanvas,0,0,canvas.width,canvas.height);ctx.globalCompositeOperation='source-over';hasTransparency=true
@@ -108,8 +129,13 @@ export async function prepareForeground(path,exportCanvas){
    }catch(_){if(inference){releaseSession();unavailableUntil=Date.now()+60000}}
    finally{localBusy=false;if(session)keepAlive()}
   }
-  // Bound PNG/camera inputs too, and avoid base64-uploading a multi-megapixel PNG.
-  return {upload:await exportCanvas(canvas,hasTransparency?'png':'jpg'),method:'server'}
- }catch(error){if(/主体为空/.test(error.message||''))throw error;return {upload:path,method:'server'}}
+  if(localOnly)return {method:'unavailable'}
+  // The server model only needs a 320px tensor. A 640px upload preserves the
+  // crop ratio; the returned mask is composited onto the original locally.
+  if(inputCanvas)inputCanvas.width=inputCanvas.height=1
+  inputCanvas=newCanvas(Math.max(1,Math.round(canvas.width*Math.min(1,640/Math.max(canvas.width,canvas.height)))),Math.max(1,Math.round(canvas.height*Math.min(1,640/Math.max(canvas.width,canvas.height)))))
+  inputCanvas.getContext('2d').drawImage(canvas,0,0,inputCanvas.width,inputCanvas.height)
+  return {upload:await exportCanvas(inputCanvas,hasTransparency?'png':'jpg'),method:'server'}
+ }catch(error){if(/主体为空|裁剪区域/.test(error.message||''))throw error;if(localOnly)return {method:'unavailable'};throw error}
  finally{for(const item of [canvas,inputCanvas,maskCanvas])if(item)item.width=item.height=1}
 }

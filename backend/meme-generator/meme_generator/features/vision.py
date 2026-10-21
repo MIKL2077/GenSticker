@@ -89,6 +89,15 @@ def process(path,*,subject_selected=False):
     if subject_selected:
         # The client has already cropped a confirmed selection. Never choose a
         # different/larger face or connected component during later batches.
+        # An editor cutout already carries its mask. Reuse it rather than
+        # spending another inference and degrading soft transparent edges.
+        import numpy as np
+        if float(np.mean(np.asarray(image.getchannel('A'))<240))>=.02:
+            bbox=image.getchannel('A').getbbox()
+            if bbox:image=image.crop(bbox)
+            image.thumbnail((768,768),Image.Resampling.LANCZOS)
+            analysis.update(cutout=True,method='selected-alpha',subject_selected=True,framing='user-selection',aspect=round(image.width/max(1,image.height),2))
+            return image,analysis
         if _session is not None:
             try:
                 cutout=extract(image);alpha=cutout.getchannel('A');bbox=alpha.point(lambda value:255 if value>80 else 0).getbbox()

@@ -1,15 +1,15 @@
 <template>
  <view v-if="show" class="subject-modal"><view class="subject-sheet">
-  <view class="subject-heading"><view><text>选好主角，再开始造梗</text><text>{{locked?'正在处理图片，请稍等…':detecting?'正在寻找画面中的主角…':'选人物、调范围、改图片，在这里一次完成'}}</text></view><button class="ui-close" @click="$emit('cancel')">×</button></view>
+  <view class="subject-heading"><view><text>选好主角，再开始造梗</text><text>{{locked?'正在处理图片，请稍等…':detecting?'可直接调整范围，正在自动找人':'选人物、调范围、改图片，在这里一次完成'}}</text></view><button class="ui-close" @click="$emit('cancel')">×</button></view>
   <view class="subject-workspace">
    <view class="subject-stage" :style="{width:stage.w+'px',height:stage.h+'px'}" @touchmove.stop.prevent="move" @touchend="drag=null" @touchcancel="drag=null" @mousemove="move" @mouseup="drag=null" @mouseleave="drag=null">
     <image :src="workingSrc" mode="aspectFit"/>
     <button v-for="(candidate,index) in (isOriginal?candidates:[])" :key="candidate.id" class="subject-candidate" :style="style(candidate.box)" :disabled="locked" @click.stop="select(candidate)">{{candidate.kind==='animal'?'宠物':candidate.kind==='subject'?'主体':'人物'}} {{index+1}}</button>
-    <view v-if="selected" class="subject-box" :style="style(rect)" @touchstart.stop="begin($event,'move')" @mousedown.stop.prevent="begin($event,'move')"><view class="subject-handle top-left" @touchstart.stop="begin($event,'tl')" @mousedown.stop.prevent="begin($event,'tl')"/><view class="subject-handle bottom-right" @touchstart.stop="begin($event,'br')" @mousedown.stop.prevent="begin($event,'br')"/><text>{{isOriginal?'已选主角':'主角预览'}}</text></view>
+    <view v-if="selected" class="subject-box" :style="style(rect)" @touchstart.stop="begin($event,'move')" @mousedown.stop.prevent="begin($event,'move')"><view class="subject-handle top-left" @touchstart.stop="begin($event,'tl')" @mousedown.stop.prevent="begin($event,'tl')"/><view class="subject-handle bottom-right" @touchstart.stop="begin($event,'br')" @mousedown.stop.prevent="begin($event,'br')"/><text>{{isOriginal?(chosen==='manual'?'裁剪范围':'已选主角'):'主角预览'}}</text></view>
    </view>
   </view>
   <view class="subject-controls">
-   <scroll-view class="subject-choices" scroll-x><button v-for="(candidate,index) in candidates" :key="candidate.id" :disabled="locked" :class="{active:chosen===candidate.id}" @click="select(candidate)">{{candidate.kind==='animal'?'宠物':candidate.kind==='subject'?'主体':'人物'}} {{index+1}}</button><button :disabled="locked" :class="{active:chosen==='manual'}" @click="manual">手动框选</button><button v-if="detectEnabled && !candidates.length" :disabled="locked || detecting" @click="retryDetection">{{detecting?'识别中…':'重新识别'}}</button></scroll-view>
+   <scroll-view class="subject-choices" scroll-x><button v-for="(candidate,index) in candidates" :key="candidate.id" :disabled="locked" :class="{active:chosen===candidate.id}" @click="select(candidate)">{{candidate.kind==='animal'?'宠物':candidate.kind==='subject'?'主体':'人物'}} {{index+1}}</button><button :disabled="locked" :class="{active:chosen==='manual'}" @click="manual">手动框选</button><button v-if="detectEnabled && !candidates.length" :disabled="locked || detecting" @click="retryDetection">{{detecting?'自动找人中…':'精细识别'}}</button></scroll-view>
    <slot name="images" :locked="locked"/>
    <view v-if="editable" class="editor-tools"><button :disabled="locked" @click="apply('flip')"><ui-icon name="flip"/><text>左右翻转</text></button><button :disabled="locked" @click="apply('rotate')"><ui-icon name="rotate"/><text>旋转 90°</text></button><button :disabled="locked" @click="apply('background')"><ui-icon name="cutout"/><text>去除背景</text></button></view>
    <view v-if="editable" class="editor-history"><button :disabled="locked || (!history.length && !canUndo)" @click="undo">撤销上一步</button><button :disabled="locked || (!history.length && !canUndo)" @click="restore">还原上传图</button></view>
@@ -24,7 +24,7 @@ import {ref,computed,watch,onBeforeUnmount} from 'vue'
 import {displayImageSize} from '@/services/imageGeometry'
 import {imageEditError} from '@/services/imageEditing'
 import {detectSubjects} from '@/services/subjectSelection'
-import {editImage,removeImageBackground,disposeEditedImage} from '@/services/imageEditing'
+import {editImage,removeImageBackground,composeBackgroundMask,disposeEditedImage} from '@/services/imageEditing'
 import {warmLocalBackground} from '@/services/localBackground'
 import {clampCrop} from '@/services/liveGifService'
 import UiIcon from '@/components/UiIcon.vue'
@@ -33,29 +33,57 @@ const info=ref({width:0,height:0}),originalInfo=ref({width:0,height:0}),workingS
 const locked=computed(()=>processing.value || props.busy),isOriginal=computed(()=>workingSrc.value===props.src)
 const win=uni.getWindowInfo?.()||uni.getSystemInfoSync(),stage=computed(()=>{const ratio=(info.value.width||1)/(info.value.height||1),safe=win.safeAreaInsets?(win.safeAreaInsets.top||0)+(win.safeAreaInsets.bottom||0):(win.safeArea?.top||0)+Math.max(0,(win.screenHeight||win.windowHeight)-(win.safeArea?.bottom||win.screenHeight||win.windowHeight)),maxHeight=Math.max(120,Math.min(440,win.windowHeight-safe-(props.editable?420:280))),w=Math.min(win.windowWidth-64,520,maxHeight*ratio);return {w,h:w/ratio}})
 const style=box=>({left:box[0]*100+'%',top:box[1]*100+'%',width:box[2]*100+'%',height:box[3]*100+'%'})
-let version=0,drag=null
+let version=0,drag=null,detectionTask=null,touched=false,backgroundTimer=null,backgroundJob=null
 const owned=new Set()
-const dispose=()=>{for(const path of owned)disposeEditedImage(path);owned.clear()}
+const dropBackground=()=>{clearTimeout(backgroundTimer);backgroundTimer=null;const job=backgroundJob;backgroundJob=null;if(job?.path)disposeEditedImage(job.path)}
+const dispose=()=>{dropBackground();detectionTask?.abort?.();detectionTask=null;for(const path of owned)disposeEditedImage(path);owned.clear()}
+const backgroundKey=()=>JSON.stringify([workingSrc.value,rect.value])
+const scheduleBackground=()=>{
+ if(backgroundJob?.key===backgroundKey() && (backgroundJob.path || !backgroundJob.done) && !processing.value && props.show)return
+ dropBackground()
+ if(!props.show || !props.editable || !selected.value || processing.value || !info.value.width || transparent.value || (detecting.value && !touched && chosen.value==='manual'))return
+ // Speculation is device-only: no photo upload, and never queue another model
+ // run while an earlier selection is still being processed.
+ const key=backgroundKey(),request=version,src=workingSrc.value,box=[...rect.value]
+ backgroundTimer=setTimeout(()=>{
+  const job={key,path:null,promise:null};backgroundJob=job
+  job.promise=removeImageBackground(src,{rect:box,localOnly:true}).catch(()=>null).then(path=>{
+   if((backgroundJob!==job && !job.taken) || version!==request){if(path)disposeEditedImage(path);return null}
+   job.done=true;job.path=path;return path
+  })
+ },250)
+}
 const dimensions=src=>new Promise((resolve,reject)=>uni.getImageInfo({src,success:result=>resolve(displayImageSize(result)),fail:reject}))
 watch(()=>[props.show,props.src],async()=>{
- const request=++version;processing.value=false;dispose();history.value=[];if(!props.show||!props.src)return
- transparent.value=false;info.value={width:0,height:0};workingSrc.value=props.src;candidates.value=[];rect.value=props.initialRect?[...props.initialRect]:[0,0,1,1];originRect.value=null;selected.value=!!props.initialRect;chosen.value=props.initialRect?'manual':'';error.value='';message.value='';detecting.value=true
+ const request=++version;processing.value=false;dispose();history.value=[];touched=!!props.initialRect;if(!props.show||!props.src)return
+ transparent.value=false;info.value={width:0,height:0};workingSrc.value=props.src;candidates.value=[];rect.value=props.initialRect?[...props.initialRect]:[0,0,1,1];originRect.value=null;selected.value=true;chosen.value='manual';error.value='';message.value='';detecting.value=true
  backgroundHint.value=''
  if(props.editable){
-  backgroundHint.value='正在准备本机去背景，首次需下载约 4.6 MB 模型。'
-  warmLocalBackground().then(()=>{if(request===version)backgroundHint.value='本机去背景已就绪，照片无需上传。'},()=>{if(request===version)backgroundHint.value='本机去背景暂不可用，将使用服务器处理。'})
+  warmLocalBackground({allowDownload:false}).then(()=>{if(request===version)scheduleBackground()},()=>{})
  }
  try{
   const size=await dimensions(props.src);if(request!==version)return;info.value=size;originalInfo.value=size
   if(!props.detectEnabled)return
-  const result=await detectSubjects(props.src);if(request!==version)return;candidates.value=result.candidates||[];if(!candidates.value.length)message.value='没有找到明确的候选框，点“手动框选”圈出想要的主角。'
- }catch(e){if(request===version)message.value=imageEditError(e).message+'；仍可手动框选。'}finally{if(request===version)detecting.value=false}
+  const result=await detectSubjects(props.src,{withMask:props.editable,isCurrent:()=>request===version,onTask:task=>{detectionTask=task}});if(request!==version)return;candidates.value=result.candidates||[]
+  if(candidates.value.length && !touched && isOriginal.value && !locked.value){
+   rect.value=clampCrop(candidates.value[0].box);chosen.value=candidates.value[0].id
+  }
+   if(result.preview && isOriginal.value && !locked.value && JSON.stringify(result.preview.box)===JSON.stringify(rect.value)){
+    dropBackground();const job={key:backgroundKey(),path:null,promise:null};backgroundJob=job
+    job.promise=composeBackgroundMask(props.src,result.preview,{rect:[...rect.value]}).catch(()=>null).then(path=>{
+     if((backgroundJob!==job && !job.taken) || request!==version){if(path)disposeEditedImage(path);return null}
+     job.done=true;job.path=path;return path
+    })
+  }
+  if(!candidates.value.length)message.value='可直接调整选框，或点“精细识别”查找更多主体。'
+ }catch(e){if(request===version)message.value='可继续调整选框，自动识别暂未完成。'}finally{if(request===version){detecting.value=false;if(props.editable)warmLocalBackground().then(()=>{if(request===version)scheduleBackground()},()=>{})}}
 },{immediate:true})
+watch(()=>[props.show,workingSrc.value,rect.value.join(','),processing.value,detecting.value],scheduleBackground)
 const retryDetection=async()=>{
  if(detecting.value || locked.value)return
  const request=version;detecting.value=true;message.value='';error.value=''
  try{
-  const result=await detectSubjects(props.src)
+  const result=await detectSubjects(props.src,{force:true,extended:true,isCurrent:()=>request===version,onTask:task=>{detectionTask=task}})
   if(request===version){candidates.value=result.candidates||[];if(!candidates.value.length)message.value='没有找到明确的候选框，点“手动框选”圈出想要的主角。'}
  }catch(e){if(request===version)message.value=imageEditError(e).message+'；仍可手动框选。'}
  finally{if(request===version)detecting.value=false}
@@ -63,10 +91,10 @@ const retryDetection=async()=>{
 const snapshot=()=>({src:workingSrc.value,info:info.value,transparent:transparent.value,rect:[...rect.value],origin:originRect.value?[...originRect.value]:null,chosen:chosen.value,selected:selected.value})
 const remember=()=>{history.value=[...history.value,snapshot()].slice(-4)}
 const chooseOriginal=()=>{if(!isOriginal.value)remember();workingSrc.value=props.src;info.value=originalInfo.value;transparent.value=false;originRect.value=null;error.value=''}
-const select=candidate=>{if(locked.value)return;chooseOriginal();rect.value=clampCrop(candidate.box);chosen.value=candidate.id;selected.value=true}
-const manual=()=>{if(locked.value)return;chooseOriginal();chosen.value='manual';selected.value=true;rect.value=[.1,.1,.8,.8]}
+const select=candidate=>{if(locked.value)return;touched=true;chooseOriginal();rect.value=clampCrop(candidate.box);chosen.value=candidate.id;selected.value=true}
+const manual=()=>{if(locked.value)return;touched=true;chooseOriginal();chosen.value='manual';selected.value=true;rect.value=[.1,.1,.8,.8]}
 const point=e=>e.touches?.[0]||e
-const begin=(e,kind)=>{if(locked.value)return;const p=point(e);drag={kind,x:p.clientX,y:p.clientY,rect:[...rect.value]}}
+const begin=(e,kind)=>{if(locked.value)return;touched=true;const p=point(e);drag={kind,x:p.clientX,y:p.clientY,rect:[...rect.value]}}
 const move=e=>{if(locked.value||!drag||(!e.touches&&!e.buttons))return;const p=point(e),dx=(p.clientX-drag.x)/stage.value.w,dy=(p.clientY-drag.y)/stage.value.h;let [x,y,w,h]=drag.rect
  if(drag.kind==='move'){x+=dx;y+=dy}
  if(drag.kind==='br'){w=Math.max(.05,Math.min(1-x,w+dx));h=Math.max(.05,Math.min(1-y,h+dy))}
@@ -74,12 +102,18 @@ const move=e=>{if(locked.value||!drag||(!e.touches&&!e.buttons))return;const p=p
  rect.value=clampCrop([x,y,w,h]);chosen.value='manual'}
 const apply=async type=>{
  if(locked.value)return
- const request=version,before=snapshot();processing.value=true;error.value='';let cropped='',output=''
+ touched=true
+ const request=version,before=snapshot(),prepared=type==='background' && backgroundJob?.key===backgroundKey()?backgroundJob:null
+ if(prepared){prepared.taken=true;backgroundJob=null;clearTimeout(backgroundTimer);backgroundTimer=null}
+ processing.value=true;error.value='';let output=''
  try{
   let source=workingSrc.value
-  if(selected.value){cropped=await editImage(source,{type:'crop',rect:[...rect.value],fileType:'png'});source=cropped}
   if(request!==version)return
-  output=type==='background'?await removeImageBackground(source,{onProgress:progress=>{if(request===version)message.value='正在接收去背景结果（'+progress+'%）…'}}):await editImage(source,{type,fileType:'png'})
+  if(type==='background'){
+   output=prepared?.path || (prepared?await prepared.promise:null)
+   if(request!==version){if(output)disposeEditedImage(output);return}
+   if(!output)output=await removeImageBackground(source,{rect:selected.value?[...rect.value]:undefined,onProgress:progress=>{if(request===version)message.value='正在接收去背景结果（'+progress+'%）…'}})
+  }else output=await editImage(source,{type,fileType:'png',rect:selected.value?[...rect.value]:undefined})
   const size=await dimensions(output)
   if(request!==version){disposeEditedImage(output);output='';return}
   owned.add(output);history.value=[...history.value,before].slice(-4)
@@ -87,10 +121,10 @@ const apply=async type=>{
   workingSrc.value=output;info.value=size;transparent.value=type==='background'||transparent.value;rect.value=[0,0,1,1];selected.value=true;message.value='预览已更新，可以继续编辑，也可以切换下方的其他人物。'
   const retained=new Set([workingSrc.value,...history.value.map(item=>item.src)])
   for(const path of owned)if(!retained.has(path)){owned.delete(path);disposeEditedImage(path)}
- }catch(e){if(output&&!owned.has(output))disposeEditedImage(output);if(request===version){message.value='';error.value=imageEditError(e).message}}finally{if(cropped)disposeEditedImage(cropped);if(request===version)processing.value=false}
+ }catch(e){if(output&&!owned.has(output))disposeEditedImage(output);if(request===version){message.value='';error.value=imageEditError(e).message}}finally{if(request===version)processing.value=false}
 }
 const undo=()=>{if(locked.value)return;const last=history.value.pop();if(!last){emit('undo');return}workingSrc.value=last.src;info.value=last.info;transparent.value=last.transparent;rect.value=last.rect;originRect.value=last.origin;chosen.value=last.chosen;selected.value=last.selected;error.value='';message.value=''}
-const restore=()=>{if(locked.value)return;dispose();history.value=[];transparent.value=false;workingSrc.value=props.src;info.value=originalInfo.value;rect.value=props.initialRect?[...props.initialRect]:[0,0,1,1];originRect.value=null;selected.value=!!props.initialRect;chosen.value=props.initialRect?'manual':'';message.value='';error.value='';if(props.canUndo)emit('restore')}
+const restore=()=>{if(locked.value)return;touched=true;dispose();history.value=[];transparent.value=false;workingSrc.value=props.src;info.value=originalInfo.value;rect.value=props.initialRect?[...props.initialRect]:[0,0,1,1];originRect.value=null;selected.value=true;chosen.value='manual';message.value='';error.value='';if(props.canUndo)emit('restore')}
 const confirm=async()=>{if(locked.value||!selected.value)return;const request=version;processing.value=true;error.value='';try{const result=await editImage(workingSrc.value,{type:'crop',rect:[...rect.value],fileType:transparent.value?'png':props.fileType});if(request===version){emit('confirm',{path:result,rect:originRect.value?[...originRect.value]:[...rect.value]})}else disposeEditedImage(result)}catch(e){if(request===version){message.value='';error.value=imageEditError(e).message}}finally{if(request===version)processing.value=false}}
 onBeforeUnmount(()=>{version++;dispose()})
 </script>

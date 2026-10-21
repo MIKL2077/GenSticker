@@ -2,6 +2,7 @@ import { ref } from 'vue'
 import { prepareImages } from '@/services/imagePreparation'
 import { parseRange } from '@/utils/validationUtils'
 import { editImage, removeImageBackground, disposeEditedImage } from '@/services/imageEditing'
+import {warmLocalBackground} from '@/services/localBackground'
 
 export function useTemplateInput() {
   const templateImages = ref([])
@@ -93,7 +94,7 @@ export function useTemplateInput() {
     const remaining = max - templateImages.value.length
     if (remaining <= 0) return
     const epoch=editEpoch
-
+    warmLocalBackground().catch(()=>{})
     uni.chooseImage({
       count: remaining,
       sizeType: ['compressed'],

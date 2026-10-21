@@ -41,6 +41,7 @@ import BottomTabs from '@/components/BottomTabs.vue'
 import UiIcon from '@/components/UiIcon.vue'
 import PreviewModal from '@/components/PreviewModal.vue'
 import SubjectPicker from '@/components/SubjectPicker.vue'
+import {warmLocalBackground} from '@/services/localBackground'
 import {shareOriginalImage} from '@/services/wechatSharing'
 import { getQuota,listJobs,getJob,createJob,uploadPhoto,downloadResult,selectResults,removeJob,setPersonalization } from '@/services/recommendService'
 export default {
@@ -121,7 +122,7 @@ export default {
     const open=async (id,initial=null)=>{if(saving.value)return;rerollKey='';savedSlots.value=[];saveProgress.value='';stop();generation++;activeId.value=id;job.value=initial;previews.value={};fullImages.value={};selected.value=[];inflight.clear();exposed.clear();failures=0;uni.setStorageSync(activeKey(),id);if(initial){poll();return}await poll();selected.value=job.value?.selected_slots||[]}
     onShow(()=>{visible=true;sceneActive.value=true;observeVisible();refresh().catch(e=>{error.value=e.message||'暂时无法获取额度'});if(activeId.value)poll();else{const id=uni.getStorageSync(activeKey());if(id && session.value)open(id).catch(()=>{})}})
     onHide(()=>{visible=false;sceneActive.value=false;stop();disconnectObserver()});onUnload(()=>{visible=false;stop();disconnectObserver();generation++})
-    const choose=()=>{if(busy.value)return;const owner=session.value?.profile?.id;uni.chooseImage({count:1,sizeType:['compressed'],sourceType:['album','camera'],success:r=>{if(owner!==session.value?.profile?.id)return;photoOriginal.value=r.tempFilePaths[0];subjectRect.value=null;subjectPicker.value=true;error.value=''}})}
+    const choose=()=>{if(busy.value)return;warmLocalBackground().catch(()=>{});const owner=session.value?.profile?.id;uni.chooseImage({count:1,sizeType:['compressed'],sourceType:['album','camera'],success:r=>{if(owner!==session.value?.profile?.id)return;photoOriginal.value=r.tempFilePaths[0];subjectRect.value=null;subjectPicker.value=true;error.value=''}})}
     const confirmSubject=selection=>{photo.value=selection.path;subjectRect.value=selection.rect;subjectSelected.value=true;subjectPicker.value=false;uploadedAsset=null;requestKey='';error.value=''}
     let uploadedAsset=null
     const generate=async()=>{

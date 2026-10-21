@@ -2,9 +2,9 @@ import {requestError} from '@/services/networkErrors'
 import { API_BASE_URL } from '@/constants'
 import { visitorHeaders } from '@/services/popularityService'
 import { prepareImage } from '@/services/imagePreparation'
-import { prepareForeground } from '@/services/localBackground'
+import { prepareForeground, applyForegroundMask } from '@/services/localBackground'
 
-import {registerTemporary,releaseTemporary} from '@/services/ownedFiles'
+import {registerTemporary,releaseTemporary,writeOwnedFile} from '@/services/ownedFiles'
 export const disposeEditedImage=releaseTemporary
 
 // Native callbacks reject plain {errMsg} objects, rather than Error instances.
@@ -48,7 +48,7 @@ async function exportCanvas(canvas, fileType='png') {
 }
 
 export async function editImage(path, operation) {
-  path = await prepareImage(path)
+  if(!operation.skipPrepare)path = await prepareImage(path)
   const info = await new Promise((resolve,reject)=>uni.getImageInfo({src:path,success:resolve,fail:reject}))
   // Browser/native image decoding supplies a static frame for animated inputs.
   if (info.width*info.height > 40_000_000) throw new Error('图片超过 4000 万像素，请先缩小后编辑')
@@ -59,10 +59,10 @@ export async function editImage(path, operation) {
     image = typeof document !== 'undefined' ? new Image() : canvas.createImage()
     await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error('图片读取超时')),10000);image.onload=()=>{clearTimeout(timer);resolve()};image.onerror=()=>{clearTimeout(timer);reject(new Error('图片读取失败'))};image.src=path})
     const sourceWidth=image.width, sourceHeight=image.height
-    let rect = ['crop','window'].includes(operation.type) ? operation.rect : [0,0,1,1]
+    let rect = operation.rect || [0,0,1,1]
     if (!Array.isArray(rect) || rect.length!==4 || rect.some(n=>!Number.isFinite(n)) || rect[0]<0 || rect[1]<0 || rect[2]<=0 || rect[3]<=0 || rect[0]+rect[2]>1.00001 || rect[1]+rect[3]>1.00001) throw new Error('裁剪区域无效')
     const sw=sourceWidth*rect[2], sh=sourceHeight*rect[3], rotated=operation.type==='rotate'
-    const scale=Math.min(1,1280/Math.max(sw,sh))
+    const scale=Math.min(1,Math.max(64,Math.min(1280,operation.maxEdge||1280))/Math.max(sw,sh))
     const width=Math.max(1,Math.round(sw*scale)), height=Math.max(1,Math.round(sh*scale))
     canvas.width=rotated ? height : width;canvas.height=rotated ? width : height
     const ctx=canvas.getContext('2d')
@@ -73,13 +73,27 @@ export async function editImage(path, operation) {
   } finally { if(canvas){canvas.width=1;canvas.height=1}image=null }
 }
 
-export async function removeImageBackground(path,{onProgress}={}) {
+// Both detection previews and explicit cutout responses use this bounded
+// mask format. Original photo pixels stay on the device during composition.
+export async function composeBackgroundMask(original,data,{rect}={}) {
+  const native=typeof document==='undefined',mask=data.mask
+  if(data.width!==320 || data.height!==320 || typeof mask!=='string' || mask.length>600000 || !/^[A-Za-z0-9+/]+={0,2}$/.test(mask))throw Error('去背景结果无效，请重试')
+  let maskPath
+  try{
+    maskPath=native?registerTemporary(uni.env.USER_DATA_PATH+'/gensticker_edit_mask_'+Date.now()+'_'+Math.random().toString(36).slice(2)+'.png'):'data:image/png;base64,'+mask
+    if(native)await writeOwnedFile(maskPath,mask,'base64')
+    return await applyForegroundMask(original,maskPath,exportCanvas,{rect})
+  }finally{if(native && maskPath)disposeEditedImage(maskPath)}
+}
+
+export async function removeImageBackground(path,{onProgress,rect,localOnly=false}={}) {
   const owner=uni.getStorageSync('gensticker.session.v1')?.profile?.id || '',headers=visitorHeaders()
   const current=()=>owner===(uni.getStorageSync('gensticker.session.v1')?.profile?.id || '')
-  const original=await prepareImage(path)
+  const original=path
   if(!current())throw Error('账号已切换，请重新选择图片')
-  const prepared=await prepareForeground(original,exportCanvas)
+  const prepared=await prepareForeground(original,exportCanvas,{rect,localOnly})
   if(prepared.path){if(!current()){disposeEditedImage(prepared.path);throw Error('账号已切换，请重新选择图片')}return prepared.path}
+  if(localOnly)return null
   path=prepared.upload || original
   try {
     const native=typeof document==='undefined'
@@ -92,13 +106,18 @@ export async function removeImageBackground(path,{onProgress}={}) {
     if(!current())throw Error('账号已切换，请重新选择图片')
     // DownloadFile handles image delivery more reliably than large ArrayBuffer
     // request responses in the WeChat runtime. Tickets are visitor/account bound.
-    const response=native?await uploadSubjectPreview(path,headers,current):await uni.request({url:`${API_BASE_URL}/images/subject`,method:'POST',data:{image:encoded,delivery:'binary'},responseType:'arraybuffer',header:{'Content-Type':'application/json',...headers},timeout:30000})
+    const response=native?await uploadSubjectPreview(path,headers,current):await uni.request({url:`${API_BASE_URL}/images/subject`,method:'POST',data:{image:encoded,delivery:'mask'},header:{'Content-Type':'application/json',...headers},timeout:20000})
     if(!current())throw Error('账号已切换，请重新选择图片')
     if(response.statusCode!==200){
       const detail=responseDetail(response.data)
       if(detail)throw Error(detail)
       if(response.statusCode===403)throw requestError({statusCode:403})
       throw Error(response.statusCode===503?'抠图暂时繁忙，原图已保留，请稍后再试':'抠图服务暂不可用（'+response.statusCode+'），原图已保留，请重试')
+    }
+    if(response.data?.mask){
+      const result=await composeBackgroundMask(original,response.data,{rect})
+      if(!current()){disposeEditedImage(result);throw Error('账号已切换，请重新选择图片')}
+      return result
     }
     if(native){
       const resultUrl=response.data?.image_url
@@ -136,6 +155,6 @@ async function uploadSubjectPreview(path,headers,current=()=>true) {
  const stat=await new Promise((resolve,reject)=>uni.getFileSystemManager().stat({path,success:resolve,fail:reject}))
  if(stat.stats.size>8*1024*1024)throw Error('图片不能超过 8 MB，请先裁剪')
  if(!current())throw Error('账号已切换，请重新选择图片')
- return new Promise((resolve,reject)=>uni.uploadFile({url:API_BASE_URL+'/images/subject-file',filePath:path,name:'file',header:headers,timeout:20000,
+ return new Promise((resolve,reject)=>uni.uploadFile({url:API_BASE_URL+'/images/subject-file',filePath:path,name:'file',formData:{delivery:'mask'},header:headers,timeout:20000,
   success:result=>{try{resolve({...result,data:JSON.parse(result.data)})}catch(_){if(result.statusCode!==200)resolve({...result,data:{}});else reject(Error('抠图服务返回异常，请重试'))}},fail:error=>reject(imageEditError(error))}))
 }

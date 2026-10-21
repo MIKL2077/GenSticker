@@ -7,10 +7,18 @@ const source=fs.readFileSync(path.join(__dirname,'../src/services/imageEditing.j
  vm.createContext(c);vm.runInContext(source,c)
  c.editImage=async(path,op)=>{edits.push({path,op});return '/normalized.png'}
  assert.equal(await c.removeImageBackground('/photo'),'/local-cutout.png');assert.equal(requests.length,0,'device cutout never uploads')
+ c.prepareForeground=async(path,exportCanvas,options)=>{assert.equal(options.localOnly,true);return {method:'unavailable'}}
+ assert.equal(await c.removeImageBackground('/photo',{localOnly:true}),null);assert.equal(requests.length,0,'speculation cannot upload photos')
+ c.prepareForeground=async()=>mode==='local'?{path:'/local-cutout.png'}:{upload:'/small-upload.jpg'}
  mode='server';assert.equal(await c.removeImageBackground('/photo'),'/normalized.png')
  assert.equal(requests.length,1);assert.equal(requests[0].filePath,'/small-upload.jpg')
  assert.equal(downloads[0].url,'https://example.test'+ticket);assert.equal(downloads[0].header.Authorization,'Bearer alice')
  assert.equal(edits[0].op.fileType,'png');assert.ok(released.includes('/downloaded.png'));assert.ok(released.includes('/small-upload.jpg'))
+ const maskWrites=[],composites=[];c.uni.env={USER_DATA_PATH:'/user'};c.writeOwnedFile=async(...args)=>maskWrites.push(args)
+ c.applyForegroundMask=async(...args)=>{composites.push(args);return '/full-resolution.png'}
+ c.uni.uploadFile=o=>{assert.equal(o.formData.delivery,'mask');o.success({statusCode:200,data:JSON.stringify({mask:'aGVsbG8=',width:320,height:320})})}
+ assert.equal(await c.removeImageBackground('/original',{rect:[.1,.2,.5,.6]}),'/full-resolution.png')
+ assert.equal(downloads.length,1,'mask delivery removes the second HTTP request');assert.equal(composites[0][0],'/original');assert.deepEqual(Array.from(composites[0][3].rect),[.1,.2,.5,.6]);assert.equal(maskWrites[0][2],'base64');assert.ok(released.includes(maskWrites[0][0]))
  c.uni.uploadFile=o=>o.success({statusCode:200,data:JSON.stringify({image_url:'https://attacker.test/image'})})
  await assert.rejects(c.removeImageBackground('/photo'),/地址无效/);assert.equal(downloads.length,1,'credentials are never sent to external download URLs')
  c.uni.uploadFile=o=>o.success({statusCode:422,data:JSON.stringify({detail:'先框选主体再试试'})});await assert.rejects(c.removeImageBackground('/photo'),/先框选主体/,'binary error details remain readable')

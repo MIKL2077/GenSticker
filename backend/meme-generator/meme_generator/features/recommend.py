@@ -112,7 +112,7 @@ async def upload(file: UploadFile = File(...), subject_selected:bool=Form(defaul
 # Detection is transient: return coordinates and discard photo bytes.
 _detect_recent={}
 @router.post('/subjects/detect')
-async def detect_subjects(request:Request,file:UploadFile=File(...)):
+async def detect_subjects(request:Request,file:UploadFile=File(...),fast:bool=Form(True),with_mask:bool=Form(False)):
     # Transient editing is available to visitors too; no private asset is created.
     from .popularity import actor
     identity=actor(request)
@@ -128,8 +128,25 @@ async def detect_subjects(request:Request,file:UploadFile=File(...)):
     def detect():
         normalized=normalize(raw)
         with open_image(BytesIO(normalized)) as image:
-            from .portrait import candidate_boxes
-            return {'candidates':candidate_boxes(image),'method':'server-head-or-foreground'}
+            from .portrait import candidate_boxes, _foreground_slot
+            candidates=candidate_boxes(image,fast=True) if fast else candidate_boxes(image)
+            result={'candidates':candidates,'method':'server-fast-heads' if fast else 'server-head-or-foreground'}
+            # Opt-in speculation reuses the photo already sent for detection.
+            # It adds no upload/round trip and never queues model work.
+            if with_mask and fast and candidates and _foreground_slot.acquire(False):
+                try:
+                    from .subjects import extract_subject_mask
+                    import base64
+                    x,y,w,h=candidates[0]['box']
+                    crop=image.crop((round(x*image.width),round(y*image.height),round((x+w)*image.width),round((y+h)*image.height)))
+                    data=BytesIO();crop.save(data,'PNG')
+                    result['preview']={'mask':base64.b64encode(extract_subject_mask(data.getvalue())).decode(),'width':320,'height':320,'box':candidates[0]['box']}
+                except Exception:
+                    # Mask preparation must never turn a successful face scan
+                    # into an error or remove the manual crop controls.
+                    pass
+                finally:_foreground_slot.release()
+            return result
     async with normalization_slots:
         result=await asyncio.to_thread(detect)
         return Response(json.dumps(result),media_type='application/json',headers={'Cache-Control':'private, no-store'})

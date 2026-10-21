@@ -15,7 +15,7 @@ def detectors():
             if not detector.empty():_local.detectors.append((detector,kind))
     return _local.detectors
 
-def detect_heads(image,*,all_heads=False):
+def detect_heads(image,*,all_heads=False,fast=False):
     """Detect on a small neutral-backed image so transparency isn't a black halo."""
     cv2.setNumThreads(2)
     rgba=image.convert('RGBA');background=Image.new('RGBA',rgba.size,'#dddddd');background.alpha_composite(rgba)
@@ -23,7 +23,7 @@ def detect_heads(image,*,all_heads=False):
     gray=cv2.cvtColor(np.asarray(small),cv2.COLOR_RGB2GRAY);gray=cv2.equalizeHist(gray)
     boxes=[]
     for detector,kind in detectors():
-        for x,y,w,h in detector.detectMultiScale(gray,1.1,5,minSize=(18,18)):
+        for x,y,w,h in detector.detectMultiScale(gray,1.1,5,minSize=((28,28) if fast else (18,18))):
             boxes.append((kind,tuple(float(v)/scale for v in (x,y,w,h))))
         if boxes and kind=='person' and not all_heads:break
     return boxes
@@ -48,8 +48,8 @@ def focus_portrait(image,heads=None):
             return image.crop(box),{'framing':'subject','focus_box':list(box)}
     return image,{'framing':'original'}
 
-def candidate_boxes(image):
-    boxes=sorted(detect_heads(image,all_heads=True),key=lambda item:item[1][2]*item[1][3],reverse=True);accepted=[]
+def candidate_boxes(image,*,fast=False):
+    boxes=sorted(detect_heads(image,all_heads=True,**({'fast':True} if fast else {})),key=lambda item:item[1][2]*item[1][3],reverse=True);accepted=[]
     for kind,(x,y,w,h) in boxes:
         if w<=0 or h<=0:continue
         duplicate=False
@@ -63,7 +63,7 @@ def candidate_boxes(image):
         size=min(max(w,h)*(1.85 if kind=='animal' else 1.65),image.width,image.height)
         left=max(0,min(image.width-size,x+w/2-size/2));top=max(0,min(image.height-size,y+h*.45-size/2))
         results.append({'id':str(index),'kind':kind,'box':[left/image.width,top/image.height,size/image.width,size/image.height]})
-    return results or foreground_candidates(image)
+    return results if results or fast else foreground_candidates(image)
 
 
 def foreground_candidates(image):

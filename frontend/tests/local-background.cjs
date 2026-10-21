@@ -49,6 +49,7 @@ function runtime({transparent=false,broken=false,capable=true}={}){
  await npu.c.warmLocalBackground();assert.deepEqual(attempts,[true,false]);assert.equal(failedSessionDestroyed,true)
  assert.equal((await npu.c.prepareForeground('/photo',npu.c.exportCanvas)).method,'device','NPU load failure can still complete on the device')
  const alpha=runtime({transparent:true});const reused=await alpha.c.prepareForeground('/transparent',alpha.c.exportCanvas);assert.equal(reused.method,'alpha');assert.equal(alpha.runs.length,0);assert.equal(alpha.exports[0].width,20)
+ await alpha.c.applyForegroundMask('/transparent','/unneeded-mask',alpha.c.exportCanvas);assert.equal(alpha.exports.at(-1).width,20,'an existing cutout is preserved instead of applying a second model mask')
  const unsupported=runtime({capable:false});const fallback=await unsupported.c.prepareForeground('/photo',unsupported.c.exportCanvas);assert.equal(fallback.method,'server');assert.equal(unsupported.exports[0].type,'jpg');assert.equal(unsupported.runs.length,0)
  const broken=runtime({broken:true});await broken.c.warmLocalBackground();assert.equal((await broken.c.prepareForeground('/photo',broken.c.exportCanvas)).method,'server');assert.equal(broken.destroyed.length,1)
  assert.throws(()=>local.c.predictionMask({type:'float32',shape:[1,1,320,320],data:new Float32Array(area).buffer}),/不明确/)

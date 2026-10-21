@@ -18,6 +18,20 @@ def warm_subject_model():
         return vision._session is not None or vision.warmup(include_emotion=False)
 
 
+def extract_subject_mask(raw):
+    """Return a small, untrimmed alpha mask; the client keeps the original pixels."""
+    from . import vision
+    with open_input_image(BytesIO(raw)) as original:
+        if original.width*original.height>40_000_000:raise SubjectError('图片过大，请先压缩')
+        image=ImageOps.exif_transpose(original).convert('RGB').resize((320,320),Image.Resampling.LANCZOS)
+    if not warm_subject_model():raise SubjectError('主体提取暂不可用，请稍后再试')
+    try:alpha=vision.extract(image).getchannel('A')
+    except (ValueError,RuntimeError) as exc:raise SubjectError('这张图边界不太清楚，先框选主体再试试') from exc
+    if not alpha.point(lambda v:255 if v>30 else 0).getbbox():raise SubjectError('图片主体为空，请重新框选')
+    mask=Image.new('RGBA',(320,320),'white');mask.putalpha(alpha)
+    output=BytesIO();mask.save(output,'PNG');return output.getvalue()
+
+
 def extract_subject(raw):
     import numpy as np
     from . import vision

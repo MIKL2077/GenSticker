@@ -75,8 +75,17 @@ render_cache = RenderCache()
 subject_cache = RenderCache(max_entries=8)
 _subject_locks = [threading.RLock() for _ in range(16)]
 
-def subject_key(identity, raw):
-    return hashlib.sha256(identity.encode()+b'\0u2netp-subject-v1\0'+raw).hexdigest()
+def subject_key(identity, raw, variant='subject'):
+    return hashlib.sha256(identity.encode()+b'\0u2netp-subject-v1\0'+(b'mask\0' if variant=='mask' else b'')+raw).hexdigest()
+
+def prepare_subject_mask(raw,identity):
+    from meme_generator.features.subjects import extract_subject_mask
+    key=subject_key(identity,raw,'mask')
+    with _subject_locks[int(key[:2],16)%len(_subject_locks)]:
+        value=subject_cache.get(key)
+        if value is None:
+            value=extract_subject_mask(raw);subject_cache.put(key,value)
+    return value
 
 def prepare_inputs(images, identity):
     from meme_generator.features.subjects import extract_subject
@@ -121,19 +130,21 @@ async def subject_preview(params: SubjectPreviewRequest, request: Request):
         raise HTTPException(status_code=413, detail='图片过大，先缩小后再试')
     started=time.perf_counter()
     identity=actor(request)
-    content=subject_cache.get(subject_key(identity,raw))
+    content=subject_cache.get(subject_key(identity,raw,'mask' if params.delivery=='mask' else 'subject'))
     cached=content is not None
     if not cached:
         if generation_slots.locked():
             raise HTTPException(status_code=503, detail='图片处理繁忙，请稍后再试')
         async with generation_slots:
             try:
-                content = (await run_sync(prepare_inputs)([raw], identity))[0]
+                content = await run_sync(prepare_subject_mask)(raw,identity) if params.delivery=='mask' else (await run_sync(prepare_inputs)([raw], identity))[0]
             except MemeGeneratorException as exc:
                 raise HTTPException(status_code=exc.status_code, detail=exc.message)
             except (UnidentifiedImageError, Image.DecompressionBombError, ValueError, OSError):
                 raise HTTPException(status_code=422, detail='图片无法读取，请选择静态图片')
     headers={'Cache-Control':'private, no-store','X-Gensticker-Cache':'hit' if cached else 'miss','Server-Timing':f'foreground;dur={(time.perf_counter()-started)*1000:.1f}'}
+    if params.delivery=='mask':
+        return JSONResponse({'mask':base64.b64encode(content).decode(),'width':320,'height':320},headers=headers)
     if params.delivery=='url':
         from meme_generator.features.editor import deliver_foreground
         return JSONResponse(deliver_foreground(content,request),headers=headers)
@@ -141,12 +152,12 @@ async def subject_preview(params: SubjectPreviewRequest, request: Request):
 
 
 @app.post('/images/subject-file')
-async def subject_file(request:Request,file:UploadFile=File(...)):
+async def subject_file(request:Request,file:UploadFile=File(...),delivery:Literal['url','mask']=Form('url')):
     """Use native WeChat multipart upload and a private PNG download ticket."""
     raw=await file.read(8*1024*1024+1)
     if not raw:raise HTTPException(422,'图片为空，请重新选择')
     if len(raw)>8*1024*1024:raise HTTPException(413,'图片过大，先缩小后再试')
-    return await subject_preview(SubjectPreviewRequest(image=base64.b64encode(raw).decode(),delivery='url'),request)
+    return await subject_preview(SubjectPreviewRequest(image=base64.b64encode(raw).decode(),delivery=delivery),request)
 
 
 @app.post('/memes/{key}/generate')

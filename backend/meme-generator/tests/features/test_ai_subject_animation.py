@@ -59,6 +59,28 @@ class SubjectAnimationTests(unittest.TestCase):
             with patch.object(subjects,'warm_subject_model',side_effect=AssertionError('busy inference must not run')):
                 self.assertEqual(portrait.foreground_candidates(Image.new('RGB',(240,320))),[])
         finally:portrait._foreground_slot.release()
+    def test_default_detection_never_runs_segmentation_but_explicit_search_can(self):
+        with patch.object(portrait,'detect_heads',return_value=[]),patch.object(vision,'extract',side_effect=AssertionError('fast face detection must not segment')):
+            response=self.client.post('/recommend/subjects/detect',files={'file':('photo.jpg',self.photo)})
+        self.assertEqual(response.status_code,200)
+        self.assertEqual(response.json(),{'candidates':[],'method':'server-fast-heads'})
+        with patch.object(portrait,'detect_heads',return_value=[]),patch.object(portrait,'foreground_candidates',return_value=[{'id':'subject-0','kind':'subject','box':[.1,.1,.5,.5]}]) as foreground:
+            response=self.client.post('/recommend/subjects/detect',files={'file':('photo.jpg',self.photo)},data={'fast':'false'})
+        self.assertEqual(response.status_code,200);self.assertEqual(response.json()['candidates'][0]['kind'],'subject');foreground.assert_called_once()
+    def test_editor_cutout_is_reused_without_second_inference(self):
+        image=Image.new('RGBA',(120,160));ImageDraw.Draw(image).rectangle((20,10,100,150),fill='red')
+        path=Path(self.temp.name)/'selected.png';image.save(path)
+        with patch.object(vision,'extract',side_effect=AssertionError('an editor mask must not be inferred again')):
+            output,analysis=vision.process(path,subject_selected=True)
+        self.assertEqual(analysis['method'],'selected-alpha');self.assertTrue(analysis['cutout']);self.assertEqual(output.size,(81,141))
+    def test_detection_can_prepare_one_mask_without_another_photo_upload(self):
+        boxes=[{'id':'0','kind':'person','box':[.1,.1,.5,.6]}]
+        with patch.object(portrait,'candidate_boxes',return_value=boxes),patch.object(subjects,'extract_subject_mask',return_value=b'bounded-mask') as mask:
+            response=self.client.post('/recommend/subjects/detect',files={'file':('photo.jpg',self.photo)},data={'with_mask':'true'})
+        self.assertEqual(response.status_code,200);self.assertEqual(response.json()['preview']['box'],boxes[0]['box']);mask.assert_called_once()
+        with patch.object(portrait,'candidate_boxes',return_value=boxes),patch.object(subjects,'extract_subject_mask',side_effect=RuntimeError('not available')):
+            response=self.client.post('/recommend/subjects/detect',files={'file':('photo.jpg',self.photo)},data={'with_mask':'true'})
+        self.assertEqual(response.status_code,200);self.assertEqual(response.json()['candidates'],boxes);self.assertNotIn('preview',response.json())
     def test_gif_results_and_previews_preserve_dimensions_and_timing(self):
         frames=[Image.new('RGB',(100,80),color) for color in ('red','green','blue')];raw=BytesIO();frames[0].save(raw,'GIF',save_all=True,append_images=frames[1:],duration=[80,140,220],loop=0)
         path,preview=save_result_files(raw,Path(self.temp.name),0)

@@ -93,6 +93,24 @@ class SubjectPreviewTests(unittest.TestCase):
                 self.assertEqual([f.result() for f in futures],[[b'foreground'],[b'foreground']])
         self.assertEqual(len(calls),1)
 
+    def test_mask_delivery_is_small_uncropped_cached_and_identity_scoped(self):
+        from meme_generator.features import subjects,vision
+        cutout=Image.new('RGBA',(320,320),'white');alpha=Image.new('L',(320,320));ImageDraw.Draw(alpha).rectangle((80,40,239,279),fill=255);cutout.putalpha(alpha)
+        visitor={'X-Gensticker-Visitor':'mask-owner-12345678'}
+        raw=base64.b64decode(self.encoded)
+        with patch.object(subjects,'warm_subject_model',return_value=True),patch.object(vision,'extract',return_value=cutout) as infer:
+            first=self.client.post('/images/subject-file',files={'file':('photo.png',raw,'image/png')},data={'delivery':'mask'},headers=visitor)
+            self.assertEqual(first.status_code,200,first.text)
+            data=first.json();self.assertNotIn('image_url',data);self.assertEqual((data['width'],data['height']),(320,320))
+            self.assertLess(len(first.content),10000);self.assertEqual(first.headers['cache-control'],'private, no-store')
+            image=Image.open(BytesIO(base64.b64decode(data['mask'])));self.assertEqual(image.size,(320,320));self.assertEqual(image.getchannel('A').getbbox(),(80,40,240,280))
+            second=self.client.post('/images/subject',json={'image':self.encoded,'delivery':'mask'},headers=visitor)
+            self.assertEqual(second.headers['x-gensticker-cache'],'hit');self.assertEqual(second.json(),data);self.assertEqual(infer.call_count,1)
+            self.client.post('/images/subject',json={'image':self.encoded,'delivery':'mask'},headers={'X-Gensticker-Visitor':'mask-stranger-12345678'})
+            self.assertEqual(infer.call_count,2,'mask caches must not cross identities')
+        ordinary=self.client.post('/images/subject',json={'image':self.encoded},headers=visitor)
+        self.assertEqual(ordinary.headers['content-type'],'image/png');self.assertEqual(ordinary.headers['x-gensticker-cache'],'miss','mask and full-image caches cannot collide')
+
     def test_invalid_images_and_busy_preview_do_not_render(self):
         for value in ['???', base64.b64encode(b'not an image').decode()]:
             self.assertEqual(self.client.post('/images/subject', json={'image': value}).status_code, 422)

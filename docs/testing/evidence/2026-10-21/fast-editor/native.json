@@ -1,0 +1,46 @@
+{
+  "status": "passed",
+  "project": "/var/folders/h5/m6p8phbn7799tx4wjrmx6cvr0000gn/T/gensticker-fast-editor-hvvjOO",
+  "scope": "WeChat DevTools native canvas and actual public HTTPS APIs; public OpenCV face fixture, synthetic orientation/alpha fixtures",
+  "physicalDeviceInference": false,
+  "checks": [
+    {
+      "name": "AI editor usable without waiting for detection",
+      "confirmEnabled": true
+    },
+    {
+      "name": "Real two-person detection and coordinate reuse",
+      "method": "server-fast-heads",
+      "candidates": 2,
+      "firstMs": 10119,
+      "hasPreview": true,
+      "cachedMs": 0,
+      "firstUploads": 1,
+      "cachedUploads": 0,
+      "sameCandidates": true
+    },
+    {
+      "name": "Detection mask reused on native canvas without another request",
+      "ms": 44,
+      "width": 296,
+      "height": 296,
+      "minAlpha": 0,
+      "maxAlpha": 254,
+      "uploads": 0,
+      "downloads": 0,
+      "uploadBytes": 0,
+      "delivery": ""
+    },
+    {
+      "name": "Existing transparency reused locally",
+      "ms": 20,
+      "width": 81,
+      "height": 121
+    },
+    {
+      "name": "Template editor opens and confirms without detection wait",
+      "passed": true
+    }
+  ],
+  "runtimeErrors": []
+}
