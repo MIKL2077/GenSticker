@@ -23,6 +23,9 @@ export function useTemplateData(showStatusMessage) {
 
   const currentPage = ref(1)
   const sortMode = ref('hot')
+  const searchQuery=ref('')
+  const normalizeSearch=value=>String(value||'').normalize('NFKC').toLowerCase().replace(/\s+/g,' ').trim()
+  const setSearchQuery=value=>{searchQuery.value=String(value||'').slice(0,80);currentPage.value=1}
   const libraryMode=ref('warehouse'),mineKeys=ref([]),favoriteKeys=ref([]),mineTemplates=ref([])
 
   const categoryKeys = ref({ all: [], text_only: [], image_only: [], mixed: [] })
@@ -43,6 +46,12 @@ export function useTemplateData(showStatusMessage) {
         return category==='image'?im>0&&!tx:category==='text'?tx>0&&!im:im>0&&tx>0
       })
     }
+    const terms=normalizeSearch(searchQuery.value).split(' ').filter(Boolean)
+    if(terms.length)keys=keys.filter(key=>{
+      const d=templateDetails.value.get(key)||{}
+      const text=normalizeSearch([key,d.templateId,d.name,...(d.keywords||[]),...(d.tags||[]),d.animated?'动图 GIF 动态':'静图 静态'].join(' '))
+      return terms.every(term=>text.includes(term))
+    })
     return [...keys].sort((a,b)=>{
       const x=templateDetails.value.get(a)||{},y=templateDetails.value.get(b)||{}
       if(sortMode.value==='hot')return (y.heat||0)-(x.heat||0)||a.localeCompare(b)
@@ -52,6 +61,7 @@ export function useTemplateData(showStatusMessage) {
     })
   }
   const currentCategoryAllKeys=computed(()=>orderedKeys(selectedCategory.value))
+  const searchResultCount=computed(()=>currentCategoryAllKeys.value.length)
   let mineOwner=''
   const loadMine=async favorites=>{
     const nextOwner=uni.getStorageSync('gensticker.session.v1')?.profile?.id||'guest'
@@ -103,7 +113,7 @@ export function useTemplateData(showStatusMessage) {
       for (const card of data.cards || []) {
         const existing = templateDetails.value.get(card.key) || { key: card.key, previewImage: null, isLoadingPreview: true }
         const params=card.params_type
-        templateDetails.value.set(card.key, { ...existing, name:card.name, featuredTrial:!!card.featured_trial, inputHint:card.input_hint || '', keywords:card.keywords || [], tags:card.tags || [], heat:card.heat || 0, createdAt:card.created_at || 0, creator:card.creator, counts:card.counts || {}, localCapable:localKeys.has(card.key), ...(params ? {metadataLoaded:true, templateId:card.template_id, version:card.version, attribution:card.attribution || {}, imageCount:`${params.min_images}-${params.max_images}`, textCount:`${params.min_texts}-${params.max_texts}`, defaultTexts:params.default_texts || []} : {}) })
+        templateDetails.value.set(card.key, { ...existing, name:card.name, animated:!!card.animated, featuredTrial:!!card.featured_trial, inputHint:card.input_hint || '', keywords:card.keywords || [], tags:card.tags || [], heat:card.heat || 0, createdAt:card.created_at || 0, creator:card.creator, counts:card.counts || {}, localCapable:localKeys.has(card.key), ...(params ? {metadataLoaded:true, templateId:card.template_id, version:card.version, attribution:card.attribution || {}, imageCount:`${params.min_images}-${params.max_images}`, textCount:`${params.min_texts}-${params.max_texts}`, defaultTexts:params.default_texts || []} : {}) })
       }
       for(const card of data.cards || [])if(card.featured_trial)fetchMemePreview(card.key, true)
       spotlight.value.forEach(item => fetchMemePreview(item.key, true))
@@ -197,7 +207,7 @@ export function useTemplateData(showStatusMessage) {
     const pageKeys = keys.slice((pageNumber - 1) * templatesPerPage, pageNumber * templatesPerPage)
     if (!background) setThumbnailWindow([...pageKeys,...spotlight.value.map(item=>item.key)])
     if (!pageKeys.length || pageKeys.every(key => previewImageCache.value.has(key))) return
-    const taskKey = `${uiCategoryKey}:${pageNumber}`
+    const taskKey = JSON.stringify([uiCategoryKey,pageNumber,libraryMode.value,sortMode.value,normalizeSearch(searchQuery.value)])
     if (!background) { visibleLoads++; isLoadingTemplates.value = true }
     try {
       if (!pageTasks.has(taskKey)) {
@@ -243,6 +253,7 @@ export function useTemplateData(showStatusMessage) {
     totalPages,
     currentPageTemplates,
     sortMode,
+    searchQuery,setSearchQuery,searchResultCount,
     libraryMode,loadMine,mineTemplates,
     spotlight,
     // actions

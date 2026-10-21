@@ -16,6 +16,8 @@
         </view>
       </view>
 
+      <view class="template-search"><view class="search-symbol" aria-hidden="true"/><input class="template-search-input" :value="searchQuery" maxlength="80" confirm-type="search" placeholder="搜模板、关键词，或试试“猫 动图”" placeholder-class="search-placeholder" aria-label="搜索模板" @input="setSearchQuery($event.detail.value)"/><button v-if="searchQuery" class="search-clear" aria-label="清空搜索" @click="setSearchQuery('')"><ui-icon name="close" :size="28"/></button></view>
+      <view v-if="searchQuery" class="search-summary"><text>{{searchResultCount?'找到 '+searchResultCount+' 个模板':'没找到相关模板，换个词试试'}}</text><button @click="setSearchQuery('')">查看全部</button></view>
       <category-tabs :categories="categories" :selected-category="selectedCategory" @select="onSelectCategory" />
       <view class="sort-row"><view class="sort-switch"><button :class="{chosen:libraryMode==='warehouse'}" @click="changeLibrary('warehouse')">模板仓库</button><button :class="{chosen:libraryMode==='mine'}" @click="changeLibrary('mine')">我的模板</button></view><picker :range="sortLabels" :value="sortIndex" @change="chooseSort"><view class="sort-note">{{sortLabels[sortIndex]}} ⌄</view></picker></view>
       <button class="create-entry fx-enter" @click="openCreator"><view class="create-symbol"><ui-icon name="plus" tone="accent" :size="34"/></view><view><text>我的梗，我来造</text><text>拖拽做模板 / AI 一键识图 · 私藏或发布都行</text></view><text>↗</text></button>
@@ -33,7 +35,7 @@
         @prev="prevPage"
         @next="nextPage"
       />
-      <view v-if="!loadError" class="page-numbers">
+      <view v-if="!loadError && searchResultCount" class="page-numbers">
         <button v-if="currentPage > 1" class="page-button" @click="prevPage">‹</button>
         <button v-for="number in pageNumbers" :key="number" class="page-button" :class="{ active: number === currentPage }" @click="currentPage = number">{{ number }}</button>
         <button v-if="currentPage < totalPages" class="page-button" @click="nextPage">›</button>
@@ -126,6 +128,7 @@ export default {
       totalPages,
       currentPageTemplates,
       sortMode,
+      searchQuery,setSearchQuery,searchResultCount,
       libraryMode,loadMine,mineTemplates,
       templateDetails,
       spotlight,
@@ -216,9 +219,12 @@ export default {
     })
 
     watch(()=>account.session.value?.profile?.id,()=>{closeTemplateDetail();closePreview();refreshMine()})
-    watch([selectedCategory, currentPage, sortMode, libraryMode], async ([cat, page]) => {
-      await ensurePageLoaded(cat, page)
-      prefetchAdjacent(cat, page)
+    watch([selectedCategory, currentPage, sortMode, libraryMode, searchQuery], ([cat, page], _, onCleanup) => {
+      let canceled=false,timer
+      const load=async()=>{await ensurePageLoaded(cat,page);if(!canceled)prefetchAdjacent(cat,page)}
+      if(searchQuery.value.trim())timer=setTimeout(load,180)
+      else load()
+      onCleanup(()=>{canceled=true;clearTimeout(timer)})
     })
 
     onLoad(query=>{if(query?.template)uni.setStorageSync('gensticker.open-template',query.template)})
@@ -252,6 +258,7 @@ export default {
       totalPages,
       currentPageTemplates,
       sortMode,
+      searchQuery,setSearchQuery,searchResultCount,
       libraryMode,mineTemplates,changeLibrary,sortLabels,sortIndex,chooseSort:e=>{sortMode.value=sortValues[Number(e.detail.value)];currentPage.value=1},openCreator,templateTasks,retryPublish,accountSession:account.session,templateStatus:{private:"私藏",pending:"待检查",rejected:"检查未通过"},
       spotlight,
       changeSort: mode => { sortMode.value = mode; currentPage.value = 1 },
@@ -298,4 +305,6 @@ export default {
 .welcome-card{background:linear-gradient(125deg,#fff1df,#f6e8d7 65%,#f8eddc);box-shadow:inset 0 -6rpx 0 #e9d8c0,0 12rpx 24rpx rgba(113,86,44,.05)}.welcome-title{color:#29454c}.title-pop{color:#dd7654}.studio-tag{color:#a2835f;background:#fffaf0}.studio-tag>view{background:#c1a46d}.welcome-action{background:linear-gradient(145deg,#ffa37f,#f17f5c);border-color:#ffb292;box-shadow:0 6rpx 0 #cd6648,inset 0 2rpx 0 #ffc7a7;color:#fff}.welcome-copy{color:#a18b70}.hero-serial{color:#b7a38a}.hero-toys{top:31rpx;right:4rpx}.sort-switch .chosen{color:#b56f50;border-color:#e3a17a}.page-button.active{background:linear-gradient(145deg,#f7ac88,#ec8b68);border-color:#ffc6a4;box-shadow:0 4rpx 0 #cd7654,inset 0 2rpx 0 #ffd1b3}.home-footer{color:#b3a08e}
 .welcome-action{position:relative;overflow:hidden}.welcome-action:after{content:'';position:absolute;inset:0;width:100%;height:100%;border-radius:inherit;pointer-events:none;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.24),transparent 65%);animation:ui-shimmer 1.2s ease-out .7s 2}.page-button.active{animation:ui-pop .3s ease-out both}.load-error{animation:ui-nudge .35s ease-out both}.loading-indicator{animation:ui-breathe 1.6s ease-in-out infinite}
 .create-entry{display:flex;align-items:center;gap:18rpx;width:100%;text-align:left;background:linear-gradient(125deg,#fff1dc,#ffebe1);border:3rpx solid white;border-radius:26rpx;padding:22rpx;margin:12rpx 0 25rpx;color:#b78057;line-height:1.6}.create-entry>view:nth-child(2){flex:1}.create-entry text{display:block;font-size:26rpx;font-weight:650}.create-entry>view text:nth-child(2){font-size:20rpx;font-weight:400;color:#b19576}.create-symbol{width:62rpx;height:62rpx;background:#fffcf5;border-radius:21rpx;display:flex;align-items:center;justify-content:center;font-size:36rpx;box-shadow:0 4rpx 0 #e7cbb0}.create-entry:active .create-symbol{transform:rotate(90deg);transition:transform .25s}.mine-note{display:block;color:#a38d70;font-size:24rpx;padding:20rpx}.template-state{display:flex;align-items:center;flex-wrap:wrap;gap:10rpx;background:#f4efe3;border-radius:22rpx;padding:18rpx 22rpx;margin-bottom:15rpx;font-size:24rpx;color:#8e815f}.template-state button{font-size:22rpx;color:#c48058;margin-left:auto}.state-message{display:block;width:100%;font-size:21rpx;color:#a49a85}.sort-note{font-size:22rpx}.sort-row{gap:8rpx}
-.live-entry{display:flex;align-items:center;gap:20rpx;background:linear-gradient(120deg,#fff4df,#f2eddd);border:3rpx solid white;border-radius:28rpx;padding:24rpx;width:100%;margin-bottom:25rpx;box-shadow:0 5rpx 0 #e9dfcc;text-align:left}.live-entry>view{flex:1}.live-entry text{display:block;font-size:28rpx;color:#667b64;font-weight:700}.live-entry>view text:nth-child(2){font-size:21rpx;color:#a39c80;font-weight:400;margin-top:6rpx}</style>
+.live-entry{display:flex;align-items:center;gap:20rpx;background:linear-gradient(120deg,#fff4df,#f2eddd);border:3rpx solid white;border-radius:28rpx;padding:24rpx;width:100%;margin-bottom:25rpx;box-shadow:0 5rpx 0 #e9dfcc;text-align:left}.live-entry>view{flex:1}.live-entry text{display:block;font-size:28rpx;color:#667b64;font-weight:700}.live-entry>view text:nth-child(2){font-size:21rpx;color:#a39c80;font-weight:400;margin-top:6rpx}
+.template-search{display:flex;align-items:center;gap:20rpx;background:#fffcf7;border:2rpx solid #eadfd3;border-radius:25rpx;padding:0 22rpx;min-height:84rpx;margin:18rpx 0 22rpx}.template-search-input{flex:1;min-width:0;height:80rpx;font-size:25rpx;color:var(--ink)}.search-placeholder{color:#b5a99b;font-size:24rpx}.search-symbol{position:relative;flex-shrink:0;width:29rpx;height:29rpx;border:4rpx solid #bd8d73;border-radius:50%;margin-right:8rpx}.search-symbol:after{content:'';position:absolute;width:14rpx;height:4rpx;background:#bd8d73;right:-11rpx;bottom:-5rpx;transform:rotate(45deg);border-radius:4rpx}.search-clear{display:flex;align-items:center;justify-content:center;padding:12rpx;min-width:52rpx;min-height:52rpx}.search-summary{display:flex;align-items:center;justify-content:space-between;gap:18rpx;margin:-7rpx 4rpx 20rpx;font-size:22rpx;color:var(--muted)}.search-summary button{font-size:22rpx;color:var(--accent-dark);padding:8rpx 0;flex-shrink:0}
+</style>

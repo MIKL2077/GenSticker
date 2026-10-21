@@ -1,0 +1,15 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path')
+const cards=[{key:'cat_dance',name:'猫猫摇摆',keywords:['摇摆猫','dance'],tags:['猫咪','快乐'],animated:true,heat:9,params_type:{min_images:1,max_images:1,min_texts:0,max_texts:0,default_texts:[]}},{key:'dog_work',name:'打工狗',keywords:['上班'],tags:['狗','打工'],heat:3,params_type:{min_images:1,max_images:1,min_texts:1,max_texts:1,default_texts:['上班了']}},{key:'cat_sleep',name:'猫猫睡觉',keywords:['晚安'],tags:['猫咪'],heat:2,params_type:{min_images:0,max_images:0,min_texts:1,max_texts:1,default_texts:['晚安']}}]
+const c={ref:value=>({value}),computed:get=>({get value(){return get()}}),onUnmounted:()=>{},console,PAGINATION:{templatesPerPage:1},CATEGORY_UI_TO_API:{all:'all',image:'image_only',mixed:'mixed',text:'text_only'},getCategories:async()=>({all:cards.map(c=>c.key),image_only:['cat_dance'],mixed:['dog_work'],text_only:['cat_sleep'],cards}),seedClientRecipes:()=>{},onThumbnailEvict:()=>()=>{},setThumbnailWindow:()=>{},getTemplatePreviewPath:async key=>'/cache/'+key,getTemplateInfo:async()=>{throw Error('search should use the loaded card manifest')},uni:{getStorageSync:()=>null}}
+vm.createContext(c);vm.runInContext(fs.readFileSync(path.join(__dirname,'../src/composables/useTemplateData.js'),'utf8').replace(/^import .*$/gm,'').replace(/export /g,''),c)
+;(async()=>{const app=c.useTemplateData();await app.fetchMemeCategories();app.currentPage.value=3;app.setSearchQuery('猫');assert.equal(app.currentPage.value,1);assert.equal(app.searchResultCount.value,2);assert.equal(app.totalPages.value,2)
+app.setSearchQuery('猫 ＧＩＦ');assert.equal(app.searchResultCount.value,1);assert.equal(app.currentPageTemplates.value[0].key,'cat_dance')
+app.setSearchQuery('晚安');assert.equal(app.currentPageTemplates.value[0].key,'cat_sleep','keywords are searchable')
+app.setSearchQuery('CAT_DANCE');assert.equal(app.searchResultCount.value,1,'keys are searchable without case sensitivity')
+app.selectedCategory.value='mixed';app.setSearchQuery('猫');assert.equal(app.searchResultCount.value,0);assert.equal(app.totalPages.value,1)
+app.setSearchQuery('打工');assert.equal(app.searchResultCount.value,1);await app.ensurePageLoaded('mixed',1)
+app.setSearchQuery('[');assert.equal(app.searchResultCount.value,0,'search treats punctuation as data, never a regex')
+app.setSearchQuery('');app.selectedCategory.value='all';assert.equal(app.searchResultCount.value,3);assert.equal(app.spotlight.value.length,3)
+app.setSearchQuery('x'.repeat(100));assert.equal(app.searchQuery.value.length,80)
+console.log('PASS instant local template search, multi-term GIF/Chinese matching, normalization, category intersection, pagination reset and clear')
+})().catch(e=>{console.error(e);process.exitCode=1})
