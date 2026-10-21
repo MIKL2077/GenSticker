@@ -16,7 +16,7 @@ from pathlib import Path
 import filetype
 from PIL import Image
 from fastapi.responses import JSONResponse
-from fastapi import Depends, FastAPI, Form, HTTPException, Response, UploadFile, Request
+from fastapi import Depends, FastAPI, Form, File, HTTPException, Response, UploadFile, Request
 from pydantic import BaseModel, Field, ValidationError
 
 from meme_generator.compat import model_dump, model_json_schema, type_validate_python
@@ -138,6 +138,15 @@ async def subject_preview(params: SubjectPreviewRequest, request: Request):
         from meme_generator.features.editor import deliver_foreground
         return JSONResponse(deliver_foreground(content,request),headers=headers)
     return Response(content=content, media_type='image/png', headers=headers)
+
+
+@app.post('/images/subject-file')
+async def subject_file(request:Request,file:UploadFile=File(...)):
+    """Use native WeChat multipart upload and a private PNG download ticket."""
+    raw=await file.read(8*1024*1024+1)
+    if not raw:raise HTTPException(422,'图片为空，请重新选择')
+    if len(raw)>8*1024*1024:raise HTTPException(413,'图片过大，先缩小后再试')
+    return await subject_preview(SubjectPreviewRequest(image=base64.b64encode(raw).decode(),delivery='url'),request)
 
 
 @app.post('/memes/{key}/generate')

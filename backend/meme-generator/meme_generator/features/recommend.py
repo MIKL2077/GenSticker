@@ -10,7 +10,7 @@ from zoneinfo import ZoneInfo
 from io import BytesIO
 from pathlib import Path
 from PIL import Image, ImageOps, UnidentifiedImageError
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Response, Form
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Response, Form, Request
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from ..account import current_user
@@ -112,22 +112,27 @@ async def upload(file: UploadFile = File(...), subject_selected:bool=Form(defaul
 # Detection is transient: return coordinates and discard photo bytes.
 _detect_recent={}
 @router.post('/subjects/detect')
-async def detect_subjects(file:UploadFile=File(...),user=Depends(current_user)):
-    now=time.time();recent=[stamp for stamp in _detect_recent.get(user['id'],[]) if stamp>now-60]
+async def detect_subjects(request:Request,file:UploadFile=File(...)):
+    # Transient editing is available to visitors too; no private asset is created.
+    from .popularity import actor
+    identity=actor(request)
+    now=time.time();recent=[stamp for stamp in _detect_recent.get(identity,[]) if stamp>now-60]
     if len(recent)>=12:raise HTTPException(429,'选图有点快，稍等一分钟再试；仍可手动框选')
     if len(_detect_recent)>1024:
         for key in list(_detect_recent):
             if not _detect_recent[key] or _detect_recent[key][-1]<now-60:_detect_recent.pop(key,None)
         if len(_detect_recent)>1024:raise HTTPException(503,'主体检测繁忙，可先手动框选')
-    _detect_recent[user['id']]=recent+[now]
+    _detect_recent[identity]=recent+[now]
     raw=await file.read(3*1024*1024+1)
     if normalization_slots.locked():raise HTTPException(503,'主体检测繁忙，可先手动框选')
     def detect():
         normalized=normalize(raw)
         with open_image(BytesIO(normalized)) as image:
             from .portrait import candidate_boxes
-            return {'candidates':candidate_boxes(image),'method':'server-opencv'}
-    async with normalization_slots:return await asyncio.to_thread(detect)
+            return {'candidates':candidate_boxes(image),'method':'server-head-or-foreground'}
+    async with normalization_slots:
+        result=await asyncio.to_thread(detect)
+        return Response(json.dumps(result),media_type='application/json',headers={'Cache-Control':'private, no-store'})
 
 @router.get('/jobs/{identifier}/source-preview')
 def source_preview(identifier:str,user=Depends(current_user)):

@@ -1,10 +1,29 @@
+import {requestError} from '@/services/networkErrors'
 import { API_BASE_URL } from '@/constants'
 import { visitorHeaders } from '@/services/popularityService'
 import { prepareImage } from '@/services/imagePreparation'
 import { prepareForeground } from '@/services/localBackground'
 
-import {registerTemporary,releaseTemporary,writeOwnedFile} from '@/services/ownedFiles'
+import {registerTemporary,releaseTemporary} from '@/services/ownedFiles'
 export const disposeEditedImage=releaseTemporary
+
+// Native callbacks reject plain {errMsg} objects, rather than Error instances.
+export function imageEditError(error) {
+  const raw=String(error?.errMsg || error?.message || '')
+  if(/request:fail|uploadFile:fail|downloadFile:fail|timeout|timed out|ssl|domain|dns/i.test(raw))return requestError(error)
+  if(/canvasToTempFilePath|createOffscreenCanvas/i.test(raw))return Error('当前微信未能导出图片，请重新打开小程序或升级微信；原图已保留')
+  if(/getImageInfo|readFile|stat:fail/i.test(raw))return Error('图片读取失败，请重新选择照片；原图已保留')
+  return error?.message ? error : Error('图片处理未完成，请重试；原图已保留')
+}
+function responseDetail(data) {
+  try {
+    if(data instanceof ArrayBuffer){
+      const bytes=new Uint8Array(data,0,Math.min(data.byteLength,8192))
+      data=JSON.parse(decodeURIComponent(Array.from(bytes,byte=>'%'+byte.toString(16).padStart(2,'0')).join('')))
+    }else if(typeof data==='string')data=JSON.parse(data)
+    return typeof data?.detail==='string' ? data.detail : ''
+  }catch(_){return ''}
+}
 
 export function cropGeometry(width, height, frameWidth, frameHeight, zoom = 1, offsetX = 0, offsetY = 0) {
   const scale = Math.max(frameWidth / width, frameHeight / height) * Math.max(1, zoom)
@@ -54,7 +73,7 @@ export async function editImage(path, operation) {
   } finally { if(canvas){canvas.width=1;canvas.height=1}image=null }
 }
 
-export async function removeImageBackground(path) {
+export async function removeImageBackground(path,{onProgress}={}) {
   const owner=uni.getStorageSync('gensticker.session.v1')?.profile?.id || '',headers=visitorHeaders()
   const current=()=>owner===(uni.getStorageSync('gensticker.session.v1')?.profile?.id || '')
   const original=await prepareImage(path)
@@ -63,25 +82,60 @@ export async function removeImageBackground(path) {
   if(prepared.path){if(!current()){disposeEditedImage(prepared.path);throw Error('账号已切换，请重新选择图片')}return prepared.path}
   path=prepared.upload || original
   try {
+    const native=typeof document==='undefined'
     let encoded
-    if(typeof document !== 'undefined') {
+    if(!native) {
       const blob=await (await fetch(path)).blob()
       if(blob.size>8*1024*1024)throw new Error('图片不能超过 8 MB，请先裁剪')
       encoded=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(',')[1]);reader.onerror=reject;reader.readAsDataURL(blob)})
-    } else {
-      const fs=uni.getFileSystemManager()
-      const info=await new Promise((resolve,reject)=>fs.stat({path,success:resolve,fail:reject}))
-      if(info.stats.size>8*1024*1024)throw new Error('图片不能超过 8 MB，请先裁剪')
-      encoded=await new Promise((resolve,reject)=>fs.readFile({filePath:path,encoding:'base64',success:r=>resolve(r.data),fail:reject}))
     }
     if(!current())throw Error('账号已切换，请重新选择图片')
-    const response=await uni.request({url:`${API_BASE_URL}/images/subject`,method:'POST',data:{image:encoded,delivery:'binary'},responseType:'arraybuffer',header:{'Content-Type':'application/json',...headers},timeout:30000})
+    // DownloadFile handles image delivery more reliably than large ArrayBuffer
+    // request responses in the WeChat runtime. Tickets are visitor/account bound.
+    const response=native?await uploadSubjectPreview(path,headers,current):await uni.request({url:`${API_BASE_URL}/images/subject`,method:'POST',data:{image:encoded,delivery:'binary'},responseType:'arraybuffer',header:{'Content-Type':'application/json',...headers},timeout:30000})
     if(!current())throw Error('账号已切换，请重新选择图片')
-    if(response.statusCode!==200)throw Error(response.statusCode===503?'抠图暂时繁忙，原图已保留，请稍后再试':'抠图未完成，原图已保留，请重试')
+    if(response.statusCode!==200){
+      const detail=responseDetail(response.data)
+      if(detail)throw Error(detail)
+      if(response.statusCode===403)throw requestError({statusCode:403})
+      throw Error(response.statusCode===503?'抠图暂时繁忙，原图已保留，请稍后再试':'抠图服务暂不可用（'+response.statusCode+'），原图已保留，请重试')
+    }
+    if(native){
+      const resultUrl=response.data?.image_url
+      if(!/^\/images\/subject-results\/[a-f0-9]{40}$/.test(resultUrl||''))throw Error('抠图结果地址无效，请重试')
+      const downloaded=await downloadSubjectPreview(resultUrl,headers,onProgress)
+      try{
+        if(!current())throw Error('账号已切换，请重新选择图片')
+        const png=await editImage(downloaded,{type:'crop',rect:[0,0,1,1],fileType:'png'})
+        if(!current()){disposeEditedImage(png);throw Error('账号已切换，请重新选择图片')}
+        return png
+      }finally{disposeEditedImage(downloaded)}
+    }
     if(!(response.data instanceof ArrayBuffer) || !response.data.byteLength)throw Error('抠图结果暂时没送达，请重试')
-    if(typeof document!=='undefined')return registerTemporary(URL.createObjectURL(new Blob([response.data],{type:'image/png'})))
-    const target=uni.env.USER_DATA_PATH+'/gensticker_edit_'+Date.now()+'_'+Math.random().toString(36).slice(2)+'.png'
-    await writeOwnedFile(target,response.data)
-    return registerTemporary(target)
-  } finally {if(path!==original)disposeEditedImage(path)}
+    return registerTemporary(URL.createObjectURL(new Blob([response.data],{type:'image/png'})))
+  } catch(error){throw imageEditError(error)} finally {if(path!==original)disposeEditedImage(path)}
+}
+
+
+function downloadSubjectPreview(path,headers,onProgress) {
+ return new Promise((resolve,reject)=>{
+  let task,done=false
+  const timer=setTimeout(()=>{if(done)return;done=true;try{task?.abort()}catch(_){}reject(imageEditError({errMsg:'downloadFile:fail timeout'}))},45000)
+  task=uni.downloadFile({url:API_BASE_URL+path,header:headers,timeout:45000,
+   success:result=>{
+    if(done){if(result.tempFilePath)disposeEditedImage(registerTemporary(result.tempFilePath));return}
+    done=true;clearTimeout(timer)
+    if(result.statusCode===200 && result.tempFilePath)resolve(registerTemporary(result.tempFilePath))
+    else{if(result.tempFilePath)disposeEditedImage(registerTemporary(result.tempFilePath));reject(Error(result.statusCode===404?'处理结果已过期，请重新去背景':'抠图结果下载失败，请重试'))}
+   },fail:error=>{if(done)return;done=true;clearTimeout(timer);reject(imageEditError(error))}})
+  task?.onProgressUpdate?.(result=>{if(!done && Number.isFinite(result.progress)){try{onProgress?.(Math.max(0,Math.min(100,result.progress)))}catch(_){}}})
+ })
+}
+
+async function uploadSubjectPreview(path,headers,current=()=>true) {
+ const stat=await new Promise((resolve,reject)=>uni.getFileSystemManager().stat({path,success:resolve,fail:reject}))
+ if(stat.stats.size>8*1024*1024)throw Error('图片不能超过 8 MB，请先裁剪')
+ if(!current())throw Error('账号已切换，请重新选择图片')
+ return new Promise((resolve,reject)=>uni.uploadFile({url:API_BASE_URL+'/images/subject-file',filePath:path,name:'file',header:headers,timeout:20000,
+  success:result=>{try{resolve({...result,data:JSON.parse(result.data)})}catch(_){if(result.statusCode!==200)resolve({...result,data:{}});else reject(Error('抠图服务返回异常，请重试'))}},fail:error=>reject(imageEditError(error))}))
 }

@@ -1,3 +1,4 @@
+import {displayImageSize} from '@/services/imageGeometry'
 import { apiRequest } from '@/services/apiService'
 import { API_BASE_URL } from '@/constants'
 
@@ -15,7 +16,7 @@ export async function uploadPhoto(path,subjectSelected=false) {
   const info = await uni.getImageInfo({ src:path })
   if (info.type === 'jpeg' || info.type === 'jpg') {
     const scale = Math.min(1,1280 / Math.max(info.width,info.height))
-    const compressed = await uni.compressImage({ src:path, quality:82, compressedWidth:Math.round(info.width*scale), compressedHeight:Math.round(info.height*scale) })
+    const compressed = await uni.compressImage({ src:path, quality:82, compressedWidth:Math.round(displayImageSize(info).width*scale), compressedHeight:Math.round(displayImageSize(info).height*scale) })
     path = compressed.tempFilePath
   }
   if(owner!==uni.getStorageSync('gensticker.session.v1')?.profile?.id)throw Error('账号已切换，请重新选图')

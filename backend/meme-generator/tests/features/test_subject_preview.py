@@ -65,6 +65,20 @@ class SubjectPreviewTests(unittest.TestCase):
         self.assertEqual(second.headers['x-gensticker-cache'],'hit')
         self.assertEqual(second.content,first.content)
 
+    def test_native_multipart_upload_shares_inference_and_private_result_delivery(self):
+        visitor={'X-Gensticker-Visitor':'native-preview-12345678'}
+        response=self.client.post('/images/subject-file',files={'file':('photo.png',base64.b64decode(self.encoded),'image/png')},headers=visitor)
+        self.assertEqual(response.status_code,200,response.text)
+        url=response.json()['image_url'];image=self.client.get(url,headers=visitor)
+        self.assertEqual(image.status_code,200);self.assertEqual(image.headers['content-type'],'image/png')
+        self.assertEqual(self.client.get(url).status_code,404)
+        self.assertEqual(self.client.post('/images/subject-file',files={'file':('bad.png',b'bad')}).status_code,422)
+        self.assertEqual(self.client.post('/images/subject-file',files={'file':('empty.png',b'')}).status_code,422)
+        self.assertEqual(self.client.post('/images/subject-file',files={'file':('large.png',b'x'*(8*1024*1024+1))}).status_code,413)
+        from meme_generator.features import editor,traffic
+        self.assertTrue(traffic.new_work('POST','/images/subject-file'))
+        editor._foreground.clear()
+
     def test_parallel_identical_inputs_share_one_inference(self):
         import threading,time
         from concurrent.futures import ThreadPoolExecutor

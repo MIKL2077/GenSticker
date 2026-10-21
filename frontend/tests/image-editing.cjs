@@ -2,6 +2,9 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('nod
 const read=file=>fs.readFileSync(path.join(__dirname,'../src',file),'utf8').replace(/^import .*$/gm,'').replace(/export /g,'')
 async function verify(){
   const geometryContext={releaseTemporary:()=>{}};vm.createContext(geometryContext);vm.runInContext(read('services/imageEditing.js'),geometryContext)
+  vm.runInContext(read('services/imageGeometry.js'),geometryContext)
+  for(const orientation of ['left','right','left-mirrored','right-mirrored'])assert.deepEqual(JSON.parse(JSON.stringify(geometryContext.displayImageSize({width:800,height:480,orientation}))),{width:480,height:800,orientation})
+  for(const orientation of ['up','down','up-mirrored','down-mirrored'])assert.equal(geometryContext.displayImageSize({width:800,height:480,orientation}).width,800)
   const geometry=geometryContext.cropGeometry
   let crop=geometry(400,200,200,200,1)
   assert.deepEqual(Array.from(crop.rect),[.25,0,.5,1])

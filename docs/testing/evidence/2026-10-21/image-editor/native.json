@@ -1,0 +1,113 @@
+{
+  "scope": "WeChat DevTools native APIs, real own-server guest detection/cutout on public OpenCV fixture; synthetic geometry for EXIF tests",
+  "status": "passed",
+  "checks": [
+    {
+      "name": "EXIF and local alpha",
+      "rows": [
+        {
+          "source": "/static/qa-rotated.jpg",
+          "input": {
+            "errMsg": "getImageInfo:ok",
+            "width": 800,
+            "height": 480,
+            "type": "jpeg",
+            "orientation": "right",
+            "path": "static/qa-rotated.jpg"
+          },
+          "ms": 20,
+          "width": 480,
+          "height": 800,
+          "type": "png"
+        },
+        {
+          "source": "/static/qa-rotated-large.jpg",
+          "input": {
+            "errMsg": "getImageInfo:ok",
+            "width": 2400,
+            "height": 1440,
+            "type": "jpeg",
+            "orientation": "right",
+            "path": "static/qa-rotated-large.jpg"
+          },
+          "ms": 63,
+          "width": 768,
+          "height": 1280,
+          "type": "png"
+        },
+        {
+          "source": "/static/qa-alpha.png",
+          "input": {
+            "errMsg": "getImageInfo:ok",
+            "width": 120,
+            "height": 180,
+            "type": "png",
+            "orientation": "up",
+            "path": "static/qa-alpha.png"
+          },
+          "ms": 26,
+          "width": 81,
+          "height": 121,
+          "type": "png"
+        }
+      ]
+    },
+    {
+      "name": "Real guest two-face detection",
+      "candidates": [
+        {
+          "id": "0",
+          "kind": "person",
+          "box": [
+            0.15250000000000002,
+            0.259375,
+            0.28874999999999995,
+            0.5774999999999999
+          ]
+        },
+        {
+          "id": "1",
+          "kind": "person",
+          "box": [
+            0.6555859375,
+            0.269140625,
+            0.281015625,
+            0.56203125
+          ]
+        }
+      ],
+      "method": "server-head-or-foreground",
+      "ms": 7268,
+      "guest": true
+    },
+    {
+      "name": "Real server foreground",
+      "width": 296,
+      "height": 296,
+      "type": "png",
+      "minAlpha": 0,
+      "maxAlpha": 255,
+      "ms": 40914
+    },
+    {
+      "name": "Native stage geometry",
+      "width": 205.1953125,
+      "height": 342
+    },
+    {
+      "name": "Native flip and second-person selection",
+      "passed": true
+    },
+    {
+      "name": "Confirm remains visible",
+      "bottom": 773.09375,
+      "windowHeight": 850
+    },
+    {
+      "name": "Native confirmation in same editor",
+      "open": false,
+      "hasSelection": true,
+      "hasPhoto": true
+    }
+  ]
+}

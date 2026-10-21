@@ -16,7 +16,7 @@ async function modelFile(){
  try{await verify(path);return path}catch(_){await call(fs.unlink.bind(fs),{filePath:path}).catch(()=>{})}
  let temporary=''
  try{
-  const result=await call(uni.downloadFile.bind(uni),{url:API_BASE_URL+'/images/subject-model/'+MODEL_SHA+'.onnx',timeout:8000})
+  const result=await call(uni.downloadFile.bind(uni),{url:API_BASE_URL+'/images/subject-model/'+MODEL_SHA+'.onnx',timeout:30000})
   temporary=result.tempFilePath;if(result.statusCode!==200)throw Error('本机模型暂不可用')
   await verify(temporary)
   await call(fs.saveFile.bind(fs),{tempFilePath:temporary,filePath:path});temporary=''
@@ -28,12 +28,16 @@ export function warmLocalBackground(){
  if(sessionTask){keepAlive();return sessionTask}
  sessionTask=(async()=>{
   const model=await modelFile()
-  let loading
-  try{
-   loading=wx.createInferenceSession({model,precisionLevel:2,allowNPU:true,allowQuantize:false,typicalShape:{'input.1':[1,3,EDGE,EDGE]}})
-   await deadline(new Promise((resolve,reject)=>{loading.onLoad(resolve);loading.onError(reject)}),4000)
-   session=loading;keepAlive();return session
-  }catch(error){try{loading?.destroy()}catch(_){}throw error}
+  // Some iOS devices expose NPU support but reject individual operators.
+  // Retry the same verified model with NPU disabled before leaving the device.
+  for(const allowNPU of [true,false]){
+   let loading
+   try{
+    loading=wx.createInferenceSession({model,precisionLevel:2,allowNPU,allowQuantize:false,typicalShape:{'input.1':[1,3,EDGE,EDGE]}})
+    await deadline(new Promise((resolve,reject)=>{loading.onLoad(resolve);loading.onError(reject)}),8000)
+    session=loading;keepAlive();return session
+   }catch(error){try{loading?.destroy()}catch(_){}if(!allowNPU)throw error}
+  }
  })().catch(error=>{sessionTask=null;unavailableUntil=Date.now()+60000;throw error})
  return sessionTask
 }
@@ -65,6 +69,9 @@ async function drawSource(path){
  try{
   const image=typeof document!=='undefined'?new Image():canvas.createImage()
   await deadline(new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=reject;image.src=path}),5000)
+  // The decoded image is upright, unlike getImageInfo's EXIF sensor dimensions.
+  const decodedScale=Math.min(1,1280/Math.max(image.width,image.height))
+  canvas.width=Math.max(1,Math.round(image.width*decodedScale));canvas.height=Math.max(1,Math.round(image.height*decodedScale))
   canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);return canvas
  }catch(error){canvas.width=canvas.height=1;throw error}
 }
@@ -93,7 +100,7 @@ export async function prepareForeground(path,exportCanvas){
     inference=await deadline(warmLocalBackground(),1200)
     inputCanvas=newCanvas(EDGE,EDGE);const inputCtx=inputCanvas.getContext('2d');inputCtx.drawImage(canvas,0,0,EDGE,EDGE)
     const input=modelInput(inputCtx.getImageData(0,0,EDGE,EDGE).data)
-    const output=await deadline(inference.run({'input.1':{type:'float32',shape:[1,3,EDGE,EDGE],data:input.buffer}}),1800)
+    const output=await deadline(inference.run({'input.1':{type:'float32',shape:[1,3,EDGE,EDGE],data:input.buffer}}),4000)
     const mask=predictionMask(output['1959'])
     maskCanvas=newCanvas(EDGE,EDGE);const maskCtx=maskCanvas.getContext('2d'),image=maskCtx.createImageData(EDGE,EDGE);image.data.set(mask);maskCtx.putImageData(image,0,0)
     ctx.globalCompositeOperation='destination-in';ctx.drawImage(maskCanvas,0,0,canvas.width,canvas.height);ctx.globalCompositeOperation='source-over';hasTransparency=true

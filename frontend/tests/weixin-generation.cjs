@@ -35,9 +35,10 @@ async function verify() {
     },
   }
   vm.createContext(context)
-  const preparation = fs.readFileSync(path.join(__dirname, '../src/services/imagePreparation.js'),'utf8').replace(/export /g,'')
+  vm.runInContext(fs.readFileSync(path.join(__dirname,'../src/services/imageGeometry.js'),'utf8').replace(/export /g,''),context)
+  const preparation = fs.readFileSync(path.join(__dirname, '../src/services/imagePreparation.js'),'utf8').replace(/^import .*$/gm,'').replace(/export /g,'')
   vm.runInContext(preparation,context)
-  const sharing=fs.readFileSync(path.join(__dirname,'../src/services/wechatSharing.js'),'utf8').replace(/export /g,'')
+  const sharing=fs.readFileSync(path.join(__dirname,'../src/services/wechatSharing.js'),'utf8').replace(/^import .*$/gm,'').replace(/export /g,'')
   vm.runInContext(sharing,context)
   vm.runInContext(source, context)
   const app = context.useMemeGeneration(s => statuses.push(s))
@@ -75,6 +76,10 @@ async function verify() {
   assert.equal(requests.at(-1).data.images[0], Buffer.from('/compressed.jpg').toString('base64'))
   await app.generateFromTemplate('single', ['/camera.jpg'], [], {}, {extractSubject:true})
   assert.equal(requests.at(-1).data.extract_subject,true)
+  context.uni.getImageInfo=o=>o.success({width:4000,height:2400,type:'jpeg',orientation:'right'})
+  await context.prepareImage('/rotated-large.jpg')
+  assert.equal(compressions.at(-1).compressedWidth,768,'EXIF upright width is used during compression')
+  assert.equal(compressions.at(-1).compressedHeight,1280,'portrait compression must not flatten the output')
   context.uni.request = async () => { throw { errMsg: 'request:fail timeout' } }
   await app.generateFromTemplate('single', [])
   assert.match(statuses.at(-1), /网络传输超时/)

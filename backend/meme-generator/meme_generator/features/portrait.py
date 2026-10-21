@@ -5,6 +5,7 @@ import numpy as np
 from PIL import Image
 
 _local=threading.local()
+_foreground_slot=threading.BoundedSemaphore(1)
 
 def detectors():
     if not hasattr(_local,'detectors'):
@@ -22,7 +23,7 @@ def detect_heads(image,*,all_heads=False):
     gray=cv2.cvtColor(np.asarray(small),cv2.COLOR_RGB2GRAY);gray=cv2.equalizeHist(gray)
     boxes=[]
     for detector,kind in detectors():
-        for x,y,w,h in detector.detectMultiScale(gray,1.1,5,minSize=(28,28)):
+        for x,y,w,h in detector.detectMultiScale(gray,1.1,5,minSize=(18,18)):
             boxes.append((kind,tuple(float(v)/scale for v in (x,y,w,h))))
         if boxes and kind=='person' and not all_heads:break
     return boxes
@@ -62,4 +63,34 @@ def candidate_boxes(image):
         size=min(max(w,h)*(1.85 if kind=='animal' else 1.65),image.width,image.height)
         left=max(0,min(image.width-size,x+w/2-size/2));top=max(0,min(image.height-size,y+h*.45-size/2))
         results.append({'id':str(index),'kind':kind,'box':[left/image.width,top/image.height,size/image.width,size/image.height]})
-    return results
+    return results or foreground_candidates(image)
+
+
+def foreground_candidates(image):
+    """Offer real saliency regions when a small/covered face cannot be detected.
+
+    These are labelled subjects, never claimed to be recognised people. Reuse
+    the pinned cutout model at <=320px and admit one such fallback at a time.
+    Detection photos/masks are discarded with the request.
+    """
+    if not _foreground_slot.acquire(False):return []
+    try:
+        from .subjects import warm_subject_model
+        from . import vision
+        if not warm_subject_model():return []
+        small=image.convert('RGBA');small.thumbnail((320,320))
+        mask=(np.asarray(vision.extract(small).getchannel('A'))>100).astype('uint8')
+        if not .01<float(mask.mean())<.95:return []
+        _,_,stats,_=cv2.connectedComponentsWithStats(mask,8)
+        results=[]
+        for x,y,w,h,area in sorted(stats[1:],key=lambda row:int(row[4]),reverse=True):
+            if area<mask.size*.015:continue
+            pad=max(2,round(max(w,h)*.04))
+            left=max(0,int(x)-pad);top=max(0,int(y)-pad)
+            right=min(small.width,int(x+w)+pad);bottom=min(small.height,int(y+h)+pad)
+            results.append({'id':'subject-'+str(len(results)),'kind':'subject','box':[left/small.width,top/small.height,(right-left)/small.width,(bottom-top)/small.height]})
+            if len(results)>=6:break
+        return results
+    except (ValueError,RuntimeError,ImportError):
+        return []
+    finally:_foreground_slot.release()

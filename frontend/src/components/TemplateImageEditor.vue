@@ -1,5 +1,5 @@
 <template>
- <subject-picker :show="true" :src="src" :initial-rect="canUndo ? [0,0,1,1] : null" :detect-enabled="!canUndo" editable :can-undo="canUndo" :busy="busy" :external-error="error" file-type="png" @cancel="$emit('close')" @confirm="confirm" @undo="$emit('undo')" @restore="$emit('restore')">
+ <subject-picker class="subject-picker-host" :show="true" :src="src" :initial-rect="canUndo ? [0,0,1,1] : null" :detect-enabled="!canUndo" editable :can-undo="canUndo" :busy="busy" :external-error="error" file-type="png" @cancel="$emit('close')" @confirm="confirm" @undo="$emit('undo')" @restore="$emit('restore')">
   <template #images="selection"><scroll-view v-if="images.length>1" class="editor-images" scroll-x><button v-for="(image,index) in images" :key="index" :class="{active:index===activeIndex}" :disabled="busy || selection.locked" @click="$emit('select',index)"><image :src="image" mode="aspectFill"/><text>{{index+1}}</text></button></scroll-view></template>
  </subject-picker>
 </template>

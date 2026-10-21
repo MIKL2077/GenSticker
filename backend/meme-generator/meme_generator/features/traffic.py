@@ -72,6 +72,7 @@ def new_work(method, path):
             "/recommend/assets",
             "/recommend/subjects/detect",
             "/images/subject",
+            "/images/subject-file",
             "/images/wechat-export",
         }
         or path.startswith("/studio/jobs/")

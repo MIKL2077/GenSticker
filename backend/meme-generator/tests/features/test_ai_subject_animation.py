@@ -6,7 +6,7 @@ from PIL import Image,ImageDraw,ImageSequence
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from meme_generator.account import current_user
-from meme_generator.features import recommend,vision,worker,catalog,portrait
+from meme_generator.features import recommend,vision,worker,catalog,portrait,subjects
 from meme_generator.features.store import connect
 from meme_generator.features.animation import save_result_files
 
@@ -35,6 +35,30 @@ class SubjectAnimationTests(unittest.TestCase):
             db=connect();self.assertEqual(db.execute('SELECT COUNT(*) FROM assets').fetchone()[0],0);db.close()
             for _ in range(11):self.assertEqual(self.client.post('/recommend/subjects/detect',files={'file':('photo.jpg',self.photo)}).status_code,200)
             self.assertEqual(self.client.post('/recommend/subjects/detect',files={'file':('photo.jpg',self.photo)}).status_code,429)
+    def test_visitors_can_detect_without_creating_private_assets(self):
+        self.client.app.dependency_overrides.clear()
+        with patch.object(portrait,'candidate_boxes',return_value=[{'id':'0','kind':'person','box':[.1,.1,.5,.6]}]):
+            response=self.client.post('/recommend/subjects/detect',headers={'X-Gensticker-Visitor':'visitor-fixture-20261021'},files={'file':('photo.jpg',self.photo)})
+        self.assertEqual(response.status_code,200)
+        self.assertEqual(response.headers['cache-control'],'private, no-store')
+        self.assertEqual(response.json()['candidates'][0]['kind'],'person')
+        db=connect();self.assertEqual(db.execute('SELECT count(*) FROM assets').fetchone()[0],0);db.close()
+    def test_covered_face_uses_real_foreground_regions_and_no_fabricated_person(self):
+        cutout=Image.new('RGBA',(240,320))
+        ImageDraw.Draw(cutout).rectangle((60,80,180,280),fill='red')
+        with patch.object(portrait,'detect_heads',return_value=[]),patch.object(subjects,'warm_subject_model',return_value=True),patch.object(vision,'extract',return_value=cutout):
+            boxes=portrait.candidate_boxes(Image.new('RGB',(480,640)))
+        self.assertEqual(len(boxes),1);self.assertEqual(boxes[0]['kind'],'subject')
+        x,y,w,h=boxes[0]['box'];self.assertLess(x,.25);self.assertGreater(x+w,.75)
+        self.assertLess(y,.25);self.assertGreater(y+h,.875)
+        with patch.object(portrait,'detect_heads',return_value=[]),patch.object(subjects,'warm_subject_model',return_value=True),patch.object(vision,'extract',return_value=Image.new('RGBA',(240,320),'red')):
+            self.assertEqual(portrait.candidate_boxes(Image.new('RGB',(480,640))),[],'uncertain whole-frame masks must not invent candidates')
+    def test_foreground_fallback_is_bounded_and_busy_never_queues(self):
+        self.assertTrue(portrait._foreground_slot.acquire(False))
+        try:
+            with patch.object(subjects,'warm_subject_model',side_effect=AssertionError('busy inference must not run')):
+                self.assertEqual(portrait.foreground_candidates(Image.new('RGB',(240,320))),[])
+        finally:portrait._foreground_slot.release()
     def test_gif_results_and_previews_preserve_dimensions_and_timing(self):
         frames=[Image.new('RGB',(100,80),color) for color in ('red','green','blue')];raw=BytesIO();frames[0].save(raw,'GIF',save_all=True,append_images=frames[1:],duration=[80,140,220],loop=0)
         path,preview=save_result_files(raw,Path(self.temp.name),0)
