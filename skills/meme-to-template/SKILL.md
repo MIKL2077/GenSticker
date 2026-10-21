@@ -55,7 +55,21 @@ Keep separate counts for indexed images, selected candidates, downloaded images,
 
 Use `tools/qa/review_templates.py` to create comparison sheets and `bulk_templates export-reviewed --decisions DECISIONS.json --version N` to export approved IDs. Every authoring step must use the same isolated state directory. Keep creation times stable, increment versions on updates, and split exports into batches of at most 100 templates / 32 MiB. Short-caption layouts may reject long text; verify a real short replacement and retain the clear overflow error instead of forcing multiple lines across the subject.
 
-## Multi-layout regression
+## Complete editable captions, including two lines
+
+Inventory every visible source caption before authoring. Record each block as editable or explicitly fixed, including both top/bottom captions and every wrapped line. A caption-replacement template must cover the complete requested caption: never turn a two-line source caption into a one-line-only replacement while leaving the other line baked into the background. Use separate consecutive text slots for independent top/bottom messages; use one multiline slot with `max_lines >= 2` for a single wrapped message. Match input counts, default text, masks and UI fields to that inventory. Do not apply the single-line slogan rule to multiline originals.
+
+Validate a short replacement, a two-line replacement with explicit newline, and different text in each independent slot. Inspect all caption regions and, for GIFs, first/middle/last frames plus timing. Confirm no old letters survive in the editable regions, all new lines appear, neither caption overlaps the subject, and overflow fails visibly instead of truncating. The app must accept newline input. Retain the inventory and caption completeness outcome in review evidence; unsupported caption removal stays pending. For context-and-reaction templates which intentionally preserve source lettering, label that lettering as fixed in the user-facing input hint and review metadata; never advertise it as editable caption replacement.
+
+## Reviewed reaction stories and preserved animation workflow
+
+For an explicitly requested image/mixed library expansion, `features/reaction_templates.py` is a dedicated context-and-reaction adapter. Keep the complete source reaction, including its caption, props and gestures, in a protected panel. The user's photo supplies the trigger or comparison; a separate text slot can describe that trigger. Use reply, contrast, cause/result and comment layouts only when that relationship makes sense for the inspected source. Do not describe these as face replacement, and do not publish repeated crops or caption variants of the same source as independent templates.
+
+`tools/collect/reaction_review.py inventory` creates source/key-pose review sheets and an immutable source index; `export` requires individually approved IDs, readable names and input kinds. Preserve full normalized loop timing, reject still images labelled GIF, and run a real supplied-image render. Animated sources use bounded local GIF assets, a one-time static photo/text overlay and a shared palette; the browser client must fall back to the server instead of flattening the loop.
+
+This adapter does not erase any source caption. Its gates check source preservation and disjoint editable panels, rather than reusing caption-erasure OCR thresholds. Follow the existing rights/source metadata rules and keep explicit attribution exceptions scoped to the requested sources. Export in batches of at most 100 templates and 32 MiB, retain stable keys, and include a withdrawal manifest for rollback before reverting the animation renderer.
+
+## Multi-layout regression examples
 
 Read [multi-sample observations](references/multi-sample-tests.md). The three image-free briefs in `references/regression-cases/` cover a two-caption cat meme, a scattered-text Doge with one safely editable phrase, and a farmer face replacement that protects the hat and fixed captions. Do not force every layout into a full head replacement.
 

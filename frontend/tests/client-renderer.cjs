@@ -20,6 +20,15 @@ vm.runInContext(fs.readFileSync(path.join(__dirname,'../src/services/clientRende
  assert.equal(await context.tryClientRender('auto_test',['/photo.jpg'],['新文字']),'/local.jpg');assert.ok(draws.some(d=>d[0]==='stroke'));assert.equal(ctx.textAlign,'left');
  const badStyle=JSON.parse(JSON.stringify(recipe));badStyle.spec.layers[1].stroke_width=9;assert.throws(()=>context.validateRecipe(badStyle));
  const executable=JSON.parse(JSON.stringify(recipe));executable.spec.layers[0].type='script';assert.throws(()=>context.validateRecipe(executable))
+ const animated=JSON.parse(JSON.stringify(recipe));animated.spec.animation_asset='a'.repeat(64);assert.throws(()=>context.validateRecipe(animated),'native JPEG rendering must never flatten a reaction GIF')
+ // A wrapped caption must draw every explicit line; independent captions keep
+ // separate slots so editing one never silently replaces only half a meme.
+ recipe.spec.layers[1].box=[0,0,128,58];recipe.spec.layers[1].max_lines=2;draws.length=0
+ assert.equal(await context.tryClientRender('auto_test',['/photo.jpg'],['第一行\n第二行']),'/local.jpg')
+ assert.ok(draws.some(d=>d[0]==='第一行'));assert.ok(draws.some(d=>d[0]==='第二行'))
+ recipe.spec.layers.push({...recipe.spec.layers[1],box:[0,64,128,58],slot:1});draws.length=0
+ assert.equal(await context.tryClientRender('auto_test',['/photo.jpg'],['上方新文案','下方新文案']),'/local.jpg')
+ assert.ok(draws.some(d=>d[0]==='上方新文案'));assert.ok(draws.some(d=>d[0]==='下方新文案'))
  assert.equal(await context.tryClientRender('always',['/photo.jpg'],[]),'/local.jpg')
  assert.equal(await context.tryClientRender('look_flat',['/photo.jpg'],['可恶']),'/local.jpg')
  context.uni.getImageInfo=o=>o.success({width:80,height:100,type:'gif'});assert.equal(await context.tryClientRender('always',['/animated.gif'],[]),null)

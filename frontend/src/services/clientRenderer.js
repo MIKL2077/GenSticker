@@ -85,6 +85,7 @@ export function validateRecipe(recipe) {
     return
   }
   const s=recipe.spec
+  if(s?.animation_asset)throw new Error('动图使用服务器保留完整动画')
   if(!s || !Number.isInteger(s.width) || !Number.isInteger(s.height) || s.width<64 || s.height<64 || s.width>768 || s.height>768 || !/^#[a-f0-9]{6}$/i.test(s.background) || !Array.isArray(s.layers) || s.layers.length>12 || s.layers.length<1) throw new Error('模板超出本地能力')
   for(const l of s.layers) {
     if(!['asset','subject','text'].includes(l.type) || !Array.isArray(l.box) || l.box.length!==4 || l.box.some(v=>!Number.isInteger(v))) throw new Error('模板图层无效')
