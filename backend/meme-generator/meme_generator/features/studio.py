@@ -270,7 +270,7 @@ def create_template(params:Creation,user=Depends(current_user)):
         if not params.name.strip():raise HTTPException(422,'请给模板起个名字')
         spec=params.spec.model_dump()
         if any(len(t)>200 for t in spec['defaults']):raise HTTPException(422,'默认文字最多 200 字')
-        if spec.get('animation_asset') or any(l['type']=='face' for l in spec['layers']) or spec['reference_asset'] or spec['background_prepared']:raise HTTPException(422,'手动创作仅支持图片、文字和背景图层')
+        if spec.get('frames') or spec.get('animation_asset') or any(l['type']=='face' or l.get('original_asset') for l in spec['layers']) or spec['reference_asset'] or spec['background_prepared']:raise HTTPException(422,'手动创作仅支持图片、文字和背景图层')
         backgrounds=[l for l in spec['layers'] if l['type']=='asset']
         if backgrounds:
             if len(backgrounds)!=1 or not params.background_image:raise HTTPException(422,'请重新上传背景图')

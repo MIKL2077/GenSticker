@@ -90,6 +90,7 @@ def inventory(args):
 
 
 def export(args):
+    if not args.context_story:raise ValueError('legacy story export requires an explicitly requested context-story composition; use source-element authoring for library expansion')
     candidates=json.loads(Path(args.candidates).read_text());review=json.loads(Path(args.decisions).read_text());approved=review['approved']
     if not approved or len(approved)>1000:raise ValueError('invalid approved list')
     by_index={i['index']:i for i in candidates};by_id={i['id']:i for i in candidates};items=[];assets={};seen=set();counts=collections.Counter();frames_report=[]
@@ -98,7 +99,8 @@ def export(args):
     for decision in approved:
         row=by_id[decision['source_id']] if decision.get('source_id') else by_index[decision['index']];index=row['index']
         if index in seen or decision.get('visual_status')!='approved' or not decision.get('label'):raise ValueError('unreviewed/duplicate decision')
-        seen.add(index);kind=decision['kind'];layout=decision.get('layout','reply');context=decision.get('context','看到这张图时的我')
+        seen.add(index);kind=decision['kind'];layout=decision.get('layout','reply');context=decision.get('context')
+        if not context:raise ValueError('an explicit context is required; no generic caption fallback')
         raw=Path(row['path']).read_bytes();spec,new_assets,intent=make_story(raw,kind=kind,layout=layout,context=context,animated=row['animated'])
         for digest,data in new_assets.items():(directory/(digest+('.gif' if digest==spec['animation_asset'] else '.png'))).write_bytes(data)
         metadata={'name':decision['label'][:40],'tags':list(dict.fromkeys([decision.get('category','反应'), '动图' if row['animated'] else '静图', {'image':'图片回应','mixed':'图文互动','text':'配文回应'}[kind],layout])),'min_images':int(kind!='text'),'max_images':int(kind!='text'),'min_texts':int(kind!='image'),'max_texts':int(kind!='image'),'default_texts':spec['defaults'],'origin':row['origin'],'source_url':row['source_url'],'source_image_url':row['image_url'],'source_revision':row.get('source_revision',''),'author':'原作者未核实','license':'unverified','license_url':'','source_use':'explicit-user-request-with-attribution','original_hash':row['raw_hash'],'perceptual_hash':row['review_hashes'][0],'animated':row['animated'],'conversion':'reaction-story-v1','intent':{**intent,'fixed':'原梗的表情、动作、道具与原有文字完整保留','replaceable':'新增的情境图片和/或触发场景文字','reference_reaction':decision['label']},'subject_types':['person','animal','object','unknown'],'input_hint':('原梗文案保留；可替换情境图片' if kind=='image' else '原梗文案保留；可改情境图片和配文' if kind=='mixed' else '原梗文案保留；可改上方情境配文'),'review':{'visual_status':'approved','sheet':decision.get('review_sheet',f'review-{index//20:02d}.jpg'),'index':index,'review_method':'source and key poses visually inspected; full output timeline validated'},'quality':{'reference_preserved':True,'replacement_verified':True,'slot_overlap_pixels':0,'motion_verified':bool(row['animated']),'multiline_context_verified':kind!='image'},'collected_at':time.time()}
@@ -148,5 +150,5 @@ def export(args):
 if __name__=='__main__':
     parser=argparse.ArgumentParser();sub=parser.add_subparsers(dest='command',required=True)
     p=sub.add_parser('inventory');p.add_argument('--static-manifest',required=True);p.add_argument('--static-cache',required=True);p.add_argument('--gif-cache',required=True);p.add_argument('--output',required=True);p.add_argument('--gif-limit',type=int,default=550);p.add_argument('--static-limit',type=int,default=350);p.add_argument('--exclude-seen',nargs='*')
-    p=sub.add_parser('export');p.add_argument('--candidates',required=True);p.add_argument('--decisions',required=True);p.add_argument('--output',required=True)
+    p=sub.add_parser('export');p.add_argument('--candidates',required=True);p.add_argument('--decisions',required=True);p.add_argument('--output',required=True);p.add_argument('--context-story',action='store_true')
     args=parser.parse_args();inventory(args) if args.command=='inventory' else export(args)

@@ -4,6 +4,8 @@ import { API_BASE_URL } from '@/constants'
 // Cache outside Vue state: only small metadata and file paths cross setData.
 const requests = new Map()
 const cached = new Map()
+const epochs = new Map()
+const versions = new Map()
 const downloads = []
 let activeDownloads = 0
 const thumbnailSizes = new Map()
@@ -38,15 +40,31 @@ function memo(key, load, ttl = 3600000) {
   const hit = cached.get(key)
   if (hit && Date.now() - hit.at < ttl) return Promise.resolve(hit.value)
   if (requests.has(key)) return requests.get(key)
-  const task = load().then(value => { cached.set(key, { value, at: Date.now() }); return value }).finally(() => requests.delete(key))
+  const epoch=epochs.get(key)||0
+  const task = load().then(value => { if((epochs.get(key)||0)===epoch)cached.set(key, { value, at: Date.now() }); return value }).finally(() => {if(requests.get(key)===task)requests.delete(key)})
   requests.set(key, task)
   return task
 }
-export function getCategories(force=false) { if(force)cached.delete('categories');return memo('categories', () => apiRequest('/memes/categories',{timeout:25000},2), 300000) }
+function catalogVersions(data) {
+  for(const card of data.cards || []) {
+    const old=versions.get(card.key)
+    if(old!==undefined && old!==card.version) {
+      const hit=cached.get(`image:${card.key}`)
+      if(hit)uni.getFileSystemManager?.().unlink({filePath:hit.value,fail:()=>{}})
+      for(const name of [`info:${card.key}`,`image:${card.key}`]) {cached.delete(name);requests.delete(name);epochs.set(name,(epochs.get(name)||0)+1)}
+      thumbnailBytes-=thumbnailSizes.get(card.key)||0;thumbnailSizes.delete(card.key)
+      for(const callback of evictions)callback(card.key)
+    }
+    versions.set(card.key,card.version)
+  }
+  return data
+}
+export function getCategories(force=false) { if(force)cached.delete('categories');return memo('categories', () => apiRequest('/memes/categories',{timeout:25000},2), 300000).then(catalogVersions) }
 export function getTemplateInfo(key) { return memo(`info:${key}`, () => apiRequest(`/memes/${encodeURIComponent(key)}/info`)) }
 export function getTemplatePreviewData(key) { return apiImageRequest(`/memes/${encodeURIComponent(key)}/thumbnail`) }
 export function getTemplatePreviewPath(key, background = false) {
-  const url = `${API_BASE_URL}/memes/${encodeURIComponent(key)}/thumbnail`
+  const version=versions.get(key)
+  const url = `${API_BASE_URL}/memes/${encodeURIComponent(key)}/thumbnail${version===undefined?'':`?v=${encodeURIComponent(version)}`}`
   // #ifdef H5
   return Promise.resolve(url)
   // #endif
@@ -54,7 +72,10 @@ export function getTemplatePreviewPath(key, background = false) {
   return memo(`image:${key}`, () => scheduledDownload(key, () => new Promise((resolve, reject) => {
     uni.downloadFile({ url, timeout: 20000, success: r => {
       if(r.statusCode!==200) return reject(new Error(`预览加载失败: ${r.statusCode}`))
-      const finish = bytes => { thumbnailBytes-=thumbnailSizes.get(key)||0;thumbnailSizes.delete(key);thumbnailSizes.set(key,bytes);thumbnailBytes+=bytes;resolve(r.tempFilePath);setTimeout(trimThumbnails,0) }
+      const finish = bytes => {
+        if(version!==versions.get(key)){uni.getFileSystemManager?.().unlink({filePath:r.tempFilePath,fail:()=>{}});reject(new Error('模板已更新，请重新加载预览'));return}
+        thumbnailBytes-=thumbnailSizes.get(key)||0;thumbnailSizes.delete(key);thumbnailSizes.set(key,bytes);thumbnailBytes+=bytes;resolve(r.tempFilePath);setTimeout(trimThumbnails,0)
+      }
       const fs=uni.getFileSystemManager?.()
       if(fs?.stat) fs.stat({path:r.tempFilePath,success:s=>finish(s.stats.size),fail:()=>finish(256*1024)})
       else finish(256*1024)

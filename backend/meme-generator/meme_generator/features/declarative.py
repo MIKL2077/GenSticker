@@ -13,10 +13,10 @@ class Layer(BaseModel):
     model_config = ConfigDict(extra="forbid")
     type: Literal["subject", "face", "text", "asset"]
     box: tuple[int, int, int, int]
-    slot: int = Field(default=0, ge=0, le=1)
+    slot: int = Field(default=0, ge=0, le=4)
     value: str = Field(default="", max_length=300)
     color: str = Field(default="#222222", pattern=r"^#[0-9a-fA-F]{6}$")
-    font_size: int = Field(default=32, ge=10, le=100)
+    font_size: int = Field(default=32, ge=6, le=100)
     fit: Literal["contain", "cover"] = "contain"
     align: Literal["left", "center", "right"] = "left"
     weight: Literal["normal", "bold"] = "normal"
@@ -27,6 +27,23 @@ class Layer(BaseModel):
     erase_polygon: list[tuple[int, int]] = Field(default_factory=list, max_length=24)
     text_mask: Literal['box','glyph'] = 'box'
     max_lines: int = Field(default=0, ge=0, le=5)
+    original_asset: str = Field(default='', pattern=r'^(?:[a-f0-9]{64})?$')
+    mask_asset: str = Field(default='', pattern=r'^(?:[a-f0-9]{64})?$')
+    protect_polygons: list[list[tuple[int,int]]] = Field(default_factory=list,max_length=10)
+    rotation: int = Field(default=0,ge=-180,le=180)
+    line_spacing: int = Field(default=4,ge=0,le=16)
+    direction: Literal['horizontal','vertical'] = 'horizontal'
+
+
+class TemplateFrame(BaseModel):
+    """One authored frame: a clean plate, optional source preview and local slots."""
+    model_config = ConfigDict(extra='forbid')
+    asset: str = Field(pattern=r'^[a-f0-9]{64}$')
+    asset_format: Literal['png','gif'] = 'png'
+    source_index: int = Field(default=0,ge=0,le=39)
+    reference_asset: str = Field(default='', pattern=r'^(?:[a-f0-9]{64})?$')
+    duration_ms: int = Field(default=100, ge=20, le=8000)
+    layers: list[Layer] = Field(default_factory=list, max_length=20)
 
 
 class TemplateSpec(BaseModel):
@@ -34,21 +51,26 @@ class TemplateSpec(BaseModel):
     width: int = Field(default=512, ge=64, le=1024)
     height: int = Field(default=512, ge=64, le=1024)
     background: str = Field(default="#ffffff", pattern=r"^#[0-9a-fA-F]{6}$")
-    layers: list[Layer] = Field(min_length=1, max_length=20)
+    layers: list[Layer] = Field(default_factory=list, max_length=20)
     defaults: list[str] = Field(default_factory=list, max_length=5)
     background_prepared: bool = False
     reference_asset: str = Field(default='',pattern=r'^(?:[a-f0-9]{64})?$')
     animation_asset: str = Field(default='',pattern=r'^(?:[a-f0-9]{64})?$')
     animation_box: tuple[int,int,int,int] | None = None
+    frames: list[TemplateFrame] = Field(default_factory=list, max_length=40)
 
     @model_validator(mode="after")
     def bounds(self):
+        if not self.layers and not self.frames:raise ValueError('template has no layers or frames')
+        if self.frames:
+            if self.animation_asset or self.reference_asset or self.layers:raise ValueError('authored frames cannot mix legacy layers or animation')
+            if self.width*self.height*len(self.frames)>8_000_000 or sum(f.duration_ms for f in self.frames)>8000:raise ValueError('authored timeline exceeds frame budget')
         if bool(self.animation_asset) != (self.animation_box is not None):raise ValueError('animation requires an asset and box')
         if self.animation_box:
             x,y,w,h=self.animation_box
             if min(x,y)<0 or min(w,h)<1 or x+w>self.width or y+h>self.height:raise ValueError('animation outside canvas')
             if self.reference_asset or any(l.type=='face' for l in self.layers):raise ValueError('animated reaction cannot mix head replacement')
-        for layer in self.layers:
+        for layer in self.layers + [layer for frame in self.frames for layer in frame.layers]:
             x, y, w, h = layer.box
             if (
                 min(x, y) < 0
@@ -64,6 +86,9 @@ class TemplateSpec(BaseModel):
                 raise ValueError("asset must be a local SHA256")
             if layer.erase_polygon and (layer.type != 'face' or len(layer.erase_polygon)<3 or any(px<0 or py<0 or px>=w or py>=h for px,py in layer.erase_polygon)):
                 raise ValueError('face mask outside declared slot')
+            if layer.original_asset and layer.type!='text':raise ValueError('original caption patch requires a text layer')
+            if layer.mask_asset and layer.type!='face':raise ValueError('replacement mask requires a face layer')
+            if any(len(polygon)<3 or len(polygon)>24 or any(px<0 or py<0 or px>=w or py>=h for px,py in polygon) for polygon in layer.protect_polygons):raise ValueError('protected polygon outside slot')
         return self
 
 
@@ -98,12 +123,15 @@ def font(size, bold=False):
     return ImageFont.load_default(size=size)
 
 
-def render(spec, images, texts=None, *, preview=False, _transparent=False):
+def render(spec, images, texts=None, *, preview=False, _transparent=False, _base=None):
     spec = TemplateSpec.model_validate(spec)
+    if spec.frames:
+        from .frame_render import render_frames
+        return render_frames(spec,images,texts,preview=preview)
     if spec.animation_asset:
         from .reaction_animation import render_animation
         return render_animation(spec,images,texts,preview=preview)
-    canvas = Image.new("RGBA", (spec.width, spec.height), (0,0,0,0) if _transparent else spec.background)
+    canvas = _base.convert('RGBA').copy() if _base is not None else Image.new("RGBA", (spec.width, spec.height), (0,0,0,0) if _transparent else spec.background)
     if preview and spec.reference_asset:
         with open_image(root()/'template_assets'/(spec.reference_asset+'.png')) as reference:
             canvas.alpha_composite(reference.convert('RGBA'))
@@ -140,10 +168,32 @@ def render(spec, images, texts=None, *, preview=False, _transparent=False):
                 (texts or spec.defaults)[layer.slot]
                 if layer.slot < len(texts or spec.defaults)
                 else layer.value
-            )[:200]
+            )
+            if _base is not None and len(value)>200:raise ValueError('text overflows')
+            value=value[:200]
+            if layer.original_asset and value == layer.value:
+                with open_image(root()/'template_assets'/(layer.original_asset+'.png')) as patch:
+                    if patch.size != (w,h):raise ValueError('original caption patch size mismatch')
+                    canvas.alpha_composite(patch.convert('RGBA'),(x,y))
+                continue
             draw = ImageDraw.Draw(canvas)
+            if layer.direction=='vertical':
+                columns=value.split('\n')
+                for size in range(layer.font_size,5,-1):
+                    face=font(size,layer.weight=='bold')
+                    bounds=[draw.textbbox((0,0),char,font=face,stroke_width=layer.stroke_width) for char in value if char!='\n'] or [(0,0,1,1)]
+                    char_width=max(b[2]-b[0] for b in bounds);char_height=max(b[3]-b[1] for b in bounds)
+                    if len(columns)*char_width+(len(columns)-1)*layer.line_spacing<=w and max(map(len,columns))*(char_height+layer.line_spacing)-layer.line_spacing<=h:break
+                else:raise ValueError('text overflows')
+                if layer.max_lines and len(columns)>layer.max_lines:raise ValueError('text overflows')
+                left=x+(w-(len(columns)*char_width+(len(columns)-1)*layer.line_spacing))/2
+                for column_index,column in enumerate(reversed(columns)):
+                    for char_index,char in enumerate(column):
+                        bbox=draw.textbbox((0,0),char,font=face,stroke_width=layer.stroke_width)
+                        draw.text((left+column_index*(char_width+layer.line_spacing)-bbox[0],y+char_index*(char_height+layer.line_spacing)-bbox[1]),char,font=face,fill=layer.color,stroke_width=layer.stroke_width,stroke_fill=layer.stroke_color)
+                continue
             fits=False
-            for size in range(layer.font_size, 9, -1):
+            for size in range(layer.font_size, (6 if _base is not None else min(10,layer.font_size))-1, -1):
                 face = font(size, layer.weight == "bold")
                 lines, current = [], ""
                 for char in value:
@@ -154,8 +204,9 @@ def render(spec, images, texts=None, *, preview=False, _transparent=False):
                         current += char
                 lines.append(current)
                 if layer.max_lines and len(lines)>layer.max_lines:continue
+                if any(draw.textbbox((0,0), line, font=face, stroke_width=layer.stroke_width)[2]-draw.textbbox((0,0), line, font=face, stroke_width=layer.stroke_width)[0]>w for line in lines):continue
                 line_height = max(draw.textbbox((0,0), line or " ", font=face, stroke_width=layer.stroke_width)[3] - draw.textbbox((0,0), line or " ", font=face, stroke_width=layer.stroke_width)[1] for line in lines)
-                if len(lines) * line_height + (len(lines)-1)*4 <= h:
+                if len(lines) * line_height + (len(lines)-1)*layer.line_spacing <= h:
                     fits=True
                     break
             if not fits:
@@ -164,7 +215,7 @@ def render(spec, images, texts=None, *, preview=False, _transparent=False):
                 bbox = draw.textbbox((0,0), line, font=face, stroke_width=layer.stroke_width)
                 length = bbox[2]-bbox[0]
                 left = x + (w-length)/2 if layer.align == "center" else x+w-length if layer.align == "right" else x
-                draw.text((left-bbox[0], y + index*(line_height+4)-bbox[1]), line, font=face, fill=layer.color, stroke_width=layer.stroke_width, stroke_fill=layer.stroke_color)
+                draw.text((left-bbox[0], y + index*(line_height+layer.line_spacing)-bbox[1]), line, font=face, fill=layer.color, stroke_width=layer.stroke_width, stroke_fill=layer.stroke_color)
     output = BytesIO()
     if _transparent:canvas.save(output,'PNG')
     else:canvas.convert("RGB").save(output, "JPEG", quality=90)

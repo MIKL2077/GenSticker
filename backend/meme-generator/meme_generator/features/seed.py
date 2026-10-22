@@ -7,15 +7,19 @@ import json
 from pathlib import Path
 from .store import connect, root
 from .declarative import TemplateSpec
+from .storage import asset_refs
+from io import BytesIO
 
 
 def restore(*, include_batches=True):
     from .catalog import publish
 
     manifest = json.loads(Path(__file__).with_name("template_seed.json").read_text())
+    withdrawals = []
     if include_batches:
         for path in sorted(Path(__file__).with_name('template_batches').glob('*.json')):
             batch = json.loads(path.read_text())
+            withdrawals.extend(batch.get('withdrawals', []))
             for item in batch['templates']:
                 m = item['metadata']; q = m.get('quality', {})
                 from urllib.parse import urlsplit
@@ -23,8 +27,12 @@ def restore(*, include_batches=True):
                 allowed = (m.get('origin') == 'chinesebqb' and source.hostname == 'github.com' and source.path.startswith('/zhaoolee/ChineseBQB/blob/')) or (m.get('origin') == 'weshine' and source.hostname == 'u.weshineapp.com')
                 caption=(m.get('conversion')=='caption-preserved-v2' and q.get('observed_min_confidence',0)>=.95 and q.get('round_trip_mae',100)<=12 and q.get('protected_pixel_mae',100)<=.1)
                 story=(m.get('conversion')=='reaction-story-v1' and q.get('reference_preserved') is True and q.get('replacement_verified') is True and q.get('slot_overlap_pixels',1)==0 and (not m.get('animated') or q.get('motion_verified') is True))
+                elements = m.get('conversion') == 'element-replacement-v1'
+                if elements:
+                    from .element_templates import validate_elements
+                    validate_elements(item['spec'], m)
                 if not (allowed and source.scheme == 'https' and m.get('source_use') == 'explicit-user-request-with-attribution'
-                        and m.get('review', {}).get('visual_status') == 'approved' and (caption or story)):
+                        and m.get('review', {}).get('visual_status') == 'approved' and (caption or story or elements)):
                     raise ValueError('unreviewed source batch')
                 if story:
                     from .reaction_templates import validate_story
@@ -35,6 +43,14 @@ def restore(*, include_batches=True):
     restored = 0
     try:
         with db:
+            for item in withdrawals:
+                # Withdraw only the precise legacy source version this manifest
+                # reviewed. Never withdraw an operator's newer replacement.
+                old = db.execute('SELECT metadata FROM templates WHERE key=?', (item['key'],)).fetchone()
+                if old:
+                    metadata = json.loads(old['metadata'])
+                    if metadata.get('conversion') == 'reaction-story-v1' and metadata.get('original_hash') == item['original_hash']:
+                        db.execute("UPDATE templates SET status='withdrawn' WHERE key=?", (item['key'],))
             for key in retired:
                 db.execute("UPDATE templates SET status='withdrawn' WHERE key=?", (key,))
         for item in manifest["templates"]:
@@ -59,21 +75,22 @@ def restore(*, include_batches=True):
             if old and old['version'] >= item.get('version',1):
                 continue
             spec = TemplateSpec.model_validate(item["spec"]).model_dump()
-            hashes={layer['value'] for layer in spec['layers'] if layer['type']=='asset'}
-            if spec.get('reference_asset'):hashes.add(spec['reference_asset'])
-            if spec.get('animation_asset'):hashes.add(spec['animation_asset'])
-            for digest in hashes:
+            for digest in asset_refs(spec):
                 if digest in manifest['assets']:
                     raw = base64.b64decode(manifest["assets"][digest], validate=True)
                     if hashlib.sha256(raw).hexdigest() != digest:
                         raise ValueError("seed asset checksum mismatch")
                     directory = root() / "template_assets"
                     directory.mkdir(exist_ok=True)
-                    suffix='.gif' if digest==spec.get('animation_asset') else '.png'
+                    suffix = '.gif' if raw.startswith((b'GIF87a', b'GIF89a')) else '.png'
+                    with open_image(BytesIO(raw)) as image:
+                        if image.format != ('GIF' if suffix == '.gif' else 'PNG'):
+                            raise ValueError('seed asset format mismatch')
                     (directory / (digest + suffix)).write_bytes(raw)
+                elif not any((root() / 'template_assets' / (digest + suffix)).is_file() for suffix in ['.png', '.gif']):
+                    raise ValueError('seed asset missing')
             if item.get('prepare_background_from_reference'):
                 from .face_slot import prepared_background
-                from io import BytesIO
                 with open_image(root()/'template_assets'/(spec['reference_asset']+'.png')) as source:
                     prepared=prepared_background(source,TemplateSpec.model_validate(spec).layers)
                 output=BytesIO();prepared.save(output,'PNG');digest=hashlib.sha256(output.getvalue()).hexdigest()

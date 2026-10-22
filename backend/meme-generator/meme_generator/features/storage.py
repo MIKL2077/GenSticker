@@ -56,6 +56,16 @@ def asset_refs(spec):
     if spec.get("reference_asset"):
         refs.add(spec["reference_asset"])
     if spec.get('animation_asset'):refs.add(spec['animation_asset'])
+    for layer in spec.get('layers',[]):
+        for field in ['original_asset','mask_asset']:
+            if layer.get(field):refs.add(layer[field])
+    for frame in spec.get('frames',[]):
+        refs.add(frame['asset'])
+        if frame.get('reference_asset'):refs.add(frame['reference_asset'])
+        for layer in frame.get('layers',[]):
+            if layer.get('type')=='asset':refs.add(layer['value'])
+            for field in ['original_asset','mask_asset']:
+                if layer.get(field):refs.add(layer[field])
     return {r for r in refs if len(r) == 64 and all(c in "0123456789abcdef" for c in r)}
 
 

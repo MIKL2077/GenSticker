@@ -112,6 +112,10 @@ export function useTemplateData(showStatusMessage) {
       }
       for (const card of data.cards || []) {
         const existing = templateDetails.value.get(card.key) || { key: card.key, previewImage: null, isLoadingPreview: true }
+        if(existing.version!==undefined && existing.version!==card.version) {
+          previewImageCache.value.delete(card.key);loadingStates.value.delete(card.key)
+          existing.previewImage=null;existing.isLoadingPreview=true
+        }
         const params=card.params_type
         templateDetails.value.set(card.key, { ...existing, name:card.name, animated:!!card.animated, featuredTrial:!!card.featured_trial, inputHint:card.input_hint || '', keywords:card.keywords || [], tags:card.tags || [], heat:card.heat || 0, createdAt:card.created_at || 0, creator:card.creator, counts:card.counts || {}, localCapable:localKeys.has(card.key), ...(params ? {metadataLoaded:true, templateId:card.template_id, version:card.version, attribution:card.attribution || {}, imageCount:`${params.min_images}-${params.max_images}`, textCount:`${params.min_texts}-${params.max_texts}`, defaultTexts:params.default_texts || []} : {}) })
       }
@@ -167,6 +171,7 @@ export function useTemplateData(showStatusMessage) {
   }
 
   const fetchMemePreview = async (key, background = false) => {
+    const token={version:templateDetails.value.get(key)?.version}
     try {
       if (previewImageCache.value.has(key)) {
         const cached = previewImageCache.value.get(key)
@@ -178,9 +183,10 @@ export function useTemplateData(showStatusMessage) {
         return cached
       }
       if (loadingStates.value.get(key)) return null
-      loadingStates.value.set(key, true)
+      loadingStates.value.set(key, token)
       const owned=templateDetails.value.get(key)?.ownPreview
       const previewImage = owned ? await privateImage(owned) : await getTemplatePreviewPath(key, background)
+      if(templateDetails.value.get(key)?.version!==token.version)return null
       previewImageCache.value.set(key, previewImage)
       // Keep path references bounded too; protected visible keys survive eviction.
       if (previewImageCache.value.size > 72) {
@@ -197,7 +203,7 @@ export function useTemplateData(showStatusMessage) {
       console.error(`获取模板 ${key} 预览图片失败:`, error)
       return null
     } finally {
-      loadingStates.value.delete(key)
+      if(loadingStates.value.get(key)===token)loadingStates.value.delete(key)
     }
   }
 

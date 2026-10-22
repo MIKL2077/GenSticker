@@ -10,8 +10,18 @@ def removal_mask(size, layers):
     for layer in layers:
         if layer.type!='face':continue
         x,y,w,h=layer.box
-        if layer.erase_polygon:draw.polygon([(x+px,y+py) for px,py in layer.erase_polygon],fill=255)
+        if layer.mask_asset:
+            from meme_generator.safe_images import open_image
+            from .store import root
+            with open_image(root()/'template_assets'/(layer.mask_asset+'.png')) as source:
+                if source.size!=(w,h):raise FaceInputError('模板头像遮罩尺寸不匹配')
+                local=source.convert('L')
+                if local.getbbox() is None:raise FaceInputError('模板头像遮罩为空')
+                mask.paste(local,(x,y))
+        elif layer.erase_polygon:draw.polygon([(x+px,y+py) for px,py in layer.erase_polygon],fill=255)
         else:draw.ellipse((x,y,x+w-1,y+h-1),fill=255)
+        for polygon in layer.protect_polygons:
+            draw.polygon([(x+px,y+py) for px,py in polygon],fill=0)
     return mask
 
 def prepared_background(reference, layers):
@@ -29,6 +39,7 @@ def composite(canvas, source, layer, *, background_prepared=False):
     # Uploaded photos are not required to contain a detectable frontal face.
     # Transparent input is already processed; preserve its foreground alpha.
     box=image.getchannel('A').getbbox();image=image.crop(box)
+    if layer.rotation:image=image.rotate(layer.rotation,resample=Image.Resampling.BICUBIC,expand=True)
     image=ImageOps.fit(image,(w,h),method=Image.Resampling.LANCZOS) if layer.fit=='cover' else ImageOps.contain(image,(w,h),method=Image.Resampling.LANCZOS)
     if layer.tone=='grayscale':
         alpha=image.getchannel('A');image=ImageOps.autocontrast(image.convert('L'),cutoff=1).convert('RGBA');image.putalpha(alpha)

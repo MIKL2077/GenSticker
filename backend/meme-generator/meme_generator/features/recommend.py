@@ -407,7 +407,6 @@ def result(
             raise HTTPException(410, "结果已过期")
         return FileResponse(
             path,
-            media_type="image/gif" if path.suffix.lower()==".gif" else "image/jpeg",
             headers={"Cache-Control": "private, no-store"},
         )
     finally:

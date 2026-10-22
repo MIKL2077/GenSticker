@@ -63,7 +63,7 @@ def verify_receipt(token, key, identity):
 def public_recipe(row):
     spec = TemplateSpec.model_validate_json(row['spec'])
     metadata = json.loads(row['metadata'])
-    if spec.animation_asset or any(layer.type == 'face' for layer in spec.layers):
+    if spec.frames or spec.animation_asset or any(layer.type == 'face' or layer.original_asset or layer.slot>1 or layer.font_size<10 or layer.line_spacing!=4 or layer.direction!='horizontal' for layer in spec.layers):
         return None
     if spec.width > 768 or spec.height > 768 or len(spec.layers)>12:
         return None
