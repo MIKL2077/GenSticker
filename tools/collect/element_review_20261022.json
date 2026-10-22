@@ -1,0 +1,4215 @@
+{
+  "reviewed_at": "2026-10-22",
+  "method": "Source contact sheets, actual short-text/portrait outputs, complete face and caption motion strips, and final corrected timelines inspected. Fixed-pixel and input audits are separate.",
+  "approved": {
+    "auto_story_7e4ee13006b043132e8094b0": {
+      "index": 0,
+      "spec_sha256": "48fbff94ebc225703e734e48d6fe86d94e3dbe2a1044c262b13bea6947b68f55",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_833921d81e1695da8cec5aa6": {
+      "index": 1,
+      "spec_sha256": "bfba0b61680b8fbcf3fe9d0867f3d059830367b53bbc063bcfe77fb0024c396a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_729933b7e8a850ad87f06d51": {
+      "index": 2,
+      "spec_sha256": "ed030353909fea59176759993b1e6de0c0a0864f1785cb7bdd29aaf89bb5bc27",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_c8289aa5e50ea68cc19b17eb": {
+      "index": 3,
+      "spec_sha256": "b912f01d29233f4a70a96e859846d817a61528123fbab6e343046c4fad4b666e",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_687d432726afa893b40d0fa0": {
+      "index": 4,
+      "spec_sha256": "ba19095a357a998f014f3a6f7597661db7d8647a893e406181472d6eae2eacc4",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_b2a91be6315dd6b262bbeded": {
+      "index": 5,
+      "spec_sha256": "23c6482885bf239485a9b613fb95b70cd501aa5e8e414cc89b6cac881c44892c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_8060429b61bea0ad088f8d42": {
+      "index": 6,
+      "spec_sha256": "b414e367d9d01b6d4b121d27158e5ce3fc96dbbdbf3dfbb4f5dde2647a0f8f03",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_d86c9c8b880f3e75a25d2b16": {
+      "index": 7,
+      "spec_sha256": "408c0a4b7adbb473199fc78b16069f68c05bf62f529a947822cf30d654028d4f",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_2cc5cae7cfcea757ea0d275c": {
+      "index": 8,
+      "spec_sha256": "8877289b779a1b736037bcc1b0e22371679074c045b095832690501359168873",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_a0b7dd6ab504eb4490729cf3": {
+      "index": 9,
+      "spec_sha256": "2ebe29bd3b82bcbde499266da2a392cd5e55a852175a6d13fe16ae8f458b3ad8",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_e2ea7227bc08283a8646b47e": {
+      "index": 10,
+      "spec_sha256": "aea3536301921064260730bb04399ebfa96d3995eda4fcee87bb923f8f6720bb",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_9f488abd6478240e3776b5c8": {
+      "index": 11,
+      "spec_sha256": "3880893e41346ec02967f8b7a1ecaad3285c83f1de22f2478d104ed4028b1e92",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_26c10c3c412206ad3c72bc9c": {
+      "index": 12,
+      "spec_sha256": "3039777554c5589289164770169fc639e49dc9fa243fbb28aab4b542de4e5ce9",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_a1e45c3c278b64b958f3acc9": {
+      "index": 13,
+      "spec_sha256": "be04b554d87d72c54968d8197ee30bd7275fa7c7560bf7b83da7722a17de60b5",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_56e50b1be0e4caa12a51c06f": {
+      "index": 14,
+      "spec_sha256": "532a4b57dca14ef6100753df423ded959d56c36a7022fd1b408029c3948e0b5c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_152fd0a5bdcbe016d0a94b31": {
+      "index": 15,
+      "spec_sha256": "d13f7be504356c045678e64cded039673a5c96a9e013ba4dfb94bf26c1e35342",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_f3ab02fe93cce98173d652e1": {
+      "index": 16,
+      "spec_sha256": "46a5cffe74383d97dc19ba5bf04915e911dfb9cd5a9aa2277117926dec6aec66",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_30d8b52d719f8646b6d89263": {
+      "index": 17,
+      "spec_sha256": "628bf26a8dc34b980741cb3256f5e82465859a85d5299a888c74579ed678db18",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_6755b3f416fa7da093fcbc90": {
+      "index": 18,
+      "spec_sha256": "ba86113f6a57ba7cbd13fc92fe3fc64582a989edea85823fccf3977816188780",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_63be2918b895a84679f344d2": {
+      "index": 19,
+      "spec_sha256": "4754c91005421eef026bf21eb6854016f36921d299089df8051a8bb6133afc6a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_a13f61640065a54047c4b9bf": {
+      "index": 21,
+      "spec_sha256": "e11e8b62a49431b79e43a9e6aa9b5ad93f0aace920549eb324304d3e418f3c25",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_15cb98dc8eddd42375146220": {
+      "index": 22,
+      "spec_sha256": "e30dad2b872f92c722e0e8eb3acb0b400e0acf91fb40c2e6728ed5004b30496a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_db0481462716200895c6b00e": {
+      "index": 23,
+      "spec_sha256": "8fad1ba4bfb66a5e8c8ce2440bfd384c2f47d2167ddd2b76ab6df5ee6a545f2a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_386bbc396a3407767de0ee11": {
+      "index": 24,
+      "spec_sha256": "4dbdfa7c5db9b7b2bedde4287196d7f04959ea8e13f8c270d6312dee03ec5a5a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_c944321e2a86089d6b6b7d73": {
+      "index": 25,
+      "spec_sha256": "6f17f3002f4d71369cb86d83423d34e2cf0238a4fa2b18e0c3f7394e2b0dc847",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_4a631e05702b0ab21bf5fdae": {
+      "index": 26,
+      "spec_sha256": "20b371dd7170e40340c66ac9404155947dfa2dbaace9278a1c1de0727bd88c6c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_d7ecd73c2a88e5645fc782cc": {
+      "index": 27,
+      "spec_sha256": "08363419589d2272f4f8f870c3aeaec2f13cd46e654514c2abc50298a655a60b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_330c57c101ad4bc6195c1487": {
+      "index": 28,
+      "spec_sha256": "99c2d85254b35b4c37a727740b578ed0add719b329145225e99782d3837dbbc6",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_9c4f2542dedcf90e530892ab": {
+      "index": 29,
+      "spec_sha256": "cd02e51d7c6835cf0f81dbade1a8255ffdf9d7b34c2c422198967a6f773d56b5",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_59c69ac053b831f415a1e634": {
+      "index": 30,
+      "spec_sha256": "226cabd9d8a16b63884c42e160646109225352d935c539beffe4e0b2d837c2e6",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_82c0cdea3eb420c1d4620047": {
+      "index": 32,
+      "spec_sha256": "3fac0376a39ca24d87028fa28503d9b9cc067808fb2a7915f9f9080aa2636956",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_a8941810ae604807a9e66d43": {
+      "index": 33,
+      "spec_sha256": "0b73f80aa226fad08e4ca61fc052f2cdf3e330346cbe80ac5a3ac7da3e9e6280",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_67091f5263d3a8507e1f7f10": {
+      "index": 34,
+      "spec_sha256": "889c90450711c45e5bdc7865859a9ccab5a73434ac8fa0c4df2f03c168a66005",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_33dea507360ed3aa4c0e40bd": {
+      "index": 35,
+      "spec_sha256": "7e7e0ff899729594a53042c84186802052f4e825496bda75620c75f90863b742",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_ec606bb70f0c8a0ac71d142d": {
+      "index": 36,
+      "spec_sha256": "7d98bcda2e3d3bd2429560dfcf680c37bc2f0d730393b0879d2bccf73aed3150",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_f2f06ea90f9a73d5bcc5d7b0": {
+      "index": 37,
+      "spec_sha256": "04d2e251f2fbacf2555f97e3aff646b23a5197576b6547fb88f44fce4a8e7868",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_f2627b3854a760a0bb14e660": {
+      "index": 38,
+      "spec_sha256": "87b73e78b5331c83d6f08a20baa065a320b3916d4d108f267d64523c8f1b85d1",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_f9e00be1f36ec0d635d16baa": {
+      "index": 39,
+      "spec_sha256": "dea3190371c9dd6500c8fe9d09085e4ce366075b2732b6c02da60ea877c7d042",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_1bd5ff7095171644bdd58aed": {
+      "index": 40,
+      "spec_sha256": "353c76188a9e50f02a35c63006f82128e8b2291aa80fb2c2d70d902fe9f4b383",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_055b6b17484ea8aa59486c88": {
+      "index": 41,
+      "spec_sha256": "426ac4e65479d03e451be83d682ac1ee677c7036575df57f692eb4e92df159c8",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_2bd2cd5358c72fa4b585271b": {
+      "index": 42,
+      "spec_sha256": "a29bd23211b2a847710e76f2abbae96fb337491c4eacd6d339f5bd47b3c0b13a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_099c4550525d7dfdfd91530b": {
+      "index": 43,
+      "spec_sha256": "3abd329d4906266ae76920676405c88972c91df007e9ab5492d4c4a003b87b6e",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_017aff25460a9abf80b2a1bc": {
+      "index": 44,
+      "spec_sha256": "45407f8f53ef7ff4112b237d6838220fb27c9851aed99bac7ef9d382d4987390",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_75121260b728c0aeb4e787e9": {
+      "index": 45,
+      "spec_sha256": "aaec621c338bac83807069bdac7d2068e3709ce780da7e753a78bc525ab45242",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_556d5467766ef35469d9e049": {
+      "index": 46,
+      "spec_sha256": "0b7901813d40e0a734ba56a60b248ccadc0c27cb96286083f9d8028e93a6600f",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_0c144b410addf3637a2fd287": {
+      "index": 47,
+      "spec_sha256": "ef544879ecb7c38311d6d94ce8c951fa2f9f80caebf321eb142716ecdf3c7406",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_69a5693cbea8924f5c23c3e6": {
+      "index": 48,
+      "spec_sha256": "1123616543d7ee4617e5958bfc6b55c9568c6a3f76a1115015aede6da3899ab2",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_35e282ed81f55c23a4296ece": {
+      "index": 50,
+      "spec_sha256": "b138e869cd53d9cc3d3b5800fb547df3d6794b7eab910f76d9e9f28af25224fb",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_3bbba26f086ab206bf64f6d6": {
+      "index": 51,
+      "spec_sha256": "cf62d2e5fcd9bbd315766afa33052a13ed1c518f1774ed050fa60a789c9750f1",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_787a24f5e858a76cffae2f8c": {
+      "index": 52,
+      "spec_sha256": "d5ee8059211abe19fe94681cd6aa1de84e640a68853717937d776ec124c3cec4",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_debfc3cee2893f26751c92d0": {
+      "index": 53,
+      "spec_sha256": "3c1f885ed1781d71c1c65af0e26dc25c38272a2086b41f0a49b2800e03d76764",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_1be2a8c9813db21fe8a8f397": {
+      "index": 54,
+      "spec_sha256": "e036dacc7b6c6995731c6b2bba798a0d982e9074d497479d157f2815ab43a770",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_c41355f05dbd6e6bf5daebc0": {
+      "index": 55,
+      "spec_sha256": "7651e3fcc7cf573bb99b70ba6f1d260154cef4af5f8ba03acde8527950e12e2d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_ff09742aefc1000719b0d511": {
+      "index": 56,
+      "spec_sha256": "08958c664e5f22c36df66c5394c49abed101bf42e079d40451cd87531558efe9",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_6cbe42c0257c45ec241efd7c": {
+      "index": 57,
+      "spec_sha256": "5b901d241345e319b33510b6e31c5038b097b84628971db154a16aefc48c49c8",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_80558c99d8a97ee0c3718ceb": {
+      "index": 58,
+      "spec_sha256": "96f951f27362f5ccb3b8c11702632888bed3fb32d28096dd01e7e342b0d31e46",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_767179bd6f202732362e36ed": {
+      "index": 59,
+      "spec_sha256": "286f14054043808db43d81ee9a7de8138bd15e91972db6d0f7e5942cbb267699",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_e559a450daf7f309bf6a0cbf": {
+      "index": 60,
+      "spec_sha256": "5287322c9b6b2cffba4ed2f87e2ffe34080f383dc9051ca93e92e77b09ec0125",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_268216873e3c15f7b298130f": {
+      "index": 61,
+      "spec_sha256": "d7b4bb0a6d629bb4f37ddce82fd6bba5030a4856846991573fd0143b00e30673",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_55c36ddd8829b32220726672": {
+      "index": 62,
+      "spec_sha256": "ae6dad611be663f08bf37c1109f4d36ab375b4de26ee63dab27cb6667ad89edd",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_006cdedd3cfb9f22d6a1af6e": {
+      "index": 63,
+      "spec_sha256": "75a2f59c67261b5496bad246b15891296d94917017b29268f369b132384291fc",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_797786b2bc38e76d58a4055b": {
+      "index": 64,
+      "spec_sha256": "12f9c89a38d64341a5d1c21b2a79e891ed5cbeba0c5e12adb4c015e2dcaff349",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_cb8281ab0f54976b15fd8d1d": {
+      "index": 66,
+      "spec_sha256": "2b461ed2065cda34c2da7f008540daa0eeb3ed5bbe5576b7bad99c2549e10296",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_77d75545bb15ef6369b1f99f": {
+      "index": 67,
+      "spec_sha256": "0c527e5c60c240bc2c3e8f43a85b498bef07c4db98dd22b13e2b2ae34493412d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_4ed3e24ab9c674a9a0e6f649": {
+      "index": 69,
+      "spec_sha256": "e10c62c2a988f2765afe5ad384b77935e8870514170f84885bb912378d463124",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_69e2aeb4807fd06dfa91e7c0": {
+      "index": 70,
+      "spec_sha256": "bce9142d9881211b48a34b2c9d9f31d22a1211311051ee110b9bb20dd2bcec89",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_a472244365d9d5fd6ea3621e": {
+      "index": 72,
+      "spec_sha256": "19eb578268ad6ae4d770525f5281bb98e5cc2d7795cfb91b2338b456486d997c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_0653f8403066237540c69abb": {
+      "index": 73,
+      "spec_sha256": "742a7ee30e8a7abba1a556bd67776dc3e979f998e3a7edc65c1ba831a78c46a3",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_d04e6ec9451b07eb2b24d920": {
+      "index": 74,
+      "spec_sha256": "9ef452e430ee6cc99ed32e93fd838f7138e99504613b0290f22b8c528a95f1f3",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_e183c76b4ba1817a22e6e572": {
+      "index": 75,
+      "spec_sha256": "b4478a621689d79180f69eed3f9e524c196ad1dd48b29668b75239feb5e72a2f",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_a9ce520d2f103602def18dfd": {
+      "index": 76,
+      "spec_sha256": "332ab290063b86d923eb2801fecbf994877ee12d5ea38b445b5321d4fb404e2a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_cafe3b9cd00d9478d77b58b6": {
+      "index": 77,
+      "spec_sha256": "09f7201cdc88913725833c8f774944a82468d0b9a8c769fb58519a7ff92adc44",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_953a9d204656d2ef4d3b7f12": {
+      "index": 78,
+      "spec_sha256": "1ae82760981a4d8591317be312d5c7d0155e41eda23c20de9cde8eba1586eeb1",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_9967284a70219e69fa30828d": {
+      "index": 79,
+      "spec_sha256": "58d564fb3ba46e9c75a83dc6b96f79e5cc5adf1f69bc420ee1abbf2ad572ad23",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_aa17ef6d518b1f6c6c925026": {
+      "index": 80,
+      "spec_sha256": "fc462e9e8251bb72f062f3722e0e5339e97329b6163e0522eed5431f573e6c4b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_86dce9321d44795d030ed89d": {
+      "index": 81,
+      "spec_sha256": "f561a6823d2f6904f228cb3aee8d955fa18f1112ebe2ee7197869a96028b8c7c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_95f4c2b9689244945dc4b9f2": {
+      "index": 82,
+      "spec_sha256": "08a78796ca7e5aeea1e840d7af7890e566754c3dda0fdadc655a9e353007b4fd",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_30c804cb091cf9f0f0df9f2d": {
+      "index": 83,
+      "spec_sha256": "a64b93856501f5a4f22b5e5c4f9d5aa2c2f4d6249ed7092643779447b70fcd4d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_c212cbce70cdc1de8ead7abd": {
+      "index": 84,
+      "spec_sha256": "3288058e2c8b2b9aa5728f6f9b85384666770fb95a1dacfdff76e3ced27e9cc6",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_b10551a27a59e007718459d7": {
+      "index": 85,
+      "spec_sha256": "b08443cb0e77106a9602e52a85d685c08c045dee8b74a0d5867dde2db279be28",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_f6cbbf312f8eb2f94e25413a": {
+      "index": 86,
+      "spec_sha256": "1109942fc645d7b63895cc5c7d3994df5745e360e06db929401ed4e4714bba03",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_10ad556735d9ff96e3f7be9a": {
+      "index": 87,
+      "spec_sha256": "4d7b5cd63c456641fbab2af540214cac5c59ad419ed84a890d8a69f58c89bf1e",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_4e83e6d9a3114e7e5f0335cc": {
+      "index": 89,
+      "spec_sha256": "d98a7cd7e926e9ac46e7f58d8ee39ad5f1dbbc97b28aa26f6d1c9f3007bfd8ba",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_560aa0156afa4a8b95116815": {
+      "index": 90,
+      "spec_sha256": "d5e5c09639556059702a319a0568ed75e3ba2dfa962e5d349f9a53919f69ae2c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_ce3ce640ecc37e988ca142d9": {
+      "index": 92,
+      "spec_sha256": "666d42bd771b4c363644cdd5b1005f878c23b0a5530395c4cb0be69809534e1d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_4660d78af4cbc345e76fd5ba": {
+      "index": 93,
+      "spec_sha256": "fb242cb91bc4a71cf65d7537bdb0761b12877204aab25258dd6c8d44a1649ba0",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_518c10b2ce98960acf27c0dc": {
+      "index": 94,
+      "spec_sha256": "9be7d534cc52cf1e45ca034e851ccba186d5774aa04996bf5a92cc5fbd970d05",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_0d7f7a08d079acdfe259da2f": {
+      "index": 96,
+      "spec_sha256": "bfe6151156adb59daae0f8cc363fc70b196af546e3a54b69635fa90409689f0c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_2b25611218132454f173b15b": {
+      "index": 97,
+      "spec_sha256": "f10cf14c565841328e37556ded6c3ca0fcbe0bfa176668438d16b907cd60da6f",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_477e3e96a7eb470fdcd9cc52": {
+      "index": 98,
+      "spec_sha256": "04658f96a5cdbc1779f09d3e3140c77428c0c602d07a170c8e92983e81aa8297",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_e46fb30dd283a533d62ff4f5": {
+      "index": 99,
+      "spec_sha256": "966be0e73cfad4844009cc85e445c2d1ae6cfd172115f287fd1cf9add7e521dc",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_f1bab60ba21b968c7d34e533": {
+      "index": 101,
+      "spec_sha256": "ee600fb831086a3b992917ab775144981752e5d9366d60ada1c2d74169d34c63",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_d734157008313c89acce28ac": {
+      "index": 102,
+      "spec_sha256": "00a87fedff7e69b6d611111e86a969648168573c70f18c1c42cc3d159b5c3842",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_43663f9d989b98f0fe982026": {
+      "index": 103,
+      "spec_sha256": "eb4908a5093c73f4eca0bbf00a7f3ee6469b24c45086a2886ffaccb600a3d891",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_76019004c9475ae8c17ae21b": {
+      "index": 104,
+      "spec_sha256": "d106b8c76a0ee35cb4a5eafea16989b14a7747e1cd2243936cb91e9b285757ec",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_63e2b43d145d9be296659ad7": {
+      "index": 105,
+      "spec_sha256": "265b2cb3d1a24c4c67706595208913ed87ab907329a57abacf11c6d02a09fc73",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_2dac18daf84983f14545898e": {
+      "index": 106,
+      "spec_sha256": "45ae19f635abfed8b90b40f6ab989ccd17603c009a6cfad7eefda732a0cc2de1",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_c4342fe71a7b5e82588bd1e6": {
+      "index": 107,
+      "spec_sha256": "f7537a4096560814125bd5c3711349bc50947cd421eebc9c33802b42878bf989",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_e0a91f20d30669baa1eed3cf": {
+      "index": 108,
+      "spec_sha256": "7e9e5ecfb073c2b49c3d706b4d5e73dc7ff81d4ce2479009e573a24b4317d545",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_d28a29440519a8bff3490f4b": {
+      "index": 109,
+      "spec_sha256": "7e60a77f7b3aa6441a24a3d83b9a2e81e2e320d29957ffab5a224b97b90a444f",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_23ab34a19c739aead68e09a7": {
+      "index": 110,
+      "spec_sha256": "0e2a475a8cd8b09cae346eb6969b8227d0fe50f8590847fefbf284751a7efb14",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_7293be03adeeab2556ee1b3a": {
+      "index": 111,
+      "spec_sha256": "f847a549bba9ded2693ca0218ece349186b2d48d7722f466571a333b4e12854f",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_5914a75432db767f4ab74825": {
+      "index": 112,
+      "spec_sha256": "b28f66de9bec8d14a1e2413aaa63510ae89b9029adac4c4de3c5221cfeea932c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_ff15c664b2f475783fb0352a": {
+      "index": 114,
+      "spec_sha256": "1c43894876a7e3dda0e19cfabd099b397da803f8520e8ce6fbbb562268a7a7b3",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_9179221f22925a4b2808e02d": {
+      "index": 115,
+      "spec_sha256": "71b43f74bec10f67f6b4d2e17c7cd8ee69d02b3c706c7492edfd0b0b2e727134",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_be44219b15254c6f382ad62b": {
+      "index": 116,
+      "spec_sha256": "137c09644b6a829b3ea3c4208171e35622abdd16daeca334b68c680fad509e8f",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_ec7eeffa7cef31bdd1226627": {
+      "index": 117,
+      "spec_sha256": "12ff347b042030d6b92e4100e6958ee8076884bfc3a92b8872fd728e9c26cd21",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_7c3f2b8d36ef6510dbf6b239": {
+      "index": 119,
+      "spec_sha256": "56a99d417f6e74ba4e1d28b5c995082c8ff501f758e9e2297a3265af61a858ef",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_7808d6e64c84395b35e977b4": {
+      "index": 120,
+      "spec_sha256": "ec0b64370474662df2dd80238afc7e6b0e94c2ac9fe36c8c9ca050a0962c3cfc",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_0629220fd26a0a7d787d3d65": {
+      "index": 121,
+      "spec_sha256": "913eccb7cc623d58c561bce18610c9b539e8fadf5835f607153510311906d6d8",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_46f0af63158d1815c6b3c741": {
+      "index": 122,
+      "spec_sha256": "9935c0b5af868d79225be5a8d856684fd9d27603c5d19adbca1112f472a2f2a1",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_3fd5fd6e9bc7ce342605f59a": {
+      "index": 123,
+      "spec_sha256": "452dd5e0e3fe2b07456eba45703dffab36fb53c451572f30bd78206698f29c7b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_2ab95db21eea8b66e6407abe": {
+      "index": 124,
+      "spec_sha256": "33169c18e707b32706341c7301980868c356404dc8949db5999faadd6ebd40e9",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_f590e40e365daf253dbb9034": {
+      "index": 126,
+      "spec_sha256": "6436647f618cae2036d73d891fbec0403fca1bd66b99785e4963ded4dac8dabe",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_11d73900b0230bff392621b7": {
+      "index": 127,
+      "spec_sha256": "d2d4090a07dfa19bf66b74b4624fd76efdaefca1f6caff5845c88553f7fcca2b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_34632141f7f99ad1e842d188": {
+      "index": 128,
+      "spec_sha256": "7968cc49c02c4f3675f27d194213ac50d4e4ed3120c1a26601e47a6082bd2604",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_d6212b11f60542e22b9e72d1": {
+      "index": 129,
+      "spec_sha256": "b1b4b782e0a49e1473d559b91e53284cc741033f1f8dd180ec32ccdbcc2503a9",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_05ce2e4ea2bfbf0e1fd8e253": {
+      "index": 130,
+      "spec_sha256": "83ce2ace56eaac2c91ef37a2446c067fb56aaf753f6e7217a86bbdfb083693bf",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_685465938f09d51e5afcb4a7": {
+      "index": 132,
+      "spec_sha256": "7bd4b363072d2520c32d9e87278a881e71ff044136ba4689daa3cf1eb286f874",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_3c68b598031040f9a78d1320": {
+      "index": 133,
+      "spec_sha256": "c7b456d05ba4efa1cbfb6969a068971dcff9921602aa2744c69ed10d1caf0a07",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_18ac0d198a3938737523c9c7": {
+      "index": 134,
+      "spec_sha256": "7afeac83f794aecee978eea62f0dc9a8fbef5d1fbc09f5a1490af588753cca4d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_175be2c38814a17b5116dfb1": {
+      "index": 135,
+      "spec_sha256": "7bdb4f9125fbb0934996ae9051fe4f3b52a6c6e0f60e486ab4d44a8fabfbdc39",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_a39faf029e2cbdd8df69b70f": {
+      "index": 136,
+      "spec_sha256": "7f18e19fa988272eeccd3c578c15f34e9fceadb34ee3309b0b0c7f625705c58a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_b0ac06892117bf54020e9b68": {
+      "index": 138,
+      "spec_sha256": "f4f3b6dc3330b9ea24446693ed31b2f025f722921efbb606dc8f2a5bb0a01860",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_698c3d93ef451911ced2da8d": {
+      "index": 139,
+      "spec_sha256": "de41de7cd7ef5c966934d701a9e7054d6ea824d657316fb039c3d3863595edae",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_5ea563a158e44cc505038038": {
+      "index": 140,
+      "spec_sha256": "37f82cec13ae43e65094e7b035b4b8b80cf23cdb48e460ad923d69281ac3533c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_d74627d36a3d66c71f77f420": {
+      "index": 141,
+      "spec_sha256": "e3c38eb6705843bd4b542b9e5496442292d6d27ff9f954eb24a81ed0e096c7b6",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_5c263ea87a500125746c5fe6": {
+      "index": 142,
+      "spec_sha256": "dce9ff65c10b1d9f213579b8d73bac36a5c0c8c9648db62f9cc92bc67617460d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_d41d8b80ec034ff24a64f7c4": {
+      "index": 143,
+      "spec_sha256": "2582d3535d3ea46044e3f94a41621c79c36278fe21b62ea8a0a8ee4bf1c27950",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_d826f805409450ce9330c45d": {
+      "index": 144,
+      "spec_sha256": "be698f2ac8efcc01c571bf70240913f6164fa7a9b8a0a717bdde3ad83c36de56",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_bd5fd8efb00369383f58b396": {
+      "index": 145,
+      "spec_sha256": "5a354626567dd2ab0913f8a1244ee010f7962caaf30e29a2ec485d9ad22b0b19",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_eafeb0a2427bea7c94cb4fa2": {
+      "index": 146,
+      "spec_sha256": "2ec9c1f5d2dcd6bb5592cc6179611cc0e88bb41aef0fa4237e69ae5a32dafde9",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_016ed272074c5ee8a675c35b": {
+      "index": 147,
+      "spec_sha256": "3365878e8aec9eaf7a65ff23addaed07f9509039ba984fb200c426331cda3ac9",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_f5e41ad60b280b8fb1fc9564": {
+      "index": 149,
+      "spec_sha256": "ee4b0b710dbf3146cc863f45bcc4091cac782b72febeddc8551862d1e62c16e9",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_b395b20195cfe31b13cb5216": {
+      "index": 150,
+      "spec_sha256": "276af54aab1c533d18b75618290996df112a0d10e0295cad6f852e883e97766d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_fb54de4e481080645a1eb8ec": {
+      "index": 151,
+      "spec_sha256": "91bf5e057ff04db622de287cff0d011b320227cf794bd84cfac4f95454da182c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_caaebc336a242a9471634c9a": {
+      "index": 152,
+      "spec_sha256": "1960ff5f76f95502b72da61b3397e0be562130daa5ed86ada9cf8fe87f34e856",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_36aaa1dbc8d2fdf29a8bc190": {
+      "index": 153,
+      "spec_sha256": "96feb012240451e985ab46aba83f75c6f090b29f6b5d75fc0e756059ace7c92b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_b81d5dd7fe701392c39c9a13": {
+      "index": 154,
+      "spec_sha256": "a650d9e763918a3fcaddfc4fcf9d2d4266c505072aefe2139a8821af63f62689",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_8c8b04033230a7991957de5a": {
+      "index": 155,
+      "spec_sha256": "d6a36e64f6c6ee6c666294b98ed275e9447b7041da03e571f5dd2b5e37e660a8",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_f3214a93a915c5bf6113ebf8": {
+      "index": 157,
+      "spec_sha256": "c633f75b6e8706843e9b4185a5b96295b47603907414f6322ee3a73b6b412fdb",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_8d2081e5d6f15c62c180c78f": {
+      "index": 158,
+      "spec_sha256": "4ddbbd2fd05a1570fc37fab21d9e60acb5dc9eeca8a438b5fa9f776efa8daaed",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_c67116d47734a6eb4ef48c4f": {
+      "index": 159,
+      "spec_sha256": "dfe190500680dccb467d8fe4ce672220c0d68090d946b3f45fee4c4ac6b908da",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_770e4959c467b2f75c7adb4b": {
+      "index": 160,
+      "spec_sha256": "1d78d96afa1b4aa295ab44b923f1ffbe88d9048e92c87dee1cd1307a27cafa62",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_c54e4747c979b39c0baef488": {
+      "index": 161,
+      "spec_sha256": "533e204846dda84e0361e6c8d3eebb402b44dd46ff316e994e5310c3228adebc",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_598c17753cd4c04fe42651fd": {
+      "index": 162,
+      "spec_sha256": "90a69c12464d5529f053eda175b98ffd3da510a1e710ae6323be5c4cd060e7d1",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_4648c7bb0a09a695db8b0a25": {
+      "index": 163,
+      "spec_sha256": "ab6a6d73367f421981e49b919e9f712e9bc86c54fdade3ec9e296ac14742120d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_7fdd1408aef70bc903a82aad": {
+      "index": 164,
+      "spec_sha256": "a3091f6a39a09cae26c2e2ce944ff38f82f81370cfc60bf1234ae16901355b0f",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_67a31df17ac2c0ec2d9da917": {
+      "index": 166,
+      "spec_sha256": "da7d0125f615aa8107bc8261425e3bc57fcd748b1e98d7046f98b46931c81a14",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_758fae0e7d8c8d474fff128d": {
+      "index": 167,
+      "spec_sha256": "73100e463d9ad40436078b377d95e8bd2f062413135f3f2aed2e8be7bb21d2c9",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_18ef6bfd2dd2e070410a03e3": {
+      "index": 168,
+      "spec_sha256": "b180ff26bceac16f00f750be5a96b66dbdb18971d59e9789b17260e31b198905",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_22a6b3805881fb5a35a335c0": {
+      "index": 169,
+      "spec_sha256": "6bfe3ab7ec1236bcc4650a2d26837720f8767eeb59f7dab16891c9015af5bb51",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_ed909a1d4667be204c9ab884": {
+      "index": 170,
+      "spec_sha256": "0eb1599589c764a96d5497b2d41fa0621f08bd33130c92c4365372d8c587bec5",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_4ac56144307a053dfaad60b5": {
+      "index": 171,
+      "spec_sha256": "cb9eaf12533e466f7dd643807a9c4a4e720a5e31945214bcebd0ef359d83cdf8",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_028e26b18d1b31309ba69116": {
+      "index": 172,
+      "spec_sha256": "2f6ce2520e52904a8d14c26b9f0930b2060b160f49b4c8a3b80baffde425ea36",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_d5294ad0a3e8c4d338f78c79": {
+      "index": 173,
+      "spec_sha256": "be1ad4176acde95601441a90f7103f543ec6066b263b1c7e14bbe61094e7b889",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_254c22d18510f38392ca42a9": {
+      "index": 176,
+      "spec_sha256": "a7b9ec00660705193708231516679d98d62ce7e287948b8c58d8de52fd7a1e6b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_e19dff14d29013835c5d2e84": {
+      "index": 177,
+      "spec_sha256": "1b9cd3f9c9d024de1ced11807eb0945c93fdccde00fe245a6aed83236d376ff0",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_6b4abde6d3f56c797df6bdc5": {
+      "index": 178,
+      "spec_sha256": "7d3d6685a3f753e05bd173bfde0bc30ec4d97300c7393e6a213770c90f572f9b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_5b3c4913d956d59fadddc7b4": {
+      "index": 179,
+      "spec_sha256": "0108ddebeda064604c0165a87985bb0a6cfd2781e4b957692c224db5b40a2f49",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_4e4bd39cde8bc818a9194927": {
+      "index": 180,
+      "spec_sha256": "af6b032fec67bf77a7995955e034412650321dc177fe03110e613ae3434d8ef1",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_0c68f6f6dae13bdbf9b0af9e": {
+      "index": 181,
+      "spec_sha256": "d410ab9c2343feb1e65feb4ddda674276a6970531e68a885b56cb0f0fa5781e5",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_258d3dab0c2f06f25602f1f5": {
+      "index": 182,
+      "spec_sha256": "118c4d3a555caeb7dcd929f6669a39e36979db9635beed1dca28dd89b8bc0e10",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_fdd253f51b9a889ce8d66fc2": {
+      "index": 183,
+      "spec_sha256": "3503811d8e316d561578cbe43bbac37f537e2ed3943ef66b8b9e3b4f11a54efe",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_2cb11f69197b17ea36fe74b0": {
+      "index": 184,
+      "spec_sha256": "7b179e40b365bf9f09b004b1c675717dcdab34dc48f94bd437f883db8eeaafac",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_a2f975336dc57c315ead640f": {
+      "index": 185,
+      "spec_sha256": "71a766e83adcca6ea69a63e763660179690464c8d47c2e2435b889fcd34243ec",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_7f99e396fe1344604dc1d332": {
+      "index": 186,
+      "spec_sha256": "079c07293f148e6c3ac77d04b394b3ccc4272bd86294ea63936e66e22234ea5d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_6c924331723f24026b535db0": {
+      "index": 187,
+      "spec_sha256": "6f57886d0f9e4f7051929cb174d02ea49f01ed678b05203e9912c25efb8938e1",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_a9cf95393b8d87b18edc4ed3": {
+      "index": 188,
+      "spec_sha256": "8aad0d868cca8c45fb01e9465c6d0f24146bb85141d26fdd37ce826d1d5d47e5",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_0dd9d695a6cd0234df990009": {
+      "index": 191,
+      "spec_sha256": "f991f9b038287184b6d4202e07d2a61e23e5ec5f2ee6c62252ac8968e9ebf90b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_586ed778e5b21c29b557c5da": {
+      "index": 192,
+      "spec_sha256": "6f8f68faadbfb0906e5634ca005ace82ae0d73c8dfb0ba10654657c8a462e3c4",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_40b48d14d978cec5094682cc": {
+      "index": 193,
+      "spec_sha256": "b1843e15107c240ad974527cd3debef7864c4f1945d114be6131d6b5c224d0d4",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_570a789e889d9bbba26cfdde": {
+      "index": 195,
+      "spec_sha256": "2f19aff7141c47c81e3507ae25e29887041c14d27199a5607bf44dfeee3a3484",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_39204a5853d3578cfbd506b8": {
+      "index": 196,
+      "spec_sha256": "9978d957804e0c552c8f5fc4231780d33f1a3455d80d47ff92b528bdf49cda82",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_61b970d661bb4d7876aba308": {
+      "index": 197,
+      "spec_sha256": "5e2c1d06d196c3f157c121005afd489ba7c60ed9c71353ba936acb534b27a56e",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_c900a27f6ab3bdd502f49758": {
+      "index": 199,
+      "spec_sha256": "890135a48e6322e1c2fa45484e2c0bdb2fe7fa5488ad35f6f55640e32097d136",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_a3f5e9a3cb9a16e1c8b5e054": {
+      "index": 200,
+      "spec_sha256": "1751f057458fd7299edb8185a4afb13883267fc445e6fc6c2327a080b8669c94",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_0e2075e560e9600dcca925c2": {
+      "index": 201,
+      "spec_sha256": "748a3c0dccb6b3166c08eac3de95daf49cbfc9c5a9508edadfd4b6e5a6bffe3c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_508d28f587a6a71f010d150e": {
+      "index": 202,
+      "spec_sha256": "1adcd4e47d037c4c532a1d3899f2f21adfa9a8cd2641d765c2319e1d14054b05",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_601743f318e9be7b9f69ba1a": {
+      "index": 203,
+      "spec_sha256": "8c2e9eb1788598bf4a34177cd0bdf7cd949a66c7237c2a784b04ce86bf1251c4",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_5985d4ed6a781e7e036a503c": {
+      "index": 204,
+      "spec_sha256": "8376df19b8db6b1d83dc1d9567c10ecbfed32d49736968a27eb41d27e10a6bc3",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_7ea604d12127ee616b208dac": {
+      "index": 205,
+      "spec_sha256": "de57a187ec071cf719a3ed50be648e9af26968353ed888e0df16cbba55d0fb1b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_70ab013a67d17158282b4a88": {
+      "index": 206,
+      "spec_sha256": "1441fc746d495f106965897f71dceb734cef5adbc73573c5b86c0c92c1f7a10c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_ab518a92e38b514de1938297": {
+      "index": 207,
+      "spec_sha256": "2b8521dcc70b48bbd91ab0e3b5b71dc6090e62396398cdb40c98a7f04ec9ebd7",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_c1e238d721c4408134806eab": {
+      "index": 208,
+      "spec_sha256": "69a4c387a0b5b9cb741ed229ac24ea04861e65c100921a299a17378c68fa577a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_189157dc5aafd4f51441ec81": {
+      "index": 209,
+      "spec_sha256": "2d6e728595898c6ff71311a348d0482b1e45634ccf238eaa998ef89ca65149a2",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_203ad53781ef270c8b41e68a": {
+      "index": 211,
+      "spec_sha256": "88795690586863f8e3768cca4e92108709a9da13085d532430ce650a955bf66e",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_b1b1fe199ed8f771ae66d507": {
+      "index": 212,
+      "spec_sha256": "d1f96e8ac39e3d77866f3840d52d3d553ac140e2ce95879966b3180455138fce",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_1c46deac79cfbab4e5abbce5": {
+      "index": 213,
+      "spec_sha256": "6e31c8e22a0ae069cce852c1aeae41a492efc2700731a09bb2bc13a58f3a7e27",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_5843927caac94d51fa5f420b": {
+      "index": 214,
+      "spec_sha256": "68f079ddc3c57ba427efe98c17c392455fef9ca35ee3ac8966e9ad5df6f2ca3c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_d5d3057db3299fe82a59e43d": {
+      "index": 217,
+      "spec_sha256": "0191f2f5e179f0b8ff59f9af8a44e6ce6baeb0393223ed4dae68e66764bde0f9",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_b93490c179db01e736f90945": {
+      "index": 218,
+      "spec_sha256": "976d30be5ee52711882473667f7b72b9da78d3afe7660bebc2c9b70371bbb8ca",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_9d441caa68a220e2417e9c6d": {
+      "index": 219,
+      "spec_sha256": "1d588344cbf728cc6ae8c3d9fff9ce1a9f1a2a61812b9a5ea72a2225c6669fa0",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_17614d3aefdd49fe5dbd7c0a": {
+      "index": 220,
+      "spec_sha256": "adfda0c174bab94c86cce58f60c6fd007c24b8746f2d3229b2f2bc750fa13413",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_ed74fb7e4ce1cec8fbda03f4": {
+      "index": 221,
+      "spec_sha256": "959ea5b93a9f260274ac8555019397427cac0dfd9d5a86ee81beaa77cca07fdb",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_3bbf7da0fd5ebe62e43c2d29": {
+      "index": 222,
+      "spec_sha256": "cb6fc3c760d95ea7b0485ce6c94a120e8ec9a7c4dab558522e23f3976b2833ee",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_1d88ec46db277756d8bd398e": {
+      "index": 223,
+      "spec_sha256": "b55080a3ecabba5389d4cf97c99fc27a4a2b1ad6f882ae084f49073d5ae4d766",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_82e2bd8317f3e979b72a6150": {
+      "index": 224,
+      "spec_sha256": "e0fd379715130f9f090f2a6398fe9b3ef76c4d7ebd66987de679c440c2004ac5",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_82cbeb235651659fc8a134fb": {
+      "index": 225,
+      "spec_sha256": "9ba8277e8953b84bfdc7387b7e99611de80cf096e79d0bd985492ee1173cae3a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_ec9676bc332a5e83f54b8130": {
+      "index": 226,
+      "spec_sha256": "7a3e3698a85130d3d83dde552df9d341123dfdb7f5daade88b4f3d60ba0381cd",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_97e4143351a5d9a376de1644": {
+      "index": 227,
+      "spec_sha256": "484d10c3bef5b1060d107f7f7c349a6978fe1730ffe39ae640147876265c0c37",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_36ff464b00bffbdf823133d6": {
+      "index": 228,
+      "spec_sha256": "b65c4bc163cb5d7101bd2393262aa7a821728151f0855380ea6612cf1e29855f",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_1c6fce69d4014f6b33348b33": {
+      "index": 229,
+      "spec_sha256": "c4ddace09b2b75d5369059ba0091add8a6aaa62bc4661227fd3b87cbbd755bd8",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_3b2ef5a0455cd280e77494a0": {
+      "index": 230,
+      "spec_sha256": "1c83a2ab2feb2ad2f19d632c997a8eb7836c990184b81a8645c47662937928de",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_f08656a0a30229b0684a33ce": {
+      "index": 231,
+      "spec_sha256": "c6ccad85692827c125acd2e03ca4c52f8b7dc365bd6b083f04558f2c1730cb51",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_1f9abab4895b1108cdf3a872": {
+      "index": 232,
+      "spec_sha256": "bed60417ab7321adfad17f20b745c3e7cfb0965bb3edb528aee5f66469fae987",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_73f9154d85a886c1304b1a27": {
+      "index": 236,
+      "spec_sha256": "0695114b5143fdf74b6681314ea53a9c6016a124e7ea0c9e7f46a2200777b330",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_d7b108472b8ae11c59110ed4": {
+      "index": 237,
+      "spec_sha256": "774674b8f2e0c262281b9daadf8a146290824d5eda488eaf041a506c72944585",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_3045381d3aa1bf01906e0662": {
+      "index": 238,
+      "spec_sha256": "94dd4391cdf2469467cc0cd1e0857a86316440cb361cafe60694d2ce0fd19a12",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_692a8da1afa73093b8823746": {
+      "index": 239,
+      "spec_sha256": "a3d9c999e40cc1509c1ae709f82c401e47487a871acf6ba46b2b89d627c4d1b0",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_87217677272b66e59ac5d20f": {
+      "index": 240,
+      "spec_sha256": "66d53219f0a39b8de9a5524cd6054aebe34f78ed05f11a33988c461a852a67e2",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_ca37649e0f3d5cadf2a89050": {
+      "index": 241,
+      "spec_sha256": "dffa71f3cd0e2ef82614bac474f6fb5173b872e4ac6f6c6ca2ba982f56392701",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_3b10d099fbb1d9c0db71ce65": {
+      "index": 243,
+      "spec_sha256": "40b8410ca12089ccc13af85f11a82412178371052b276e52e3a339b20110a772",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_6a95a6f2cb576e65be90444e": {
+      "index": 244,
+      "spec_sha256": "9da2d7a9f672092e458fe20623a59b10f4ce737dad6e943f2a2bd76d51e6041c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_8876140022ddcf547f0f9473": {
+      "index": 246,
+      "spec_sha256": "7a2bd154d317baa5d49f9afee686632d104f70e886a5ac62951a5b3fc82a5c4e",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_b665a641c252f2d86e484216": {
+      "index": 247,
+      "spec_sha256": "9cc1a2ae7ec28e23c8d8353034ab1ace14c61c2f6a0f0fbfb95262236f1c7957",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_6c8f716749e269b6d4b4149b": {
+      "index": 248,
+      "spec_sha256": "73a677b8d3ed3ef15bef74e7e4563b4c60935e36736b2a605c10e691b7b0c056",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_b54d647ef73a582b9291150c": {
+      "index": 249,
+      "spec_sha256": "b85633e0479b6687c1b25abaaa703df9ba9bbd14af6b59761703721d1deb3b4f",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_dd74fcdfab46087c6cf93df7": {
+      "index": 250,
+      "spec_sha256": "e5375bfb3bc745ac7cc9f1695b6f617675adca9cba438e2e32488ee8e31206d7",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_fcd4c12e32e072d0db1e571e": {
+      "index": 251,
+      "spec_sha256": "a461176084a0c187e38768c8eb6528cca0b3247cdf16090dda756ad08a78492b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_2c640b9e39b39c0f3d933d8a": {
+      "index": 253,
+      "spec_sha256": "b794e8ee8056645e5c691b029f16e890f598995ae9f9e21945a7a06feb41c96b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_518c4415aa8931c94cb0c4ad": {
+      "index": 254,
+      "spec_sha256": "cef8a3fc9db5c46e41bb8ec78d39229954be5134e620188a4e5d3fe0194fc836",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_1eaa775ca9286929cf040d08": {
+      "index": 255,
+      "spec_sha256": "44b2fa0bf63be84fcbbbe60015ede29cdb6d9383c3633f53d3147f7758fe142f",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_3b588f1797c71fbf23a6e059": {
+      "index": 256,
+      "spec_sha256": "6f4d19cae49d6aedfee9cfb21f99af646644c678dca6a0b5584200b39f3b5c56",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_81735af298f4a62b9845c0f2": {
+      "index": 257,
+      "spec_sha256": "ad5379ffe42da6f4a8b0197bcbca4dafc99890c230cbe4745ffa82ca316fa805",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_00a7cffd93839d40522e5014": {
+      "index": 259,
+      "spec_sha256": "7d6817602f06d5d69958a97a7e91a12c1c1bc639aa6b7cf92445067670c965cd",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_9e2c7fc95f8b6aa7899d66ff": {
+      "index": 260,
+      "spec_sha256": "be5019b18ec51f083b907a47f14d4e6dfa46ddff8f1eddd765d2d354020eb028",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_42d2d4648e4330f3532946b7": {
+      "index": 261,
+      "spec_sha256": "1841cc8b7bf2309def5aa39575c1de5f89b053641d2c4d03584f649002a786b9",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_e419012fa3320ad392e8fe60": {
+      "index": 263,
+      "spec_sha256": "954275e4fd97eb5765b5dc60e98cfd371c80ef0ec1fddbe6455c018f01b6fdca",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_b409bc56223f09ca1a811cd3": {
+      "index": 265,
+      "spec_sha256": "e4367ae3081e4a3f452e34f5db2ad59bffeffcd6a484d948a170e19fbd5260ec",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_efc307a82de81ce79475f5b4": {
+      "index": 266,
+      "spec_sha256": "a80c416707c1cb43f4fc9e37e4c4a89b9406125627d6cf408a17f7506cdf8e25",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_8e4af07e9a129d44120fa664": {
+      "index": 267,
+      "spec_sha256": "23d1b5d45c33685291cc29bf2f8267cad1ac089824ee0a4a6f7a326e575190e2",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_9eedd543713295fc4a4beaea": {
+      "index": 268,
+      "spec_sha256": "8dbf1c96a180d6cd3d9d7e25fa17d577333571d9899752317cfdaf32ad7e52c0",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_71b57827847ecf6f19f1a7fb": {
+      "index": 269,
+      "spec_sha256": "b8484f1c98ce43d1897b9a1b02a314a43eb1c718819d8352f4d9ee1ff23cc4d1",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_80b7a412aae6051585d43701": {
+      "index": 270,
+      "spec_sha256": "d29da37fb99912f720493285aed590a33c551e1f08b447f5d6b8bb915750baf8",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_6ee4cf14523e68aa09b566be": {
+      "index": 271,
+      "spec_sha256": "52f48d9a819ed432e8df617afea28f94568b773b2072a1c092d445bd3d4c39e1",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_df0e3581f7e0b88becf69473": {
+      "index": 272,
+      "spec_sha256": "8802f1bdc656c5b88498c59569b49c0bcb398ad4ac56ea65667d35f7b0e17416",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_b23bc460e32f10d5a216ac73": {
+      "index": 273,
+      "spec_sha256": "d1db68e70e1c98bb346b5436d59f987439993e5bd4de802d4f62b7bdb5e83e79",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_dc0ad771645a3726dceb529a": {
+      "index": 274,
+      "spec_sha256": "582a61a38072a45247a86fb90ed9d233ef9961dba591f01fd1dffd0cf4b0a156",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_01bc058249d9f12b1d905336": {
+      "index": 275,
+      "spec_sha256": "ccd79ef4a050b307de5a19c878301a8a4aa032c589772e2b8babac918d3c61b3",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_c63c0db2406620b36e9dd054": {
+      "index": 276,
+      "spec_sha256": "8e086d458d4a4018e866f896bf16e1315836770076619b7e53b0ded7740307fc",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_6f8b47139f19eeb21a92a8ac": {
+      "index": 277,
+      "spec_sha256": "fded7dd2918962124fa540ae89eed8cdbef4bab6ea1a144ac619f7711cbd44c3",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_d142495bca7e88eaf6fb3d2a": {
+      "index": 278,
+      "spec_sha256": "ae2695df92d297a5f2592951a51fcdc0fb42ef692fba7b3303f82333c76163d6",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_6f7a09b927c5966ee30ded0f": {
+      "index": 279,
+      "spec_sha256": "46a6024b6812497928af4fffd179180208ecf6f4830a201631559e8b71e63778",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_612c778e0adb0e300b94e93e": {
+      "index": 282,
+      "spec_sha256": "29d0b84f8dde5416c4da2906ee14a8e0e8c9e9e010f07745a4de3fc505ed1db3",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_b946f73052b7452c87e936cb": {
+      "index": 286,
+      "spec_sha256": "be9d04a369eaec9c2a97745cc101d03f8dd202f15442978cb3f0d8e2e07c2ac9",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_46f0051ef3a042c7d3cfee49": {
+      "index": 287,
+      "spec_sha256": "7e5ae0f35ab83d8859e474525c51f0ffd71aefa8ad019a18f9d57e7919d10e7a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_5237490df82a9f947b94dd4c": {
+      "index": 288,
+      "spec_sha256": "7f92bc79895a8c90e056c85e051d509df39f361c7bd88f2d0469e279d2a0aa0d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_54edc6744cd0c006875a0615": {
+      "index": 289,
+      "spec_sha256": "f7d902b40c21a097d4c7032686e0638f197d5bc5c12cbf9487731ce270f59d46",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_1bdefdcb4c1e976dd581cae4": {
+      "index": 290,
+      "spec_sha256": "095de1a77ed326fee6bfcb0578951268356c796b9d3fc6073ca62aa221e9d986",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_d50a54ff538f9bec48229df9": {
+      "index": 291,
+      "spec_sha256": "5eb1c6cb789a02552a9c1212fb5dd95d6f62661b3c6610070870495114931e42",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_44e3df8c82295e13f14b3a97": {
+      "index": 293,
+      "spec_sha256": "de271b38d1a794de52a3a465ca89cba2868d469af2df558ad3b6a6cf497806bc",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_491f5770844415816ca691bd": {
+      "index": 294,
+      "spec_sha256": "109f67c6faf8fe3a29604eb44b70a4dfa8ac99c2f0ecab18c341ec7df2eff65e",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_2dac62a2581c55f208e09a46": {
+      "index": 295,
+      "spec_sha256": "c08a87a9831b0ff6b289096783e0c3bccb317fe07a91987931e4e8c0045aae33",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_1477261b9a34c63714e5b329": {
+      "index": 296,
+      "spec_sha256": "0f6c396ec620e6c0e20e159b1f8570e06326b8f6fd4ce4fbdf3c3f1dcc74900b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_1292e45b5bdbe45dbe20ff54": {
+      "index": 297,
+      "spec_sha256": "5cd52dd32f372d7000e0c322a03793de2429595178c77d1e4c949421f290c760",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_20e75ed97642707262668c7c": {
+      "index": 298,
+      "spec_sha256": "6e74d2d918d52982189eb1ee20201c6b7aa0b8026527c8ed2d971c7abafdd945",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_c6aea7dd50fe82f74ccd0702": {
+      "index": 299,
+      "spec_sha256": "7fd90d5e640436a3724b83bc8e289e3857287b74977e69df9c7842426a8ca7e8",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_bdaa435ae1f200f39885fc9b": {
+      "index": 300,
+      "spec_sha256": "4d290ef7ac672b5e9c48ec3b7fbc92437b97c7df0197f5606bd4e935701af810",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_596eaa49c2d5059c5132e262": {
+      "index": 301,
+      "spec_sha256": "2b3a2e2c50b97d84d788dc46592a5a5791c7617ddff32558d1989acaafa8f4d6",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_04284afe590ef94f8a625b34": {
+      "index": 302,
+      "spec_sha256": "6f6b16959417982f55ced3ddefee34d941d1c69ff92cb40e803d294d7e02e07e",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_91dce8091e34f39eb4cf8d9e": {
+      "index": 303,
+      "spec_sha256": "6d57c3937cb8f8e0bec5efdbcd0b3ca11066b739445525d56acdf6b1e89eb111",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_246c9ed9b247c65e1feeb71d": {
+      "index": 304,
+      "spec_sha256": "1edbf6ee73d44686f93ecbf7e123fd91bc5336bf684545e76feb20cec9255d92",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_e0f9d512df8d1176f277c8e1": {
+      "index": 305,
+      "spec_sha256": "60541298163eace3cb2eea40ceb3ac7c0b75acd4f565fe34715bb95d8a4fb54a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_61e661e661b8eb43f6af459a": {
+      "index": 306,
+      "spec_sha256": "ff9e2c59f76f3d6a51d39c6576b41d73248df0f2408c8c4b969a4107139e9613",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_215573fd31f10d2b5c289d8e": {
+      "index": 307,
+      "spec_sha256": "4185d597e4a53048b829ffe52d939defb59d8da06f807c461badbff8c0631312",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_05dbe8e81436bdc2f9b5df29": {
+      "index": 308,
+      "spec_sha256": "f1101632b61c8401cd7a888288cdd2d696cf9bbf415710de589f6f9b912186c0",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_89c0bf562601536fee3b930a": {
+      "index": 309,
+      "spec_sha256": "e26356830fb9a74516787a71cdd81272ef4895e7a69c3e058cd8512a5eb69f9a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_3806ac381c973f20a65d9cf0": {
+      "index": 310,
+      "spec_sha256": "78288ea06517f30063a3bbfda48b849a82befa4f313de2a21d98d7cd390d6cf2",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_16c393b573a7e4c9b49e9ff6": {
+      "index": 312,
+      "spec_sha256": "f293dd5f5049402ba411dde743016254fe9a27dfd436675cb59de9c3a22555b2",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_e03d0daac9ef47813c497ab9": {
+      "index": 314,
+      "spec_sha256": "ab6067a978f146bd434eded05e17e70a06b77b9ea47091f93962c745d076a248",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_a0cd0cbf43a6bc7cc625a31f": {
+      "index": 315,
+      "spec_sha256": "8ff0ce80618d078213740e0a63eca4feb70e71def84e250cc220134b25c64c23",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_3290df18f861f5f30a2ddb59": {
+      "index": 316,
+      "spec_sha256": "aee2206a37ee27bd2deda765b0d0239baf273d803459b8907b8ef9756ea54375",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_641006ece756fbab6e0cd830": {
+      "index": 317,
+      "spec_sha256": "c63da0a309cd29144096d3a1105b8d32cd0c0cc96b814eb5cc539a478aa8d87f",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_944ef8c62dd43debeaeaebfd": {
+      "index": 318,
+      "spec_sha256": "f4fc8890abf7cfd84d762884f410b75a271d9610f36005185af13a5c05d88690",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_f24a9163bc5f93571daf38f7": {
+      "index": 320,
+      "spec_sha256": "1a84bb34d810340cb1e093481a844b4354c4595a5bd0c5863253dc2831430288",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_3a763e9cb95acad53f2cf745": {
+      "index": 321,
+      "spec_sha256": "3c0bad61bde752ae18d57f3f9d809f22506f22a57d41d4e9939b0585977c9956",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_7744a84b51018d7a50548b60": {
+      "index": 322,
+      "spec_sha256": "2119fbb6b84d3d95ae3db47bb07a5e07754341e44b4299b6f83d309507814ee3",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_4224a2b6cf740c707ada5da4": {
+      "index": 323,
+      "spec_sha256": "93887bb6ce0332db79eb2726d96b2f11fce305d5b1f52237abe5186bc27b37d8",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_1f052d47d7732f7ef5aee662": {
+      "index": 324,
+      "spec_sha256": "9a8bc03a69166cd185100ee1b69a65be9973fb97ebb9a8d48e2756b94418a6ca",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_0746ddf74b74d5b14026e1dd": {
+      "index": 325,
+      "spec_sha256": "dfb6f853dec4d892fbd887e08c5777ae74e653a0eddb71ec1e12f555ab1bfcb4",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_af76cf572d6eb565570f7ae0": {
+      "index": 327,
+      "spec_sha256": "af212f6f620df09fcdfbee4afc9d7bf49920e60a8bd30d2bd82cb4417c446dce",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_b1b8a34cc1618c0394f44ab3": {
+      "index": 329,
+      "spec_sha256": "50195520a7a7d33a40df30a745c313c0af8d01db1c8a723ec0a7d10c8f049f9d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_2a3dc1091ebb12de6d588dbc": {
+      "index": 330,
+      "spec_sha256": "4c22284e0375cb9a99b69f6d7885c9be31024ba6c4ec2d1ba07185f4b64e9f18",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_a321ec749d0c03e8a07d9e53": {
+      "index": 331,
+      "spec_sha256": "52255412f6de8b109d412191657a2d94f4363b2f377943e15b895ad1803a749d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_9d97392a4685961182303ee6": {
+      "index": 332,
+      "spec_sha256": "b5ab3f303fa0c64afdf8ae02dd9280a79e3227bb058d3eed381512bffd58fec6",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_098e20e9ca7b9d50faca8895": {
+      "index": 333,
+      "spec_sha256": "00fd9a0a295d8688eda8bd122070b72d6885c0f2e08c713e39430e09feda5dac",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_1ec08338e752272cb0421752": {
+      "index": 334,
+      "spec_sha256": "3ea7d499161ecabf19c4b9c39f3a7ce18b2890bf85d41b9bf9588a36680c5c4a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_964402ffbe2a30e7226e10a6": {
+      "index": 335,
+      "spec_sha256": "7f07b8a1f460b70cb037a4fd97bdbf7b10d95cb22526724c7c5c6a9c65849475",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_3bcc27650af2e622479d0e6f": {
+      "index": 336,
+      "spec_sha256": "db5e842350cef6f8b726250819138af24b7595a0d542c6c3b47b312896b0b976",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_67cef559efa0a07c3f668a21": {
+      "index": 337,
+      "spec_sha256": "d003b8f53fc1a825545db7e3298412972c2daed52b3a0f30229f4b2762093b2a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_77f870219e662cb81e500d3f": {
+      "index": 338,
+      "spec_sha256": "b3263ae8eb8e7d3add4bc64e8af34621818e204f1c7204404506c1a74efe843b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_3a3cdb1603205a34c41539cf": {
+      "index": 339,
+      "spec_sha256": "99d1fce859f5d0b9170facf161978417a2d225d98b7849a2faf65d0d302a403b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_78dabafc81879e9533068b84": {
+      "index": 340,
+      "spec_sha256": "1d9cd3a90dcf763ba6fb749ba2ac5efec57125b872dbc09bcb19512c1083695b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_6b3ac4403d8572abcd011505": {
+      "index": 341,
+      "spec_sha256": "9338ebcd33381e3190b3bdcbefabe28e598c1c0cbce5c6cc4a2badbc02de9b36",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_74a232db14d92ffd24a6554f": {
+      "index": 342,
+      "spec_sha256": "e84a051337aa60f6581ee29d920ca7163c1644cf3bbfc9744326bb7ae5f4bc26",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_22b75bcec5c140479b4078ab": {
+      "index": 343,
+      "spec_sha256": "10a7a587949e6015a3fedfae51ad39bfd59a255b2be4e73ea94f6c446be7589c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_7b3ddc19aed4786ed9f014af": {
+      "index": 344,
+      "spec_sha256": "e4ac77fe8866f687a98724a746603e130bc91724e1eb0ebfad3b124651c76d3e",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_c91c3149a4bb65c867f66bfa": {
+      "index": 345,
+      "spec_sha256": "330624560be593f694da350ed8c38b9bda0fd9aa8a1f72485e527f3a9f1d56ac",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_88d1d711997376e75acc582e": {
+      "index": 346,
+      "spec_sha256": "51679b12daa0e357bc8865f1be0d869befbe3e0bccb530f41f64d61641b89bf9",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_20a5c90a725e9e247976113d": {
+      "index": 347,
+      "spec_sha256": "1fbe60e1dae8ab7ce30313ee056e3ed662464a70b70885e2f19489ca401ba434",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_41bab85e04708fed862a6ebd": {
+      "index": 348,
+      "spec_sha256": "9c8913199528edd7e008861f6eca528d5486bad2b3173ce52c69ee6b39f63382",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_911fab94e7d81aa223fba2cd": {
+      "index": 349,
+      "spec_sha256": "256625df3d52cd3444838f3b1571a41002368c090b2ef7d20cd5f9c0793aba4d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_c0473d2ea1c3957392259ec7": {
+      "index": 350,
+      "spec_sha256": "51c52ac6bdb32d9fe265f9e125e69793bad3f233a0afc0a2bf58b1f2d22a0897",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_ede133742218e4ffa219e6b6": {
+      "index": 351,
+      "spec_sha256": "44f69adde05256048ae33ad69c6b5cea58fc5e8ad66c4e79d0fd68270f1b148c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_1a743476c2f5c45d3b95321f": {
+      "index": 352,
+      "spec_sha256": "e43b7329d66ced33cfbf0c4fe7143d5c47602341df114459696ffb0d6871b98d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_15083a6d3f49091fc1f48a4a": {
+      "index": 353,
+      "spec_sha256": "9741c38c92be9d9a001a3564fca380c8e354d829ee810618838bbe985cc9ac73",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_7e9208409a67dff14614a5dd": {
+      "index": 354,
+      "spec_sha256": "308dc79431d95327dec00522bae5eb64acad8af06c6f93f376c56c7f12ab36fc",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_b9d71c07bb62088805d51610": {
+      "index": 355,
+      "spec_sha256": "d85b018acc54dd02de87ce1143bf26faf7ffb310c61d9e07c56c94cf8f45db0d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_cdb4f7aca51ae72e70f20330": {
+      "index": 356,
+      "spec_sha256": "cf1072066de0149e1ed40b1b937395ebd0a7d68f18c75250bf62464133215c6d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_74583464310d5ba4a93b0db9": {
+      "index": 357,
+      "spec_sha256": "5016804e2a0dd7678102ab9d86f9ab434a3ae25b0623f624aeea7df2a2a0d4b9",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_db4e9742244bc1cb33a05e15": {
+      "index": 358,
+      "spec_sha256": "6f78d3d34a653abda5aa9ace880959483e880f8fe8aa062d32e6f91256de154a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_4e1cd664da3a0913bf59b43a": {
+      "index": 359,
+      "spec_sha256": "c86718ee66569b5a9260195b5cbdbd3aed79c0826e72f7f60eedd28bbd0eb105",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_bcd208c764cfc938bfabc46f": {
+      "index": 360,
+      "spec_sha256": "01a485893bb72c4e55ea63b56af3e4441eda4ea625385eaf456d0252f03e4a0e",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_f59d8dae23c51f88f51bec3f": {
+      "index": 361,
+      "spec_sha256": "3a917cea988cc41f4ed8809c8f5f244a9b7d59c81718f31db2c9eae405b48fab",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_a0c1ced369d9eaa4ef5ac3d0": {
+      "index": 362,
+      "spec_sha256": "c2b07b51c2f5fe5efd2d04b0a2b2a4fa4131681c7500d3d180f8a9748b9c2699",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_9ac9eea582e5e1e045281055": {
+      "index": 363,
+      "spec_sha256": "575c1e28ec9d423149b7c459e02df97c59150d042207fe97b09ca9b3e0db87e6",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_9dbb648e99c7fe0a0522930d": {
+      "index": 364,
+      "spec_sha256": "c5ae3fb2149855198a3f7882f073cf881fc6164ce31ed5ec6d8adf99111f3f59",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_a24a8538d74b86f09ab304c0": {
+      "index": 365,
+      "spec_sha256": "931eb5d0a7ac5cdf4d61d2ce0f4e6ad4141add2017e490f60158ba185d8f19d5",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_3977d71741500ec5ae417017": {
+      "index": 366,
+      "spec_sha256": "b66fd105dcddadd3b6140ade5f987ad4dd44032939eac8789d18d9c697746e14",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_2a4703f5676b56b0f3819345": {
+      "index": 367,
+      "spec_sha256": "a15be1d4fcc430a3fec8c62ccc40a0cd0858dd3e66452b65831cd64b8f42e8f4",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_874c1b74f6f0e2e936e90511": {
+      "index": 369,
+      "spec_sha256": "a53e38441de6b261afbff199d56429d74c1144f80a659c4906a1ad9aee835bf8",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_4d6c803491fd507178904401": {
+      "index": 370,
+      "spec_sha256": "32fbdfb1feb4e76e1b46844b04c62a8f55fe0a3117ea5c07726312cfbcee43f3",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_657b25c4b784e1f74a85715e": {
+      "index": 371,
+      "spec_sha256": "e588cee9fa71e0d4dec821ddb2a701cbdad8d5117eead99da398db45c20e681a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_992d75404d67257f6f01fa9b": {
+      "index": 372,
+      "spec_sha256": "381e503399982cebd520615fb42ac55c7d214ab5b4a3d03870c1aea07d278473",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_dea6e45a8c34b7e846649df6": {
+      "index": 373,
+      "spec_sha256": "d378c7ff4aaeed967bda66b9a044db89b29995b68843a9ea3aca96f7d0a82fb1",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_dca32508b8b87cfdccbc99d6": {
+      "index": 374,
+      "spec_sha256": "d4bedcbdd34ccd63b647e7e6b99fe43b69a0f0d43304f228357b150cd265d6d3",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_74d9e95e1c4bee87b98ea20f": {
+      "index": 375,
+      "spec_sha256": "8b6ff2a8e4711c839bb47837ed292c1780e95b661c69dd2e8f4abc0d844352b2",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_336a8460407a2e56ccce6736": {
+      "index": 376,
+      "spec_sha256": "98be20940af8ec40c1c9a795aee8c936ea49799467821f9cda459bc94f3f8d6c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_390faf625fb78681e9683523": {
+      "index": 377,
+      "spec_sha256": "3add2a508d187f12ef52fb6b113dcb710c763052658ffa88282edacb8e851816",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_5f764f30e6bb6e4b0b199365": {
+      "index": 378,
+      "spec_sha256": "14a11c1ebd1bd0deb72e14aac347f7a1a483ed0a5258710a1d5b98ad9a524a8c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_0ceb5d45e4972365a67fcd3e": {
+      "index": 379,
+      "spec_sha256": "7789ad66680da64e214703f2effcb4572f46a90c6dee871a289953e38e359312",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_492350da07683355513f3eeb": {
+      "index": 380,
+      "spec_sha256": "f5e4fb4d0dab744af85e36891ba4ea09535b811a1a27fe5f454351b25fb3a15d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_a3c1a8d9183ccc0cfc014f79": {
+      "index": 381,
+      "spec_sha256": "8f8be8dabe051a0bd9e71abf8ac7e7dd3f5329c424c289336c858e0cd1a21f89",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_ad00ec7ad2fae8d71fcbb486": {
+      "index": 382,
+      "spec_sha256": "f8130f54ba1ddd9c6ec12fa55ab6f63c06cf64271e98212b9137db824c4a1e85",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_7aca2b427bf24be18145ed57": {
+      "index": 383,
+      "spec_sha256": "9a1710afcc6e09e3404e2c9481daea5dd4975b2b0870c17397a6974a8a58fbd2",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_b6a53362ba2455838bade1f0": {
+      "index": 384,
+      "spec_sha256": "8d670cf3ec4f27357c00df40518fc211163e09c33daada95b05bf193d3f8e6ff",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_e6ebaf73f7fbcbe5d827a5e1": {
+      "index": 385,
+      "spec_sha256": "43b945315e5db186198d3f3b0103d57e4aefdf88f388e9c58dc5e87b5a9cc99e",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_3559c8edc5d7712ffe96f376": {
+      "index": 386,
+      "spec_sha256": "0a3dc27d72c8d91232fa6714fb4eaebe1e4f0dced3ee57a721ce669bc6c86468",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_4494baf0c61596c19baeb0e7": {
+      "index": 387,
+      "spec_sha256": "ac36ee048ecf4976ec7f0de17604c224a37f0463121e4b190900d66b21272489",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_b6752484dd2f8b4040d23d6b": {
+      "index": 388,
+      "spec_sha256": "8f4e8d4ec009d88c4bd73b9144227cce36bf6f2ac2e6394bcb8708d7fbd9bb33",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_aeaa0adffa5fcffdf91f79de": {
+      "index": 389,
+      "spec_sha256": "5806a509b45e78c053db786176a145f6d3452d76ca4e3363264c1abcd402e340",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_b058a6a6336fd0cff6bb71da": {
+      "index": 390,
+      "spec_sha256": "b6c3419931aab585695f5fe231d567968b2f3e30d42c4ee3ad46c850395d0990",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_e6d89a59923bd18605704dee": {
+      "index": 391,
+      "spec_sha256": "722cbcf850152756ca9eb7312b33483cc64d75a5abbc79b70efb8407fa70c85f",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_3a633f40f75eb8d56a54749d": {
+      "index": 392,
+      "spec_sha256": "8c29a7b050e344ecbfe95f10b2b9fba2ca42ee9a7de9f485bc9b4a593e97b839",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_4c4e27a7aaaa5321f3cf0b62": {
+      "index": 393,
+      "spec_sha256": "72c1aad5593c58bd7023b7c7963b2116509a4005f6ae4669e914ab04c3e8ba9c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_7e9f05feddc59b4405a93eb2": {
+      "index": 394,
+      "spec_sha256": "cd69320023b5603834d0f1475591b37575fa9d8ba15789035a9b49fba1103193",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_f408d5d157d8034cc69761db": {
+      "index": 395,
+      "spec_sha256": "c40befb606623a0ba607b42dee7b52221255e51f9e0016558b4a851355bfa30b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_3eedb3e4bbf19d848cbaede9": {
+      "index": 396,
+      "spec_sha256": "76acb6d611c77dbec32b45dd57a2eaddab59f0a050a0e461ec7cb4a9663f07e6",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_ed2cfac0616b2510b5063918": {
+      "index": 397,
+      "spec_sha256": "1599af9bd4e7a6d08a929d612629ea5fd2a756f95d1204c8bf3943512b1578f0",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_42a061870bfd6689dcd20d3c": {
+      "index": 398,
+      "spec_sha256": "c030268b39f701a0effe1f1e149624782ad2e7192bab0f9388ab7a8a41c0152a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_207e8ba07a8f2b777e9342cb": {
+      "index": 399,
+      "spec_sha256": "12ad4107a613a52b1754de18897cc9155526eaa249d3a4af86c29dd66c01f52a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_1c1b5417915ab7af7a84ad11": {
+      "index": 400,
+      "spec_sha256": "48cdef8fd38856b119b603b52f48db91dc0a30c459d1a4189ad1cd30e913da69",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_7669780316298abe59cfac79": {
+      "index": 401,
+      "spec_sha256": "a47a9145c3121a3cde42e51f7a4d7a0e263b35ebdf7c75df7984eeac1cd1f6e0",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_b1473190d63da87412a1dbf9": {
+      "index": 402,
+      "spec_sha256": "5bb465d017f6f67537cba6d32031458977e99f914647c5d26f1fb8f05580a339",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_c466eff5740e6e70b0cfe1d7": {
+      "index": 403,
+      "spec_sha256": "2e77858f9425a00aa48e58d5c7f7857217cfa623c63b9019580540022ccbcc1a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_bf1024bc4a718c5a68d1cae2": {
+      "index": 404,
+      "spec_sha256": "3e6afc30b2a7a022d254570eba6ef603969142c5b6333681810630241bec8f8d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_594f09c251bce7639a37b764": {
+      "index": 405,
+      "spec_sha256": "3b46a395c6fe97a290ffb0c99ef368079a5c136bfa276e993abbabc185cd9b9d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_80e11d375a33e59fbff51b98": {
+      "index": 406,
+      "spec_sha256": "ffe5be67e1ded54a33c6d7d014fb9125977cc1e1834cc5f80d525a7707afda55",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_68e0f9669444b9f6f8309057": {
+      "index": 407,
+      "spec_sha256": "779f2001023b7f64e39f5d1ffe54817525640d0fefbd666e312a1adb6442ce60",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_db29f206b74abc1f611b65bb": {
+      "index": 408,
+      "spec_sha256": "6e82a2e1182f4bae6e8f2ee6d0a4083271d88ba7f755e2cd6583c279ffcc6b08",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_58ed769a32e793bedbb0c803": {
+      "index": 409,
+      "spec_sha256": "9864ef09ac8a4765cd7491d2a5400d15686fc0106523dcbd4ec7fc3222f5fea0",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_ad52effb7164e33cfb3669ee": {
+      "index": 410,
+      "spec_sha256": "60aaa28245442e5af5ffc16a9c3022d0359851343f8a6fe693bada2dae07bd4d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_6f6411f3d2c6f5a2c9a73e70": {
+      "index": 411,
+      "spec_sha256": "efda925c47b6eba49ec3dd343019fd3901f9b6cd34cacf4736a463adf6fa03de",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_3434a0c53f031a4ff620c260": {
+      "index": 412,
+      "spec_sha256": "496502fcb1e36886006df876d9d6b16db3b4302027e0d3de5c3bd7146b831454",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_f89ab94b552073e1fdb643ef": {
+      "index": 413,
+      "spec_sha256": "7fc140e705ec33358e51e0c7bb10c9714bc42f1fbc8d3d98cb0a42410299d04d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_9a5facd35071e5e2cc115e94": {
+      "index": 414,
+      "spec_sha256": "71c69ac13b23de3a21a4ebe432d9009ba0972c095948cc638b412e12e0770a64",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_26a5adc7770962a17cd048c0": {
+      "index": 415,
+      "spec_sha256": "e3f64f78049670d35ae07e113bdbb04cd2af7bf003a0f4b313b0d138cebecad3",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_1a2d6ae09a49fce8b057af4f": {
+      "index": 416,
+      "spec_sha256": "a8639f6be47a21e13c4ab7e9a459d3ae0fd7e4488a38ab3b9ce3f1e8a7ae2558",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_b5b4c47f62627cf350b4e7c5": {
+      "index": 417,
+      "spec_sha256": "ecd4ea5f1f186bf8b34f507fc5e37a2cb589f85c154f00957d12b33186af1999",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_8fc2021e07cac7ba3d2165d8": {
+      "index": 418,
+      "spec_sha256": "1995f3920c5479765e0ae1bb599177f8c6c5fad8092bd9bd1fd55f3383bbb6f9",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_3a8a6fb0283049608a384d0c": {
+      "index": 419,
+      "spec_sha256": "bdaa8cedb77737b0a080de3b3c73197b3a2d8b768d4e2f5b5bec5c54d5c3a0be",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_1298aaff0ad705c7d16f1dc5": {
+      "index": 420,
+      "spec_sha256": "a61698770f25c769619a75e715a3fdf14969893a0b906856b5dba5c631e313cd",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_01789296805205f529f2f8ab": {
+      "index": 421,
+      "spec_sha256": "62133029e2455806b223ecb4d6241b7e0c4eb119718fa6bdf55676bf10fb9b2d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_9846dfa799e33eb926fb4a20": {
+      "index": 422,
+      "spec_sha256": "88f89720965a74c38c644ba8f24dd8e287041006e730a46cb857f8f66072365b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_348b01b17bb480cb59ae3a7a": {
+      "index": 423,
+      "spec_sha256": "fd93170db5e254f5295fb5cf37010ab761cc536d0a6180921031d0bcb92d4742",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_b5b87355849af4907c370509": {
+      "index": 424,
+      "spec_sha256": "1720c2d1fab1131fd243cc5d9dbdb78a24c7e5d190beed1b06a2daaafbafb2d1",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_89695c352bb19a09e4256d07": {
+      "index": 425,
+      "spec_sha256": "0a6c131da0771b049983d0bf3f98ca1d6e5ebf526a68f09c3da49b5a06241daf",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_6a18cff07d3414fa89c5fac7": {
+      "index": 426,
+      "spec_sha256": "0b96f0bc91e4c1f10074657d792ffc3743aeefab3665f6419261e570e39eed09",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_6b2f0280b3a8a8ee2e6de8fc": {
+      "index": 427,
+      "spec_sha256": "54652d22bed335d6355fdff5851b9a959f069e95402b96f0373cf7e936efa680",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_20a67344bda8e0b7b028b54a": {
+      "index": 428,
+      "spec_sha256": "43bc97f3ec66cde5c6721c4ff706f20ab19956f809f12138457c4b8ff886f2da",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_9a40cc416b059ff84ab721e6": {
+      "index": 429,
+      "spec_sha256": "ca4bc6d2a987f1457ff00cb5b63c531d38f459c2d4864dd3155abd4e150fb89d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_0d5c8d9b5f0427e728e25fb2": {
+      "index": 430,
+      "spec_sha256": "53b196cb829f9d75c2457f14814bd50c7265c15df73a176913c99c3e5a1a8524",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_299db0b9320d55b6bcb5a6fb": {
+      "index": 431,
+      "spec_sha256": "2d46c7194c42b9bbfd33dfaae7e6c3e940b4a8aa17a66da96ac1c9ce30650275",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_2d491475fc5da17d26dfb237": {
+      "index": 432,
+      "spec_sha256": "fadd7c723d0a8c50928827b5df8536920bccaf211decf39b66d4f6268ab24215",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_70d371b0f17a8b3c75de387c": {
+      "index": 433,
+      "spec_sha256": "a67e23ce92bea28986cef0f18f5f9f4962385ac6af03bedc8776a887f3a9932e",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_bbf260202146e09311d93d3a": {
+      "index": 434,
+      "spec_sha256": "9b7f3b4755c4a065e4bc264126ef229cbff863702195bb023dac393306fe6143",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_90b85ce741e015f800772c1d": {
+      "index": 435,
+      "spec_sha256": "a1a38f25531db556b09284a2832861ad64c6d902b3083a282fd91a5e7e086d6c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_10b721036640ceb50e7faf3a": {
+      "index": 436,
+      "spec_sha256": "d42a5204c45c7d71178db4c6be455224b961102d4c8dc785762a778983f54946",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_e9493a129190695abe794fed": {
+      "index": 437,
+      "spec_sha256": "0ec1b531796031736d383469a587ecdd52fa23f23eb326ae53f9a2475eb1c629",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_4f8c949534af2d49e1be06f5": {
+      "index": 438,
+      "spec_sha256": "84f13353f43fa949b9f2b080b554b67e45771703794a8f7c635078569063f47b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_1ddd73170d9c82ba83661bdc": {
+      "index": 439,
+      "spec_sha256": "0942956ed648b0bac623e622ebfcfcea4c2bcd70dd995e756a77c2f88bee9fbb",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_a84a98b2170a3748f189da74": {
+      "index": 440,
+      "spec_sha256": "b492c62297b698691db18103cee4f995de019e9a534ded9bbf3d2a0018fe9a29",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_d4891e513bbf21caf00112e9": {
+      "index": 441,
+      "spec_sha256": "fefaf9df6d051e32cbb5cf6786815a35800c0fdd9476b872db11f2004c5e7236",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_9b03b0892f2e41052c8610ea": {
+      "index": 442,
+      "spec_sha256": "1ccce9ef453691d5284d959af3c8f17b134a4df99075dd3b62a7ca160f9b6718",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_a1e0e30115c2ddff31d1e06f": {
+      "index": 443,
+      "spec_sha256": "96cbec08a1382fc12ba6edddff7585671bb61340f11f195ad9a5f1f90830ace2",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_1c75b235586990c9f770388c": {
+      "index": 444,
+      "spec_sha256": "b7486a0941c8499f1fa19962feef0de04656ea8f193266f469dc8d094706097a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_bf4c16d435cf0a77a8b54c2c": {
+      "index": 445,
+      "spec_sha256": "8ee53ef60e37a73c6edcbba4b2a366a207960f644be277fe476e9122e7d06ea9",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_48119a9be70ee67559daf66b": {
+      "index": 446,
+      "spec_sha256": "37862d1e6068cf57d1a833bea0d1f7314009c3030c44e56caa29d1d2236e110e",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_8481c818ffcc9a84bcfb0725": {
+      "index": 447,
+      "spec_sha256": "ff5a5f08bcc6dc11f21ce9d8abc70de1b919f92c1e88e8d1e5964b530ac3095a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_088381d711e85b536c159640": {
+      "index": 448,
+      "spec_sha256": "a542c66f205a6db6247e576d20227ecee542e5fd8d1e1771e740f91047d1885d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_22b4959dfe042d4f45e108cb": {
+      "index": 449,
+      "spec_sha256": "0b4882bd21f084c0f9a14e8be755a1507e9f442fd8687c594315ebe46569919b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_6c9ebffce61adcb5f45592ff": {
+      "index": 450,
+      "spec_sha256": "b2e4196dcbffa40869189112e2bfbb1b91fe0e767462c44b70f337420b0fa98f",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_36855b435a4c827b65189412": {
+      "index": 451,
+      "spec_sha256": "4aef74032961014910cd80ea798102843af6a3e97d9a7b0b2e2f8333fd1c2e6a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_72184ff6dc79c00928284e6f": {
+      "index": 452,
+      "spec_sha256": "ef98a39c49e7ab64b2648047e17428e10e23f537cfac7cbff331fe5496c1135c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_cc993ad9186d65655d079f1a": {
+      "index": 453,
+      "spec_sha256": "b51f76126a67e7fa7df84dfa7b8ac2a6e8adaead461ca44f6706b006ee767d0d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_46a7e62faa3eb09eaa6eb8f5": {
+      "index": 454,
+      "spec_sha256": "e1234887f2f511f82f4f9dbee11a7b93df1744b5e0024547f2b9a71996749d5b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_70baeef07fbe2441c5f5548e": {
+      "index": 455,
+      "spec_sha256": "1f2f92f7c50b2cedfc19d5f7d290cb246125f228a97590e3855abbf109a86649",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_42515fb0da8cebb5925f4192": {
+      "index": 456,
+      "spec_sha256": "b17d1cb9fd08dd7e57bd98133dea9221281c20f248e63a0da2234eee699fc100",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_e5d484275e69b4f293fe4594": {
+      "index": 457,
+      "spec_sha256": "d7828933e05503f60b509f606f99ccdd09b95ec6ae51ebafbde1a180ab8ea2fe",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_f7d0c0f9f692c3cb2434545f": {
+      "index": 458,
+      "spec_sha256": "c76c18a4d23d301e7ff0a9b3abb31f7cd1209773619dd9b303d92197fa972043",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_44be0f5d8d059c441ab5be5a": {
+      "index": 459,
+      "spec_sha256": "06f44e13e20c1372a41d29a02141ddd4ccd377120d9b738d96d74f13069b259f",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_9993ecc300d2d28c96a678e3": {
+      "index": 460,
+      "spec_sha256": "39e7649b9567000eb00f85e6c29553ada2e1a44325ef6dc55022df0a79805b75",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_d219bb7b9843814195098346": {
+      "index": 461,
+      "spec_sha256": "1c29707ca059a705c239c654b79c04675d95c3e8c1ab469396557e690f9eb263",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_85b1cf7f8193e6220bf30ce3": {
+      "index": 462,
+      "spec_sha256": "6b8e557e5e86733108c62e9431173fa43e683c61fee153b7166397fbed0d6dc3",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_e0c964949cb7d5e91ab96559": {
+      "index": 463,
+      "spec_sha256": "4c3d52f021a4db3169d5ee2602e84030b3a8bb7a96f1a30ebd34af174acbb420",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_a6b7161a29727a3b2efd8f3c": {
+      "index": 465,
+      "spec_sha256": "499aa962d5caf704479a1d2a562efee399ccaa9768adb5455ef22e0b53ef5288",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_a63310a700676d2c1217902e": {
+      "index": 466,
+      "spec_sha256": "3172a033af89179178979e7d8f93d399821ff5f9ffc60f4b2033f7f3fc7a2bdf",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_bf4d53cad950949944cfad52": {
+      "index": 467,
+      "spec_sha256": "af8dfd723ee5d4e5c48a9c89eb3c59155b10d125f96879c1b317d7c35f9796aa",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_a564ec19e4884770774715aa": {
+      "index": 468,
+      "spec_sha256": "85222be9cd65b07dd15b459dc79c81d247893c266b14d0ec87ae0c3ff0eaa8fd",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_8978c75e32f35db0b5848791": {
+      "index": 469,
+      "spec_sha256": "752b2cea413c78a3a09ca5c548dcc268b9c9ef1c0d44cae084e9314b801e5558",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_f9c6f624b08006dba2f42806": {
+      "index": 470,
+      "spec_sha256": "799173fa47909377543c667a38381e9cac9975e0f8d5d9fff50ffa82c78d3ea1",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_21d8ad3dbc0261420383964d": {
+      "index": 471,
+      "spec_sha256": "4636b0aa604665d21523e734a06e2f6b178f119a839a59fef4dc5193fe0a3501",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_ce88150a2ca9642f2d5797d1": {
+      "index": 472,
+      "spec_sha256": "de8ad836b8086a9e31232b2210bef343639a2f0bdd5b5ddc0482426e3e246ace",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_9ab242928889e3c88d4b9b9f": {
+      "index": 473,
+      "spec_sha256": "13453560f77d7f4d13de72c197913bdeedcca3e9a77de5dfa154a6c61db3c6f5",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_9f1a888a6edd42df96d65565": {
+      "index": 474,
+      "spec_sha256": "4a85f235b9458a9f809161c4d07cfdc1c54a444bc5700af9c30bd8a67fc7817e",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_4877339189abee81d91de9ef": {
+      "index": 475,
+      "spec_sha256": "46e37044ecb42cede0385627618dc57c108817a640f9ccb1882ea0ade8adb954",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_0ca2535f803a3e3175607946": {
+      "index": 476,
+      "spec_sha256": "914890b6a900febcf59981bca67c08aacc5f81a2b84eecf99b2dfcc97b2f69b1",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_08409e5df75f88ea3fe9da53": {
+      "index": 477,
+      "spec_sha256": "04429a5975efce819925f45f4c1f2c3e3857d14ecf9d17046c509658a6349123",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_2299e8c9f5c97b151d265c6c": {
+      "index": 478,
+      "spec_sha256": "9beada66fac69e4e7887761dfb43d11b3cbda24b886ac0e406e44eeea9826ae0",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_fc03f09dd393ca246345e884": {
+      "index": 479,
+      "spec_sha256": "b75313553538750500e5395eb5c936aeb8e1770d8b709ac118a93f9239195f58",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_23fd976420b34a10a0ba369c": {
+      "index": 480,
+      "spec_sha256": "5001dc384827c815c756134374338626f2d1dbd159807c0370d02e97793cdef2",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_d3b136c2236b287841890240": {
+      "index": 481,
+      "spec_sha256": "2361dfbad8961b307e36790b0cc0b267f9fb04f5ea4d9b0b41cfd9a1a1c1d552",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_c6918b0e0594c6db4e2098c5": {
+      "index": 482,
+      "spec_sha256": "8677ccc44a28f2dfb5d5728b13b9f5ff54f7206a557c04ba60899b9630c25a48",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_1ddf74105ab2544cde063648": {
+      "index": 483,
+      "spec_sha256": "ab650264e092dc460df2bd3529e69310361d841a439560ffb1522ca822cac05d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_525b4f637ca2155ed339e4ce": {
+      "index": 484,
+      "spec_sha256": "87bfb310167cc8bef1055e874b09fc8ad587adb1d4e6ba47d30a0ccc1e837e74",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_23b4e6baba267a93f91c7900": {
+      "index": 485,
+      "spec_sha256": "b82c2aa03a8ce67c5fab87023058bca0dd69f4a0ee123175abc6f03b974afe9e",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_e51d15fc9352fe8f54e6d5e1": {
+      "index": 486,
+      "spec_sha256": "4e15f728bf324446a3d3fa41c111f43a9be3b9e313633162e6ae078d1a8ed202",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_c47c6e676a9c5823e862039a": {
+      "index": 487,
+      "spec_sha256": "85a1e1167ef3bac4d3ebf2e5dc8bc3776e52b9dc34ef2649f5080630ed42a087",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_8c5c3d78e23faa137bab576e": {
+      "index": 488,
+      "spec_sha256": "c0674b42558ec3bc3f7116d8c56ae99ade24f289bfb12f08a69ddfdb346d37bf",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_1298e0a5c5d18bf4d725222b": {
+      "index": 489,
+      "spec_sha256": "3a24954ccc0f0a1ef25703ae7383686263f32b1e297c4f5c1259cde5e071be33",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_16319c61c112f71467f65277": {
+      "index": 490,
+      "spec_sha256": "1c720c82fed8e36af2bc8e1a49a9aa8868fd4ad8330e543497f679a93a6cba6b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_5d850db5e66dedf8b8a667c3": {
+      "index": 491,
+      "spec_sha256": "3030c1c990c2c0b95e630bc8f8210c4c212147d8a747b8b8af7e1ff499d23db5",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_6a452ab9e7d84e92467499ea": {
+      "index": 492,
+      "spec_sha256": "b8ba6a861cdc17d662665fb819e5c2613b183f429a39674b826ac7818b6cec89",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_d657cd28f70162ffb4305a70": {
+      "index": 493,
+      "spec_sha256": "251ebee64661af742488b2d14ba0a2a4d49645521dc896e52e9b5b4b5021f71c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_be7e6f0594b4dc82d95fc334": {
+      "index": 494,
+      "spec_sha256": "97e7a91320142c17ab9c39005e9a6bfdfd8537125bd63f6337082e9db5a3337c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_952ba236dc01800498a24a15": {
+      "index": 495,
+      "spec_sha256": "d5c0eb94cf3bfc06d2f7232cd297b55475d6bb796926031eb01c35f1e908ee81",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_f3bc7800df301702db7c0078": {
+      "index": 496,
+      "spec_sha256": "1bfce0518d8ef1778a1ecb78936bce4f45a77e277248ca33d61360406234ae5b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_60743c845c384f98d4b06f9a": {
+      "index": 497,
+      "spec_sha256": "b2ad735ba978648633dea9a220470165bd2535079268d62cbe7eafbd52b61887",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_7ad1d83af292bbdc6c4bb2dc": {
+      "index": 498,
+      "spec_sha256": "d7fead5b7c79cbbdd7608fd9a838ba55b65c8d63456af029e461d9a486f7a51e",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_e33ee7837b1a4976d456ba00": {
+      "index": 499,
+      "spec_sha256": "f686908cd36fbe67e29baacb3be31b47d9809e4618bf01a68931561b69459db8",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_c59e60dba1e38e4bd91bcd9b": {
+      "index": 500,
+      "spec_sha256": "2581fb370c4705f5c3e29f66f8e4fd5379ca8538c46fda5079e7f70e3dab82f5",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_8a1c239c934267acf907c2e2": {
+      "index": 501,
+      "spec_sha256": "d41e1fc8673fe04f156892d70f72977330c0b1feca8ea587d09d8dd54867cdd0",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_6d7730a3b390ae9bae21f783": {
+      "index": 502,
+      "spec_sha256": "3b815b43c1891aa2b03f6eac5b4b3010f2d5b97af7c4492737c9ac8c61a95dd7",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_ddd3cee6bb2162db93bbb2a7": {
+      "index": 503,
+      "spec_sha256": "cef01c0c4a4f9e5460852fa0bd91020dff7069356f6c5eafcdafe870d45b843f",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_9ba8304587802ca782d75364": {
+      "index": 504,
+      "spec_sha256": "1d05ac6b0c317dc9697895570d279e697893a15b53ddd9d8d35556fb078ea670",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_e7de1d3ce0c77e1e38a96366": {
+      "index": 505,
+      "spec_sha256": "363ae73f2d216703fe05a1ad7ae7719b96a026e60fca32adce17ebc58fee8340",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_287d85146a0de029caadf80e": {
+      "index": 506,
+      "spec_sha256": "86b9ede1026849fa6e0675f85799bbf8f79b1b493eee4cabca112242c6515f13",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_ff60331999bc56c174d59c8e": {
+      "index": 507,
+      "spec_sha256": "5160cf5508fdf31be0284d9b97a886dd8c5add820d210056a4ad1acda5e5c360",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_8749cc5b938e557b7b90892f": {
+      "index": 508,
+      "spec_sha256": "86f79ca23c96370d526e044b521d160f95be7a2f1574aa8f573c0f334a7134e0",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_2d9930d12d36c5bc780d6ac6": {
+      "index": 509,
+      "spec_sha256": "f7402fbc6e347f440af0fb7fd5ce8c980f9497f990158728c183c390aabd4018",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": true
+    },
+    "auto_story_789bdf28252d8344950c347c": {
+      "index": 510,
+      "spec_sha256": "54c0686046f71bc21e12468f1f92f81799ce4b7ed43113d431d4e698b99fe92e",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_4b65fe4df77f45b67546f107": {
+      "index": 511,
+      "spec_sha256": "261f60cdf57342d41ac4e50fc8c39a90a62ed3691ef6ec2565c89963ecb61895",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_4ac087ba4f96828febe2037d": {
+      "index": 512,
+      "spec_sha256": "c3092277373451c838d28d9054a158c533576ab599ec09ec16e7ca8844f4f351",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_580048cfc5a2e8861127e14e": {
+      "index": 513,
+      "spec_sha256": "1700148fb79dd104f6dbf55b37b84654d60466320babfb1a9823a9091e7a36c7",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_6d54433d73adacfefa50049c": {
+      "index": 514,
+      "spec_sha256": "dc2081a8c8d4179a10218303ab9ecf1c29ed8192ccebfdf0f8bd4eef2ac26a4c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_f949953ae954d2daf19d4269": {
+      "index": 516,
+      "spec_sha256": "bdf56c0b2ee006c8d0082f1c7fb4074e1bdffa9a1b91caa2adcf765523893a13",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_e3ea9ba5dd46713449411b26": {
+      "index": 517,
+      "spec_sha256": "9e82a17921dbffeda6f348ca9ae566c4808a7db9a3ef85084392768d43c9dfa3",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_ac4ef2d1d0573256c6c0cde2": {
+      "index": 518,
+      "spec_sha256": "71a762ac0ce4dd436bbc0c16d989dc78f03a922fc4e7d4b455ae97d60145452b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_5b64ecd1440be29214b843d0": {
+      "index": 519,
+      "spec_sha256": "b7465f34045d0a6913e581ea8624ebd55965aa05fcb47c5806d7225246bd3758",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_497c9ad2206990a20b70c5c5": {
+      "index": 520,
+      "spec_sha256": "e02af183f7366e6985aa2d7f1205d414a5304e89d3958deb04b75e997553decf",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_925a5d206034072ba358ce4d": {
+      "index": 521,
+      "spec_sha256": "df7a81a52f8acd1a0a6d036f9b46c405992ccfd131b2b8681b6bfc14eac331c7",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_d33c899271f4637d0f7e3546": {
+      "index": 522,
+      "spec_sha256": "51225d6128477e2c7bdafc5ba4c3b2d4322c1683ea8501f3020e97a00448f944",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_80e877c0f3b256dfda96d143": {
+      "index": 523,
+      "spec_sha256": "01c25159f215b7914e90392b92ede06249198bd9112bb2fca519e620a5964307",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_3da1eca25543bc4db3bd3075": {
+      "index": 524,
+      "spec_sha256": "3ecdb361348a2c436e0e8cd716dcf0234c93da6f20ae2a800a7c8fb2d577a2b0",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_df0335071c25bc824dfd77b3": {
+      "index": 526,
+      "spec_sha256": "6631a93d98a1a49e49ce3d90589add47ad6570676dd3ec67aa68cf581666b7b9",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_b5896810af7959e13e330eed": {
+      "index": 527,
+      "spec_sha256": "fd77eb0dc4ccb7d184edf1864c9e73d60513163745038f016e1b636b4aa60ce6",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_ef53d7473860f2ada73aefff": {
+      "index": 528,
+      "spec_sha256": "e6c3e5812f985daf73f29d90e8318b76caa1b4587736b5912e0752eff98d6609",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_d4046616013540e4c038a806": {
+      "index": 529,
+      "spec_sha256": "65191022125bffb03fce44794fb35ff30b8dbdc5941e7dfeab6a239e54250bd8",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_3788be914518fe1233338848": {
+      "index": 530,
+      "spec_sha256": "4c1a860d9492fe4ffb6211457a6807144cf4a96ab4d28af4dc43443f2ca49b7c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_89a286cc3bde4319cf7ab6e1": {
+      "index": 531,
+      "spec_sha256": "a6e170121f375e98f7469f2dda9a24c09048d252f118e8befcee045a3b277969",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_106623dd70b37e7693f3a5bc": {
+      "index": 532,
+      "spec_sha256": "442cd2145af74d9044cbf1b8d4a47af05344257eb2ebcf5effb40c6540f3df33",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_08afdc8603324014d0636493": {
+      "index": 533,
+      "spec_sha256": "91ff0268e51f6bbe5820569b5b215729750dc5bc554d8e28b98f136816dd833f",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_5153fbf86fd3f11745fd6a40": {
+      "index": 534,
+      "spec_sha256": "74cafdd39b68762961825dc35107efcfc58ef0d24363995e577f791d6ac45483",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_32c895573e4ce3b7c60f006b": {
+      "index": 535,
+      "spec_sha256": "ec6ad69ae1809edcc33724adb59c7f8a1de85522dd0d069330fb1cbadf57770b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_dfb040c4b316e7ab5707d6ae": {
+      "index": 536,
+      "spec_sha256": "3083cc217699eb8e814beaed83f2e15a4b5ae0b4e1c37010875a44dac9b9547b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_ca46dbb353b11151b4e63aee": {
+      "index": 537,
+      "spec_sha256": "68c7db8987956cbe65cd12ede1279ae1fcbf10eeea9ccd7635a2a88dfdba2525",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_5957355a5a32dd3dfba42106": {
+      "index": 538,
+      "spec_sha256": "1c07eb6f550c4285afb265deac6c1b8507bd3d61f768462a78db393f032a7323",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_2d4c49c67736492fe7755cb2": {
+      "index": 539,
+      "spec_sha256": "56c10aaa77f3d7a0dedb1bfa8dcd2a8832f00344874ca8abb7b64b979a624bea",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_354dd433110d8ca58417db23": {
+      "index": 540,
+      "spec_sha256": "e73e14343aa731b4c00d2ddb5651a9bf1225f2af0036554c67f8999914ace8fd",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_f8c1695736ba8d3aa19812e0": {
+      "index": 542,
+      "spec_sha256": "de4d2fb6c88c31ec9faed542d6f4b9254e9fd4218c734b1a89e60f385ce6d0e4",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_3c6c7245d6a4e566d20f7210": {
+      "index": 543,
+      "spec_sha256": "6fcc154a554daffe9ba98e95862fddae6dfb92e9f0a0e251fa2ea0844a969a8f",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_19eaef109f45a3c007e05bf0": {
+      "index": 544,
+      "spec_sha256": "c6a9e4a10077041afb714a43ae7761cf90a92754d6795e5c6e213414aaa5b310",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_ef5d9b03664770710e9bc75d": {
+      "index": 545,
+      "spec_sha256": "6e3d9fdbb5268e6f41a5c5b0612dcd54206a029d09b82245100736ef82743b3a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_64edd60e48a28401fc8c79a6": {
+      "index": 546,
+      "spec_sha256": "63506ab95c5cafee01b4b1b1092d62d08893bc58a322d1a484569d663dcf386f",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_9e3b54d5fb9375b647cf3279": {
+      "index": 547,
+      "spec_sha256": "06829b2066476a5facfc9a299b7fc96a8b6d88299ff5d19db43764005a270d23",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_06e9a6c87f9f7e781a8bd0f3": {
+      "index": 548,
+      "spec_sha256": "b3742e0ada58fa6ad104f8effafeba8122e36ea60d9c3eed9f266d1950ec5858",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_f09ab2c9371a627e40d4aaee": {
+      "index": 549,
+      "spec_sha256": "edc666fd67e429b796e943ea4da7902035f0e9d0d280b345d0c6fbc4b74c6826",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_9f1d581c25ed9d861b288597": {
+      "index": 550,
+      "spec_sha256": "2b86715851d15a81269890b8e434f933220638828e8b42bc070e02e0daade02f",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_a0080caae5fff062d9bc7be0": {
+      "index": 551,
+      "spec_sha256": "167b75f6ab97d54c0a70e258157de51d9248c6673c6399910e17778abf4c6190",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_3cbf28c2b2c479e305439766": {
+      "index": 552,
+      "spec_sha256": "61f81c2d03f1fef96998ffbdcd0d33e0f6a368951ce1f40c0db7cddd002c4ac2",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_54bfbcc16d8e88a770cc8c78": {
+      "index": 553,
+      "spec_sha256": "c6eda668986d3442dcd8ed1d83351b645c6995a776ee8c7fc18e39d6e262be94",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_f452030d44739c3307627905": {
+      "index": 554,
+      "spec_sha256": "791c86058302ef17218ae3d9e4f3737234758860a9b20f9ca8930feda840f347",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_1e31505751b5461a4bbb1f02": {
+      "index": 555,
+      "spec_sha256": "e425fe745b2b4708d46798389fd7c2a0878500fe04825cb8a009eacb9395dcd3",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_d3af1a7bdd503196177753d9": {
+      "index": 556,
+      "spec_sha256": "800678fd9fdd97e2f94abcef5990bc45ea1031104824bcc622f0c12f4ee4dcef",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_446b85562fe026dd831f7700": {
+      "index": 557,
+      "spec_sha256": "4a3cd2f4880dcd4355d8289e2d25c4ba1fc7e8a40400780bc1aa756538f32e0c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_41a66a2454850ed0cfd2e2bc": {
+      "index": 558,
+      "spec_sha256": "ba2e257ac6e0f0e208fcc2e55cd00b75acb70226f0d5ddcef157ebcddfa9dbf7",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_dd36c2256cbb39d46848fafa": {
+      "index": 559,
+      "spec_sha256": "889085b4ff12b34865adeca40ca904adf17f0a32910bbda7e8c32392383650e0",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_93eef6aef0d1980cba29fb45": {
+      "index": 560,
+      "spec_sha256": "0f34adb7de66b2617db1f53a3ddfe985db097bbef698f4809cedb1b2e9560b12",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_5a4402a1e5e16ea449c7f20d": {
+      "index": 561,
+      "spec_sha256": "652f53aca47aa3797f2ecc70b899667ac6e656fc8e6e455ccde16f9ef032b67b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_5eb305a67d2da0b86a0d683e": {
+      "index": 562,
+      "spec_sha256": "9d0073f56bc204794b06e945fd821d737034138bbb6abf1e402323f8ba6079ff",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_f74b5682bd8885da71f8b373": {
+      "index": 563,
+      "spec_sha256": "905ca51d7991226746dc7f9265ab6b936f8dd2b06b04dc1cbf9cd1d76f20cd3e",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_ed7fbd15fb9ba61f1cfae99b": {
+      "index": 564,
+      "spec_sha256": "841d5929b559c2f4177712356532a155028d5b1c708c66c9f420eb752beec84c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_9adc7d7773da87459cad67dc": {
+      "index": 565,
+      "spec_sha256": "e6313a2517ba5034e4644367f7324d3f15f8a49a0bf53e558159be467aee842b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_c0b7d5ee379035acc005e110": {
+      "index": 566,
+      "spec_sha256": "359a7a5cba67344018850868d168916475388da04ad2e9364ccd6de84d0477c3",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_23f0e5ac353ef7f84b3825ea": {
+      "index": 567,
+      "spec_sha256": "ec3edbd404cef56add334c9b6819a9207de9e5fa91b43ee01d8a30f893e02b8b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_e6d6069531c97715b6b5fc32": {
+      "index": 568,
+      "spec_sha256": "b43c31e4d0c1544e830653baf1d7a56fde02448ceaefb7eefb366a2a8594aeb1",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_c75c251e1428ac31c661857b": {
+      "index": 569,
+      "spec_sha256": "1c6ee34280e6bebd61b363530d8ab65148dd4870959a865d985698606b49bd95",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_b0429edbf47be86848768fec": {
+      "index": 570,
+      "spec_sha256": "2718f8455ffa28668dde7e1d1f1e6224352a14414d4bca40e47d351c3a422281",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_ee91fdd8aff65a8bc5037342": {
+      "index": 571,
+      "spec_sha256": "da61a15905b64c0a8e23ecf27c664f16967ac165517074dde8fb8456eb76c11a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_205a08c8049d0271498bc1c8": {
+      "index": 572,
+      "spec_sha256": "9193f07c2c26c3ac48dcddaa72b0b85744586c667c9391a05999197ba463f376",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_e50cfdc8b04c340d453f48c1": {
+      "index": 573,
+      "spec_sha256": "ab59d9cfc28c222fb0015af03284c6692e3e50dd3c3cb475579054900486be1a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_4eaaf1106d2171cfd183e2b3": {
+      "index": 574,
+      "spec_sha256": "e0233748760d7553c613325d695555825dec4690582695a9b5e2cccf9204cbee",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_2f92f80d518395534cb5e547": {
+      "index": 575,
+      "spec_sha256": "e2878d4de91cdd8c6048da121d4fb77ac0e40f692a01121b2edc18a54ecc281a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_148269cb3b119c08669be4c6": {
+      "index": 576,
+      "spec_sha256": "3e4503505c8f966402ee7a4b248942374beaf97caed2035964de9ede29693528",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_56d2ed448577d46a3042a59e": {
+      "index": 577,
+      "spec_sha256": "af54999071c73df6bbc86a035eec649bf569e0acc303fa3f7e79bf427a0a47c8",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_9f5e2c20c0185b0b936dbc94": {
+      "index": 578,
+      "spec_sha256": "3b43e002d022bbdf0c2e2e88289134db6a809107933d22c700168d9dcce4b43e",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_2cedad4fac0485eec038361e": {
+      "index": 579,
+      "spec_sha256": "438d7d3e5fbe0296f53e4b7a1154b42841b6aa394740d961302689ea683ae719",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_218c8fda5312a4e8d83a781d": {
+      "index": 580,
+      "spec_sha256": "e213e250d4d9d2754bfd1056ef770385d8aaa768f6e98765dcf35accf01f649c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_98414d4081cfee42eb3f6016": {
+      "index": 581,
+      "spec_sha256": "0dca5923f41df875aca8f397b79204ce4b690f38b37c52334c6238f8a2cd4833",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_7f2a63f0f133a63152baf578": {
+      "index": 582,
+      "spec_sha256": "7b8d09cb81865e7bb798b7f9645a1f91a2317a76e353ae0b094c06b5abb4f200",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_af253f1e167bf4d5d66eaa6e": {
+      "index": 583,
+      "spec_sha256": "9f40de461038f290ee2fb969bcfc9776e1f49dd947b01aa1300e840e4d79b4ce",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_c63a8c4afce240f91ca4b1d4": {
+      "index": 584,
+      "spec_sha256": "16f6bd2ed3c9a701a3943ab488dab137b5d6cfe802028fb763b3334efa1883f8",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_0ff7b70c1f56bc1ab57e6dc3": {
+      "index": 585,
+      "spec_sha256": "f49a1122b55b8436a21be86e28f4302a9e63a0e2b17f63db8264ce2415b264fc",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_79fabc1908c5c352c1cfda71": {
+      "index": 586,
+      "spec_sha256": "95ebefd214842d5b2931425fdec601c5cb6588fd3082f07a268510c9ef3b98fd",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_209c29fda0495c903602c25c": {
+      "index": 587,
+      "spec_sha256": "ebd3dcefb194b174065de26e5811ef3a57b403b49aa72f4cdacb7071991ec4ae",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_cee5de9dc2baf958657c1a00": {
+      "index": 588,
+      "spec_sha256": "434ddd06b5463201ace5b5f27673aea06658b938aa4a85cfd1bbba2ef13935c0",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_3996d44882a7279893eb3d31": {
+      "index": 589,
+      "spec_sha256": "164fe7a5087b55247d6be364e1708a1b9393ccbb34f7e823ed750ec451b02d4f",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_5c6d286858ee0b9d216f6646": {
+      "index": 590,
+      "spec_sha256": "9aaa86f2d78d890ac34fa5ef836e5528f08d746caddc1bb619f25a3cc15fbd3f",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_07c959d40bc9ae6a69baa423": {
+      "index": 592,
+      "spec_sha256": "07188207ab1f001b7cd77a85cd972dcd21cf6c62034df15952997845cca6438c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_c24b2dc5f099154e7c5bfd1c": {
+      "index": 593,
+      "spec_sha256": "bd66c62dadd86b6b28a47beabf0c24a3715dbfbb3ba28507be4f5bafe57c6dfb",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_67ea504d301d9103b2a95079": {
+      "index": 594,
+      "spec_sha256": "21af7cc1cb1f5891f661a3646c6d10c28dcc69bcf16d94acd75b0bb193ae4c0d",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_93a355d3f690eabbeb68eb88": {
+      "index": 595,
+      "spec_sha256": "b8bc81d8c034f41b0a93fa7eea8a9d020c38752175129e0587c6c42f688f690a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_46e266ad3d4f7cdea9b2a391": {
+      "index": 596,
+      "spec_sha256": "6075ceec93c0f32ef777bb6c29b7be3d618d911f288e06598c0266e6630e11f3",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_438f58d12e634a3af23f7364": {
+      "index": 597,
+      "spec_sha256": "a45823ebb1fcc535bc4488011967a45626c7fc51d54de7833852e3a1d3b55289",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_b12f73194a2f1315294c3e57": {
+      "index": 598,
+      "spec_sha256": "8919a04bce3720b090b4c0539f16a5cf7c7474dc6e4d2ab60f3c68e2115583db",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_18fb8bc6c6e424db957f806c": {
+      "index": 599,
+      "spec_sha256": "f2e2719f2ddd311bc494769a889795cc2ea3f45cbf43cd13ea9ed0796cb6d0f9",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_9e947de696654a2c104b7757": {
+      "index": 600,
+      "spec_sha256": "26a671bbbbe7c6d87fe2b16e867bbd9b797a94a2acb8eaedaf035defc121131b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_a8e06979dd5da4f16c28889d": {
+      "index": 601,
+      "spec_sha256": "d6d75a74bd547c6079859f57fcecb5cf02ad8ecee444a879c4c58239a04234d4",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_6a8075db0e3f2561476f19d3": {
+      "index": 602,
+      "spec_sha256": "894efe6d37256ac9e736dde0c6f1367573a3a79f8b396f049c464a85129939e1",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_ad2b7d69eabc2ee0834d4695": {
+      "index": 603,
+      "spec_sha256": "03968375d62329ac2ffc6b9cf24fe861d95791b5af892c6d0a2e268fc61cccdf",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_1a8414be2efb088ad2cfcd14": {
+      "index": 604,
+      "spec_sha256": "572101d08538fdde80bf7057f76fe5ffe61afe34c91387900dcbeaa9191aaf75",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_cb189c80fdc0ccd7d7cd5ec1": {
+      "index": 605,
+      "spec_sha256": "393bfc3b5570a5bb2012973cbec727fa24d0794d5bb544a5f0aef5bf3a8887bc",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_121decc8f049e8765f3c7ce8": {
+      "index": 606,
+      "spec_sha256": "f1055d56580cd956beecb9b3fec29657abaf4023040e5b03c0d1b1935c904588",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_aea53d8111260099d8f6428b": {
+      "index": 607,
+      "spec_sha256": "ae7cc450b1a3ba248f4fe0167b69525467c23b562788cf21467051463684edf0",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_a8e21429c9ef11d34e28c45a": {
+      "index": 608,
+      "spec_sha256": "a705e38ca951026a9c97ab8f4be8320cb5de057fb5a2fddaafc81b7b9d360331",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_9e305e22837876b073611a41": {
+      "index": 609,
+      "spec_sha256": "39a0bdfd4e725f0cbb3b515665e068f7d216356947ed57c425c18aae9b2dd171",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_4f0d4cc66e397a54c7b8c41a": {
+      "index": 610,
+      "spec_sha256": "2304408a65c749d255c8922b429d8968930f1773e3237cca1b2e99f84b250133",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_ac9522609f92065f6e314949": {
+      "index": 611,
+      "spec_sha256": "b0ab8168602a8c75e72c1acbcd937d5327878e5f1b09b49af4f28591890edfa8",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_1247e10215e6e7b234381590": {
+      "index": 612,
+      "spec_sha256": "9bed6635ad5baee7aaf872059712af2713c90a54f715eea38bca4198a6478f4c",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_13880418ec613a53d885b2bb": {
+      "index": 613,
+      "spec_sha256": "c0a3a521064c26fae334f0071d2e4df228f2475002e15fea7c63fa431257b7fc",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_3e8ecc9cc887e954f472c660": {
+      "index": 614,
+      "spec_sha256": "9b31cb77dd7f41b5182fa2e25bdfc96d8af9a770e156b1b34d2d6d6652c6c09e",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_6bce50b27f8bfd742e6fed2e": {
+      "index": 615,
+      "spec_sha256": "e64bd3d3f7f0fbdf01733958e863e65a30b3f37ef0410d11ee353db8446cc731",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_5a8b1c6faf777581ad686e0f": {
+      "index": 616,
+      "spec_sha256": "513be110ac904eed2ca1ef96fbc494a0abc5912ac2a2e08adc297891a6209187",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_7fe30bce3928649052b149f1": {
+      "index": 617,
+      "spec_sha256": "6ed354f0e661d7975dc844c254745817b28c4d318d0c77ef7292711911dcba17",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_0138763abacc6c409a407893": {
+      "index": 618,
+      "spec_sha256": "1ec4dbeccef9d28ce48a0e21b90ec46b3664bee3618d370bac60beb25d8e040f",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_36610b3785519c9d41c9cbdf": {
+      "index": 619,
+      "spec_sha256": "3edc741f69e5cf9328f86717d82673da673dfb8658e9a95999f38e182647fc4a",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_97c0345f1ca3a8852d78d62d": {
+      "index": 620,
+      "spec_sha256": "944be4f11cc6b5a23a0ce5bce860344e03d7d0ec75ae9ca789700509a7cca099",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_34f0b40c5bc207c35e3249a6": {
+      "index": 621,
+      "spec_sha256": "426aeaef0db480b2e0c6e62471735719d94ecc999b7826bdd74107f4b7c13e8b",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_064326aa043427fbc2e9a332": {
+      "index": 622,
+      "spec_sha256": "f8f2ddad4ab69837bfbe93b3099626c95f1ed101ff2b7d02cab7036558f7e87f",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_7ba7e85748d4a441a512ed99": {
+      "index": 623,
+      "spec_sha256": "9a79b22f3285662f8f480a7ca051c7b433255b94934f7e20b36ccaa6c8fd0831",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_a676a19d77f4fcae1e9b3e98": {
+      "index": 624,
+      "spec_sha256": "c3290c60343f4ac950abfb1952c3348237c35f985fb375668c196b5ceab3e220",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_6b0e4654c957cc9cdf226556": {
+      "index": 625,
+      "spec_sha256": "92f649af54b48d04680130826cec1894a529df7ef6b35d7f7db832251f40aa23",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_214049b17cac1b992a5161bf": {
+      "index": 627,
+      "spec_sha256": "5b1b75d627ba0ffad717c010b3f6aec5a2b54d00ef537860b2d552a202461d13",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_f0a1d9152e85dbb3f89bfe78": {
+      "index": 628,
+      "spec_sha256": "d13270f597e7a8746d3f85670cec55101a603e3d98b630c994fcb82d8af6bdce",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_a50ade0360628cb88b551e0b": {
+      "index": 630,
+      "spec_sha256": "9a706733f588a14f9c815d6306fb6a3860c343e3c3b7e4427e3401d92470b17f",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_0088a90546d881e9980dd99e": {
+      "index": 631,
+      "spec_sha256": "74113d8fd438948bcf9c31522c2696c6bf34a8d0c75782756c4f2a3370bbce28",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_5d05f08a358a8525c5248d02": {
+      "index": 632,
+      "spec_sha256": "93ae5075af849b42eb63b1d93fedd16482efd69d39861a9a8c851e06e92fef67",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_0c33caf56fc8c2ddf84b8b09": {
+      "index": 633,
+      "spec_sha256": "3c233622150af808e5737eafd0dc54c68d72d361a70dc95e8afbd96d7adf3115",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_c37c57062dacf641d5b9797e": {
+      "index": 634,
+      "spec_sha256": "4e29dc4461005838a3097380a546c63319c7cddc31970e7880964202fe5217ab",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_307692fde7ce5a910f4d2ae6": {
+      "index": 635,
+      "spec_sha256": "743275b2037a8275082d7a726bf035c33eca4f6a41759be439b5ce32d9ea79f8",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_aa0e7bd33900fe0af7d49d30": {
+      "index": 636,
+      "spec_sha256": "94ead67c3e3834b2a34b38f66ea652dd744ce208c2b318a8202c6964e9b9f46e",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_4bc981b6b7ac64080ee9940b": {
+      "index": 637,
+      "spec_sha256": "27afdbe2d7f41c01711df57e6d865d84cecaf0bd12920f595460c9a725a575b8",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_b8775fc07b20c754387c6780": {
+      "index": 638,
+      "spec_sha256": "1960b4cc69f72c70446b26bf8df5f4819789bd65af371cd4bb5460a245409f40",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_4d5d652d1b52fe2dbd1534f8": {
+      "index": 639,
+      "spec_sha256": "e244d4306f742e601ffe24e7ac7a1ba6bc09f2659421ce6fbdf43c6dddb48a60",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_5e3789d8a3f0b80c79ffd133": {
+      "index": 640,
+      "spec_sha256": "84df7cd388d6f8c9c92dd82c8418806675f28d10c873a0ee05109b94738ff081",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_348d74a85a6abe2c702914e1": {
+      "index": 641,
+      "spec_sha256": "06ca90317d2390e46eecbdaedb56654f5003123fad19677e21c8a815f2fee743",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_35f74b3f4f0c8ec77ed6f542": {
+      "index": 642,
+      "spec_sha256": "46398b2d4031dc8b5a5aab1bca7b395591926c980ae86de57cf73a5c8810a409",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_e2bdc43ed0adb292b180f95d": {
+      "index": 643,
+      "spec_sha256": "a96ff55cd8119e7cc0cf7575f3065a6ddf152d66f74cd2472f7da31c0aaa0bfe",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_373d3d540f819a3ae03be057": {
+      "index": 644,
+      "spec_sha256": "51da239a567c4b9920e5dfa6b8955f574a7f54c7194b68908aa6188ddfd2e447",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_159a6d0f9503787972695efc": {
+      "index": 645,
+      "spec_sha256": "8dce813413fc06bd3510cd5931d48b7d818c013d8a127eab48e5864474d8609e",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_116aa3e1ad2326e435711a85": {
+      "index": 647,
+      "spec_sha256": "6b39714a3fc035c1819fafdf620339abfaaff2f6f5e0c695b949a26ce7f85f57",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    },
+    "auto_story_24c83b2f27e078c7ea425ac7": {
+      "index": 648,
+      "spec_sha256": "7cc560a5e8c10be0916aef4156c44b93f33dfe750333d7401845c5cbeb3e44a5",
+      "source_scene_retained": true,
+      "actual_output_reviewed": true,
+      "timeline_reviewed": false
+    }
+  },
+  "pending": {
+    "auto_story_781b5e34b39a5ff9c9a1b2d2": "抬头和推进镜头后旧五官超出当前面罩，需要逐帧重画尺度",
+    "auto_story_59cc39c5667bae05070b10d1": "no original element is replaceable",
+    "auto_story_45c62eb54fcf64191c3481d9": "揉脸的双手连续遮住口鼻，须完成手指前景遮挡层",
+    "auto_story_4b919262cfa34a9a73fa3cbf": "揉脸手指穿过原面部，需逐帧描绘前景手指遮挡",
+    "auto_story_5ba71f7fb7aaeed49aadab41": "1 validation error for TemplateSpec\n  Value error, protected polygon outside slot [type=value_error, input_value={'width': 80, 'height': 8...irection='horizontal')]}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error",
+    "auto_story_f87d31384b673f4893763eae": "变身中多次镜头切换且没有原字幕，需要重新手工标定头像轨迹",
+    "auto_story_3c50be7b4f77364606b402a1": "头像区域偏离滑稽头，原有五官仍残留",
+    "auto_story_53d6208b2102af5482618288": "翻身猫头受手臂遮挡，当前没有独立安全的面部或字幕",
+    "auto_story_eb613e4e39ca2509cb758bb7": "motion or loop timing changed",
+    "auto_story_d1aa8a13ac600a8d46c16b17": "全程背面角色，无原字幕；不能把水印当成可编辑文案",
+    "auto_story_fef46113753df1e2da0c277d": "甩尾背影，没有清晰面部和原字幕",
+    "auto_story_74424dda087eb1c389cc90ba": "motion or loop timing changed",
+    "auto_story_b66ea8996b823f48c3300efc": "小黄鸡翻滚时原五官残留，需重新测量每帧头部",
+    "auto_story_3d8c84beea1d3cc5a18992e8": "跳舞包含背面和倒地，需逐帧方向、隐藏和缩放",
+    "auto_story_128a5e022e70b61d33b40504": "原鸡头位于当前面罩左侧，需重新测量面部",
+    "auto_story_51adb52aea1224f89a38c04e": "弹琴时原鸡嘴与眼睛未完整移除，需要专门面罩",
+    "auto_story_8636fa077bcce1b05bb3fdb4": "no original element is replaceable",
+    "auto_story_e5a4c1a795bcbd660093aa52": "跳起时头部放大和出界，当前面罩不能完整移除原五官",
+    "auto_story_38e11f183a001f5823c729e1": "跳舞转身后头部轨迹明显偏离，需要独立逐帧标注",
+    "auto_story_9b56f59814363e7464fb6264": "门遮挡与探头显隐需要逐帧遮挡轮廓",
+    "auto_story_a5072f48919e59ed9f41caef": "三头像碰撞产生交叠，需逐帧前后层级",
+    "auto_story_15b9d7309dff328937778eaf": "突然贴近镜头，头像大幅超出画布，须完整的裁切变换",
+    "auto_story_3dd5b1e40f93bdd6f6178ccf": "安慰动作包含倒立、折叠和重叠，需独立旋转与遮挡轨道",
+    "auto_story_07d626c9310dcddea2beb2c1": "撞桌时面部倾斜，原五官超出当前局部面罩",
+    "auto_story_5e29a4710f12c855d367fce1": "3D舞蹈包含背面，需要依据每帧方向隐藏面部",
+    "auto_story_9dd2d8e14e41d78634b2d349": "3D侧身舞包含背面，需要方向与可见性标注",
+    "auto_story_46450db1e2a870c1d67d4098": "3D转身舞从背面开始，当前轨迹不能作为完整换脸模板",
+    "auto_story_e58303f57646d48b85e4212f": "弹幕覆盖动作，需拆出完整弹幕层，不能只改一处哈哈",
+    "auto_story_e9b0600e1d9306842e75b2ad": "小尺寸人头定位在背景上，需重画原面部位置",
+    "auto_story_2101df7748b16e13bd24d6bc": "企鹅与海豹的转身遮挡需要双主体专用蒙版",
+    "auto_story_930f7de0c997b5fde1cee35f": "滑板企鹅侧脸与喙及运动出界需专门遮挡分解",
+    "auto_story_6c5e6ec8af0d81ef97031abd": "翻滚中大部分头像在背面或地面遮挡",
+    "auto_story_04a28c1950ec6eb94c688deb": "猫退入门后头像仍漂浮，需逐帧头部定位和离场隐藏",
+    "auto_story_d60dfb5579311e87bef5ec01": "闹钟挡住口鼻，需逐帧保留闹钟和手掌",
+    "auto_story_fd01e879a1d3985ffd330d13": "捂嘴手指覆盖面部，不能将水印当成文案",
+    "auto_story_34cb00b56e61e3c52bc0a22e": "吃东西的手和食物在脸前，需要逐帧前景层",
+    "auto_story_c93d062fc99de920b8fdf79d": "哭泣与手部遮挡，尚需完整面部蒙版",
+    "auto_story_ad13d4789b575f9431f9fa3e": "宝宝退到门后后头像漂浮在门框上，需门框遮挡与离场标注",
+    "auto_story_dbf8aec9a5374963cd541b44": "问号动效被 OCR 当成字母，需重新拆分固定问号与完整配文",
+    "auto_story_c5e78d302321cb6d635ab477": "宝宝侧移时头像跟踪偏离，需逐帧重画位置",
+    "auto_story_7b1155595ce7adfd65488dae": "两只猫相互遮挡接吻，需要独立双头像轨迹",
+    "auto_story_8ff8905df88c7ddc86d090a4": "头盔标记被 OCR 当成配文，需重新标定字幕轨迹",
+    "auto_story_f8aa890a147936562c36fe4c": "全家多角色剧烈变形，没有可替换的原字幕",
+    "auto_story_3ecd3e7ad5467526fbd11753": "捧王冠的主体转身与王冠遮挡需要专门分层",
+    "auto_story_cd8e71002eb39305bebf35a9": "喝水时瓶子持续遮住嘴部，不能剪掉瓶子",
+    "auto_story_f5d234a5c42606aa0ee82365": "no original element is replaceable",
+    "auto_story_f83d0056515165c818799356": "佩奇的眼鼻分散且跨越现有面罩，不能把嘴部覆盖算作换脸",
+    "auto_story_b6cc861f899a46379feb4076": "多人抬棺的遮挡关系和小头像需要独立多人分层",
+    "auto_story_ada9439e7088fad0892cf14c": "replacement slots overlap; author an occlusion mask",
+    "auto_story_b0676c4bd6e31ff4eac64bc4": "舌头和手指遮住嘴部，需要独立前景遮挡层；原图无字幕",
+    "auto_story_a29ddb4765e70ad97dbdd257": "原黑色问号主体的脸与眼睛不能由当前侧边贴图替代",
+    "auto_story_cdc91c0a65bb30f6d9193a00": "no original element is replaceable",
+    "auto_story_c408ef121b40ad5e0de50ac3": "只有交通标志，没有原始人脸或可编辑文字",
+    "auto_story_1579278ec49d1d6f0a628199": "倒置头部及张嘴形变需要专门头像变换",
+    "auto_story_d8fad3cfef4a1a1c1dc800d8": "鸡腿覆盖整个口鼻，尚需鸡腿遮挡层",
+    "auto_story_a548207d0cd6f94527a55b21": "头像框落在人物右侧背景，需重新定位并规划整段原字替换"
+  }
+}

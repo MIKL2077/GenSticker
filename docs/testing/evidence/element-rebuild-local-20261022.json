@@ -1,0 +1,222 @@
+{
+  "time_utc": "2026-10-22T08:24:49.416689+00:00",
+  "python": "3.12.14",
+  "revision": "cbd1c84964cd89799a270409b552a7839c274240",
+  "status": "passed",
+  "results": [
+    {
+      "command": "node frontend/tests/background-service.cjs",
+      "cwd": ".",
+      "status": "passed",
+      "seconds": 0.028,
+      "cases": null,
+      "output": "PASS local cutout, private bounded result download, PNG normalization, safe URL/identity checks, error details and deadline cleanup\n"
+    },
+    {
+      "command": "node frontend/tests/client-renderer.cjs",
+      "cwd": ".",
+      "status": "passed",
+      "seconds": 0.023,
+      "cases": null,
+      "output": "本地模板回退服务器: 图片过大，改用服务器\nPASS bounded DSL, local composition, success receipt, canvas release and oversized image fallback\n"
+    },
+    {
+      "command": "node frontend/tests/editor-workflows.cjs",
+      "cwd": ".",
+      "status": "passed",
+      "seconds": 0.022,
+      "cases": null,
+      "output": "PASS cache quota retry, original/active/queue preservation, native image sharing and cancellation\n"
+    },
+    {
+      "command": "node frontend/tests/image-editing.cjs",
+      "cwd": ".",
+      "status": "passed",
+      "seconds": 0.023,
+      "cases": null,
+      "output": "PASS: crop bounds, independent image undo/restore, failed edit preserves input, canceled processing and late picker cleanup\n"
+    },
+    {
+      "command": "node frontend/tests/library.cjs",
+      "cwd": ".",
+      "status": "passed",
+      "seconds": 0.027,
+      "cases": null,
+      "output": "PASS: guest history deduplication and limit, favorite toggle, login migration, account cache isolation, logout\n"
+    },
+    {
+      "command": "node frontend/tests/live-gif.cjs",
+      "cwd": ".",
+      "status": "passed",
+      "seconds": 0.08,
+      "cases": null,
+      "output": "PASS local GIF encoding, 9-second window, arbitrary crop, decoder millisecond seek, cancellation, embedded motion and album-only picker\n"
+    },
+    {
+      "command": "node frontend/tests/local-background.cjs",
+      "cwd": ".",
+      "status": "passed",
+      "seconds": 0.124,
+      "cases": null,
+      "output": "PASS device tensor normalization, alpha mask/crop, transparent local reuse, cached model, unsupported/failing inference fallback and canvas cleanup\n"
+    },
+    {
+      "command": "node frontend/tests/local-live-queue.cjs",
+      "cwd": ".",
+      "status": "passed",
+      "seconds": 0.019,
+      "cases": null,
+      "output": "PASS local GIF remains usable after sync timeout, idempotent retry, account switch isolation, linked deletion and interrupted job recovery\n"
+    },
+    {
+      "command": "node frontend/tests/network-errors.cjs",
+      "cwd": ".",
+      "status": "passed",
+      "seconds": 0.02,
+      "cases": null,
+      "output": "PASS domain failure stops retries, gateway denial, timeout, TLS diagnostics and successful requests\n"
+    },
+    {
+      "command": "node frontend/tests/queue-preload.cjs",
+      "cwd": ".",
+      "status": "passed",
+      "seconds": 0.02,
+      "cases": null,
+      "output": "PASS queue preload deduplication, immediate cached metadata, bounded thumbnail-only downloads, persistence and account/session isolation\n"
+    },
+    {
+      "command": "node frontend/tests/recommend-service.cjs",
+      "cwd": ".",
+      "status": "passed",
+      "seconds": 0.02,
+      "cases": null,
+      "output": "PASS recommendation upload compression, authenticated downloads, stable job retry, quota error\n"
+    },
+    {
+      "command": "node frontend/tests/studio-queue.cjs",
+      "cwd": ".",
+      "status": "passed",
+      "seconds": 0.02,
+      "cases": null,
+      "output": "PASS durable manual jobs keep running when sheet closes, completed results download through auth and guest records stay separate\n"
+    },
+    {
+      "command": "node frontend/tests/subject-picker.cjs",
+      "cwd": ".",
+      "status": "passed",
+      "seconds": 0.328,
+      "cases": null,
+      "output": "PASS shared AI/template subject selection, explicit confirmation, PNG alpha preservation, transformed-subject reuse and cancellation\n"
+    },
+    {
+      "command": "node frontend/tests/subject-selection.cjs",
+      "cwd": ".",
+      "status": "passed",
+      "seconds": 0.04,
+      "cases": null,
+      "output": "PASS bounded face boxes, manual/server fallback, authenticated transient upload and device detection without photo upload\n"
+    },
+    {
+      "command": "node frontend/tests/template-mine.cjs",
+      "cwd": ".",
+      "status": "passed",
+      "seconds": 0.026,
+      "cases": null,
+      "output": "PASS warehouse popularity/time sorting, owned plus favourite union, authenticated previews and stale-account isolation\n"
+    },
+    {
+      "command": "node frontend/tests/template-paging.cjs",
+      "cwd": ".",
+      "status": "passed",
+      "seconds": 0.028,
+      "cases": null,
+      "output": "PASS instant card names, cached page switches and background loads independent of foreground spinner\n"
+    },
+    {
+      "command": "node frontend/tests/template-search.cjs",
+      "cwd": ".",
+      "status": "passed",
+      "seconds": 0.022,
+      "cases": null,
+      "output": "PASS instant local template search, multi-term GIF/Chinese matching, normalization, category intersection, pagination reset and clear\n"
+    },
+    {
+      "command": "node frontend/tests/template-version-cache.cjs",
+      "cwd": ".",
+      "status": "passed",
+      "seconds": 0.022,
+      "cases": null,
+      "output": "PASS catalog version changes invalidate cached and in-flight thumbnails without stale completion overwrites\n"
+    },
+    {
+      "command": "node frontend/tests/thumbnail-cache.cjs",
+      "cwd": ".",
+      "status": "passed",
+      "seconds": 0.021,
+      "cases": null,
+      "output": "PASS: file paths, shared requests, failed download retry, metadata cache\n"
+    },
+    {
+      "command": "node frontend/tests/ui-flows.cjs",
+      "cwd": ".",
+      "status": "passed",
+      "seconds": 0.041,
+      "cases": null,
+      "output": "PASS one-click default login, optional profile editing, immediate offline logout, stale-session isolation, batch save continuation, unlimited generation, stable reroll retry and no duplicate upload\n"
+    },
+    {
+      "command": "node frontend/tests/video-workflow.cjs",
+      "cwd": ".",
+      "status": "passed",
+      "seconds": 0.02,
+      "cases": null,
+      "output": "PASS native timeline trimming, millisecond duration, cancellation, video-only album selection and fallback, upload progress, durable queue and stale-account isolation\n"
+    },
+    {
+      "command": "node frontend/tests/weixin-generation.cjs",
+      "cwd": ".",
+      "status": "passed",
+      "seconds": 0.022,
+      "cases": null,
+      "output": "PASS: multiple images, texts, binary image, native share, text-only generation, busy server and background completion\n生成表情包失败: Error: 服务繁忙，请稍后重试\n    at weixinGenerate (evalmachine.<anonymous>:86:13)\n    at async Object.generateFromTemplate (evalmachine.<anonymous>:133:11)\n    at async verify ($REPO/frontend/tests/weixin-generation.cjs:65:3)\n生成表情包失败: { errMsg: 'request:fail timeout' }\n生成表情包失败: Error: 操作太频繁，请稍后再生成\n    at weixinGenerate (evalmachine.<anonymous>:86:13)\n    at async Object.generateFromTemplate (evalmachine.<anonymous>:133:11)\n    at async verify ($REPO/frontend/tests/weixin-generation.cjs:88:3)\n"
+    },
+    {
+      "command": "$REPO/.venv/bin/python -m unittest discover -s tests -p test_account.py",
+      "cwd": "backend/meme-generator",
+      "status": "passed",
+      "seconds": 1.061,
+      "cases": 6,
+      "output": "$REPO/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient as TestClient  # noqa\n......\n----------------------------------------------------------------------\nRan 6 tests in 0.553s\n\nOK\n"
+    },
+    {
+      "command": "$REPO/.venv/bin/python -m unittest discover -s tests/features -p test_*.py",
+      "cwd": "backend/meme-generator",
+      "status": "passed",
+      "seconds": 28.732,
+      "cases": 113,
+      "output": "studio job acd4414a677f454c9fbce261c244ab17 ValueError\nstudio job 1d75a11f3182425a917e426419e0fa31 ValueError\nstudio job 4cd8f421e5634c35863bdff68dd8df4b ValueError\nstudio job 0f7422ca8a304d6cb884de43ce2c2c89 ValueError\n$REPO/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient as TestClient  # noqa\n.......$REPO/backend/meme-generator/meme_generator/features/vision.py:104: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.\n  coverage=sum(value>80 for value in alpha.resize((64,64)).getdata())/4096\n............$REPO/backend/meme-generator/tests/features/test_caption.py:12: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.\n  blue=Image.new('RGB',(240,240),'white');paint_caption(blue,'hi',CaptionStyle(color='#1890ff',background='light'));self.assertTrue(any(pixel[2]>160 and pixel[0]<90 and pixel[1]<175 for pixel in blue.getdata()),'light background preserves the selected non-white text color')\n.............................$REPO/.venv/lib/python3.12/site-packages/pil_utils/build_image.py:292: PendingDeprecationWarning: the matrix subclass is not the recommended way to represent matrices or deal with linear algebra (see https://docs.scipy.org/doc/numpy/user/numpy-for-matlab-users.html). Please adjust your code to use regular ndarray.\n  A = np.matrix(matrix, dtype=np.float32)\n/Users/shangkun/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/numpy/matrixlib/defmatrix.py:70: PendingDeprecationWarning: the matrix subclass is not the recommended way to represent matrices or deal with linear algebra (see https://docs.scipy.org/doc/numpy/user/numpy-for-matlab-users.html). Please adjust your code to use regular ndarray.\n  return matrix(data, dtype=dtype, copy=False)\n.$REPO/.venv/lib/python3.12/site-packages/pil_utils/build_image.py:292: PendingDeprecationWarning: the matrix subclass is not the recommended way to represent matrices or deal with linear algebra (see https://docs.scipy.org/doc/numpy/user/numpy-for-matlab-users.html). Please adjust your code to use regular ndarray.\n  A = np.matrix(matrix, dtype=np.float32)\n/Users/shangkun/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/numpy/matrixlib/defmatrix.py:70: PendingDeprecationWarning: the matrix subclass is not the recommended way to represent matrices or deal with linear algebra (see https://docs.scipy.org/doc/numpy/user/numpy-for-matlab-users.html). Please adjust your code to use regular ndarray.\n  return matrix(data, dtype=dtype, copy=False)\n................................................................\n----------------------------------------------------------------------\nRan 113 tests in 27.636s\n\nOK\n"
+    },
+    {
+      "command": "npm run build:mp-weixin",
+      "cwd": "frontend",
+      "status": "passed",
+      "seconds": 2.602,
+      "cases": null,
+      "output": "\n> uni-preset-vue@0.0.0 build:mp-weixin\n> uni build -p mp-weixin\n\nCompiling...\n\nuni-app 有新版本发布，请执行 `npx @dcloudio/uvm@latest` 更新，更新日志详见：https://download1.dcloud.net.cn/hbuilderx/changelog/5.26.2026091802.html\n​Browserslist: browsers data (caniuse-lite) is 13 months old. Please run:\n  npx update-browserslist-db@latest\n  Why you should do it regularly: https://github.com/browserslist/update-db#readme​\nDONE  Build complete.\nRun method: open Weixin Mini Program Devtools, import dist/build/mp-weixin run.\n"
+    },
+    {
+      "command": "npm run build:h5",
+      "cwd": "frontend",
+      "status": "passed",
+      "seconds": 3.643,
+      "cases": null,
+      "output": "\n> uni-preset-vue@0.0.0 build:h5\n> uni build\n\nCompiler version: 4.76（vue3）\nCompiling...\n\nuni-app 有新版本发布，请执行 `npx @dcloudio/uvm@latest` 更新，更新日志详见：https://download1.dcloud.net.cn/hbuilderx/changelog/5.26.2026091802.html\n​Browserslist: browsers data (caniuse-lite) is 13 months old. Please run:\n  npx update-browserslist-db@latest\n  Why you should do it regularly: https://github.com/browserslist/update-db#readme​\n\n欢迎将web站点部署到uniCloud前端网页托管平台，高速、免费、安全、省心，详见：https://uniapp.dcloud.io/uniCloud/hosting\nDONE  Build complete.\n"
+    }
+  ],
+  "additional_verification": {
+    "command": "GENSTICKER_BOOTSTRAP_SEEDS=0 PYTHONPATH=backend/meme-generator .venv/bin/python -m unittest discover -s backend/meme-generator/tests/features -p test_*.py",
+    "cases": 114,
+    "status": "passed",
+    "purpose": "authored-frame crop guide and existing editor regression"
+  }
+}

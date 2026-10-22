@@ -1,0 +1,5326 @@
+{
+  "9": {
+    "human": true,
+    "key": "auto_story_a0b7dd6ab504eb4490729cf3",
+    "source_sha256": "a0b7dd6ab504eb4490729cf329a6ee2f1cf66cf0ba13835d28fda4bfb844f971"
+  },
+  "24": {
+    "human": true,
+    "key": "auto_story_386bbc396a3407767de0ee11",
+    "source_sha256": "386bbc396a3407767de0ee1190822e3e6c915bd9108cc0432e9e28af110d2289"
+  },
+  "25": {
+    "human": true,
+    "key": "auto_story_c944321e2a86089d6b6b7d73",
+    "source_sha256": "c944321e2a86089d6b6b7d73b8d435b07b863f04329a88413ed56bf019bf01f7"
+  },
+  "33": {
+    "human": true,
+    "key": "auto_story_a8941810ae604807a9e66d43",
+    "source_sha256": "a8941810ae604807a9e66d4348b205ea252fe39b91c883a9c00f0fc6950c5f66"
+  },
+  "34": {
+    "human": true,
+    "key": "auto_story_67091f5263d3a8507e1f7f10",
+    "source_sha256": "67091f5263d3a8507e1f7f1089f4273065f13ad71efc421c87883fd0d1982371"
+  },
+  "35": {
+    "human": false,
+    "captions": [
+      {
+        "text": "喂！",
+        "box": [
+          47,
+          108,
+          51,
+          39
+        ]
+      }
+    ],
+    "key": "auto_story_33dea507360ed3aa4c0e40bd",
+    "source_sha256": "33dea507360ed3aa4c0e40bd85fea115d1ee371fb7f3d8e778d5f42483b513e3",
+    "faces": []
+  },
+  "37": {
+    "human": true,
+    "key": "auto_story_f2f06ea90f9a73d5bcc5d7b0",
+    "source_sha256": "f2f06ea90f9a73d5bcc5d7b0799802592a839e9032518e0979d3eed3d06f17ce"
+  },
+  "40": {
+    "human": true,
+    "key": "auto_story_1bd5ff7095171644bdd58aed",
+    "source_sha256": "1bd5ff7095171644bdd58aed15d423964d345f6845f5dd6140381145bf61a8cd"
+  },
+  "44": {
+    "human": true,
+    "key": "auto_story_017aff25460a9abf80b2a1bc",
+    "source_sha256": "017aff25460a9abf80b2a1bc87b5f3b5fd08a078aa4d7cca7f90f9f828d199de"
+  },
+  "53": {
+    "human": true,
+    "key": "auto_story_debfc3cee2893f26751c92d0",
+    "source_sha256": "debfc3cee2893f26751c92d05cee69c8a4a44554548e4bd475de59c15fc662d6"
+  },
+  "55": {
+    "human": true,
+    "key": "auto_story_c41355f05dbd6e6bf5daebc0",
+    "source_sha256": "c41355f05dbd6e6bf5daebc0f0af0226a9296d1ce7eb2ed97a8fd7105cbd79a4"
+  },
+  "63": {
+    "human": true,
+    "key": "auto_story_006cdedd3cfb9f22d6a1af6e",
+    "source_sha256": "006cdedd3cfb9f22d6a1af6e3c2e2cce809338b69d2e14529fa9c1477d09be5a"
+  },
+  "69": {
+    "human": true,
+    "key": "auto_story_4ed3e24ab9c674a9a0e6f649",
+    "source_sha256": "4ed3e24ab9c674a9a0e6f649c12eb021dd73056c7cea6e54adc4ca78b67ae108"
+  },
+  "76": {
+    "human": true,
+    "key": "auto_story_a9ce520d2f103602def18dfd",
+    "source_sha256": "a9ce520d2f103602def18dfdd3a435ef66ff6f1dc66addad297761350f601205"
+  },
+  "84": {
+    "human": false,
+    "faces": [],
+    "key": "auto_story_c212cbce70cdc1de8ead7abd",
+    "source_sha256": "c212cbce70cdc1de8ead7abd35170955fe27a1a841beaca8130acff5549eb9c7"
+  },
+  "89": {
+    "human": true,
+    "key": "auto_story_4e83e6d9a3114e7e5f0335cc",
+    "source_sha256": "4e83e6d9a3114e7e5f0335cca9f6362581672b3297c6d665a953404ca4dfa20b"
+  },
+  "99": {
+    "human": true,
+    "key": "auto_story_e46fb30dd283a533d62ff4f5",
+    "source_sha256": "e46fb30dd283a533d62ff4f5401ccbf18597d27cfdf007672c6abf5c969b2836"
+  },
+  "103": {
+    "human": true,
+    "key": "auto_story_43663f9d989b98f0fe982026",
+    "source_sha256": "43663f9d989b98f0fe98202632db8b26d61606b1117e65cb707b2de6094573f7"
+  },
+  "106": {
+    "human": false,
+    "key": "auto_story_2dac18daf84983f14545898e",
+    "source_sha256": "2dac18daf84983f14545898e2904f46f87f0ab95bee264543f4b2c3fe4d5f0ad",
+    "faces": [],
+    "fixed_note": "完整替换原字幕；保留人物、动作和遮挡，不提供头像替换。"
+  },
+  "110": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          0.3,
+          0.22,
+          0.4,
+          0.4
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_23ab34a19c739aead68e09a7",
+    "source_sha256": "23ab34a19c739aead68e09a73e390b87155b73dbaf073559236ce33e87755678"
+  },
+  "115": {
+    "human": false,
+    "key": "auto_story_9179221f22925a4b2808e02d",
+    "source_sha256": "9179221f22925a4b2808e02d4aab0373805d1ebd5724ebf8e26ef325d7380b93",
+    "faces": [],
+    "fixed_note": "完整替换原字幕；保留人物、动作和遮挡，不提供头像替换。"
+  },
+  "116": {
+    "human": true,
+    "key": "auto_story_be44219b15254c6f382ad62b",
+    "source_sha256": "be44219b15254c6f382ad62be330cbb33ad2fa319b6086eea2440730c6667a20"
+  },
+  "121": {
+    "human": true,
+    "key": "auto_story_0629220fd26a0a7d787d3d65",
+    "source_sha256": "0629220fd26a0a7d787d3d655f9f663dff0164143c216ffd0d2bceb444bb1943"
+  },
+  "124": {
+    "human": true,
+    "key": "auto_story_2ab95db21eea8b66e6407abe",
+    "source_sha256": "2ab95db21eea8b66e6407abec068539671be86ec3193cb7acf3798ba7c42a699"
+  },
+  "127": {
+    "human": false,
+    "faces": [],
+    "key": "auto_story_11d73900b0230bff392621b7",
+    "source_sha256": "11d73900b0230bff392621b7e5087b559fd8b481dc34800626d26be8b8eab28b"
+  },
+  "136": {
+    "human": true,
+    "key": "auto_story_a39faf029e2cbdd8df69b70f",
+    "source_sha256": "a39faf029e2cbdd8df69b70fefd82f474d0a5dca317858ccf47a6cfc44328c2c"
+  },
+  "140": {
+    "human": true,
+    "captions": [
+      {
+        "text": "哎呀",
+        "box": [
+          0,
+          144,
+          77,
+          41
+        ]
+      },
+      {
+        "text": "讨厌啦",
+        "box": [
+          77,
+          166,
+          123,
+          34
+        ]
+      }
+    ],
+    "key": "auto_story_5ea563a158e44cc505038038",
+    "source_sha256": "5ea563a158e44cc50503803883121bf66af646a2041de586720fc2e22f2b6b55"
+  },
+  "145": {
+    "human": true,
+    "key": "auto_story_bd5fd8efb00369383f58b396",
+    "source_sha256": "bd5fd8efb00369383f58b396a8611e5c87a9b99f656bc63ab458f52f40627873"
+  },
+  "147": {
+    "human": true,
+    "key": "auto_story_016ed272074c5ee8a675c35b",
+    "source_sha256": "016ed272074c5ee8a675c35b85c82c18b5612aeea2b22ceb87783b35c6dd8d13"
+  },
+  "150": {
+    "human": false,
+    "key": "auto_story_b395b20195cfe31b13cb5216",
+    "source_sha256": "b395b20195cfe31b13cb52162dd67a68418d009962f5a414360bb7d3ecf69d68",
+    "faces": [],
+    "fixed_note": "完整替换原字幕；保留人物、动作和遮挡，不提供头像替换。"
+  },
+  "153": {
+    "human": true,
+    "key": "auto_story_36aaa1dbc8d2fdf29a8bc190",
+    "source_sha256": "36aaa1dbc8d2fdf29a8bc190f2b4e740f9da7fb9ad930c588e6bfbc604c333bb"
+  },
+  "158": {
+    "human": true,
+    "key": "auto_story_8d2081e5d6f15c62c180c78f",
+    "source_sha256": "8d2081e5d6f15c62c180c78f449634f2f261b01c986f8eea13874161a0eac1aa"
+  },
+  "160": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          28,
+          40,
+          75,
+          111
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_770e4959c467b2f75c7adb4b",
+    "source_sha256": "770e4959c467b2f75c7adb4bfe7fec4f1769194f2140304eb8c107028424d063"
+  },
+  "163": {
+    "human": true,
+    "key": "auto_story_4648c7bb0a09a695db8b0a25",
+    "source_sha256": "4648c7bb0a09a695db8b0a25e465c956d2d82d37b905e1a28f27442fff16337d"
+  },
+  "167": {
+    "human": false,
+    "faces": [],
+    "captions": [
+      {
+        "text": "男人的嘴 骗人的鬼",
+        "box": [
+          0,
+          195,
+          240,
+          43
+        ]
+      }
+    ],
+    "key": "auto_story_758fae0e7d8c8d474fff128d",
+    "source_sha256": "758fae0e7d8c8d474fff128d745f023d2dc251bbdc119a7c1c899520a0f1e662"
+  },
+  "171": {
+    "human": true,
+    "key": "auto_story_4ac56144307a053dfaad60b5",
+    "source_sha256": "4ac56144307a053dfaad60b53907840a31d44a168ee919929b6a5bc34397bcc9"
+  },
+  "173": {
+    "human": true,
+    "key": "auto_story_d5294ad0a3e8c4d338f78c79",
+    "source_sha256": "d5294ad0a3e8c4d338f78c7934defb68fa0482da67af73a28b2a7ec3dfbfaa15"
+  },
+  "180": {
+    "human": false,
+    "captions": [
+      {
+        "text": "我再也不相信爱情了",
+        "box": [
+          3,
+          211,
+          234,
+          29
+        ]
+      }
+    ],
+    "key": "auto_story_4e4bd39cde8bc818a9194927",
+    "source_sha256": "4e4bd39cde8bc818a9194927aa6e362bbdff36cd4644dcb48f0c20cf63a693ef",
+    "faces": [],
+    "fixed_note": "完整替换原字幕；保留人物、动作和遮挡，不提供头像替换。"
+  },
+  "222": {
+    "human": true,
+    "key": "auto_story_3bbf7da0fd5ebe62e43c2d29",
+    "source_sha256": "3bbf7da0fd5ebe62e43c2d29b22a6c5023466b5987ed49697b40ea3fb53ca316"
+  },
+  "229": {
+    "human": true,
+    "key": "auto_story_1c6fce69d4014f6b33348b33",
+    "source_sha256": "1c6fce69d4014f6b33348b335b678f4d701a4221f14cfd104e8a281d753843af"
+  },
+  "231": {
+    "human": true,
+    "key": "auto_story_f08656a0a30229b0684a33ce",
+    "source_sha256": "f08656a0a30229b0684a33ce1c84389efc38d1e3c8fdd8f3c803881dce767749"
+  },
+  "232": {
+    "human": true,
+    "key": "auto_story_1f9abab4895b1108cdf3a872",
+    "source_sha256": "1f9abab4895b1108cdf3a8724967d63d34d2b08a8a531407d20158cd84f7e78b"
+  },
+  "234": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          78,
+          10,
+          34,
+          39
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_e9b0600e1d9306842e75b2ad",
+    "source_sha256": "e9b0600e1d9306842e75b2ad955a8e666a0da4e466129d707762c17a855f2221",
+    "pending": "小尺寸人头定位在背景上，需重画原面部位置"
+  },
+  "237": {
+    "human": true,
+    "key": "auto_story_d7b108472b8ae11c59110ed4",
+    "source_sha256": "d7b108472b8ae11c59110ed4fe547f33d2c03f36553d733cc34134c1c8abe704"
+  },
+  "238": {
+    "human": true,
+    "key": "auto_story_3045381d3aa1bf01906e0662",
+    "source_sha256": "3045381d3aa1bf01906e06623486a3f8f56c002048cb8d54cf4b8391025892ba"
+  },
+  "247": {
+    "human": false,
+    "faces": [],
+    "key": "auto_story_b665a641c252f2d86e484216",
+    "source_sha256": "b665a641c252f2d86e484216f1bd74ca2e219af0dc91bb5747c6fcb979c7212c"
+  },
+  "249": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          76,
+          58,
+          105,
+          117
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_b54d647ef73a582b9291150c",
+    "source_sha256": "b54d647ef73a582b9291150c0dfddc17d92e26a005109143d832169c79ca08d3"
+  },
+  "259": {
+    "human": false,
+    "faces": [],
+    "key": "auto_story_00a7cffd93839d40522e5014",
+    "source_sha256": "00a7cffd93839d40522e5014957072f6e93c3f512c7bac0ff75e9a7f3d149a64"
+  },
+  "262": {
+    "human": true,
+    "captions": [],
+    "pending": "捂嘴手指覆盖面部，不能将水印当成文案",
+    "key": "auto_story_fd01e879a1d3985ffd330d13",
+    "source_sha256": "fd01e879a1d3985ffd330d13c30f83513606dd6f547c86134add0e43f93d63d7"
+  },
+  "264": {
+    "human": true,
+    "captions": [],
+    "pending": "吃东西的手和食物在脸前，需要逐帧前景层",
+    "key": "auto_story_34cb00b56e61e3c52bc0a22e",
+    "source_sha256": "34cb00b56e61e3c52bc0a22eb558defdc86ec55d7a20557862c01fffb25b5f9b"
+  },
+  "266": {
+    "human": true,
+    "key": "auto_story_efc307a82de81ce79475f5b4",
+    "source_sha256": "efc307a82de81ce79475f5b41e37575fc1df9b9ba642c57847d05a4f70c95a50"
+  },
+  "272": {
+    "human": true,
+    "key": "auto_story_df0e3581f7e0b88becf69473",
+    "source_sha256": "df0e3581f7e0b88becf69473eb03c880a2c0f8cc935504cece427a9492981b62"
+  },
+  "274": {
+    "human": true,
+    "key": "auto_story_dc0ad771645a3726dceb529a",
+    "source_sha256": "dc0ad771645a3726dceb529accfc0089257c21fff9c5288da9cadf4a16421b96"
+  },
+  "276": {
+    "human": true,
+    "key": "auto_story_c63c0db2406620b36e9dd054",
+    "source_sha256": "c63c0db2406620b36e9dd0548555d7041af98d61f1d4df9ab54f7952b578d8a5"
+  },
+  "280": {
+    "human": true,
+    "note": "复杂遮挡、转身或无可靠面部；优先完整替换原字幕，无字幕则留待专门拆解",
+    "pending": "哭泣与手部遮挡，尚需完整面部蒙版",
+    "key": "auto_story_c93d062fc99de920b8fdf79d",
+    "source_sha256": "c93d062fc99de920b8fdf79d49770ce74d48cc37f169a30b962f339d37e246f7"
+  },
+  "281": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          95,
+          20,
+          77,
+          94
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_ad13d4789b575f9431f9fa3e",
+    "source_sha256": "ad13d4789b575f9431f9fa3ee485638b3e743a31485f09185ae329c538d13760",
+    "pending": "宝宝退到门后后头像漂浮在门框上，需门框遮挡与离场标注"
+  },
+  "284": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          155,
+          105,
+          68,
+          75
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_c5e78d302321cb6d635ab477",
+    "source_sha256": "c5e78d302321cb6d635ab477e0bfc97c92ca4c3dc7811c35a00e5c9031c3beb0",
+    "pending": "宝宝侧移时头像跟踪偏离，需逐帧重画位置"
+  },
+  "287": {
+    "human": true,
+    "key": "auto_story_46f0051ef3a042c7d3cfee49",
+    "source_sha256": "46f0051ef3a042c7d3cfee49db54a2b8d218baf4575554eb5b6e20f059665c4e"
+  },
+  "290": {
+    "human": true,
+    "key": "auto_story_1bdefdcb4c1e976dd581cae4",
+    "source_sha256": "1bdefdcb4c1e976dd581cae4562b08934eac2fd766f58f8f96c53e1f9dd46f80"
+  },
+  "293": {
+    "human": false,
+    "faces": [],
+    "key": "auto_story_44e3df8c82295e13f14b3a97",
+    "source_sha256": "44e3df8c82295e13f14b3a971a9b6e2257991575b94a8315d0ca916a92c4bd22"
+  },
+  "294": {
+    "human": true,
+    "key": "auto_story_491f5770844415816ca691bd",
+    "source_sha256": "491f5770844415816ca691bd4baa7eea78ae58ccd1faac8233a0d79954498c08"
+  },
+  "297": {
+    "human": true,
+    "key": "auto_story_1292e45b5bdbe45dbe20ff54",
+    "source_sha256": "1292e45b5bdbe45dbe20ff544db8759257503fe4358fb18fa5dca27efe3ba287"
+  },
+  "299": {
+    "human": true,
+    "key": "auto_story_c6aea7dd50fe82f74ccd0702",
+    "source_sha256": "c6aea7dd50fe82f74ccd070245d08107c96a1d0d8eefd25a3a94a518f3f9e031"
+  },
+  "301": {
+    "human": true,
+    "key": "auto_story_596eaa49c2d5059c5132e262",
+    "source_sha256": "596eaa49c2d5059c5132e262ae841344397d79ec682cd72cdfce661cf0c717ea"
+  },
+  "302": {
+    "human": false,
+    "faces": [],
+    "key": "auto_story_04284afe590ef94f8a625b34",
+    "source_sha256": "04284afe590ef94f8a625b34ac056db44c136c49e05e914870ed2c18e3056b79"
+  },
+  "307": {
+    "human": true,
+    "key": "auto_story_215573fd31f10d2b5c289d8e",
+    "source_sha256": "215573fd31f10d2b5c289d8e5cfbb5fbca45ffd82504588b54e59e5c9a90c773"
+  },
+  "308": {
+    "human": true,
+    "key": "auto_story_05dbe8e81436bdc2f9b5df29",
+    "source_sha256": "05dbe8e81436bdc2f9b5df297fc7804ecf0a5e5c5a34755a7d718d00d74cf70b"
+  },
+  "312": {
+    "human": true,
+    "key": "auto_story_16c393b573a7e4c9b49e9ff6",
+    "source_sha256": "16c393b573a7e4c9b49e9ff6cacf22caac414a9a9baec774e038bcf659f91e49"
+  },
+  "314": {
+    "human": true,
+    "key": "auto_story_e03d0daac9ef47813c497ab9",
+    "source_sha256": "e03d0daac9ef47813c497ab99f126cf0db878fb698082a8bd03623f729da2b1a"
+  },
+  "315": {
+    "human": true,
+    "key": "auto_story_a0cd0cbf43a6bc7cc625a31f",
+    "source_sha256": "a0cd0cbf43a6bc7cc625a31feba93fda112d43a45577708e99dd356179bc4cdb"
+  },
+  "316": {
+    "human": true,
+    "key": "auto_story_3290df18f861f5f30a2ddb59",
+    "source_sha256": "3290df18f861f5f30a2ddb59896bd19e2b359d3fcf9eb3fcde9588d560dd7c27"
+  },
+  "319": {
+    "human": true,
+    "pending": "喝水时瓶子持续遮住嘴部，不能剪掉瓶子",
+    "key": "auto_story_cd8e71002eb39305bebf35a9",
+    "source_sha256": "cd8e71002eb39305bebf35a9b89139f815b20d30955b9da4f6b4f564cca25e0e"
+  },
+  "320": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          72,
+          129,
+          330,
+          289
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_f24a9163bc5f93571daf38f7",
+    "source_sha256": "59743ed97939702f86978383a2d6290a3b17ae52241289d89fca3c59392e36ec"
+  },
+  "346": {
+    "human": true,
+    "key": "auto_story_88d1d711997376e75acc582e",
+    "source_sha256": "01ae812f02ce87dc6aa9bfd8ccb1261884c9b286608eae60b5f9afc4861fea15"
+  },
+  "347": {
+    "human": true,
+    "key": "auto_story_20a5c90a725e9e247976113d",
+    "source_sha256": "07fd82df27ed1ce5900bd8e32fb7338159f88a061d8a262827c5add752a100a8"
+  },
+  "348": {
+    "human": true,
+    "key": "auto_story_41bab85e04708fed862a6ebd",
+    "source_sha256": "5ac942021ce955c798faf3922c93008c6a9c3271589a9d83b707a55bffd5d7a4",
+    "fixed_note": "替换右侧漫画小头像和原配文；左侧姚明照片保留。"
+  },
+  "350": {
+    "faces": [
+      {
+        "box": [
+          24,
+          26,
+          57,
+          61
+        ],
+        "tone": "original"
+      },
+      {
+        "box": [
+          140,
+          24,
+          57,
+          61
+        ],
+        "tone": "original"
+      },
+      {
+        "box": [
+          247,
+          28,
+          57,
+          61
+        ],
+        "tone": "original"
+      }
+    ],
+    "caption_note": "三格头像使用同一张照片；每格原文可分别修改",
+    "key": "auto_story_c0473d2ea1c3957392259ec7",
+    "source_sha256": "de4afd9fe7756079a41f291a68bc64ea381ab228f258be693b702f6414aba836",
+    "fixed_note": "同一个头像替换三连图里的脸；三个原配文分别可编辑。"
+  },
+  "351": {
+    "human": true,
+    "key": "auto_story_ede133742218e4ffa219e6b6",
+    "source_sha256": "48b8ddaf06bc658672112d9f031da19a1400f0bbf74b820289d4844adac74b46"
+  },
+  "377": {
+    "human": true,
+    "note": "复杂遮挡、转身或无可靠面部；优先完整替换原字幕，无字幕则留待专门拆解",
+    "key": "auto_story_390faf625fb78681e9683523",
+    "source_sha256": "7796446c7cb839265788f2b3e4418f5ac8ff800c9bb45bb135f9fc037b4b1197"
+  },
+  "379": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          0.44,
+          0.15,
+          0.35,
+          0.45
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_0ceb5d45e4972365a67fcd3e",
+    "source_sha256": "ee7bfdb63a9c80bba7c5aef8e51ee1545d7102b0752dfb3cf0b10d29b997eddf"
+  },
+  "383": {
+    "human": true,
+    "key": "auto_story_7aca2b427bf24be18145ed57",
+    "source_sha256": "bbd9e046418d64e0e3787f874e6b03c45b0081cb6b56bc41c39298e33fa217c2"
+  },
+  "384": {
+    "human": true,
+    "key": "auto_story_b6a53362ba2455838bade1f0",
+    "source_sha256": "5628e456a00ac7ee79f41f1a1f6b9b42d84a893b015ffa57b27baa3437da4167"
+  },
+  "390": {
+    "human": true,
+    "captions": [
+      {
+        "text": "我说也可以也不是完全不可以",
+        "box": [
+          7,
+          415,
+          466,
+          44
+        ]
+      }
+    ],
+    "key": "auto_story_b058a6a6336fd0cff6bb71da",
+    "source_sha256": "d21c8416622e3623045b70ffc3f0cfc89db482fcd15902e0463c673a3c1e298a"
+  },
+  "391": {
+    "human": true,
+    "key": "auto_story_e6d89a59923bd18605704dee",
+    "source_sha256": "e9dcc5faac19177ac91dd27a4d1a66faa07892de555fea734e5a05e136755280"
+  },
+  "401": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          0.22,
+          0.18,
+          0.6,
+          0.53
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_7669780316298abe59cfac79",
+    "source_sha256": "d1e94d464aa10366d319444f28b991b62bd8f9682f4c329c33035db4d0427dc6"
+  },
+  "402": {
+    "human": true,
+    "captions": [
+      {
+        "text": "穷逼，你买得起吗！？",
+        "box": [
+          0,
+          161,
+          249,
+          41
+        ]
+      }
+    ],
+    "key": "auto_story_b1473190d63da87412a1dbf9",
+    "source_sha256": "f5689ac7d65e381d9dd93279be077c211f5b24bad5f5dc38727f66ebc0243a9d"
+  },
+  "408": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          103,
+          33,
+          76,
+          99
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_db29f206b74abc1f611b65bb",
+    "source_sha256": "455c6623110871ad7110196ae525d94732e83f59d6d22c102fc0a3e5b491df6d"
+  },
+  "411": {
+    "human": true,
+    "key": "auto_story_6f6411f3d2c6f5a2c9a73e70",
+    "source_sha256": "751d412ca03c2a058f7bcd9b1c1670e9d69166b54737f482e193d48f52e2f162"
+  },
+  "421": {
+    "human": true,
+    "key": "auto_story_01789296805205f529f2f8ab",
+    "source_sha256": "276d010b9a2d7b14e1160e54e853023e138cf6c6274af555cf70ee466d8c0831"
+  },
+  "422": {
+    "human": true,
+    "key": "auto_story_9846dfa799e33eb926fb4a20",
+    "source_sha256": "3b69f9caaa5d80cdb01f69d99fb84afff56b874bba487251a06054ab0e715ea6"
+  },
+  "430": {
+    "human": false,
+    "key": "auto_story_0d5c8d9b5f0427e728e25fb2",
+    "source_sha256": "cb56d2fd8efb6d91adeb6550f56b3c4ca8710cb663ebce326322d162f982c326",
+    "faces": []
+  },
+  "440": {
+    "human": true,
+    "key": "auto_story_a84a98b2170a3748f189da74",
+    "source_sha256": "6d6af3a36489809dee68fd7f6714a0b05753c7b2ebf5a315f0b0a8abd14e600d"
+  },
+  "441": {
+    "human": true,
+    "captions": [
+      {
+        "text": "张学友认证表情包",
+        "box": [
+          0,
+          171,
+          231,
+          47
+        ]
+      }
+    ],
+    "key": "auto_story_d4891e513bbf21caf00112e9",
+    "source_sha256": "111aee5659967f8874d4c04bc0efbf273af0b379525e0b13f03236bebb1be384"
+  },
+  "442": {
+    "human": true,
+    "key": "auto_story_9b03b0892f2e41052c8610ea",
+    "source_sha256": "312f41a9373bd8df77d068b80f53c4e76e9e471e057bc1c10a09c0445a5513b6"
+  },
+  "444": {
+    "human": true,
+    "key": "auto_story_1c75b235586990c9f770388c",
+    "source_sha256": "85f59ee062dea5efefda88c79b4c4f01ed0a0861ff832f0ba53a7d18661e6776",
+    "fixed_note": "替换怀中抱枕上的熊猫脸；两位人物、抱枕和背景保留。"
+  },
+  "445": {
+    "human": true,
+    "key": "auto_story_bf4c16d435cf0a77a8b54c2c",
+    "source_sha256": "bacd842cdda501dc28104783f923fee4c390c6254a26ca0b45e3704acb5d645b"
+  },
+  "471": {
+    "human": true,
+    "key": "auto_story_21d8ad3dbc0261420383964d",
+    "source_sha256": "c49e2e6e00f77d0f0381ac2a6eee9e6bacd1dffe10af286da8d3487507e95be7"
+  },
+  "473": {
+    "human": true,
+    "key": "auto_story_9ab242928889e3c88d4b9b9f",
+    "source_sha256": "0a14e2bc1ab8abed68c19ec046ec5545249d83fcd4507e580880f03d4705e66d"
+  },
+  "477": {
+    "human": true,
+    "key": "auto_story_08409e5df75f88ea3fe9da53",
+    "source_sha256": "02683659f64ebe17b815ae6800d06ef29168093704809f5f7d9444c3635b7076"
+  },
+  "478": {
+    "human": true,
+    "key": "auto_story_2299e8c9f5c97b151d265c6c",
+    "source_sha256": "c75f62266b50163cef83239d326fef15e7bd2aa214c801cdbdb407756bb7466e"
+  },
+  "481": {
+    "human": true,
+    "key": "auto_story_d3b136c2236b287841890240",
+    "source_sha256": "6eb020912f4d959e7aa824932ec2c333999a5f6040a880b9b557f84994a0a761"
+  },
+  "484": {
+    "human": true,
+    "captions": [
+      {
+        "text": "有谁能抵制住\n这种诱惑呢",
+        "box": [
+          128,
+          312,
+          219,
+          85
+        ]
+      }
+    ],
+    "key": "auto_story_525b4f637ca2155ed339e4ce",
+    "source_sha256": "e1579a429196c527f41791e537a7005de697ae21651e4b302cb0b8dcff63254c"
+  },
+  "485": {
+    "human": true,
+    "key": "auto_story_23b4e6baba267a93f91c7900",
+    "source_sha256": "7d0b631825db243a4adba49dfd5a2c04a8652c6ab3ca919a5b63a3d04d7cb0a2"
+  },
+  "494": {
+    "human": true,
+    "key": "auto_story_be7e6f0594b4dc82d95fc334",
+    "source_sha256": "f140beeed4ecfc957dd286694a58049d37f7a17e3e60eadd132c694d93f58077"
+  },
+  "495": {
+    "human": true,
+    "key": "auto_story_952ba236dc01800498a24a15",
+    "source_sha256": "51c93e8c1f828cedf02a4e7d607231afc4f875c8f1be3ad5875563c7ff778212"
+  },
+  "501": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          0.2,
+          0.12,
+          0.6,
+          0.7
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_8a1c239c934267acf907c2e2",
+    "source_sha256": "36b8dc6d6816c580d52e161029c0013141504405daa767ab0528162b47e9abbb"
+  },
+  "509": {
+    "human": true,
+    "key": "auto_story_2d9930d12d36c5bc780d6ac6",
+    "source_sha256": "2d9930d12d36c5bc780d6ac613ad38a3c0befe63b754ce0e90822c34e3dd50e9"
+  },
+  "510": {
+    "human": true,
+    "key": "auto_story_789bdf28252d8344950c347c",
+    "source_sha256": "7ff16d413043b047c05effb7c5a5a7007ff66007858396238947d054ca06e893"
+  },
+  "511": {
+    "captions": [],
+    "human": true,
+    "key": "auto_story_4b65fe4df77f45b67546f107",
+    "source_sha256": "205ab5ccaac592b6b3ef8ddd8f8a1864a3006d4bdb0f269b421774e005d34278",
+    "fixed_note": "替换男孩原来的面部；原衣服上的大号白字保持，以免破坏衣服纹理。"
+  },
+  "529": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          0.25,
+          0.17,
+          0.5,
+          0.6
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_d4046616013540e4c038a806",
+    "source_sha256": "6fbd4bc96232ce26ca8ddf016811d2126e514ea8c985a797d062c651295733b4"
+  },
+  "530": {
+    "human": true,
+    "key": "auto_story_3788be914518fe1233338848",
+    "source_sha256": "8c6b15f3178fe7216a46db80613fe8be10d70e438465e04d5ad3cdef41aac29e"
+  },
+  "531": {
+    "human": true,
+    "key": "auto_story_89a286cc3bde4319cf7ab6e1",
+    "source_sha256": "82018664fb4f2ab34c0c47bd7a77908a8eae914169984f804714da33a57cb6d4"
+  },
+  "533": {
+    "human": true,
+    "key": "auto_story_08afdc8603324014d0636493",
+    "source_sha256": "d90b7c3971337ae00e0e772ae9ee957acf4effd8a658ac807febb325c1b1d96f"
+  },
+  "537": {
+    "human": true,
+    "key": "auto_story_ca46dbb353b11151b4e63aee",
+    "source_sha256": "f96315f7210f0180c868f28cdf9d9645e699e8da9d88fa4b0e87c84decc6af65"
+  },
+  "541": {
+    "human": true,
+    "key": "auto_story_cdc91c0a65bb30f6d9193a00",
+    "source_sha256": "89a23a7fd348ba61c161785880ecfe098f01654cd1a9475a9a5d9571a83902d6"
+  },
+  "547": {
+    "human": true,
+    "key": "auto_story_9e3b54d5fb9375b647cf3279",
+    "source_sha256": "a9bdefc31ca6aee03e4381ce609fe30e6d4698147313947ec2ef8204b316fa28"
+  },
+  "561": {
+    "human": true,
+    "key": "auto_story_5a4402a1e5e16ea449c7f20d",
+    "source_sha256": "5307d86a57801618dd53a99b5fee0f4ada9c5dc9231be34cf9fa72169521b6f7"
+  },
+  "565": {
+    "human": true,
+    "key": "auto_story_9adc7d7773da87459cad67dc",
+    "source_sha256": "25f35403d116c72670a12c28f09b48a929c78114133a5653ff0d32c82c315d78"
+  },
+  "566": {
+    "human": true,
+    "key": "auto_story_c0b7d5ee379035acc005e110",
+    "source_sha256": "0ae735fd31c12b016ebac31f588f8ba1a869d4f81aba8f377de8f927f26eb9f7"
+  },
+  "567": {
+    "human": true,
+    "key": "auto_story_23f0e5ac353ef7f84b3825ea",
+    "source_sha256": "e2b79302e2c90686696e1c504a057b309eba77cf81f18cdaaf0c8587d29b0d20"
+  },
+  "568": {
+    "human": true,
+    "key": "auto_story_e6d6069531c97715b6b5fc32",
+    "source_sha256": "a7190484874b53a4028515bb45772d99f899d34aa332a393dc1372b693e07303"
+  },
+  "571": {
+    "human": true,
+    "captions": [
+      {
+        "text": "他死了我才开心他不死我会难过",
+        "box": [
+          0,
+          465,
+          465,
+          44
+        ]
+      }
+    ],
+    "key": "auto_story_ee91fdd8aff65a8bc5037342",
+    "source_sha256": "5cda17dfbda8318c59f0676a2557fd863009c71266464422d4dc50cc91f174a4"
+  },
+  "572": {
+    "human": true,
+    "key": "auto_story_205a08c8049d0271498bc1c8",
+    "source_sha256": "95076a49ec957f46bbb6b7ee17a1324c040c17f774da3be089ce44064909f0cf"
+  },
+  "582": {
+    "human": true,
+    "key": "auto_story_7f2a63f0f133a63152baf578",
+    "source_sha256": "ada452fce081dcfd0fbe8ffafb031aa294987d222225b774bdeb1ea676a3f1fe"
+  },
+  "583": {
+    "human": true,
+    "key": "auto_story_af253f1e167bf4d5d66eaa6e",
+    "source_sha256": "8a25b1537217001e032bc531623dc85023ac3935d3762d35a4afb16acb6f7b26"
+  },
+  "590": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          0.3,
+          0.18,
+          0.4,
+          0.65
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_5c6d286858ee0b9d216f6646",
+    "source_sha256": "9031f602daec5a58537b21324b7060f4ab658e7e044a2c02d93204dc4c680023"
+  },
+  "597": {
+    "human": true,
+    "key": "auto_story_438f58d12e634a3af23f7364",
+    "source_sha256": "146b9ea3f61a848b6f1c90efe149a30bf8405b49689eca748f23be670597f98b"
+  },
+  "598": {
+    "human": true,
+    "key": "auto_story_b12f73194a2f1315294c3e57",
+    "source_sha256": "1276db27b84dd47f0d546cd4de1b32613e06ac9a1e78f5a3a13b2e67b5b49f0f"
+  },
+  "608": {
+    "human": true,
+    "key": "auto_story_a8e21429c9ef11d34e28c45a",
+    "source_sha256": "7fd0573861c126e40b1d2743683023872484c90cb2b1eb5143518148ac6bdf4e"
+  },
+  "614": {
+    "captions": [],
+    "faces": [
+      {
+        "box": [
+          38,
+          63,
+          19,
+          24
+        ],
+        "tone": "grayscale"
+      },
+      {
+        "box": [
+          116,
+          44,
+          24,
+          31
+        ],
+        "tone": "grayscale"
+      },
+      {
+        "box": [
+          217,
+          25,
+          31,
+          37
+        ],
+        "tone": "grayscale"
+      }
+    ],
+    "fixed_note": "三格头像复用同一张照片；原来的三句话和标题保留",
+    "key": "auto_story_3e8ecc9cc887e954f472c660",
+    "source_sha256": "dcb24d17bbe3bc6c97096a9e65d9839b069bbd8fa1c6a9965cebb07493a2846d"
+  },
+  "615": {
+    "human": true,
+    "key": "auto_story_6bce50b27f8bfd742e6fed2e",
+    "source_sha256": "a234a9dbf664503b6b620eed4fb438fc038bdebedb23e10a169eb4a01b4fe517"
+  },
+  "616": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          50,
+          53,
+          112,
+          158
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_5a8b1c6faf777581ad686e0f",
+    "source_sha256": "a4e144186bc9e3edc43b0dc2f5aa264dc5177c4c4a7d70c45877fe29c6086031"
+  },
+  "617": {
+    "human": true,
+    "key": "auto_story_7fe30bce3928649052b149f1",
+    "source_sha256": "00c97e2048126e5115b1cd205d89f3262c6788a4c23d387754a067dd60006267"
+  },
+  "618": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          48,
+          41,
+          111,
+          120
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_0138763abacc6c409a407893",
+    "source_sha256": "1b305996795c560f78dd029cfb8d3fcb6b03c0b4622a70930695d5929feab8a1"
+  },
+  "620": {
+    "human": false,
+    "key": "auto_story_97c0345f1ca3a8852d78d62d",
+    "source_sha256": "af2bf2ba3febf384e3a298e9d0cd22e31ad5ecf8626bbfe9dbdb71802451e709",
+    "faces": []
+  },
+  "632": {
+    "captions": [],
+    "faces": [
+      {
+        "box": [
+          245,
+          49,
+          101,
+          100
+        ],
+        "tone": "grayscale"
+      }
+    ],
+    "key": "auto_story_5d05f08a358a8525c5248d02",
+    "source_sha256": "19e291ca19f37e8bcc8247dad3a198eb17456ae36742e23bbdfea9c5986b77d2"
+  },
+  "640": {
+    "human": true,
+    "key": "auto_story_5e3789d8a3f0b80c79ffd133",
+    "source_sha256": "68bb4d005653722f5a27d6613e711028f6701caaaa6a4810b41cf5dfa5c3b92b"
+  },
+  "645": {
+    "human": true,
+    "captions": [
+      {
+        "text": "怕你啊！",
+        "box": [
+          25,
+          173,
+          186,
+          51
+        ]
+      }
+    ],
+    "key": "auto_story_159a6d0f9503787972695efc",
+    "source_sha256": "50250db026666edeac6187086d01331826d19356a38bdba97a94747b952a854d"
+  },
+  "1": {
+    "faces": [
+      {
+        "box": [
+          0.16,
+          0.17,
+          0.66,
+          0.58
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_833921d81e1695da8cec5aa6",
+    "source_sha256": "833921d81e1695da8cec5aa69a489650eb1ae0ec3873311f996aac41284ad24b"
+  },
+  "5": {
+    "faces": [
+      {
+        "box": [
+          0.29,
+          0.23,
+          0.43,
+          0.49
+        ],
+        "normalized": true,
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_b2a91be6315dd6b262bbeded",
+    "source_sha256": "b2a91be6315dd6b262bbeded7617e16f46b53b96c1e66e24a0c1455c31234e16"
+  },
+  "6": {
+    "faces": [
+      {
+        "box": [
+          18,
+          8,
+          47,
+          40
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_8060429b61bea0ad088f8d42",
+    "source_sha256": "8060429b61bea0ad088f8d42e45db1a38994805adbc26ec6c1d2e89d9a31afa9"
+  },
+  "10": {
+    "faces": [
+      {
+        "box": [
+          0.3,
+          0.35,
+          0.55,
+          0.45
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_e2ea7227bc08283a8646b47e",
+    "source_sha256": "e2ea7227bc08283a8646b47e8a1f4242e47674fb7c077eb67ecfbd402e2e375c"
+  },
+  "13": {
+    "faces": [
+      {
+        "box": [
+          0.23,
+          0.15,
+          0.67,
+          0.62
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_a1e45c3c278b64b958f3acc9",
+    "source_sha256": "a1e45c3c278b64b958f3acc96f36f2fb8400f359c4039d30d52d7ce0419bbaa6"
+  },
+  "14": {
+    "faces": [
+      {
+        "box": [
+          0.14,
+          0.12,
+          0.72,
+          0.72
+        ],
+        "normalized": true,
+        "tone": "original",
+        "hidden_frames": [
+          6,
+          7,
+          8
+        ]
+      }
+    ],
+    "human": false,
+    "key": "auto_story_56e50b1be0e4caa12a51c06f",
+    "source_sha256": "56e50b1be0e4caa12a51c06f681ca315e1f6694e4232825e05c19052a0fc6e01"
+  },
+  "16": {
+    "faces": [
+      {
+        "box": [
+          0.26,
+          0.25,
+          0.48,
+          0.38
+        ],
+        "normalized": true,
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_f3ab02fe93cce98173d652e1",
+    "source_sha256": "f3ab02fe93cce98173d652e1bad87f5b9e3bb50fffa5d3e58991472b9dcb70c7"
+  },
+  "17": {
+    "faces": [
+      {
+        "box": [
+          57,
+          57,
+          61,
+          56
+        ],
+        "tone": "original",
+        "yellow_face": true
+      }
+    ],
+    "human": false,
+    "key": "auto_story_30d8b52d719f8646b6d89263",
+    "source_sha256": "30d8b52d719f8646b6d89263bc28c283d31f2def5166ddc8164abb6ed28b32d6"
+  },
+  "20": {
+    "faces": [
+      {
+        "box": [
+          31,
+          32,
+          91,
+          78
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_781b5e34b39a5ff9c9a1b2d2",
+    "source_sha256": "781b5e34b39a5ff9c9a1b2d219ae68c900bc6dcde0ed480381e8663e9796a92c",
+    "pending": "抬头和推进镜头后旧五官超出当前面罩，需要逐帧重画尺度"
+  },
+  "22": {
+    "faces": [
+      {
+        "box": [
+          0.29,
+          0.33,
+          0.4,
+          0.45
+        ],
+        "normalized": true,
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_15cb98dc8eddd42375146220",
+    "source_sha256": "15cb98dc8eddd4237514622094aac79e81569f3624230d97896251cbbdbba9f8"
+  },
+  "26": {
+    "faces": [
+      {
+        "box": [
+          0.23,
+          0.13,
+          0.6,
+          0.52
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_4a631e05702b0ab21bf5fdae",
+    "source_sha256": "4a631e05702b0ab21bf5fdae121b63fe8d54099d52d4611d4c55cf0fd93cc09a"
+  },
+  "29": {
+    "faces": [
+      {
+        "box": [
+          0.19,
+          0.1,
+          0.62,
+          0.53
+        ],
+        "normalized": true,
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_9c4f2542dedcf90e530892ab",
+    "source_sha256": "9c4f2542dedcf90e530892abf91f13aebfbdac1509c369ffbd060804323f6a8e"
+  },
+  "30": {
+    "faces": [
+      {
+        "box": [
+          0.27,
+          0.3,
+          0.48,
+          0.42
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_59c69ac053b831f415a1e634",
+    "source_sha256": "59c69ac053b831f415a1e6340787e91acc0d1f814c99975f3987504b6a22fe54"
+  },
+  "42": {
+    "faces": [
+      {
+        "box": [
+          120,
+          32,
+          68,
+          78
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_2bd2cd5358c72fa4b585271b",
+    "source_sha256": "2bd2cd5358c72fa4b585271bf5fc8676cf4ba2b7226366ea34b32c7b4c4cf40b"
+  },
+  "43": {
+    "faces": [
+      {
+        "box": [
+          22,
+          3,
+          65,
+          58
+        ],
+        "normalized": false,
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_099c4550525d7dfdfd91530b",
+    "source_sha256": "099c4550525d7dfdfd91530b70b6f851a3c1d7a529ac31e9e432bb4c9bb5a413"
+  },
+  "48": {
+    "faces": [
+      {
+        "box": [
+          0.18,
+          0.12,
+          0.66,
+          0.55
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_69a5693cbea8924f5c23c3e6",
+    "source_sha256": "69a5693cbea8924f5c23c3e6d849671c1d1ce298e3c868350c0088815adaa68e"
+  },
+  "60": {
+    "faces": [
+      {
+        "box": [
+          16,
+          1,
+          64,
+          39
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_e559a450daf7f309bf6a0cbf",
+    "source_sha256": "e559a450daf7f309bf6a0cbf2553b2e1a36ca77b265c5a0207f3cd2536624bee"
+  },
+  "65": {
+    "faces": [
+      {
+        "box": [
+          0.35,
+          0.24,
+          0.5,
+          0.52
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_4b919262cfa34a9a73fa3cbf",
+    "source_sha256": "4b919262cfa34a9a73fa3cbf9c4d6dca79499a28b3eb9dffd11575fc6df5d2c2",
+    "pending": "揉脸手指穿过原面部，需逐帧描绘前景手指遮挡"
+  },
+  "72": {
+    "faces": [
+      {
+        "box": [
+          0.26,
+          0.29,
+          0.52,
+          0.42
+        ],
+        "normalized": true,
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_a472244365d9d5fd6ea3621e",
+    "source_sha256": "a472244365d9d5fd6ea3621e0b066448bdc8e07a8c110330893c4faafaad0a4e"
+  },
+  "75": {
+    "faces": [
+      {
+        "box": [
+          0.12,
+          0.1,
+          0.76,
+          0.43
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_e183c76b4ba1817a22e6e572",
+    "source_sha256": "e183c76b4ba1817a22e6e57220a93b58afa523bb6458c144dc2ab71bedbce5b2"
+  },
+  "78": {
+    "faces": [
+      {
+        "box": [
+          84,
+          40,
+          78,
+          68
+        ],
+        "normalized": false,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_953a9d204656d2ef4d3b7f12",
+    "source_sha256": "953a9d204656d2ef4d3b7f1243bd22dbb8dca3ba0613a0c0f3e2952dbb5c9886"
+  },
+  "79": {
+    "faces": [
+      {
+        "box": [
+          0.2,
+          0.12,
+          0.6,
+          0.65
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_9967284a70219e69fa30828d",
+    "source_sha256": "9967284a70219e69fa30828dd3d38ca4fafadc774b5af5e523d67683ff11ec10"
+  },
+  "83": {
+    "faces": [
+      {
+        "box": [
+          20,
+          7,
+          44,
+          42
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_30c804cb091cf9f0f0df9f2d",
+    "source_sha256": "30c804cb091cf9f0f0df9f2dadfc0466398869333656edb100e23cb1843c02f8"
+  },
+  "87": {
+    "faces": [
+      {
+        "box": [
+          0.1,
+          0.13,
+          0.6,
+          0.65
+        ],
+        "normalized": true,
+        "tone": "original",
+        "yellow_face": true
+      }
+    ],
+    "human": false,
+    "key": "auto_story_10ad556735d9ff96e3f7be9a",
+    "source_sha256": "10ad556735d9ff96e3f7be9a378d06d4f863118e49d4f61c67fd64016c798a24"
+  },
+  "88": {
+    "faces": [
+      {
+        "box": [
+          0.3,
+          0.3,
+          0.5,
+          0.4
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_3c50be7b4f77364606b402a1",
+    "source_sha256": "3c50be7b4f77364606b402a1f3f3e1028cc096f1ac6b2255bef4c718f4e96ac5",
+    "pending": "头像区域偏离滑稽头，原有五官仍残留"
+  },
+  "95": {
+    "faces": [
+      {
+        "box": [
+          19,
+          5,
+          46,
+          44
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_eb613e4e39ca2509cb758bb7",
+    "source_sha256": "eb613e4e39ca2509cb758bb75bc1f4f7f9e617540d89c20914cbeb1318467e6d"
+  },
+  "98": {
+    "faces": [
+      {
+        "box": [
+          0.18,
+          0.15,
+          0.65,
+          0.5
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_477e3e96a7eb470fdcd9cc52",
+    "source_sha256": "477e3e96a7eb470fdcd9cc5246b7f2c1a7a96c18e769fd2c897517265ca07d74"
+  },
+  "102": {
+    "faces": [
+      {
+        "box": [
+          20,
+          7,
+          42,
+          34
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_d734157008313c89acce28ac",
+    "source_sha256": "d734157008313c89acce28ac7068d27cddd90c40d53f9b5e627d076e614edb07"
+  },
+  "105": {
+    "faces": [
+      {
+        "box": [
+          0.2,
+          0.2,
+          0.6,
+          0.55
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_63e2b43d145d9be296659ad7",
+    "source_sha256": "63e2b43d145d9be296659ad72ddf54e7c1006fbb93d0aa54bfc39216369f5c86"
+  },
+  "108": {
+    "faces": [
+      {
+        "box": [
+          151,
+          56,
+          100,
+          80
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_e0a91f20d30669baa1eed3cf",
+    "source_sha256": "e0a91f20d30669baa1eed3cf04345122585c0505d35b4f0b0eaa2aaf07bb714b"
+  },
+  "109": {
+    "faces": [
+      {
+        "box": [
+          17,
+          7,
+          45,
+          43
+        ],
+        "tone": "original",
+        "protect_polygons": [
+          [
+            [
+              0,
+              24
+            ],
+            [
+              10,
+              24
+            ],
+            [
+              10,
+              42
+            ],
+            [
+              0,
+              42
+            ]
+          ]
+        ]
+      }
+    ],
+    "human": false,
+    "key": "auto_story_d28a29440519a8bff3490f4b",
+    "source_sha256": "d28a29440519a8bff3490f4bb3e44c6851837428f8e4a81c0da414de72d6a73d"
+  },
+  "111": {
+    "faces": [],
+    "human": false,
+    "key": "auto_story_7293be03adeeab2556ee1b3a",
+    "source_sha256": "7293be03adeeab2556ee1b3ab261d3a8e3489fbe44169f33d4043b41d2a256af",
+    "fixed_note": "完整替换原字幕；保留人物、动作和遮挡，不提供头像替换。"
+  },
+  "112": {
+    "faces": [
+      {
+        "box": [
+          16,
+          6,
+          46,
+          42
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_5914a75432db767f4ab74825",
+    "source_sha256": "5914a75432db767f4ab74825ce45932c300422e49096b9dcca0464a5cd34a280"
+  },
+  "117": {
+    "faces": [
+      {
+        "box": [
+          9,
+          4,
+          51,
+          39
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_ec7eeffa7cef31bdd1226627",
+    "source_sha256": "ec7eeffa7cef31bdd122662757e720503a75a2c1362d8d7068d656baadb75979"
+  },
+  "118": {
+    "faces": [
+      {
+        "box": [
+          18,
+          7,
+          45,
+          44
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_74424dda087eb1c389cc90ba",
+    "source_sha256": "74424dda087eb1c389cc90ba4fc5a4c1edd914e839a5f4e982b904d20887f585"
+  },
+  "119": {
+    "faces": [
+      {
+        "box": [
+          16,
+          4,
+          49,
+          46
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_7c3f2b8d36ef6510dbf6b239",
+    "source_sha256": "7c3f2b8d36ef6510dbf6b2399daf90890c20612f978fa63efd2608ab0340ec68"
+  },
+  "125": {
+    "faces": [
+      {
+        "box": [
+          60,
+          5,
+          68,
+          57
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_b66ea8996b823f48c3300efc",
+    "source_sha256": "b66ea8996b823f48c3300efce93bc2795257c3fa488222f3bc7bf4678dcaddb7",
+    "pending": "小黄鸡翻滚时原五官残留，需重新测量每帧头部"
+  },
+  "126": {
+    "faces": [
+      {
+        "box": [
+          13,
+          10,
+          68,
+          50
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_f590e40e365daf253dbb9034",
+    "source_sha256": "f590e40e365daf253dbb90349c9bda3e438e87e10553ee9e0434cb88ed66da07"
+  },
+  "128": {
+    "faces": [
+      {
+        "box": [
+          0.18,
+          0.2,
+          0.6,
+          0.45
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_34632141f7f99ad1e842d188",
+    "source_sha256": "34632141f7f99ad1e842d18835b193557ecae3dbc64a2872d77a07d7e0c2a1ae"
+  },
+  "134": {
+    "faces": [
+      {
+        "box": [
+          0.3,
+          0.13,
+          0.5,
+          0.48
+        ],
+        "normalized": true,
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_18ac0d198a3938737523c9c7",
+    "source_sha256": "18ac0d198a3938737523c9c749a62171f8fbe5d45c271323ccd2ad18a5bb644b"
+  },
+  "135": {
+    "faces": [
+      {
+        "box": [
+          0.3,
+          0.15,
+          0.35,
+          0.42
+        ],
+        "normalized": true,
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_175be2c38814a17b5116dfb1",
+    "source_sha256": "175be2c38814a17b5116dfb1e674e9b1bf0370960d0cd601105cc523b8d4df84"
+  },
+  "137": {
+    "faces": [
+      {
+        "box": [
+          100,
+          0,
+          98,
+          86
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_128a5e022e70b61d33b40504",
+    "source_sha256": "128a5e022e70b61d33b40504a7d8130499ebac3d508bafd2b261afbfb66f4bb3",
+    "pending": "原鸡头位于当前面罩左侧，需重新测量面部"
+  },
+  "139": {
+    "faces": [
+      {
+        "box": [
+          6,
+          0,
+          53,
+          52
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_698c3d93ef451911ced2da8d",
+    "source_sha256": "698c3d93ef451911ced2da8d2c23a318018b12fb0823f5a4e9ea0636e5d641b8"
+  },
+  "141": {
+    "faces": [
+      {
+        "box": [
+          0.3,
+          0.2,
+          0.45,
+          0.43
+        ],
+        "normalized": true,
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_d74627d36a3d66c71f77f420",
+    "source_sha256": "d74627d36a3d66c71f77f4205d572bcbecbe07a0882a94f854efa1e7a7db525c"
+  },
+  "142": {
+    "faces": [
+      {
+        "box": [
+          14,
+          8,
+          56,
+          46
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_5c263ea87a500125746c5fe6",
+    "source_sha256": "5c263ea87a500125746c5fe6ad79067a9bf91360abeaf5c7b002ce8eb9421b1b"
+  },
+  "144": {
+    "faces": [
+      {
+        "box": [
+          0.28,
+          0.12,
+          0.4,
+          0.32
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_d826f805409450ce9330c45d",
+    "source_sha256": "d826f805409450ce9330c45d007f37728b0fee5a4180afa18255c17eb7ee038a"
+  },
+  "148": {
+    "faces": [
+      {
+        "box": [
+          5,
+          3,
+          55,
+          42
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_51adb52aea1224f89a38c04e",
+    "source_sha256": "51adb52aea1224f89a38c04ef29140d0df932ae03457210ae059a567bc44f41b",
+    "pending": "弹琴时原鸡嘴与眼睛未完整移除，需要专门面罩"
+  },
+  "152": {
+    "faces": [
+      {
+        "box": [
+          10,
+          6,
+          48,
+          40
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_caaebc336a242a9471634c9a",
+    "source_sha256": "caaebc336a242a9471634c9aaef163cebc9964a3407b9657000538395b4a1579"
+  },
+  "159": {
+    "faces": [
+      {
+        "box": [
+          39,
+          15,
+          36,
+          34
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_c67116d47734a6eb4ef48c4f",
+    "source_sha256": "c67116d47734a6eb4ef48c4f1f28138e3b2dce17703e60ae9b9c7d48ee62a65b"
+  },
+  "162": {
+    "faces": [
+      {
+        "box": [
+          10,
+          4,
+          53,
+          47
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_598c17753cd4c04fe42651fd",
+    "source_sha256": "598c17753cd4c04fe42651fd26491f100dc051eaedfe7e2fa256d1eb12bd1a6b"
+  },
+  "165": {
+    "faces": [
+      {
+        "box": [
+          9,
+          13,
+          58,
+          52
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_e5a4c1a795bcbd660093aa52",
+    "source_sha256": "e5a4c1a795bcbd660093aa52b461ab8b783432f0d49674bfa09323b7e36ac4d3",
+    "pending": "跳起时头部放大和出界，当前面罩不能完整移除原五官"
+  },
+  "169": {
+    "faces": [
+      {
+        "box": [
+          18,
+          7,
+          47,
+          44
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_22a6b3805881fb5a35a335c0",
+    "source_sha256": "22a6b3805881fb5a35a335c04fad6711e44f63ceef7052e3e6a92a1394acab0a"
+  },
+  "170": {
+    "faces": [
+      {
+        "box": [
+          8,
+          8,
+          54,
+          56
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_ed909a1d4667be204c9ab884",
+    "source_sha256": "ed909a1d4667be204c9ab884d1a778e35e99aa63a512b942ff9f4e6842aec7da"
+  },
+  "172": {
+    "faces": [
+      {
+        "box": [
+          0.3,
+          0.22,
+          0.5,
+          0.4
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_028e26b18d1b31309ba69116",
+    "source_sha256": "028e26b18d1b31309ba69116edf4ee3d1cdb81e186dd62a326ba21d774c80ae0"
+  },
+  "176": {
+    "faces": [
+      {
+        "box": [
+          0.28,
+          0.13,
+          0.6,
+          0.57
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_254c22d18510f38392ca42a9",
+    "source_sha256": "254c22d18510f38392ca42a92d8f56f462258f0122983fd3cb6a37e79d0ef12c"
+  },
+  "178": {
+    "faces": [
+      {
+        "box": [
+          19,
+          7,
+          45,
+          44
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_6b4abde6d3f56c797df6bdc5",
+    "source_sha256": "6b4abde6d3f56c797df6bdc5166700321248974b35f8639524a7c67210c3eb4e",
+    "captions": []
+  },
+  "179": {
+    "human": false,
+    "key": "auto_story_5b3c4913d956d59fadddc7b4",
+    "source_sha256": "5b3c4913d956d59fadddc7b4557672dc6b6ebcb26018830c8bd5388c604124cc"
+  },
+  "181": {
+    "faces": [
+      {
+        "box": [
+          12,
+          8,
+          58,
+          39
+        ],
+        "tone": "original",
+        "protect_polygons": [
+          [
+            [
+              0,
+              23
+            ],
+            [
+              12,
+              23
+            ],
+            [
+              20,
+              38
+            ],
+            [
+              0,
+              38
+            ]
+          ],
+          [
+            [
+              45,
+              23
+            ],
+            [
+              57,
+              23
+            ],
+            [
+              57,
+              38
+            ],
+            [
+              37,
+              38
+            ]
+          ]
+        ]
+      }
+    ],
+    "human": false,
+    "key": "auto_story_0c68f6f6dae13bdbf9b0af9e",
+    "source_sha256": "0c68f6f6dae13bdbf9b0af9e0ec2c6b8529d03489d710221bb21657aafea7208"
+  },
+  "187": {
+    "faces": [
+      {
+        "box": [
+          18,
+          7,
+          47,
+          44
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_6c924331723f24026b535db0",
+    "source_sha256": "6c924331723f24026b535db0b91096d1df865a87860dd0f8b6bb3f96470ff62e"
+  },
+  "188": {
+    "faces": [
+      {
+        "box": [
+          0.25,
+          0.24,
+          0.5,
+          0.45
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_a9cf95393b8d87b18edc4ed3",
+    "source_sha256": "a9cf95393b8d87b18edc4ed3b5ca3b00fadcdc8430a7bab6b2419b5393f49f9a"
+  },
+  "191": {
+    "faces": [
+      {
+        "box": [
+          18,
+          7,
+          47,
+          44
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_0dd9d695a6cd0234df990009",
+    "source_sha256": "0dd9d695a6cd0234df99000947d4250717b538f4b7062a9662092f5f771b79ab"
+  },
+  "193": {
+    "faces": [
+      {
+        "box": [
+          20,
+          5,
+          44,
+          43
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_40b48d14d978cec5094682cc",
+    "source_sha256": "40b48d14d978cec5094682cc84993fbd5bc9603a3c11e1cca40ebe2f9151dd9b"
+  },
+  "196": {
+    "faces": [
+      {
+        "box": [
+          16,
+          6,
+          50,
+          45
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_39204a5853d3578cfbd506b8",
+    "source_sha256": "39204a5853d3578cfbd506b822db4ab0f3dc1ae4715dd25997ef4f45d3818edd"
+  },
+  "197": {
+    "faces": [
+      {
+        "box": [
+          8,
+          12,
+          48,
+          40
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_61b970d661bb4d7876aba308",
+    "source_sha256": "61b970d661bb4d7876aba308b463d1817dad698b5b69b9788bef68e2a30a0901"
+  },
+  "199": {
+    "faces": [
+      {
+        "box": [
+          0.17,
+          0.25,
+          0.65,
+          0.55
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_c900a27f6ab3bdd502f49758",
+    "source_sha256": "c900a27f6ab3bdd502f49758291b96fcd1296081c04e3149fc42c0ba44f9aa83"
+  },
+  "200": {
+    "faces": [
+      {
+        "box": [
+          0.4,
+          0.16,
+          0.22,
+          0.22
+        ],
+        "normalized": true,
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_a3f5e9a3cb9a16e1c8b5e054",
+    "source_sha256": "a3f5e9a3cb9a16e1c8b5e054689f364cd5608c25d6836dc7ac0be606c5c29a23"
+  },
+  "206": {
+    "faces": [
+      {
+        "box": [
+          59,
+          57,
+          95,
+          104
+        ],
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_70ab013a67d17158282b4a88",
+    "source_sha256": "70ab013a67d17158282b4a886d43125d6be181fa9181db4722086fca007da560"
+  },
+  "207": {
+    "faces": [],
+    "human": false,
+    "key": "auto_story_ab518a92e38b514de1938297",
+    "source_sha256": "ab518a92e38b514de1938297adceea373b714f5e25ec58dfbc756220a2c949f3",
+    "fixed_note": "完整替换原字幕；保留人物、动作和遮挡，不提供头像替换。"
+  },
+  "210": {
+    "faces": [
+      {
+        "box": [
+          84,
+          43,
+          62,
+          62
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_5e29a4710f12c855d367fce1",
+    "source_sha256": "5e29a4710f12c855d367fce1ff6c0da68bb52110cdb2734f9692c67a7a060750",
+    "pending": "3D舞蹈包含背面，需要依据每帧方向隐藏面部"
+  },
+  "211": {
+    "faces": [
+      {
+        "box": [
+          22,
+          9,
+          44,
+          39
+        ],
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_203ad53781ef270c8b41e68a",
+    "source_sha256": "203ad53781ef270c8b41e68a6a6d222a1559c17cc3c8bd27f884385e79bf57db"
+  },
+  "214": {
+    "faces": [
+      {
+        "box": [
+          0.25,
+          0.19,
+          0.5,
+          0.5
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_5843927caac94d51fa5f420b",
+    "source_sha256": "5843927caac94d51fa5f420b638f9ad4079d77b82d63975cdb35c79fb9382dd4"
+  },
+  "217": {
+    "faces": [
+      {
+        "box": [
+          82,
+          20,
+          67,
+          69
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_d5d3057db3299fe82a59e43d",
+    "source_sha256": "d5d3057db3299fe82a59e43db4a6ace50594b59caf16a9e1e69a42058cbbb9ab"
+  },
+  "218": {
+    "faces": [
+      {
+        "box": [
+          91,
+          27,
+          72,
+          74
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_b93490c179db01e736f90945",
+    "source_sha256": "b93490c179db01e736f909453f2b7490ea3d98399a5324f2aed41935cc557802"
+  },
+  "220": {
+    "faces": [
+      {
+        "box": [
+          142,
+          47,
+          55,
+          52
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_17614d3aefdd49fe5dbd7c0a",
+    "source_sha256": "17614d3aefdd49fe5dbd7c0af660584c6df7a58c7d1d03d9c57f730125732d3e"
+  },
+  "221": {
+    "faces": [
+      {
+        "box": [
+          85,
+          24,
+          72,
+          72
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_ed74fb7e4ce1cec8fbda03f4",
+    "source_sha256": "ed74fb7e4ce1cec8fbda03f4598cfd95c856cb3c406b66c78978f88c2564bbf1"
+  },
+  "227": {
+    "faces": [
+      {
+        "box": [
+          81,
+          87,
+          85,
+          85
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_97e4143351a5d9a376de1644",
+    "source_sha256": "97e4143351a5d9a376de16444adf1791a95d55cf15a6127c5997987691fd616d"
+  },
+  "236": {
+    "faces": [
+      {
+        "box": [
+          0.4,
+          0.3,
+          0.4,
+          0.35
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_73f9154d85a886c1304b1a27",
+    "source_sha256": "73f9154d85a886c1304b1a27f9507c904b55040e1c2b765547366abf11eb286b"
+  },
+  "242": {
+    "faces": [
+      {
+        "box": [
+          0.4,
+          0.2,
+          0.25,
+          0.25
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_930f7de0c997b5fde1cee35f",
+    "source_sha256": "930f7de0c997b5fde1cee35f45be64fcd032e2b6df7d28958d5a7e87a32ebe64",
+    "pending": "滑板企鹅侧脸与喙及运动出界需专门遮挡分解"
+  },
+  "250": {
+    "faces": [
+      {
+        "box": [
+          53,
+          16,
+          143,
+          103
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_dd74fcdfab46087c6cf93df7",
+    "source_sha256": "dd74fcdfab46087c6cf93df7ece23eefda166b775305c4fbef1e8e1e6ae541ce"
+  },
+  "261": {
+    "faces": [
+      {
+        "box": [
+          0.37,
+          0.2,
+          0.25,
+          0.26
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_42d2d4648e4330f3532946b7",
+    "source_sha256": "42d2d4648e4330f3532946b7acada089ca67a7f0dac371839b7803481ad8a750"
+  },
+  "265": {
+    "faces": [
+      {
+        "box": [
+          0.1,
+          0.15,
+          0.8,
+          0.7
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_b409bc56223f09ca1a811cd3",
+    "source_sha256": "b409bc56223f09ca1a811cd337ea773800b01c0f5e232ecaba9bf6e97461c059"
+  },
+  "275": {
+    "faces": [
+      {
+        "box": [
+          55,
+          24,
+          91,
+          94
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_01bc058249d9f12b1d905336",
+    "source_sha256": "01bc058249d9f12b1d9053366af24a5e6bec3df894cd1109f8fb10822e091abb"
+  },
+  "282": {
+    "faces": [
+      {
+        "box": [
+          0.26,
+          0.3,
+          0.5,
+          0.5
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_612c778e0adb0e300b94e93e",
+    "source_sha256": "612c778e0adb0e300b94e93ee0f9e2ae54f4646ea85a35082c991772af7a90c1"
+  },
+  "309": {
+    "faces": [
+      {
+        "box": [
+          0.18,
+          0.14,
+          0.62,
+          0.6
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_89c0bf562601536fee3b930a",
+    "source_sha256": "89c0bf562601536fee3b930a8691a82d87fc09052d67f8ed1bfe4362388d7d72"
+  },
+  "318": {
+    "faces": [
+      {
+        "box": [
+          30,
+          4,
+          260,
+          270
+        ],
+        "tone": "original",
+        "protect_polygons": [
+          [
+            [
+              39,
+              162
+            ],
+            [
+              126,
+              160
+            ],
+            [
+              154,
+              196
+            ],
+            [
+              127,
+              248
+            ],
+            [
+              55,
+              254
+            ],
+            [
+              24,
+              222
+            ]
+          ]
+        ]
+      }
+    ],
+    "human": false,
+    "key": "auto_story_944ef8c62dd43debeaeaebfd",
+    "source_sha256": "e8d93c24fa13180e5985cf2f2aeb456166ba1c4513a8daf52093bea777990a63"
+  },
+  "322": {
+    "faces": [
+      {
+        "box": [
+          89,
+          143,
+          105,
+          72
+        ],
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_7744a84b51018d7a50548b60",
+    "source_sha256": "bc71ef156866baefd145f3b1541de04fb787980f60e52d6be3f9423db84f20ce"
+  },
+  "327": {
+    "faces": [
+      {
+        "box": [
+          16,
+          24,
+          79,
+          79
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_af76cf572d6eb565570f7ae0",
+    "source_sha256": "f2f42e459aabdec813735b12d21e83a90faa46e79af3e7a760837b96860b7113"
+  },
+  "330": {
+    "faces": [
+      {
+        "box": [
+          0.2,
+          0.17,
+          0.6,
+          0.4
+        ],
+        "normalized": true,
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_2a3dc1091ebb12de6d588dbc",
+    "source_sha256": "c6aa2e8970ca9b7b9d38c6ae8597fe464a05b9ccab93b0b479948c561a923679"
+  },
+  "336": {
+    "faces": [
+      {
+        "box": [
+          11,
+          7,
+          59,
+          50
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_3bcc27650af2e622479d0e6f",
+    "source_sha256": "4cca223c5cbade753123911a87650e3caee2fd29fd13f797460ceb48f1667e32"
+  },
+  "340": {
+    "faces": [
+      {
+        "box": [
+          25,
+          19,
+          42,
+          29
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_78dabafc81879e9533068b84",
+    "source_sha256": "2a35be9c653377b87d472f31f1784fe9542dacec81c2608a1be148ac0cb9523d"
+  },
+  "343": {
+    "faces": [
+      {
+        "box": [
+          13,
+          18,
+          65,
+          53
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_22b75bcec5c140479b4078ab",
+    "source_sha256": "a9bb8fee1a740133ee7ef51294bc4b736cb1e50dc4f7d43aad74c421842c7143"
+  },
+  "359": {
+    "faces": [
+      {
+        "box": [
+          165,
+          25,
+          234,
+          208
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_4e1cd664da3a0913bf59b43a",
+    "source_sha256": "ed66c30094bab9be0ee5178db837ae64ff2944fb981eb3c4855a077f05c2845c"
+  },
+  "362": {
+    "faces": [
+      {
+        "box": [
+          0.2,
+          0.1,
+          0.7,
+          0.65
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_a0c1ced369d9eaa4ef5ac3d0",
+    "source_sha256": "4c7cd87432b0d94a938dd79e55b4df596b789c8e2ce851fb5c7ddd5f83eefcc6"
+  },
+  "363": {
+    "faces": [
+      {
+        "box": [
+          134,
+          151,
+          292,
+          168
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_9ac9eea582e5e1e045281055",
+    "source_sha256": "c2ac30429d2f77d8dc7198f857a60b05fd16b87287d4deba4a6d83253191b2ed"
+  },
+  "367": {
+    "faces": [
+      {
+        "box": [
+          0.28,
+          0.2,
+          0.4,
+          0.25
+        ],
+        "normalized": true,
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_2a4703f5676b56b0f3819345",
+    "source_sha256": "5c712d0675dfafcbbf479b2b55c15a93807da29e745ebfd6ef70b2ff1fbcbbdb"
+  },
+  "369": {
+    "faces": [
+      {
+        "box": [
+          147,
+          61,
+          200,
+          182
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_874c1b74f6f0e2e936e90511",
+    "source_sha256": "be52794bef18fd46e8a1a581926ea8f7122cd33221e3a7715c36fd00a163de9f"
+  },
+  "374": {
+    "faces": [
+      {
+        "box": [
+          0.1,
+          0.1,
+          0.8,
+          0.5
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "captions": [
+      {
+        "text": "请……请不要这样",
+        "box": [
+          0,
+          139,
+          233,
+          46
+        ],
+        "color": "#222222",
+        "stroke_width": 0
+      }
+    ],
+    "key": "auto_story_dca32508b8b87cfdccbc99d6",
+    "source_sha256": "487957b562633b4edee19bd887bc5efe31df3da8ecf767ff68cf7572798eebd2"
+  },
+  "375": {
+    "faces": [
+      {
+        "box": [
+          0.2,
+          0.15,
+          0.6,
+          0.7
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_74d9e95e1c4bee87b98ea20f",
+    "source_sha256": "25ea337d4b9111d04f604c82115a555188e4b6d9a0b7b7e500818d529cd2c228"
+  },
+  "388": {
+    "faces": [
+      {
+        "box": [
+          0.35,
+          0.15,
+          0.3,
+          0.4
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_b6752484dd2f8b4040d23d6b",
+    "source_sha256": "653e3d8d87d575faa0bc9af4785918e53bfbee257ffbb86677e92796172370bd"
+  },
+  "396": {
+    "faces": [],
+    "human": false,
+    "key": "auto_story_3eedb3e4bbf19d848cbaede9",
+    "source_sha256": "2017c0bdbab84dda45cc6b9786c92d96688250bf82cea53676a3297751f9adda"
+  },
+  "410": {
+    "faces": [
+      {
+        "box": [
+          26,
+          19,
+          65,
+          57
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_ad52effb7164e33cfb3669ee",
+    "source_sha256": "dac4d17d5a4ce66005ad010b42db0822550dd849aca9276c3c3af004d593168c"
+  },
+  "412": {
+    "faces": [
+      {
+        "box": [
+          39,
+          4,
+          101,
+          120
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_3434a0c53f031a4ff620c260",
+    "source_sha256": "5d0ff26947bec9cc9fa1041b6303e965c74e0a1a9ef9add533ec6e6a053efa73"
+  },
+  "414": {
+    "faces": [
+      {
+        "box": [
+          0.1,
+          0.4,
+          0.5,
+          0.4
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_9a5facd35071e5e2cc115e94",
+    "source_sha256": "6fdec89c627731c97cbfb00b4cda9ab4a5a16d45a111db2ab018d2e86ffd67b2"
+  },
+  "417": {
+    "faces": [
+      {
+        "box": [
+          117,
+          156,
+          241,
+          204
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_b5b4c47f62627cf350b4e7c5",
+    "source_sha256": "f6ebe4d11c7f301afe4a71c40aacfa0a7501cc9999a846ec91fb9b5d9f048b73"
+  },
+  "418": {
+    "faces": [
+      {
+        "box": [
+          0.14,
+          0.35,
+          0.4,
+          0.4
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_8fc2021e07cac7ba3d2165d8",
+    "source_sha256": "21afa902c592d3b215718e3b2ee3bdfc12c720e40abbab83da252ee6913db225"
+  },
+  "419": {
+    "faces": [],
+    "human": false,
+    "key": "auto_story_3a8a6fb0283049608a384d0c",
+    "source_sha256": "57c3d13f324df191daca15f3722d55608dc69a3e3adba21717326dc00d6e7382"
+  },
+  "423": {
+    "faces": [
+      {
+        "box": [
+          0.25,
+          0.27,
+          0.4,
+          0.3
+        ],
+        "normalized": true,
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_348b01b17bb480cb59ae3a7a",
+    "source_sha256": "c11dda82e0ff86ab1d06806d16948737cef417acb24f4500831f87019924a310"
+  },
+  "428": {
+    "faces": [
+      {
+        "box": [
+          39,
+          19,
+          118,
+          104
+        ],
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_20a67344bda8e0b7b028b54a",
+    "source_sha256": "9c1ad7f3542496090368b0002c37f8ba05d7065d619587f93b49246bb0387131"
+  },
+  "431": {
+    "faces": [
+      {
+        "box": [
+          170,
+          167,
+          122,
+          128
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_299db0b9320d55b6bcb5a6fb",
+    "source_sha256": "b559235deaa8890c2f427642d539c73e779df8d4ea192eced6cf513889246589"
+  },
+  "434": {
+    "faces": [
+      {
+        "box": [
+          25,
+          24,
+          39,
+          37
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_bbf260202146e09311d93d3a",
+    "source_sha256": "2b89a3063dcf11b9d66e96abb1523bd45e26d36c1ad24c152d3884d0e34ebef5"
+  },
+  "435": {
+    "faces": [
+      {
+        "box": [
+          15,
+          23,
+          38,
+          32
+        ],
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_90b85ce741e015f800772c1d",
+    "source_sha256": "4c80576596ad8c7070ea857589dde8cd235c0daa851d39ba3a4c5d634ecd8f0c"
+  },
+  "436": {
+    "faces": [
+      {
+        "box": [
+          26,
+          22,
+          38,
+          28
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_10b721036640ceb50e7faf3a",
+    "source_sha256": "abc338cf79fc324133a460e4d87f44445c094a6e386f4f423c41f95e30e3f08c"
+  },
+  "452": {
+    "faces": [],
+    "human": false,
+    "key": "auto_story_72184ff6dc79c00928284e6f",
+    "source_sha256": "50627b45d481816faa2d113fedcb296d2efbeff6e857f9ddeeeb30ba56389e6e"
+  },
+  "455": {
+    "faces": [
+      {
+        "box": [
+          0.3,
+          0.24,
+          0.45,
+          0.5
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_70baeef07fbe2441c5f5548e",
+    "source_sha256": "3dfc5f55df6dcdc75f134e6b1a12c683061d303e46cace767642e2d7860ed351"
+  },
+  "456": {
+    "faces": [
+      {
+        "box": [
+          0.2,
+          0.12,
+          0.65,
+          0.55
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_42515fb0da8cebb5925f4192",
+    "source_sha256": "61ece0f3f093d2bbeda13fd30ccad645392d959c769757f42574ad55bf05640b"
+  },
+  "457": {
+    "faces": [
+      {
+        "box": [
+          133,
+          165,
+          168,
+          143
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_e5d484275e69b4f293fe4594",
+    "source_sha256": "4fcdff1dbd4fc11b91ba8e6465c5d2a68e64cc7032a5709e3b31a7f8f05dcbf6"
+  },
+  "459": {
+    "faces": [
+      {
+        "box": [
+          108,
+          29,
+          69,
+          65
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_44be0f5d8d059c441ab5be5a",
+    "source_sha256": "a7e158b1fe1051ae56718d91d0db9436971050e9173865a568df265429cdcc5a"
+  },
+  "487": {
+    "faces": [
+      {
+        "box": [
+          73,
+          87,
+          83,
+          64
+        ],
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_c47c6e676a9c5823e862039a",
+    "source_sha256": "223ee29388daf485e1a4e2a62930fcbdc031a984ab935e2ad0566c9706f08fd1"
+  },
+  "490": {
+    "faces": [
+      {
+        "box": [
+          0.25,
+          0.14,
+          0.4,
+          0.4
+        ],
+        "normalized": true,
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_16319c61c112f71467f65277",
+    "source_sha256": "81062df75a2d99316757a093f32a29bd284c0f5346f5818ce2e487f20f1e4559"
+  },
+  "503": {
+    "faces": [
+      {
+        "box": [
+          11,
+          12,
+          150,
+          118
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_ddd3cee6bb2162db93bbb2a7",
+    "source_sha256": "202e9c14645ed90b6c32f5f03e9bee395e6752111af3c5fa1ba53001e3c05db4"
+  },
+  "504": {
+    "faces": [
+      {
+        "box": [
+          40,
+          15,
+          120,
+          107
+        ],
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_9ba8304587802ca782d75364",
+    "source_sha256": "7137c16a12188371785b052c004d6fe222120521f7a1c2acee49ba81131fd5c9"
+  },
+  "507": {
+    "faces": [
+      {
+        "box": [
+          68,
+          47,
+          86,
+          72
+        ],
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "captions": [
+      {
+        "text": "您也配当靓仔吗？",
+        "box": [
+          4,
+          183,
+          212,
+          46
+        ]
+      }
+    ],
+    "key": "auto_story_ff60331999bc56c174d59c8e",
+    "source_sha256": "a82762e64473c95ed633beaf242f5609dcea414e8b908f0c16db6678e023f936"
+  },
+  "508": {
+    "faces": [],
+    "human": false,
+    "key": "auto_story_8749cc5b938e557b7b90892f",
+    "source_sha256": "c2812cb30a3a61eb3412eab685cdaae82e10c32fd459c6f5c21589ea30ec7ea1"
+  },
+  "517": {
+    "faces": [
+      {
+        "box": [
+          0.1,
+          0.27,
+          0.48,
+          0.4
+        ],
+        "normalized": true,
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_e3ea9ba5dd46713449411b26",
+    "source_sha256": "9d4fe56cdecac81bd22539ab8eb1431df1e3bb5e341e210a30fcddd45a12af05"
+  },
+  "523": {
+    "faces": [
+      {
+        "box": [
+          0.2,
+          0.42,
+          0.5,
+          0.4
+        ],
+        "normalized": true,
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_80e877c0f3b256dfda96d143",
+    "source_sha256": "34ef5170a1aa6606c7af417542ca641613cf96e5324cd9b5ab87c5a30b2a7d3a"
+  },
+  "525": {
+    "faces": [
+      {
+        "box": [
+          0.5,
+          0.2,
+          0.2,
+          0.2
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_a29ddb4765e70ad97dbdd257",
+    "source_sha256": "da19334a1a042308bfd58a968088d2ee710af6583b384c0801614894812695b5",
+    "pending": "原黑色问号主体的脸与眼睛不能由当前侧边贴图替代"
+  },
+  "534": {
+    "faces": [
+      {
+        "box": [
+          0.25,
+          0.15,
+          0.5,
+          0.55
+        ],
+        "normalized": true,
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_5153fbf86fd3f11745fd6a40",
+    "source_sha256": "f335aa8f18d727e965c305c97f7b49cf937c1ecc374988a3da18cd40a0b6fe26"
+  },
+  "538": {
+    "faces": [
+      {
+        "box": [
+          0.23,
+          0.3,
+          0.55,
+          0.45
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_5957355a5a32dd3dfba42106",
+    "source_sha256": "32f08a5ae51e0342110fe870e0ae2a983aea087379cba694f05a91af25e503a5"
+  },
+  "540": {
+    "faces": [
+      {
+        "box": [
+          0.25,
+          0.12,
+          0.55,
+          0.6
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_354dd433110d8ca58417db23",
+    "source_sha256": "1b67423bbaa6d8481f5ea6d96dba0481366ec99ab4aea7d453f9367d4fbd5d4a"
+  },
+  "542": {
+    "faces": [
+      {
+        "box": [
+          0.2,
+          0.2,
+          0.6,
+          0.7
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_f8c1695736ba8d3aa19812e0",
+    "source_sha256": "121dbc5967269b3b9c8e0fce17b85ac58fa5d0b0c1fca46193e014f93c35c83a"
+  },
+  "546": {
+    "faces": [
+      {
+        "box": [
+          0.3,
+          0.25,
+          0.4,
+          0.35
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_64edd60e48a28401fc8c79a6",
+    "source_sha256": "20ada06bcc5f76370e117451c200a93261936c67b5761a3fb122f8f0fcd50b98"
+  },
+  "552": {
+    "faces": [
+      {
+        "box": [
+          65,
+          101,
+          147,
+          119
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_3cbf28c2b2c479e305439766",
+    "source_sha256": "f560018fdccca9e452224dbdcb8e3f9327ae90e51a3dc51478f9c77b790bfb6b"
+  },
+  "554": {
+    "faces": [],
+    "human": false,
+    "key": "auto_story_f452030d44739c3307627905",
+    "source_sha256": "87ced1a8f4d934fa5f57219ed405eda8633747c2876aad5b252dd950623ab32c"
+  },
+  "558": {
+    "faces": [
+      {
+        "box": [
+          48,
+          54,
+          82,
+          73
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_41a66a2454850ed0cfd2e2bc",
+    "source_sha256": "9835c5f7bc668fe3de30a8f62fff6bd862993b2c0197663b4543302d2a854383"
+  },
+  "559": {
+    "faces": [
+      {
+        "box": [
+          235,
+          105,
+          118,
+          110
+        ],
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_dd36c2256cbb39d46848fafa",
+    "source_sha256": "5accfd8ba14f226d5e66e798f0d3501fb699dd0f7d3fbf12988205f41101f42a"
+  },
+  "575": {
+    "faces": [
+      {
+        "box": [
+          62,
+          69,
+          63,
+          65
+        ],
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "captions": [],
+    "key": "auto_story_2f92f80d518395534cb5e547",
+    "source_sha256": "f8fef3bf2da3941079590eb66da446bf5cbffede9b86e1dc0dcf9967d35807ba"
+  },
+  "576": {
+    "faces": [
+      {
+        "box": [
+          89,
+          128,
+          143,
+          102
+        ],
+        "tone": "original",
+        "protect_polygons": [
+          [
+            [
+              53,
+              63
+            ],
+            [
+              106,
+              63
+            ],
+            [
+              111,
+              101
+            ],
+            [
+              50,
+              101
+            ]
+          ]
+        ]
+      }
+    ],
+    "human": false,
+    "key": "auto_story_148269cb3b119c08669be4c6",
+    "source_sha256": "dbd4cb0e8518e88d4276c2ca823af5c33a880d5eb702dd75f4f0d34a7ebc6166"
+  },
+  "584": {
+    "faces": [
+      {
+        "box": [
+          85,
+          59,
+          230,
+          177
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_c63a8c4afce240f91ca4b1d4",
+    "source_sha256": "92a9e2391beca4c88505ddf0cc4d008aa4d885b9254e3d3e3787459a431fe13b"
+  },
+  "587": {
+    "captions": [
+      {
+        "text": "兄弟，你好香",
+        "box": [
+          0,
+          423,
+          512,
+          89
+        ],
+        "color": "#ffffff",
+        "stroke_width": 0,
+        "text_mask": "glyph"
+      }
+    ],
+    "faces": [],
+    "human": false,
+    "fixed_note": "替换原来的下方配文，保留完整企鹅表情和舌头",
+    "key": "auto_story_209c29fda0495c903602c25c",
+    "source_sha256": "6c16e6db6f2792b7ca9d8ce743208504a7fbaae80e7b5360dab1d2c67c68bcbe"
+  },
+  "589": {
+    "faces": [
+      {
+        "box": [
+          0.45,
+          0.12,
+          0.3,
+          0.25
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_3996d44882a7279893eb3d31",
+    "source_sha256": "87dc24a6e800eddb7b7442dc6bb87f470cc7500fc1d6daff898543be9015e1bd"
+  },
+  "594": {
+    "faces": [
+      {
+        "box": [
+          95,
+          76,
+          325,
+          287
+        ],
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_67ea504d301d9103b2a95079",
+    "source_sha256": "403bbe36f430ce0b0b4de0439267cc3d7921ef34528f278464a10bce88d8e726"
+  },
+  "596": {
+    "faces": [
+      {
+        "box": [
+          0.35,
+          0.3,
+          0.3,
+          0.4
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_46e266ad3d4f7cdea9b2a391",
+    "source_sha256": "1071f3d6aec81b704598cbcb599a6ad490463e4bf6cc1a6b6e69dc60a1d45e54"
+  },
+  "599": {
+    "faces": [
+      {
+        "box": [
+          62,
+          34,
+          74,
+          48
+        ],
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_18fb8bc6c6e424db957f806c",
+    "source_sha256": "32801f757b9cc46115481d22b6e2318740446521266171f44d242a0b3951f90e"
+  },
+  "601": {
+    "faces": [
+      {
+        "box": [
+          0.2,
+          0.15,
+          0.6,
+          0.5
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_a8e06979dd5da4f16c28889d",
+    "source_sha256": "045c61fe8635959701fecc447de2e434fc887074ca4193172bf734cc87927817"
+  },
+  "606": {
+    "faces": [
+      {
+        "box": [
+          0.25,
+          0.35,
+          0.5,
+          0.4
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_121decc8f049e8765f3c7ce8",
+    "source_sha256": "e216da1d6ca5a68d92a28eadf91868a1f50296c6ff5a6f86aa0438a386a35b18"
+  },
+  "607": {
+    "faces": [
+      {
+        "box": [
+          112,
+          158,
+          91,
+          73
+        ],
+        "tone": "grayscale",
+        "protect_polygons": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              90,
+              0
+            ],
+            [
+              90,
+              10
+            ],
+            [
+              0,
+              10
+            ]
+          ]
+        ]
+      }
+    ],
+    "human": false,
+    "key": "auto_story_aea53d8111260099d8f6428b",
+    "source_sha256": "909d0675739d058ea595906a16599a9d032bf10c110b98d42492f40a1aa6b3f8"
+  },
+  "609": {
+    "faces": [
+      {
+        "box": [
+          13,
+          23,
+          42,
+          33
+        ],
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_9e305e22837876b073611a41",
+    "source_sha256": "00749ef57715c0f73c301cf0c7bb66947c2a3d62f44f5dcebc09f4a78eae252d"
+  },
+  "611": {
+    "faces": [
+      {
+        "box": [
+          26,
+          22,
+          38,
+          28
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_ac9522609f92065f6e314949",
+    "source_sha256": "760123e4dc1355d28a5d9811f6c511b86e85817de0e1a5c7c66889b217d8339a"
+  },
+  "630": {
+    "faces": [
+      {
+        "box": [
+          49,
+          28,
+          50,
+          47
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_a50ade0360628cb88b551e0b",
+    "source_sha256": "9990ec2644998a3ddac23c0bfe4edea5a319dd82345e1f4ac60f3b4b245510a9"
+  },
+  "631": {
+    "faces": [
+      {
+        "box": [
+          121,
+          106,
+          189,
+          188
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_0088a90546d881e9980dd99e",
+    "source_sha256": "15d6b51bc7dee3b4b2d58513e6dbc0d1e90f2ca07445ef94422abda942aab350"
+  },
+  "635": {
+    "faces": [
+      {
+        "box": [
+          65,
+          25,
+          65,
+          66
+        ],
+        "tone": "grayscale"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_307692fde7ce5a910f4d2ae6",
+    "source_sha256": "8b81d4c646ca2e9910fa82cd59693557496bb9c4b990b54f8b8ce0cbc3162641"
+  },
+  "637": {
+    "faces": [
+      {
+        "box": [
+          60,
+          67,
+          130,
+          113
+        ],
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_4bc981b6b7ac64080ee9940b",
+    "source_sha256": "d0714e94cde4ed80176d2d8a180ae0244eef0dbaa429b255f7dc12407bec190e"
+  },
+  "639": {
+    "faces": [
+      {
+        "box": [
+          0.4,
+          0.2,
+          0.5,
+          0.5
+        ],
+        "normalized": true,
+        "tone": "original"
+      }
+    ],
+    "human": false,
+    "key": "auto_story_4d5d652d1b52fe2dbd1534f8",
+    "source_sha256": "9aef09695a87c7f43b5afc0b15d759d86115439b06e7c20b3d0827587f1633b9"
+  },
+  "647": {
+    "faces": [
+      {
+        "box": [
+          104,
+          34,
+          248,
+          234
+        ],
+        "tone": "grayscale",
+        "protect_polygons": [
+          [
+            [
+              150,
+              184
+            ],
+            [
+              247,
+              184
+            ],
+            [
+              247,
+              233
+            ],
+            [
+              150,
+              233
+            ]
+          ]
+        ]
+      }
+    ],
+    "human": false,
+    "key": "auto_story_116aa3e1ad2326e435711a85",
+    "source_sha256": "6b251a184f6411bed391c29447db4be09a0d2314010f548991e2700ed9711751"
+  },
+  "49": {
+    "note": "复杂遮挡、转身或无可靠面部；优先完整替换原字幕，无字幕则留待专门拆解",
+    "pending": "揉脸的双手连续遮住口鼻，须完成手指前景遮挡层",
+    "key": "auto_story_45c62eb54fcf64191c3481d9",
+    "source_sha256": "45c62eb54fcf64191c3481d992cb91c9e5fe80d35f2d652e7be9952ae3c808b2"
+  },
+  "100": {
+    "note": "复杂遮挡、转身或无可靠面部；优先完整替换原字幕，无字幕则留待专门拆解",
+    "captions": [],
+    "pending": "全程背面角色，无原字幕；不能把水印当成可编辑文案",
+    "key": "auto_story_d1aa8a13ac600a8d46c16b17",
+    "source_sha256": "d1aa8a13ac600a8d46c16b17d581e3b70d18df49c8fc63fe853c26746b8dd73a"
+  },
+  "113": {
+    "note": "复杂遮挡、转身或无可靠面部；优先完整替换原字幕，无字幕则留待专门拆解",
+    "pending": "甩尾背影，没有清晰面部和原字幕",
+    "key": "auto_story_fef46113753df1e2da0c277d",
+    "source_sha256": "fef46113753df1e2da0c277dde6498c1c1f830b472ed4b66397565a7f3a4a9e2"
+  },
+  "175": {
+    "note": "复杂遮挡、转身或无可靠面部；优先完整替换原字幕，无字幕则留待专门拆解",
+    "pending": "门遮挡与探头显隐需要逐帧遮挡轮廓",
+    "key": "auto_story_9b56f59814363e7464fb6264",
+    "source_sha256": "9b56f59814363e7464fb6264eadb7124c9b352523fadfdb6d41b05e1d12b9767"
+  },
+  "190": {
+    "note": "复杂遮挡、转身或无可靠面部；优先完整替换原字幕，无字幕则留待专门拆解",
+    "pending": "突然贴近镜头，头像大幅超出画布，须完整的裁切变换",
+    "key": "auto_story_15b9d7309dff328937778eaf",
+    "source_sha256": "15b9d7309dff328937778eaf14168d3921b7c0bbed169196486ebae94f701df3"
+  },
+  "202": {
+    "note": "复杂遮挡、转身或无可靠面部；优先完整替换原字幕，无字幕则留待专门拆解",
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          111,
+          57,
+          34,
+          35
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_508d28f587a6a71f010d150e",
+    "source_sha256": "508d28f587a6a71f010d150eca83eb0d4769ee32d0d3c122c0428eb4294e86c3"
+  },
+  "215": {
+    "note": "复杂遮挡、转身或无可靠面部；优先完整替换原字幕，无字幕则留待专门拆解",
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          137,
+          43,
+          47,
+          52
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_9dd2d8e14e41d78634b2d349",
+    "source_sha256": "9dd2d8e14e41d78634b2d349a7f6607a8cb4a97b926df4c0b08a4d05f851391d",
+    "pending": "3D侧身舞包含背面，需要方向与可见性标注"
+  },
+  "216": {
+    "note": "复杂遮挡、转身或无可靠面部；优先完整替换原字幕，无字幕则留待专门拆解",
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          127,
+          45,
+          54,
+          53
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_46450db1e2a870c1d67d4098",
+    "source_sha256": "46450db1e2a870c1d67d40980389af059822a64780d37f9e8b23eae68bf0f345",
+    "pending": "3D转身舞从背面开始，当前轨迹不能作为完整换脸模板"
+  },
+  "235": {
+    "note": "复杂遮挡、转身或无可靠面部；优先完整替换原字幕，无字幕则留待专门拆解",
+    "pending": "企鹅与海豹的转身遮挡需要双主体专用蒙版",
+    "key": "auto_story_2101df7748b16e13bd24d6bc",
+    "source_sha256": "2101df7748b16e13bd24d6bcd49e5fc22b7eee2f122bbee962e79c1874e4f088"
+  },
+  "245": {
+    "note": "复杂遮挡、转身或无可靠面部；优先完整替换原字幕，无字幕则留待专门拆解",
+    "pending": "翻滚中大部分头像在背面或地面遮挡",
+    "key": "auto_story_6c5e6ec8af0d81ef97031abd",
+    "source_sha256": "6c5e6ec8af0d81ef97031abdb5ef445fc192f265101e0b69e6fa5cdbe594834c"
+  },
+  "257": {
+    "note": "复杂遮挡、转身或无可靠面部；优先完整替换原字幕，无字幕则留待专门拆解",
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          0,
+          54,
+          256,
+          202
+        ],
+        "tone": "original"
+      }
+    ],
+    "captions": [],
+    "key": "auto_story_81735af298f4a62b9845c0f2",
+    "source_sha256": "81735af298f4a62b9845c0f210f6743c04427d16ad70f86cfda4766afbdd002c"
+  },
+  "258": {
+    "note": "复杂遮挡、转身或无可靠面部；优先完整替换原字幕，无字幕则留待专门拆解",
+    "pending": "闹钟挡住口鼻，需逐帧保留闹钟和手掌",
+    "key": "auto_story_d60dfb5579311e87bef5ec01",
+    "source_sha256": "d60dfb5579311e87bef5ec01134734a5e015666892f0b693de3506479f6ea132"
+  },
+  "267": {
+    "note": "复杂遮挡、转身或无可靠面部；优先完整替换原字幕，无字幕则留待专门拆解",
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          147,
+          43,
+          63,
+          62
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_8e4af07e9a129d44120fa664",
+    "source_sha256": "8e4af07e9a129d44120fa664f34ec99f36786c67bced515da60b97dc285d086a"
+  },
+  "285": {
+    "note": "复杂遮挡、转身或无可靠面部；优先完整替换原字幕，无字幕则留待专门拆解",
+    "pending": "两只猫相互遮挡接吻，需要独立双头像轨迹",
+    "key": "auto_story_7b1155595ce7adfd65488dae",
+    "source_sha256": "7b1155595ce7adfd65488dae725b89576086fd3c6c660e508608b2cd264c9ba3"
+  },
+  "311": {
+    "note": "复杂遮挡、转身或无可靠面部；优先完整替换原字幕，无字幕则留待专门拆解",
+    "pending": "全家多角色剧烈变形，没有可替换的原字幕",
+    "key": "auto_story_f8aa890a147936562c36fe4c",
+    "source_sha256": "f8aa890a147936562c36fe4ce2cf72973b83e4f28782ae5eb0bb5db377b0dadc"
+  },
+  "326": {
+    "note": "复杂遮挡、转身或无可靠面部；优先完整替换原字幕，无字幕则留待专门拆解",
+    "key": "auto_story_f5d234a5c42606aa0ee82365",
+    "source_sha256": "8d9eee651caa6fa5ad96783b8699261180632e347a86d45e32dd14cb98ea231d"
+  },
+  "368": {
+    "note": "复杂遮挡、转身或无可靠面部；优先完整替换原字幕，无字幕则留待专门拆解",
+    "pending": "多人抬棺的遮挡关系和小头像需要独立多人分层",
+    "key": "auto_story_b6cc861f899a46379feb4076",
+    "source_sha256": "4e23eb54ce2815fd4af8958a231c1918a69e09381ce0154704f6b35b5ae4a0da"
+  },
+  "389": {
+    "note": "复杂遮挡、转身或无可靠面部；优先完整替换原字幕，无字幕则留待专门拆解",
+    "key": "auto_story_aeaa0adffa5fcffdf91f79de",
+    "source_sha256": "f97e5dcbee94e17e21a45c8c3ecb19717226dfcfe36c44b633e32a64f0b00f2e"
+  },
+  "462": {
+    "captions": [],
+    "faces": [
+      {
+        "box": [
+          211,
+          162,
+          113,
+          95
+        ],
+        "tone": "original",
+        "protect_polygons": [
+          [
+            [
+              64,
+              0
+            ],
+            [
+              74,
+              0
+            ],
+            [
+              74,
+              94
+            ],
+            [
+              64,
+              94
+            ]
+          ]
+        ]
+      }
+    ],
+    "key": "auto_story_85b1cf7f8193e6220bf30ce3",
+    "source_sha256": "4379a578735c61a964d8b191790dd0db6c7520faa073374fe7472c67031ab462"
+  },
+  "515": {
+    "note": "复杂遮挡、转身或无可靠面部；优先完整替换原字幕，无字幕则留待专门拆解",
+    "pending": "舌头和手指遮住嘴部，需要独立前景遮挡层；原图无字幕",
+    "key": "auto_story_b0676c4bd6e31ff4eac64bc4",
+    "source_sha256": "fb809b71a641c5e922a6f35af1ec3fe740f8be4e18ce72481bb8fc9d65ea9f99"
+  },
+  "591": {
+    "note": "复杂遮挡、转身或无可靠面部；优先完整替换原字幕，无字幕则留待专门拆解",
+    "pending": "只有交通标志，没有原始人脸或可编辑文字",
+    "key": "auto_story_c408ef121b40ad5e0de50ac3",
+    "source_sha256": "d81b304f3707556d3a4247e1478f9e99785bcbb746dfe9a9b8d3c9d485dc83d4"
+  },
+  "629": {
+    "note": "复杂遮挡、转身或无可靠面部；优先完整替换原字幕，无字幕则留待专门拆解",
+    "pending": "鸡腿覆盖整个口鼻，尚需鸡腿遮挡层",
+    "key": "auto_story_d8fad3cfef4a1a1c1dc800d8",
+    "source_sha256": "4fc1f7f451be3e7af3d44e0adbcb741db0cd8c4b15b550ad4267bcd8805367e5"
+  },
+  "70": {
+    "captions": [
+      {
+        "text": "吓得我程序\n都出bug了",
+        "box": [
+          0,
+          0,
+          150,
+          76
+        ],
+        "color": "#d44545",
+        "stroke_width": 0
+      }
+    ],
+    "key": "auto_story_69e2aeb4807fd06dfa91e7c0",
+    "source_sha256": "69e2aeb4807fd06dfa91e7c0f4122d7149c32daa04a798df8cc1e2b6f98f67fc"
+  },
+  "74": {
+    "faces": [
+      {
+        "box": [
+          100,
+          130,
+          69,
+          66
+        ],
+        "tone": "grayscale"
+      }
+    ],
+    "key": "auto_story_d04e6ec9451b07eb2b24d920",
+    "source_sha256": "d04e6ec9451b07eb2b24d920731ce2aa7a4b1bcf0f09277a80333ef5e72259c3"
+  },
+  "0": {
+    "human": false,
+    "faces": [],
+    "key": "auto_story_7e4ee13006b043132e8094b0",
+    "source_sha256": "7e4ee13006b043132e8094b00bf363653608710d74ff5bd6280fbf85d30874b0",
+    "fixed_note": "完整替换原字幕；保留人物、动作和遮挡，不提供头像替换。"
+  },
+  "32": {
+    "faces": [
+      {
+        "box": [
+          65,
+          52,
+          100,
+          101
+        ],
+        "tone": "grayscale"
+      }
+    ],
+    "key": "auto_story_82c0cdea3eb420c1d4620047",
+    "source_sha256": "82c0cdea3eb420c1d46200477646e2403b7c5e910c8a35011056374432d80c91"
+  },
+  "52": {
+    "faces": [
+      {
+        "box": [
+          82,
+          63,
+          78,
+          79
+        ],
+        "tone": "grayscale"
+      }
+    ],
+    "captions": [
+      {
+        "text": "不要抱怨，抱我",
+        "box": [
+          24,
+          12,
+          194,
+          38
+        ]
+      }
+    ],
+    "key": "auto_story_787a24f5e858a76cffae2f8c",
+    "source_sha256": "787a24f5e858a76cffae2f8cf2a2a26f47a5959590121d6c9db719498bdc3c95"
+  },
+  "7": {
+    "key": "auto_story_d86c9c8b880f3e75a25d2b16",
+    "source_sha256": "d86c9c8b880f3e75a25d2b1673f8a201ddcbce31ee79e43d8407314e78fd772a"
+  },
+  "41": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          157,
+          25,
+          45,
+          45
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_055b6b17484ea8aa59486c88",
+    "source_sha256": "055b6b17484ea8aa59486c881d6b9afbe59a7971b1e48162bdb47062d34685bb"
+  },
+  "66": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          100,
+          10,
+          56,
+          78
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_cb8281ab0f54976b15fd8d1d",
+    "source_sha256": "cb8281ab0f54976b15fd8d1d4a320c5f8f73d5c267bec91e420319213d33fc08"
+  },
+  "131": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          64,
+          2,
+          56,
+          51
+        ],
+        "tone": "original",
+        "yellow_face": true
+      }
+    ],
+    "key": "auto_story_3d8c84beea1d3cc5a18992e8",
+    "source_sha256": "3d8c84beea1d3cc5a18992e83b30b4b4dadbabe006d9a2963401a9ff71a711a7",
+    "pending": "跳舞包含背面和倒地，需逐帧方向、隐藏和缩放"
+  },
+  "157": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          20,
+          39,
+          61,
+          50
+        ],
+        "tone": "original",
+        "yellow_face": true
+      },
+      {
+        "box": [
+          129,
+          40,
+          49,
+          45
+        ],
+        "slot": 1,
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_f3214a93a915c5bf6113ebf8",
+    "source_sha256": "f3214a93a915c5bf6113ebf81d2379280bc431cfc15c5ff372d89db311fcc377"
+  },
+  "189": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          0,
+          0,
+          73,
+          62
+        ],
+        "tone": "original",
+        "yellow_face": true
+      },
+      {
+        "box": [
+          66,
+          0,
+          76,
+          61
+        ],
+        "tone": "original",
+        "yellow_face": true
+      },
+      {
+        "box": [
+          142,
+          8,
+          66,
+          54
+        ],
+        "tone": "original",
+        "yellow_face": true
+      }
+    ],
+    "key": "auto_story_a5072f48919e59ed9f41caef",
+    "source_sha256": "a5072f48919e59ed9f41caef8815cca0221a022fc4493de8ca3eca867414a3a1",
+    "pending": "三头像碰撞产生交叠，需逐帧前后层级"
+  },
+  "194": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          8,
+          27,
+          47,
+          39
+        ],
+        "tone": "original",
+        "yellow_face": true
+      },
+      {
+        "box": [
+          57,
+          44,
+          35,
+          33
+        ],
+        "slot": 1,
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_3dd5b1e40f93bdd6f6178ccf",
+    "source_sha256": "3dd5b1e40f93bdd6f6178ccfa7d8c9c59128a41bd6afd34be1f80559dd67c732",
+    "pending": "安慰动作包含倒立、折叠和重叠，需独立旋转与遮挡轨道"
+  },
+  "225": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          70,
+          19,
+          54,
+          66
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_82cbeb235651659fc8a134fb",
+    "source_sha256": "82cbeb235651659fc8a134fb544acf17ae38c54f599dc819bdc465212795f4e3"
+  },
+  "228": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          40,
+          41,
+          37,
+          44
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_36ff464b00bffbdf823133d6",
+    "source_sha256": "36ff464b00bffbdf823133d68d910366796373da203615da8f078a5e40bd088d"
+  },
+  "252": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          89,
+          69,
+          44,
+          45
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_04a28c1950ec6eb94c688deb",
+    "source_sha256": "04a28c1950ec6eb94c688debd41dd1f2fcbf68913b185c979d1e7c4527140937",
+    "pending": "猫退入门后头像仍漂浮，需逐帧头部定位和离场隐藏"
+  },
+  "253": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          170,
+          44,
+          31,
+          36
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_2c640b9e39b39c0f3d933d8a",
+    "source_sha256": "2c640b9e39b39c0f3d933d8ae88599ca99c25df88e064a18af8f08b0cd6ce9bd"
+  },
+  "328": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          27,
+          39,
+          82,
+          68
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_f83d0056515165c818799356",
+    "source_sha256": "3ec7fb79bfeba0198e23adcea183022120218898016246ef4aecd2172cc55d0b",
+    "pending": "佩奇的眼鼻分散且跨越现有面罩，不能把嘴部覆盖算作换脸"
+  },
+  "349": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          60,
+          9,
+          110,
+          119
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_911fab94e7d81aa223fba2cd",
+    "source_sha256": "1a111736126397dd8a00f4dbf25ef4fb37cfe125df8fa6611844f1c38bbefdbc"
+  },
+  "361": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          361,
+          104,
+          131,
+          166
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_f59d8dae23c51f88f51bec3f",
+    "source_sha256": "ef5487335a32b05490321a46ed5e2cf43d62c051839f930223fb23fe28204db0"
+  },
+  "426": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          303,
+          44,
+          128,
+          101
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_6a18cff07d3414fa89c5fac7",
+    "source_sha256": "21dcf45b4a81955206d21d3dac83754529f8d60b25be0a08051934e1af4a2df9"
+  },
+  "427": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          220,
+          70,
+          145,
+          158
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_6b2f0280b3a8a8ee2e6de8fc",
+    "source_sha256": "0335a4cbfdcb12b6c9fd9baebf31f82a481d0ed2f2ae8a21032a90d148b2597d"
+  },
+  "437": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          40,
+          40,
+          45,
+          49
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_e9493a129190695abe794fed",
+    "source_sha256": "25b29c8be1bdfc19204636e3c77741606aef89355184bda50f239274a011d469"
+  },
+  "453": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          228,
+          67,
+          104,
+          119
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_cc993ad9186d65655d079f1a",
+    "source_sha256": "58ef7bebd29d4691af21a7160cf4299aaf9ff9148588f1fd82ab81b82db0f281"
+  },
+  "472": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          101,
+          96,
+          106,
+          125
+        ],
+        "tone": "grayscale"
+      }
+    ],
+    "key": "auto_story_ce88150a2ca9642f2d5797d1",
+    "source_sha256": "036c4b785b6b82ee0ce7cf105b34e778ab74dbd6739171c3d559cc1d786e9bb2"
+  },
+  "474": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          37,
+          57,
+          82,
+          65
+        ],
+        "tone": "grayscale"
+      }
+    ],
+    "key": "auto_story_9f1a888a6edd42df96d65565",
+    "source_sha256": "360bbf37656acd4156fcb997881545b80f7be57b301a38e5f7c9d31e3537809b"
+  },
+  "476": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          131,
+          78,
+          147,
+          122
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_0ca2535f803a3e3175607946",
+    "source_sha256": "1b3eb2de69ccc52bfd7c099c27add9775d3a60b209c89962568bcc5e8919a478"
+  },
+  "499": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          136,
+          195,
+          93,
+          100
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_e33ee7837b1a4976d456ba00",
+    "source_sha256": "3cabdcfa31955f0e4196fa6b2a1fbf8487ae7ae63806e9e57b3a64ead4f1f410"
+  },
+  "544": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          307,
+          126,
+          78,
+          80
+        ],
+        "tone": "grayscale"
+      }
+    ],
+    "captions": [],
+    "key": "auto_story_19eaef109f45a3c007e05bf0",
+    "source_sha256": "795b46136ff8a59071f3e638ef1426eaef0e828461641036cd8cc9d0990ee62d"
+  },
+  "642": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          200,
+          191,
+          213,
+          209
+        ],
+        "tone": "original"
+      }
+    ],
+    "captions": [],
+    "key": "auto_story_35f74b3f4f0c8ec77ed6f542",
+    "source_sha256": "8c34e45569586843a8fb78e9c2473e23df29a55d971c6d74a9318d9751c919ca"
+  },
+  "578": {
+    "captions": [],
+    "faces": [
+      {
+        "box": [
+          309,
+          35,
+          91,
+          101
+        ],
+        "tone": "grayscale"
+      }
+    ],
+    "key": "auto_story_9f5e2c20c0185b0b936dbc94",
+    "source_sha256": "396f1b56ca042d5f0570f5fa30448c4175e3aa5cb26cced0edf067d4fc4adea8"
+  },
+  "482": {
+    "captions": [
+      {
+        "text": "我不开心了！",
+        "box": [
+          64,
+          225,
+          370,
+          120
+        ],
+        "color": "#f4b1bd",
+        "stroke_width": 1
+      }
+    ],
+    "key": "auto_story_c6918b0e0594c6db4e2098c5",
+    "source_sha256": "686bca28e7de6349f2ac1ad4b504f0a7cc129837f4a9444c8028bb84d571a593"
+  },
+  "4": {
+    "captions": [
+      {
+        "text": "想想就没动力",
+        "box": [
+          0,
+          0,
+          236,
+          64
+        ]
+      }
+    ],
+    "key": "auto_story_687d432726afa893b40d0fa0",
+    "source_sha256": "687d432726afa893b40d0fa0e2e42a8bb618937cce76f2a0dee9f7e62203a61d"
+  },
+  "38": {
+    "captions": [
+      {
+        "text": "逐渐起了杀心…",
+        "box": [
+          179,
+          8,
+          55,
+          220
+        ],
+        "direction": "vertical"
+      }
+    ],
+    "key": "auto_story_f2627b3854a760a0bb14e660",
+    "source_sha256": "f2627b3854a760a0bb14e6601b12fd35e216e44b4697a031f04c144c2c28c1e2"
+  },
+  "45": {
+    "captions": [
+      {
+        "text": "退下吧！",
+        "box": [
+          192,
+          16,
+          55,
+          223
+        ],
+        "direction": "vertical"
+      }
+    ],
+    "key": "auto_story_75121260b728c0aeb4e787e9",
+    "source_sha256": "75121260b728c0aeb4e787e9eddf96c13dc13a68862d3a92e36da8284ddfa232"
+  },
+  "54": {
+    "captions": [
+      {
+        "text": "在改",
+        "box": [
+          0,
+          6,
+          56,
+          45
+        ],
+        "frames": {
+          "0": [
+            0,
+            6,
+            56,
+            45
+          ],
+          "1": [
+            0,
+            6,
+            56,
+            45
+          ],
+          "2": [
+            0,
+            6,
+            56,
+            45
+          ],
+          "3": [
+            0,
+            6,
+            56,
+            45
+          ],
+          "4": [
+            0,
+            6,
+            56,
+            45
+          ],
+          "5": [
+            70,
+            0,
+            55,
+            36
+          ],
+          "6": [
+            70,
+            0,
+            55,
+            36
+          ],
+          "7": [
+            70,
+            0,
+            55,
+            36
+          ]
+        }
+      }
+    ],
+    "key": "auto_story_1be2a8c9813db21fe8a8f397",
+    "source_sha256": "1be2a8c9813db21fe8a8f3973f6fd0bf0c09602225e2d911e05a9b06ca278330"
+  },
+  "81": {
+    "captions": [
+      {
+        "text": "不服憋着",
+        "box": [
+          0,
+          179,
+          247,
+          52
+        ]
+      }
+    ],
+    "key": "auto_story_86dce9321d44795d030ed89d",
+    "source_sha256": "86dce9321d44795d030ed89de6e81263038190fbdb183498d92086dc4a2ae525"
+  },
+  "149": {
+    "captions": [
+      {
+        "text": "快拍我！",
+        "box": [
+          7,
+          7,
+          58,
+          161
+        ],
+        "direction": "vertical"
+      }
+    ],
+    "key": "auto_story_f5e41ad60b280b8fb1fc9564",
+    "source_sha256": "f5e41ad60b280b8fb1fc95643da2fe9e78e31a83e8cb7c1742a10ec83fe7f554"
+  },
+  "177": {
+    "captions": [
+      {
+        "text": "快点，我要去打排位",
+        "box": [
+          9,
+          192,
+          228,
+          45
+        ]
+      }
+    ],
+    "key": "auto_story_e19dff14d29013835c5d2e84",
+    "source_sha256": "e19dff14d29013835c5d2e843d03c1133ebae616a1461fbfe73ff711e3a6f58b"
+  },
+  "331": {
+    "captions": [
+      {
+        "text": "滑稽喷雾",
+        "box": [
+          65,
+          0,
+          104,
+          30
+        ]
+      }
+    ],
+    "key": "auto_story_a321ec749d0c03e8a07d9e53",
+    "source_sha256": "d89cb029941de6e69e95f43abfcbf0389aa56d4de80174daa0fd66ad78fce96f"
+  },
+  "378": {
+    "captions": [
+      {
+        "text": "啊 我命都不要啦！",
+        "box": [
+          145,
+          276,
+          307,
+          47
+        ]
+      }
+    ],
+    "key": "auto_story_5f764f30e6bb6e4b0b199365",
+    "source_sha256": "8ac4dd19fb3f6cfa89b12e653f82e2de84980fe1a43c1f5ed0a194e5a29dd109"
+  },
+  "393": {
+    "captions": [
+      {
+        "text": "他们看都不看我一眼\n我甚至没有伪装",
+        "box": [
+          173,
+          183,
+          167,
+          53
+        ]
+      },
+      {
+        "text": "某男子玩游戏疑似被孤立",
+        "box": [
+          146,
+          239,
+          331,
+          35
+        ],
+        "color": "#e2ce4d",
+        "stroke_width": 1
+      }
+    ],
+    "key": "auto_story_4c4e27a7aaaa5321f3cf0b62",
+    "source_sha256": "32f26a88a268d5bafc91cb150ce778620bffa76986e9e18aec6c9d4ce32d9db2"
+  },
+  "536": {
+    "captions": [
+      {
+        "text": "要泥寡！",
+        "box": [
+          13,
+          61,
+          95,
+          27
+        ]
+      }
+    ],
+    "key": "auto_story_dfb040c4b316e7ab5707d6ae",
+    "source_sha256": "8d37530eeed3f75872a76501ef7aa91fd28f23ef2683c7ecf34a8cfc39409c86"
+  },
+  "562": {
+    "captions": [
+      {
+        "text": "这家伙是\n超大型巨人",
+        "box": [
+          178,
+          88,
+          62,
+          131
+        ],
+        "direction": "vertical",
+        "color": "#222222",
+        "stroke_width": 0
+      },
+      {
+        "text": "我是\n铠之巨人",
+        "box": [
+          306,
+          108,
+          64,
+          107
+        ],
+        "direction": "vertical",
+        "color": "#222222",
+        "stroke_width": 0
+      }
+    ],
+    "key": "auto_story_5eb305a67d2da0b86a0d683e",
+    "source_sha256": "90f8c1aaa00174b656ce5fa226634cfe041851c0e885a4710bb3c234e72b90d3"
+  },
+  "593": {
+    "captions": [
+      {
+        "text": "来，打我啊",
+        "box": [
+          27,
+          87,
+          65,
+          19
+        ]
+      }
+    ],
+    "key": "auto_story_c24b2dc5f099154e7c5bfd1c",
+    "source_sha256": "b233bca1d6dc7ad2d078d0c052d51f934e40075280190fb17af756d216e32137"
+  },
+  "648": {
+    "captions": [
+      {
+        "text": "你是汪星人就马上吃一口试试",
+        "box": [
+          152,
+          254,
+          211,
+          29
+        ],
+        "color": "#ffffff",
+        "stroke_width": 0
+      }
+    ],
+    "key": "auto_story_24c83b2f27e078c7ea425ac7",
+    "source_sha256": "1bffce86836763e15aab8c185da4713c3883482920a2c022c89dc34c29a84dc6"
+  },
+  "23": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          19,
+          8,
+          47,
+          43
+        ],
+        "tone": "original",
+        "protect_polygons": [
+          [
+            [
+              15,
+              21
+            ],
+            [
+              33,
+              21
+            ],
+            [
+              33,
+              42
+            ],
+            [
+              15,
+              42
+            ]
+          ]
+        ]
+      }
+    ],
+    "key": "auto_story_db0481462716200895c6b00e",
+    "source_sha256": "db0481462716200895c6b00ed48f4467efc3513d3a52bf9890007237785774bd"
+  },
+  "68": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          19,
+          9,
+          46,
+          42
+        ],
+        "tone": "original",
+        "protect_polygons": [
+          [
+            [
+              0,
+              17
+            ],
+            [
+              14,
+              17
+            ],
+            [
+              14,
+              42
+            ],
+            [
+              0,
+              42
+            ]
+          ]
+        ]
+      }
+    ],
+    "key": "auto_story_5ba71f7fb7aaeed49aadab41",
+    "source_sha256": "5ba71f7fb7aaeed49aadab410bf0e0f2c1435dab398cb63664b619d2cd6d39dc"
+  },
+  "114": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          16,
+          6,
+          46,
+          43
+        ],
+        "tone": "original",
+        "protect_polygons": [
+          [
+            [
+              0,
+              23
+            ],
+            [
+              12,
+              23
+            ],
+            [
+              12,
+              42
+            ],
+            [
+              0,
+              42
+            ]
+          ],
+          [
+            [
+              30,
+              20
+            ],
+            [
+              45,
+              20
+            ],
+            [
+              45,
+              42
+            ],
+            [
+              30,
+              42
+            ]
+          ]
+        ]
+      }
+    ],
+    "key": "auto_story_ff15c664b2f475783fb0352a",
+    "source_sha256": "ff15c664b2f475783fb0352afe43fa24a0543468105018e6f0c54ac4807a47f8"
+  },
+  "120": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          16,
+          9,
+          49,
+          42
+        ],
+        "tone": "original",
+        "protect_polygons": [
+          [
+            [
+              8,
+              23
+            ],
+            [
+              22,
+              23
+            ],
+            [
+              22,
+              41
+            ],
+            [
+              8,
+              41
+            ]
+          ]
+        ]
+      }
+    ],
+    "key": "auto_story_7808d6e64c84395b35e977b4",
+    "source_sha256": "7808d6e64c84395b35e977b4d08fe1f8950df322d6e17b688043e0cc658e645c"
+  },
+  "129": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          19,
+          8,
+          45,
+          39
+        ],
+        "tone": "original",
+        "protect_polygons": [
+          [
+            [
+              4,
+              26
+            ],
+            [
+              16,
+              26
+            ],
+            [
+              16,
+              38
+            ],
+            [
+              4,
+              38
+            ]
+          ]
+        ]
+      }
+    ],
+    "key": "auto_story_d6212b11f60542e22b9e72d1",
+    "source_sha256": "d6212b11f60542e22b9e72d196877366998cf6bf2df8166e387600e0159ba304"
+  },
+  "155": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          17,
+          7,
+          47,
+          42
+        ],
+        "tone": "original",
+        "protect_polygons": [
+          [
+            [
+              0,
+              26
+            ],
+            [
+              15,
+              26
+            ],
+            [
+              15,
+              41
+            ],
+            [
+              0,
+              41
+            ]
+          ]
+        ]
+      }
+    ],
+    "key": "auto_story_8c8b04033230a7991957de5a",
+    "source_sha256": "8c8b04033230a7991957de5ac524a3cdd0f8e908047f9ba220c1fb012e54e533"
+  },
+  "174": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          88,
+          46,
+          40,
+          46
+        ],
+        "tone": "original"
+      }
+    ],
+    "captions": [],
+    "key": "auto_story_38e11f183a001f5823c729e1",
+    "source_sha256": "38e11f183a001f5823c729e1fbe8c4927edf4f3b6a13d3e4a86510bb4d1f2d82",
+    "pending": "跳舞转身后头部轨迹明显偏离，需要独立逐帧标注"
+  },
+  "198": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          17,
+          29,
+          45,
+          35
+        ],
+        "tone": "original"
+      }
+    ],
+    "key": "auto_story_07d626c9310dcddea2beb2c1",
+    "source_sha256": "07d626c9310dcddea2beb2c1d0333ab51855a2b6027878d00a484c129c24f810",
+    "pending": "撞桌时面部倾斜，原五官超出当前局部面罩"
+  },
+  "71": {
+    "captions": [],
+    "pending": "变身中多次镜头切换且没有原字幕，需要重新手工标定头像轨迹",
+    "key": "auto_story_f87d31384b673f4893763eae",
+    "source_sha256": "f87d31384b673f4893763eae6fdc5384d451d1c73659b5656b1aa006b5875a74"
+  },
+  "19": {
+    "captions": [
+      {
+        "text": "么么哒",
+        "box": [
+          65,
+          172,
+          174,
+          67
+        ]
+      }
+    ],
+    "key": "auto_story_63be2918b895a84679f344d2",
+    "source_sha256": "63be2918b895a84679f344d23dd35270fecd3f77699ccc6e79ceeadc0cad73db"
+  },
+  "77": {
+    "captions": [
+      {
+        "text": "我打～死你",
+        "box": [
+          0,
+          119,
+          150,
+          31
+        ],
+        "hidden_frames": [
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23
+        ]
+      }
+    ],
+    "key": "auto_story_cafe3b9cd00d9478d77b58b6",
+    "source_sha256": "cafe3b9cd00d9478d77b58b62f7aed58bce4f0dffcf376738b0cd27b19ef47de",
+    "fixed_note": "仅替换前半段底部原配文；后半段移动的“哎呀”声效保留。"
+  },
+  "86": {
+    "captions": [
+      {
+        "text": "怎么还没回消息～",
+        "box": [
+          0,
+          0,
+          240,
+          48
+        ]
+      }
+    ],
+    "key": "auto_story_f6cbbf312f8eb2f94e25413a",
+    "source_sha256": "f6cbbf312f8eb2f94e25413a29e2373905e091526a8e7433c0e70287a540eb6f"
+  },
+  "97": {
+    "captions": [
+      {
+        "text": "颠覆业界……",
+        "box": [
+          29,
+          154,
+          171,
+          45
+        ]
+      }
+    ],
+    "key": "auto_story_2b25611218132454f173b15b",
+    "source_sha256": "2b25611218132454f173b15b81b87d06063dd9d7337917a334af1ceb7160c8ae"
+  },
+  "132": {
+    "captions": [
+      {
+        "text": "小哥哥你单身的话\n我能撩你吗",
+        "box": [
+          0,
+          178,
+          240,
+          63
+        ]
+      }
+    ],
+    "key": "auto_story_685465938f09d51e5afcb4a7",
+    "source_sha256": "685465938f09d51e5afcb4a7bed9484e827051484deb0ccf7a87d8c6ee39c2b6"
+  },
+  "133": {
+    "captions": [
+      {
+        "text": "小坏坏来了",
+        "box": [
+          0,
+          164,
+          219,
+          58
+        ]
+      }
+    ],
+    "key": "auto_story_3c68b598031040f9a78d1320",
+    "source_sha256": "3c68b598031040f9a78d1320661b1968ff6c703c8b67eef4963af42767ba0aa6"
+  },
+  "646": {
+    "human": false,
+    "faces": [
+      {
+        "box": [
+          363,
+          62,
+          70,
+          92
+        ],
+        "tone": "original"
+      }
+    ],
+    "captions": [],
+    "key": "auto_story_a548207d0cd6f94527a55b21",
+    "source_sha256": "9c8b53e217bcaceba9042cf71333b418e18ea4d7412637587adc45ceec3bed60",
+    "pending": "头像框落在人物右侧背景，需重新定位并规划整段原字替换"
+  },
+  "91": {
+    "pending": "翻身猫头受手臂遮挡，当前没有独立安全的面部或字幕",
+    "key": "auto_story_53d6208b2102af5482618288",
+    "source_sha256": "53d6208b2102af5482618288cb84bfc4d1e60250df7f8145ec74098e88eed72d"
+  },
+  "233": {
+    "pending": "弹幕覆盖动作，需拆出完整弹幕层，不能只改一处哈哈",
+    "key": "auto_story_e58303f57646d48b85e4212f",
+    "source_sha256": "e58303f57646d48b85e4212fac401c2550ad3d087b1eb767a7183167648d92ed"
+  },
+  "313": {
+    "pending": "捧王冠的主体转身与王冠遮挡需要专门分层",
+    "key": "auto_story_3ecd3e7ad5467526fbd11753",
+    "source_sha256": "3ecd3e7ad5467526fbd117537235eac4541c65cb0986e64a23cc3b8d33fdbda9"
+  },
+  "626": {
+    "pending": "倒置头部及张嘴形变需要专门头像变换",
+    "key": "auto_story_1579278ec49d1d6f0a628199",
+    "source_sha256": "19f6324c47e1c7f73b1ca76d91d7fa238b26a31bd5077ba2142a04b740aee8c7"
+  },
+  "243": {
+    "human": false,
+    "faces": [],
+    "key": "auto_story_3b10d099fbb1d9c0db71ce65",
+    "source_sha256": "3b10d099fbb1d9c0db71ce6527e3f1121afc717cba1836bd86a9b4dfce08e2a7"
+  },
+  "244": {
+    "human": false,
+    "faces": [],
+    "key": "auto_story_6a95a6f2cb576e65be90444e",
+    "source_sha256": "6a95a6f2cb576e65be90444eeb0c0e4c21263bec2545129a38992ca4ab87a14b"
+  },
+  "248": {
+    "human": false,
+    "faces": [],
+    "key": "auto_story_6c8f716749e269b6d4b4149b",
+    "source_sha256": "6c8f716749e269b6d4b4149b5a8298a7ab029c2c8181143e329e3a02bd55d95f"
+  },
+  "270": {
+    "human": false,
+    "faces": [],
+    "key": "auto_story_80b7a412aae6051585d43701",
+    "source_sha256": "80b7a412aae6051585d437012e0fd86e1897d72cfcf26f70a96ea1c48c6a960a"
+  },
+  "254": {
+    "captions": [
+      {
+        "text": "国庆快乐",
+        "box": [
+          0,
+          147,
+          192,
+          42
+        ]
+      }
+    ],
+    "key": "auto_story_518c4415aa8931c94cb0c4ad",
+    "source_sha256": "518c4415aa8931c94cb0c4ad1498c8d61fa7fabae8fa535036a1f892622795ac"
+  },
+  "643": {
+    "captions": [
+      {
+        "text": "我来了！",
+        "box": [
+          28,
+          50,
+          68,
+          96
+        ],
+        "direction": "vertical",
+        "color": "#222222",
+        "stroke_width": 0
+      }
+    ],
+    "key": "auto_story_e2bdc43ed0adb292b180f95d",
+    "source_sha256": "33076b8237dd83011cfe71bbeff46618f1f30ba6d99a94d412af35429a7f4fe7"
+  },
+  "415": {
+    "captions": [
+      {
+        "text": "可以！随便！都行！",
+        "box": [
+          0,
+          159,
+          200,
+          36
+        ],
+        "color": "#4f3e35",
+        "stroke_width": 0
+      }
+    ],
+    "fixed_note": "只改下方完整配文；脸上的敷衍字与两侧旁白保留",
+    "key": "auto_story_26a5adc7770962a17cd048c0",
+    "source_sha256": "002154af84af25c3d2abd26a478045310f781f7cc929658eb22515fdeeb84e0d"
+  },
+  "498": {
+    "captions": [
+      {
+        "text": "退！退！退！",
+        "box": [
+          42,
+          175,
+          245,
+          48
+        ],
+        "color": "#ffffff",
+        "stroke_width": 0,
+        "text_mask": "glyph"
+      }
+    ],
+    "key": "auto_story_7ad1d83af292bbdc6c4bb2dc",
+    "source_sha256": "582c6697c3061aa75912554d9419b87a09284c2412116b962206cf34b8fc4f71"
+  },
+  "62": {
+    "captions": [
+      {
+        "text": "辣",
+        "box": [
+          31,
+          43,
+          54,
+          54
+        ],
+        "hidden_frames": [
+          1
+        ]
+      },
+      {
+        "text": "鸡",
+        "box": [
+          31,
+          43,
+          54,
+          54
+        ],
+        "hidden_frames": [
+          0
+        ]
+      }
+    ],
+    "key": "auto_story_55c36ddd8829b32220726672",
+    "source_sha256": "55c36ddd8829b32220726672580c65162b0c19e48e03ec81046c7c1e4404d3f7"
+  },
+  "283": {
+    "pending": "问号动效被 OCR 当成字母，需重新拆分固定问号与完整配文",
+    "key": "auto_story_dbf8aec9a5374963cd541b44",
+    "source_sha256": "dbf8aec9a5374963cd541b447a5e2b93e516e3ba7cb553629a77d3b128c264d4"
+  },
+  "292": {
+    "pending": "头盔标记被 OCR 当成配文，需重新标定字幕轨迹",
+    "key": "auto_story_8ff8905df88c7ddc86d090a4",
+    "source_sha256": "8ff8905df88c7ddc86d090a4ff6335276cd5078834780cb4a3f25e8074aee5aa"
+  }
+}

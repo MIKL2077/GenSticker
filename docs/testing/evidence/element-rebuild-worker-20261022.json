@@ -1,0 +1,62 @@
+{
+  "identity": "isolated synthetic account",
+  "status": "passed",
+  "count": 9,
+  "cases": [
+    {
+      "key": "perfect",
+      "conversion": "bundled",
+      "version": 3,
+      "preview_mime": "image/jpeg"
+    },
+    {
+      "key": "auto_story_56e50b1be0e4caa12a51c06f",
+      "conversion": "element-replacement-v1",
+      "version": 2,
+      "preview_mime": "image/gif"
+    },
+    {
+      "key": "hug_leg",
+      "conversion": "bundled",
+      "version": 3,
+      "preview_mime": "image/gif"
+    },
+    {
+      "key": "auto_94a791fdabf54599f5f89bbd",
+      "conversion": "reviewed-image-slot-v2",
+      "version": 3,
+      "preview_mime": "image/jpeg"
+    },
+    {
+      "key": "rip",
+      "conversion": "bundled",
+      "version": 3,
+      "preview_mime": "image/jpeg"
+    },
+    {
+      "key": "why_at_me",
+      "conversion": "bundled",
+      "version": 3,
+      "preview_mime": "image/jpeg"
+    },
+    {
+      "key": "jiji_king",
+      "conversion": "bundled",
+      "version": 3,
+      "preview_mime": "image/jpeg"
+    },
+    {
+      "key": "auto_story_159a6d0f9503787972695efc",
+      "conversion": "element-replacement-v1",
+      "version": 2,
+      "preview_mime": "image/jpeg"
+    },
+    {
+      "key": "tightly",
+      "conversion": "bundled",
+      "version": 3,
+      "preview_mime": "image/gif"
+    }
+  ],
+  "fixture_cleanup": "completed"
+}

@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "backup": "/var/backups/gensticker-elements-1792658785",
+  "replaced": 593,
+  "withdrawn": 56,
+  "total": 944,
+  "animated": 392,
+  "categories": {
+    "image_only": 320,
+    "mixed": 160,
+    "text_only": 464
+  },
+  "other_services_healthy": true
+}

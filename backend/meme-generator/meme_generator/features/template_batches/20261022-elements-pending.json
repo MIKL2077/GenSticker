@@ -1,0 +1,399 @@
+{
+  "version": 1,
+  "templates": [],
+  "assets": {},
+  "withdrawals": [
+    {
+      "key": "auto_story_781b5e34b39a5ff9c9a1b2d2",
+      "original_hash": "781b5e34b39a5ff9c9a1b2d219ae68c900bc6dcde0ed480381e8663e9796a92c",
+      "reason": "抬头和推进镜头后旧五官超出当前面罩，需要逐帧重画尺度",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/010Cat_%E6%98%AF%E5%96%B5%E6%98%9F%E4%BA%BA%E5%95%A6%F0%9F%90%B1BQB/%E6%98%AF%E5%96%B5%E6%98%9F%E4%BA%BA%E5%95%A600004-%E9%9C%87%E6%83%8A%E7%8C%AB.gif",
+      "name": "猫咪抬头惊呆"
+    },
+    {
+      "key": "auto_story_59cc39c5667bae05070b10d1",
+      "original_hash": "59cc39c5667bae05070b10d1841543821df1ff8ac11e97a007a1571808bd7fc6",
+      "reason": "no original element is replaceable",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/077TuHi_%E5%9C%9F%E5%97%A8_BQB/TuHi00001.gif",
+      "name": "土嗨狂甩长发"
+    },
+    {
+      "key": "auto_story_45c62eb54fcf64191c3481d9",
+      "original_hash": "45c62eb54fcf64191c3481d992cb91c9e5fe80d35f2d652e7be9952ae3c808b2",
+      "reason": "揉脸的双手连续遮住口鼻，须完成手指前景遮挡层",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/011Dog_%E7%8B%97%F0%9F%90%B6BQB/%E7%8B%9700022-%E6%89%8B%E5%8A%A8%E7%8B%97%E5%A4%B4.gif",
+      "name": "柴犬被揉脸"
+    },
+    {
+      "key": "auto_story_4b919262cfa34a9a73fa3cbf",
+      "original_hash": "4b919262cfa34a9a73fa3cbf9c4d6dca79499a28b3eb9dffd11575fc6df5d2c2",
+      "reason": "揉脸手指穿过原面部，需逐帧描绘前景手指遮挡",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/010Cat_%E6%98%AF%E5%96%B5%E6%98%9F%E4%BA%BA%E5%95%A6%F0%9F%90%B1BQB/%E6%98%AF%E5%96%B5%E6%98%9F%E4%BA%BA%E5%95%A600077-%E6%8B%8D%E5%A4%B4%E7%8C%AB.gif",
+      "name": "猫咪抱怨脸"
+    },
+    {
+      "key": "auto_story_5ba71f7fb7aaeed49aadab41",
+      "original_hash": "5ba71f7fb7aaeed49aadab410bf0e0f2c1435dab398cb63664b619d2cd6d39dc",
+      "reason": "1 validation error for TemplateSpec\n  Value error, protected polygon outside slot [type=value_error, input_value={'width': 80, 'height': 8...irection='horizontal')]}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/018WangEgg_%E6%B1%AA%E8%9B%8B%F0%9F%A5%9ABQB/%E6%B1%AA%E8%9B%8B00039-%E6%89%93%E8%84%B8.gif",
+      "name": "汪蛋亲亲花"
+    },
+    {
+      "key": "auto_story_f87d31384b673f4893763eae",
+      "original_hash": "f87d31384b673f4893763eae6fdc5384d451d1c73659b5656b1aa006b5875a74",
+      "reason": "变身中多次镜头切换且没有原字幕，需要重新手工标定头像轨迹",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/090SailorMoon_%E7%BE%8E%E5%B0%91%E5%A5%B3%E6%88%98%E5%A3%AB_BQB/%E7%BE%8E%E5%B0%91%E5%A5%B3%E6%88%98%E5%A3%AB00005-%E6%88%91%E6%9D%A5%E4%BA%86.gif",
+      "name": "美少女战士华丽变身"
+    },
+    {
+      "key": "auto_story_3c50be7b4f77364606b402a1",
+      "original_hash": "3c50be7b4f77364606b402a1f3f3e1028cc096f1ac6b2255bef4c718f4e96ac5",
+      "reason": "头像区域偏离滑稽头，原有五官仍残留",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/001Funny_%E6%BB%91%E7%A8%BD%E5%A4%A7%E4%BD%AC%F0%9F%98%8FBQB/%E6%BB%91%E7%A8%BD%E5%A4%A7%E4%BD%AC00106-%E9%BC%93%E6%8E%8C%E4%B8%8D%E9%94%99.gif",
+      "name": "滑稽笑脸拍手"
+    },
+    {
+      "key": "auto_story_53d6208b2102af5482618288",
+      "original_hash": "53d6208b2102af5482618288cb84bfc4d1e60250df7f8145ec74098e88eed72d",
+      "reason": "翻身猫头受手臂遮挡，当前没有独立安全的面部或字幕",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/010Cat_%E6%98%AF%E5%96%B5%E6%98%9F%E4%BA%BA%E5%95%A6%F0%9F%90%B1BQB/%E6%98%AF%E5%96%B5%E6%98%9F%E4%BA%BA%E5%95%A600074-%E6%AC%A7%E6%8B%89%E6%AC%A7%E6%8B%89%E6%9C%A8%E5%A4%A7%E6%9C%A8%E5%A4%A7-%E5%8F%8C%E7%8C%AB%E5%AF%B9%E6%89%93%E7%8C%AB.gif",
+      "name": "猫咪躺着享受"
+    },
+    {
+      "key": "auto_story_eb613e4e39ca2509cb758bb7",
+      "original_hash": "eb613e4e39ca2509cb758bb75bc1f4f7f9e617540d89c20914cbeb1318467e6d",
+      "reason": "motion or loop timing changed",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/018WangEgg_%E6%B1%AA%E8%9B%8B%F0%9F%A5%9ABQB/%E6%B1%AA%E8%9B%8B00037-%E9%9C%87%E6%83%8A.gif",
+      "name": "汪蛋惊讶尖叫"
+    },
+    {
+      "key": "auto_story_d1aa8a13ac600a8d46c16b17",
+      "original_hash": "d1aa8a13ac600a8d46c16b17d581e3b70d18df49c8fc63fe853c26746b8dd73a",
+      "reason": "全程背面角色，无原字幕；不能把水印当成可编辑文案",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/009KumamotoBear_%E7%86%8A%E6%9C%AC%E7%86%8A%F0%9F%90%BBBQB/%E7%86%8A%E6%9C%AC%E7%86%8A00022-%E8%B6%85%E5%B8%85.gif",
+      "name": "熊本熊蹦跳打鼓"
+    },
+    {
+      "key": "auto_story_fef46113753df1e2da0c277d",
+      "original_hash": "fef46113753df1e2da0c277dde6498c1c1f830b472ed4b66397565a7f3a4a9e2",
+      "reason": "甩尾背影，没有清晰面部和原字幕",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/010Cat_%E6%98%AF%E5%96%B5%E6%98%9F%E4%BA%BA%E5%95%A6%F0%9F%90%B1BQB/%E6%98%AF%E5%96%B5%E6%98%9F%E4%BA%BA%E5%95%A600082-%E5%A4%A7%E5%B1%81%E8%82%A1%E5%BC%B9%E8%B7%B3%E7%8C%AB.gif",
+      "name": "猫咪甩尾巴"
+    },
+    {
+      "key": "auto_story_74424dda087eb1c389cc90ba",
+      "original_hash": "74424dda087eb1c389cc90ba4fc5a4c1edd914e839a5f4e982b904d20887f585",
+      "reason": "motion or loop timing changed",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/018WangEgg_%E6%B1%AA%E8%9B%8B%F0%9F%A5%9ABQB/%E6%B1%AA%E8%9B%8B00041-%E4%BA%B2%E4%BA%B2.gif",
+      "name": "汪蛋爱心亲亲"
+    },
+    {
+      "key": "auto_story_b66ea8996b823f48c3300efc",
+      "original_hash": "b66ea8996b823f48c3300efce93bc2795257c3fa488222f3bc7bf4678dcaddb7",
+      "reason": "小黄鸡翻滚时原五官残留，需重新测量每帧头部",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/026Chicken_%E5%B0%8F%E5%B9%BA%E9%B8%A1%F0%9F%90%94BQB/Chicken00035.gif",
+      "name": "小黄鸡地上翻滚"
+    },
+    {
+      "key": "auto_story_3d8c84beea1d3cc5a18992e8",
+      "original_hash": "3d8c84beea1d3cc5a18992e83b30b4b4dadbabe006d9a2963401a9ff71a711a7",
+      "reason": "跳舞包含背面和倒地，需逐帧方向、隐藏和缩放",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/001Funny_%E6%BB%91%E7%A8%BD%E5%A4%A7%E4%BD%AC%F0%9F%98%8FBQB/%E6%BB%91%E7%A8%BD%E5%A4%A7%E4%BD%AC00032-%E5%8A%88%E5%8F%89-%E8%B7%B3%E8%88%9E-%E5%8D%96%E8%89%BA.gif",
+      "name": "滑稽迪斯科"
+    },
+    {
+      "key": "auto_story_128a5e022e70b61d33b40504",
+      "original_hash": "128a5e022e70b61d33b40504a7d8130499ebac3d508bafd2b261afbfb66f4bb3",
+      "reason": "原鸡头位于当前面罩左侧，需重新测量面部",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/026Chicken_%E5%B0%8F%E5%B9%BA%E9%B8%A1%F0%9F%90%94BQB/Chicken00052.gif",
+      "name": "小黄鸡肌肉秀"
+    },
+    {
+      "key": "auto_story_51adb52aea1224f89a38c04e",
+      "original_hash": "51adb52aea1224f89a38c04ef29140d0df932ae03457210ae059a567bc44f41b",
+      "reason": "弹琴时原鸡嘴与眼睛未完整移除，需要专门面罩",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/026Chicken_%E5%B0%8F%E5%B9%BA%E9%B8%A1%F0%9F%90%94BQB/webwxgetmsgimg-2.gif",
+      "name": "小黄鸡弹钢琴"
+    },
+    {
+      "key": "auto_story_8636fa077bcce1b05bb3fdb4",
+      "original_hash": "8636fa077bcce1b05bb3fdb4adeb585d0a6c217e67fc263696628fc20beca1dc",
+      "reason": "no original element is replaceable",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/026Chicken_%E5%B0%8F%E5%B9%BA%E9%B8%A1%F0%9F%90%94BQB/webwxgetmsgimg-18.gif",
+      "name": "小黄鸡筷子投喂"
+    },
+    {
+      "key": "auto_story_e5a4c1a795bcbd660093aa52",
+      "original_hash": "e5a4c1a795bcbd660093aa52b461ab8b783432f0d49674bfa09323b7e36ac4d3",
+      "reason": "跳起时头部放大和出界，当前面罩不能完整移除原五官",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/026Chicken_%E5%B0%8F%E5%B9%BA%E9%B8%A1%F0%9F%90%94BQB/Chicken00031.gif",
+      "name": "小黄鸡摇头惊叹"
+    },
+    {
+      "key": "auto_story_38e11f183a001f5823c729e1",
+      "original_hash": "38e11f183a001f5823c729e1fbe8c4927edf4f3b6a13d3e4a86510bb4d1f2d82",
+      "reason": "跳舞转身后头部轨迹明显偏离，需要独立逐帧标注",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/009KumamotoBear_%E7%86%8A%E6%9C%AC%E7%86%8A%F0%9F%90%BBBQB/%E7%86%8A%E6%9C%AC%E7%86%8A00014-%E5%A5%B3%E7%A5%9E%E6%88%91%E6%9D%A5%E5%95%A6.gif",
+      "name": "熊本熊我来啦"
+    },
+    {
+      "key": "auto_story_9b56f59814363e7464fb6264",
+      "original_hash": "9b56f59814363e7464fb6264eadb7124c9b352523fadfdb6d41b05e1d12b9767",
+      "reason": "门遮挡与探头显隐需要逐帧遮挡轮廓",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/018WangEgg_%E6%B1%AA%E8%9B%8B%F0%9F%A5%9ABQB/%E6%B1%AA%E8%9B%8B00044-%E5%81%B7%E7%9C%8B.gif",
+      "name": "汪蛋门后偷看"
+    },
+    {
+      "key": "auto_story_a5072f48919e59ed9f41caef",
+      "original_hash": "a5072f48919e59ed9f41caef8815cca0221a022fc4493de8ca3eca867414a3a1",
+      "reason": "三头像碰撞产生交叠，需逐帧前后层级",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/001Funny_%E6%BB%91%E7%A8%BD%E5%A4%A7%E4%BD%AC%F0%9F%98%8FBQB/%E6%BB%91%E7%A8%BD%E5%A4%A7%E4%BD%AC00039-%E5%B7%A6%E5%8F%B3%E6%A8%AA%E8%B7%B3.gif",
+      "name": "滑稽三人队舞"
+    },
+    {
+      "key": "auto_story_15b9d7309dff328937778eaf",
+      "original_hash": "15b9d7309dff328937778eaf14168d3921b7c0bbed169196486ebae94f701df3",
+      "reason": "突然贴近镜头，头像大幅超出画布，须完整的裁切变换",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/018WangEgg_%E6%B1%AA%E8%9B%8B%F0%9F%A5%9ABQB/%E6%B1%AA%E8%9B%8B00006-%E6%89%AD%E5%A4%B4.gif",
+      "name": "汪蛋突然逼近"
+    },
+    {
+      "key": "auto_story_3dd5b1e40f93bdd6f6178ccf",
+      "original_hash": "3dd5b1e40f93bdd6f6178ccfa7d8c9c59128a41bd6afd34be1f80559dd67c732",
+      "reason": "安慰动作包含倒立、折叠和重叠，需独立旋转与遮挡轨道",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/001Funny_%E6%BB%91%E7%A8%BD%E5%A4%A7%E4%BD%AC%F0%9F%98%8FBQB/%E6%BB%91%E7%A8%BD%E5%A4%A7%E4%BD%AC00008-%E6%89%93%E4%BA%BA-%E5%8F%AF%E6%80%9C.gif",
+      "name": "滑稽抱头安慰"
+    },
+    {
+      "key": "auto_story_07d626c9310dcddea2beb2c1",
+      "original_hash": "07d626c9310dcddea2beb2c1d0333ab51855a2b6027878d00a484c129c24f810",
+      "reason": "撞桌时面部倾斜，原五官超出当前局部面罩",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/018WangEgg_%E6%B1%AA%E8%9B%8B%F0%9F%A5%9ABQB/%E6%B1%AA%E8%9B%8B00042-%E6%89%93%E6%BB%9A.gif",
+      "name": "汪蛋撞桌子"
+    },
+    {
+      "key": "auto_story_5e29a4710f12c855d367fce1",
+      "original_hash": "5e29a4710f12c855d367fce1ff6c0da68bb52110cdb2734f9692c67a7a060750",
+      "reason": "3D舞蹈包含背面，需要依据每帧方向隐藏面部",
+      "source_url": "https://u.weshineapp.com/rank/expression_tot_1",
+      "name": "白猫站立摇摆"
+    },
+    {
+      "key": "auto_story_9dd2d8e14e41d78634b2d349",
+      "original_hash": "9dd2d8e14e41d78634b2d349a7f6607a8cb4a97b926df4c0b08a4d05f851391d",
+      "reason": "3D侧身舞包含背面，需要方向与可见性标注",
+      "source_url": "https://u.weshineapp.com/rank/expression_tot_1",
+      "name": "白猫侧身跳舞"
+    },
+    {
+      "key": "auto_story_46450db1e2a870c1d67d4098",
+      "original_hash": "46450db1e2a870c1d67d40980389af059822a64780d37f9e8b23eae68bf0f345",
+      "reason": "3D转身舞从背面开始，当前轨迹不能作为完整换脸模板",
+      "source_url": "https://u.weshineapp.com/rank/expression_tot_1",
+      "name": "白猫转身起舞"
+    },
+    {
+      "key": "auto_story_e58303f57646d48b85e4212f",
+      "original_hash": "e58303f57646d48b85e4212fac401c2550ad3d087b1eb767a7183167648d92ed",
+      "reason": "弹幕覆盖动作，需拆出完整弹幕层，不能只改一处哈哈",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/095GenShin_%E5%8E%9F%E7%A5%9E_BQB/%E5%8E%9F%E7%A5%9E00026-%E5%93%88%E5%93%88%E5%93%88.gif",
+      "name": "原神满屏哈哈哈"
+    },
+    {
+      "key": "auto_story_e9b0600e1d9306842e75b2ad",
+      "original_hash": "e9b0600e1d9306842e75b2ad955a8e666a0da4e466129d707762c17a855f2221",
+      "reason": "小尺寸人头定位在背景上，需重画原面部位置",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/104JensenHuang_%E9%BB%84%E4%BB%81%E5%8B%8B%F0%9F%A7%A9_BQB/0000000104.gif",
+      "name": "黄仁勋认真解释"
+    },
+    {
+      "key": "auto_story_2101df7748b16e13bd24d6bc",
+      "original_hash": "2101df7748b16e13bd24d6bcd49e5fc22b7eee2f122bbee962e79c1874e4f088",
+      "reason": "企鹅与海豹的转身遮挡需要双主体专用蒙版",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/108_Pingu_%E4%BC%81%E9%B9%85%E5%AE%B6%E6%97%8F_BQB/%E4%BC%81%E9%B9%85%E5%AE%B6%E6%97%8F00007-%E9%BC%93%E6%8E%8C.gif",
+      "name": "企鹅陪小海豹"
+    },
+    {
+      "key": "auto_story_930f7de0c997b5fde1cee35f",
+      "original_hash": "930f7de0c997b5fde1cee35f45be64fcd032e2b6df7d28958d5a7e87a32ebe64",
+      "reason": "滑板企鹅侧脸与喙及运动出界需专门遮挡分解",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/108_Pingu_%E4%BC%81%E9%B9%85%E5%AE%B6%E6%97%8F_BQB/%E4%BC%81%E9%B9%85%E5%AE%B6%E6%97%8F00006-%E6%BD%87%E6%B4%92%E5%B0%8F%E6%BB%91%E6%9D%BF.gif",
+      "name": "企鹅滑板出发"
+    },
+    {
+      "key": "auto_story_6c5e6ec8af0d81ef97031abd",
+      "original_hash": "6c5e6ec8af0d81ef97031abdb5ef445fc192f265101e0b69e6fa5cdbe594834c",
+      "reason": "翻滚中大部分头像在背面或地面遮挡",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/011Dog_%E7%8B%97%F0%9F%90%B6BQB/%E7%8B%9700038-%E5%B9%B3%E8%BA%BA%E9%94%BB%E7%82%BC.gif",
+      "name": "柯基打滚撒欢"
+    },
+    {
+      "key": "auto_story_04a28c1950ec6eb94c688deb",
+      "original_hash": "04a28c1950ec6eb94c688debd41dd1f2fcbf68913b185c979d1e7c4527140937",
+      "reason": "猫退入门后头像仍漂浮，需逐帧头部定位和离场隐藏",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/010Cat_%E6%98%AF%E5%96%B5%E6%98%9F%E4%BA%BA%E5%95%A6%F0%9F%90%B1BQB/%E6%98%AF%E5%96%B5%E6%98%9F%E4%BA%BA%E5%95%A600069-%E5%88%AB%E4%B8%A2%E4%BA%BA%E4%BA%86%E7%8C%AB.gif",
+      "name": "猫咪靠墙不安"
+    },
+    {
+      "key": "auto_story_d60dfb5579311e87bef5ec01",
+      "original_hash": "d60dfb5579311e87bef5ec01134734a5e015666892f0b693de3506479f6ea132",
+      "reason": "闹钟挡住口鼻，需逐帧保留闹钟和手掌",
+      "source_url": "https://u.weshineapp.com/rank/expression_tot_1",
+      "name": "猫咪抓住闹钟"
+    },
+    {
+      "key": "auto_story_fd01e879a1d3985ffd330d13",
+      "original_hash": "fd01e879a1d3985ffd330d13c30f83513606dd6f547c86134add0e43f93d63d7",
+      "reason": "捂嘴手指覆盖面部，不能将水印当成文案",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/002CuteGirl_%E5%8F%AF%E7%88%B1%E7%9A%84%E5%A5%B3%E5%AD%A9%E7%BA%B8%F0%9F%91%A7BQB/%E5%8F%AF%E7%88%B1%E7%9A%84%E5%A5%B3%E5%AD%A9%E7%BA%B800139-%E5%A4%B9%E5%98%B4%E5%94%87.gif",
+      "name": "小女孩捂嘴偷笑"
+    },
+    {
+      "key": "auto_story_34cb00b56e61e3c52bc0a22e",
+      "original_hash": "34cb00b56e61e3c52bc0a22eb558defdc86ec55d7a20557862c01fffb25b5f9b",
+      "reason": "吃东西的手和食物在脸前，需要逐帧前景层",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/002CuteGirl_%E5%8F%AF%E7%88%B1%E7%9A%84%E5%A5%B3%E5%AD%A9%E7%BA%B8%F0%9F%91%A7BQB/%E5%8F%AF%E7%88%B1%E7%9A%84%E5%A5%B3%E5%AD%A9%E7%BA%B800137-%E5%90%83%E6%A9%98%E5%AD%90.gif",
+      "name": "小女孩听话吃东西"
+    },
+    {
+      "key": "auto_story_c93d062fc99de920b8fdf79d",
+      "original_hash": "c93d062fc99de920b8fdf79d49770ce74d48cc37f169a30b962f339d37e246f7",
+      "reason": "哭泣与手部遮挡，尚需完整面部蒙版",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/003CuteBoy_%E5%8F%AF%E7%88%B1%E7%94%B7%E5%AD%A9%E7%BA%B8%F0%9F%91%B6BQB/%E5%8F%AF%E7%88%B1%E7%94%B7%E5%AD%A9%E7%BA%B800020-%E4%B8%8D%E8%A1%8C%E5%95%A6.gif",
+      "name": "小女孩委屈哭泣"
+    },
+    {
+      "key": "auto_story_ad13d4789b575f9431f9fa3e",
+      "original_hash": "ad13d4789b575f9431f9fa3ee485638b3e743a31485f09185ae329c538d13760",
+      "reason": "宝宝退到门后后头像漂浮在门框上，需门框遮挡与离场标注",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/004SmirkBoy_%E5%81%87%E7%AC%91%E7%94%B7%E5%AD%A9%F0%9F%91%A6BQB/%E5%81%87%E7%AC%91%E7%94%B7%E5%AD%A900023-%E5%81%87%E7%AC%91%E5%9D%90%E5%9C%B0%E5%85%B3%E9%97%A8.gif",
+      "name": "假笑男孩躲门后"
+    },
+    {
+      "key": "auto_story_dbf8aec9a5374963cd541b44",
+      "original_hash": "dbf8aec9a5374963cd541b447a5e2b93e516e3ba7cb553629a77d3b128c264d4",
+      "reason": "问号动效被 OCR 当成字母，需重新拆分固定问号与完整配文",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/012Parrot_%E9%B9%A6%E9%B9%89%F0%9F%90%A6BQB/%E9%B9%A6%E9%B9%8900004-emmmm.gif",
+      "name": "鹦鹉沉思问号"
+    },
+    {
+      "key": "auto_story_c5e78d302321cb6d635ab477",
+      "original_hash": "c5e78d302321cb6d635ab477e0bfc97c92ca4c3dc7811c35a00e5c9031c3beb0",
+      "reason": "宝宝侧移时头像跟踪偏离，需逐帧重画位置",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/%E6%96%97%E5%9B%BE%E4%B9%8B%E7%8E%8BBQB/%E6%96%97%E5%9B%BE%E4%B9%8B%E7%8E%8B00022.gif",
+      "name": "爸爸宝宝谈条件"
+    },
+    {
+      "key": "auto_story_7b1155595ce7adfd65488dae",
+      "original_hash": "7b1155595ce7adfd65488dae725b89576086fd3c6c660e508608b2cd264c9ba3",
+      "reason": "两只猫相互遮挡接吻，需要独立双头像轨迹",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/010Cat_%E6%98%AF%E5%96%B5%E6%98%9F%E4%BA%BA%E5%95%A6%F0%9F%90%B1BQB/%E6%98%AF%E5%96%B5%E6%98%9F%E4%BA%BA%E5%95%A600046-%E6%8B%92%E6%8E%A5%E6%8E%A5%E5%90%BB%E7%8C%AB.gif",
+      "name": "猫咪互相亲亲"
+    },
+    {
+      "key": "auto_story_8ff8905df88c7ddc86d090a4",
+      "original_hash": "8ff8905df88c7ddc86d090a4ff6335276cd5078834780cb4a3f25e8074aee5aa",
+      "reason": "头盔标记被 OCR 当成配文，需重新标定字幕轨迹",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/013PigPecs_%E5%B0%8F%E7%8C%AA%E4%BD%A9%E5%A5%87%F0%9F%91%91BQB/%E5%B0%8F%E7%8C%AA%E4%BD%A9%E5%A5%8700010-%E6%BA%9C%E4%BA%86%E6%BA%9C%E4%BA%86.gif",
+      "name": "小羊滑板溜了"
+    },
+    {
+      "key": "auto_story_f8aa890a147936562c36fe4c",
+      "original_hash": "f8aa890a147936562c36fe4ce2cf72973b83e4f28782ae5eb0bb5db377b0dadc",
+      "reason": "全家多角色剧烈变形，没有可替换的原字幕",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/013PigPecs_%E5%B0%8F%E7%8C%AA%E4%BD%A9%E5%A5%87%F0%9F%91%91BQB/%E5%B0%8F%E7%8C%AA%E4%BD%A9%E5%A5%8700015-%E7%AC%91%E9%81%93%E6%98%8F%E5%8E%A5.gif",
+      "name": "佩奇全家笑到劈叉"
+    },
+    {
+      "key": "auto_story_3ecd3e7ad5467526fbd11753",
+      "original_hash": "3ecd3e7ad5467526fbd117537235eac4541c65cb0986e64a23cc3b8d33fdbda9",
+      "reason": "捧王冠的主体转身与王冠遮挡需要专门分层",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/013PigPecs_%E5%B0%8F%E7%8C%AA%E4%BD%A9%E5%A5%87%F0%9F%91%91BQB/%E5%B0%8F%E7%8C%AA%E4%BD%A9%E5%A5%8700007-%E5%BF%AB%E5%8F%AB%E6%88%91%E5%B0%8F%E5%85%AC%E4%B8%BB.gif",
+      "name": "小羊扮女王"
+    },
+    {
+      "key": "auto_story_cd8e71002eb39305bebf35a9",
+      "original_hash": "cd8e71002eb39305bebf35a9b89139f815b20d30955b9da4f6b4f564cca25e0e",
+      "reason": "喝水时瓶子持续遮住嘴部，不能剪掉瓶子",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/002CuteGirl_%E5%8F%AF%E7%88%B1%E7%9A%84%E5%A5%B3%E5%AD%A9%E7%BA%B8%F0%9F%91%A7BQB/%E5%8F%AF%E7%88%B1%E7%9A%84%E5%A5%B3%E5%AD%A9%E7%BA%B800030-%E5%96%9D%E9%85%B8%E5%A5%B6.jpg",
+      "name": "小女孩吨吨喝水"
+    },
+    {
+      "key": "auto_story_f5d234a5c42606aa0ee82365",
+      "original_hash": "f5d234a5c42606aa0ee823653e0478758cf0137f2192614482e2070c208c6392",
+      "reason": "no original element is replaceable",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/011Dog_%E7%8B%97%F0%9F%90%B6BQB/%E7%8B%9700029-%E6%9F%A0%E6%AA%AC%E7%BE%8E%E5%AE%B9.jpg",
+      "name": "柴犬薯片眼镜"
+    },
+    {
+      "key": "auto_story_f83d0056515165c818799356",
+      "original_hash": "f83d0056515165c81879935632491b4d2afcc1692abf87848dc8402636d74b6c",
+      "reason": "佩奇的眼鼻分散且跨越现有面罩，不能把嘴部覆盖算作换脸",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/013PigPecs_%E5%B0%8F%E7%8C%AA%E4%BD%A9%E5%A5%87%F0%9F%91%91BQB/%E5%B0%8F%E7%8C%AA%E4%BD%A9%E5%A5%8700021-%E8%83%BD%E7%BB%99%E5%8F%AF%E7%88%B1%E7%9A%84%E5%B0%8F%E5%A5%B3%E5%84%BF%E4%B8%80%E4%BA%9B%E7%94%9F%E6%B4%BB%E8%B4%B9%E5%90%97.jpg",
+      "name": "佩奇疑惑发问"
+    },
+    {
+      "key": "auto_story_b6cc861f899a46379feb4076",
+      "original_hash": "b6cc861f899a46379feb4076fe7550d4b59add3d0518bec5a1ed6b74d972cf88",
+      "reason": "多人抬棺的遮挡关系和小头像需要独立多人分层",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/067NegroCarryingACoffin_%E9%BB%91%E4%BA%BA%E6%8A%AC%E6%A3%BA%E2%9A%B0BQB/%E9%BB%91%E4%BA%BA%E6%8A%AC%E6%A3%BA00013-%E5%9D%90%E5%9C%B0%E6%8A%AC%E6%A3%BA.jpg",
+      "name": "抬着快乐走来"
+    },
+    {
+      "key": "auto_story_ada9439e7088fad0892cf14c",
+      "original_hash": "ada9439e7088fad0892cf14ce26f23d46462a877e35f8cba4d4a4ab0b9f8fe6b",
+      "reason": "replacement slots overlap; author an occlusion mask",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/070JOJO%E7%9A%84%E5%A5%87%E5%A6%99%E5%86%92%E9%99%A9BQB/JOJO%E7%9A%84%E5%A5%87%E5%A6%99%E5%86%92%E9%99%A900004-%E5%81%9C%E4%B8%80%E4%B8%8B.jpg",
+      "name": "JOJO暂停一下"
+    },
+    {
+      "key": "auto_story_b0676c4bd6e31ff4eac64bc4",
+      "original_hash": "b0676c4bd6e31ff4eac64bc409736d3dc773d8fc65472f6c7c296294856724a5",
+      "reason": "舌头和手指遮住嘴部，需要独立前景遮挡层；原图无字幕",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/011Dog_%E7%8B%97%F0%9F%90%B6BQB/%E7%8B%9700046-%E8%A1%8C%E5%90%A7.jpg",
+      "name": "金毛歪嘴笑"
+    },
+    {
+      "key": "auto_story_a29ddb4765e70ad97dbdd257",
+      "original_hash": "a29ddb4765e70ad97dbdd25760f2f699b5d7aed25c19f9b261d8a9bc16eb57df",
+      "reason": "原黑色问号主体的脸与眼睛不能由当前侧边贴图替代",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/031Penguin_%E6%B2%99%E9%9B%95%E4%BC%81%E9%B9%85%F0%9F%90%A7BQB/%C2%BF.jpg",
+      "name": "企鹅问号"
+    },
+    {
+      "key": "auto_story_cdc91c0a65bb30f6d9193a00",
+      "original_hash": "cdc91c0a65bb30f6d9193a005914489fae72bbff28b703328602dc3ddc51ef5e",
+      "reason": "no original element is replaceable",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/055AllHeart_%E5%85%A8%E6%98%AF%E5%BF%83%E5%BF%83BQB/%E5%BF%83%E5%BF%8300011-%E5%81%87%E7%AC%91%E7%94%B7%E5%AD%A9%E5%BF%83%E5%BF%83.jpeg",
+      "name": "小男孩爱心满满"
+    },
+    {
+      "key": "auto_story_c408ef121b40ad5e0de50ac3",
+      "original_hash": "c408ef121b40ad5e0de50ac3649dd9934b765c0a078040e7f5acbf430dc6ad66",
+      "reason": "只有交通标志，没有原始人脸或可编辑文字",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/README/015.jpg",
+      "name": "不要再前进的标志"
+    },
+    {
+      "key": "auto_story_1579278ec49d1d6f0a628199",
+      "original_hash": "1579278ec49d1d6f0a628199f6e1706cc9522c9b90504ece7f84f86902e882d5",
+      "reason": "倒置头部及张嘴形变需要专门头像变换",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/056Doraemon_%E5%93%86%E5%95%A6A%E6%A2%A6BQB/%E5%93%86%E5%95%A6A%E6%A2%A600004-%E6%98%8F%E8%BF%B7.png",
+      "name": "哆啦A梦扑街"
+    },
+    {
+      "key": "auto_story_d8fad3cfef4a1a1c1dc800d8",
+      "original_hash": "d8fad3cfef4a1a1c1dc800d8e6f2c6d2ad797a61002a9ba6f64829cafab3a6e9",
+      "reason": "鸡腿覆盖整个口鼻，尚需鸡腿遮挡层",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/059_Couple_Head_%E6%B2%99%E9%9B%95%E6%83%85%E4%BE%A3%E5%A4%B4%E5%83%8FBQB/%E6%B2%99%E9%9B%95%E6%83%85%E4%BE%A3%E5%A4%B4%E5%83%8F00022-%E5%A5%B3%E7%89%88%E7%8E%8B%E6%80%9D%E8%81%AA%E5%90%83%E6%B1%89%E5%A0%A1.png",
+      "name": "小姑娘吃鸡腿"
+    },
+    {
+      "key": "auto_story_a548207d0cd6f94527a55b21",
+      "original_hash": "a548207d0cd6f94527a55b21d8c3817fac1b10c63ba44bec63348b3dbcc3a509",
+      "reason": "头像框落在人物右侧背景，需重新定位并规划整段原字替换",
+      "source_url": "https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/082AttackOnTitan_%E8%BF%9B%E5%87%BB%E7%9A%84%E5%B7%A8%E4%BA%BA_BQB/%E8%BF%9B%E5%87%BB%E7%9A%84%E5%B7%A8%E4%BA%BA00025-%E8%BF%9B%E5%87%BB%E7%9A%84%E5%B7%A8%E4%BA%BA%E6%98%AF%E7%8C%8E%E5%A5%87%E6%88%98%E6%96%97%E6%BC%AB%E7%94%BB%E4%B8%8D%E6%98%AFCP%E7%82%92%E8%82%A1%E6%BC%AB%E7%94%BB.jpg",
+      "name": "进击巨人动漫说唱"
+    }
+  ]
+}
