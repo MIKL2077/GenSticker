@@ -1,0 +1,153 @@
+{
+  "status": "passed",
+  "total": 944,
+  "animated": 392,
+  "published_element_templates": 593,
+  "no_published_reaction_stories": true,
+  "cases": [
+    {
+      "index": 1,
+      "key": "auto_story_833921d81e1695da8cec5aa6",
+      "format": "GIF",
+      "frames": 14,
+      "duration_ms": 1400,
+      "image_slots": 1,
+      "text_slots": 0,
+      "seconds": 14.242,
+      "status": "passed",
+      "crop_guide": "authored frame"
+    },
+    {
+      "index": 14,
+      "key": "auto_story_56e50b1be0e4caa12a51c06f",
+      "format": "GIF",
+      "frames": 9,
+      "duration_ms": 900,
+      "image_slots": 1,
+      "text_slots": 0,
+      "seconds": 14.991,
+      "status": "passed",
+      "crop_guide": "authored frame"
+    },
+    {
+      "index": 32,
+      "key": "auto_story_82c0cdea3eb420c1d4620047",
+      "format": "GIF",
+      "frames": 5,
+      "duration_ms": 200,
+      "image_slots": 1,
+      "text_slots": 1,
+      "seconds": 14.769,
+      "status": "passed",
+      "crop_guide": "authored frame"
+    },
+    {
+      "index": 54,
+      "key": "auto_story_1be2a8c9813db21fe8a8f397",
+      "format": "GIF",
+      "frames": 8,
+      "duration_ms": 370,
+      "image_slots": 0,
+      "text_slots": 1,
+      "seconds": 13.785,
+      "status": "passed"
+    },
+    {
+      "index": 62,
+      "key": "auto_story_55c36ddd8829b32220726672",
+      "format": "GIF",
+      "frames": 2,
+      "duration_ms": 1200,
+      "image_slots": 0,
+      "text_slots": 2,
+      "seconds": 13.756,
+      "status": "passed"
+    },
+    {
+      "index": 77,
+      "key": "auto_story_cafe3b9cd00d9478d77b58b6",
+      "format": "GIF",
+      "frames": 24,
+      "duration_ms": 1920,
+      "image_slots": 0,
+      "text_slots": 1,
+      "seconds": 14.681,
+      "status": "passed"
+    },
+    {
+      "index": 132,
+      "key": "auto_story_685465938f09d51e5afcb4a7",
+      "format": "GIF",
+      "frames": 11,
+      "duration_ms": 2200,
+      "image_slots": 0,
+      "text_slots": 1,
+      "seconds": 15.534,
+      "status": "passed"
+    },
+    {
+      "index": 157,
+      "key": "auto_story_f3214a93a915c5bf6113ebf8",
+      "format": "GIF",
+      "frames": 4,
+      "duration_ms": 200,
+      "image_slots": 2,
+      "text_slots": 0,
+      "seconds": 14.509,
+      "status": "passed",
+      "crop_guide": "authored frame"
+    },
+    {
+      "index": 318,
+      "key": "auto_story_944ef8c62dd43debeaeaebfd",
+      "format": "PNG",
+      "frames": 1,
+      "duration_ms": 100,
+      "image_slots": 1,
+      "text_slots": 0,
+      "seconds": 17.004,
+      "status": "passed",
+      "crop_guide": "authored frame"
+    },
+    {
+      "index": 562,
+      "key": "auto_story_5eb305a67d2da0b86a0d683e",
+      "format": "PNG",
+      "frames": 1,
+      "duration_ms": 100,
+      "image_slots": 0,
+      "text_slots": 2,
+      "seconds": 14.376,
+      "status": "passed"
+    },
+    {
+      "index": 584,
+      "key": "auto_story_c63a8c4afce240f91ca4b1d4",
+      "format": "PNG",
+      "frames": 1,
+      "duration_ms": 100,
+      "image_slots": 1,
+      "text_slots": 1,
+      "seconds": 20.564,
+      "status": "passed",
+      "crop_guide": "authored frame"
+    },
+    {
+      "index": 647,
+      "key": "auto_story_116aa3e1ad2326e435711a85",
+      "format": "PNG",
+      "frames": 1,
+      "duration_ms": 100,
+      "image_slots": 1,
+      "text_slots": 1,
+      "seconds": 15.226,
+      "status": "passed",
+      "crop_guide": "authored frame"
+    }
+  ],
+  "timing_note": "case durations include 12-second public rate-limit pacing; not a latency benchmark",
+  "extraction_on": "passed in preceding full API run",
+  "missing_image_status": 541,
+  "withdrawn_legacy_info_status": 531,
+  "withdrawn_absent_from_catalog": true
+}
