@@ -40,14 +40,27 @@ def guide(key,request):
         meta=json.loads(row['metadata']);spec=json.loads(row['spec']) if row.get('spec') else None
         slots=min(10,meta.get('max_images',1));samples=[Image.new('RGBA',(256,256),'white') for _ in range(max(1,slots))]
         if spec:
-            plate=open_image(render(spec,samples)).convert('RGBA');windows=[]
-            for layer in spec['layers']:
+            layers=spec['layers']
+            if spec.get('frames'):
+                frame=max(spec['frames'],key=lambda f:len({l['slot'] for l in f['layers'] if l['type']=='face'}))
+                from .store import root
+                with open_image(root()/'template_assets'/(frame['asset']+'.'+frame['asset_format'])) as source:
+                    source.seek(frame['source_index'])
+                    plate=Image.alpha_composite(Image.new('RGBA',source.size,spec['background']),source.convert('RGBA'))
+                layers=frame['layers']
+            else:plate=open_image(render(spec,samples)).convert('RGBA')
+            windows=[]
+            for layer in layers:
                 if layer['type'] in ('subject','face'):windows.append({'slot':layer['slot'],'box':layer['box']})
             alpha=Image.new('L',plate.size,255)
             from PIL import ImageDraw
             painter=ImageDraw.Draw(alpha)
-            for window in windows:
-                x,y,w,h=window['box'];painter.rectangle((x,y,x+w-1,y+h-1),fill=0)
+            for layer in layers:
+                if layer['type']=='subject':
+                    x,y,w,h=layer['box'];painter.rectangle((x,y,x+w-1,y+h-1),fill=0)
+            from .face_slot import removal_mask
+            from .declarative import Layer
+            alpha=ImageChops.subtract(alpha,removal_mask(plate.size,[Layer.model_validate(l) for l in layers if l['type']=='face']))
             plate.putalpha(alpha)
         else:
             refresh();meme=get_meme(key);texts=meta.get('default_texts',[]) or ['示例文字']*meta.get('min_texts',0)

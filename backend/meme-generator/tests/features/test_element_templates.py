@@ -156,5 +156,16 @@ class ElementTemplateTests(unittest.TestCase):
         self.assertTrue((root()/'template_assets'/(spec['frames'][0]['asset']+'.gif')).exists())
         with connect() as db:self.assertEqual(db.execute('SELECT count(*) FROM template_versions WHERE template_id=?',(first['id'],)).fetchone()[0],2)
 
+    def test_crop_guide_uses_an_authored_frame_and_keeps_foreground_props(self):
+        from fastapi import Request
+        from meme_generator.features import catalog,editor
+        spec,_=self.compile()
+        catalog.publish('auto_guide',{'name':'Guide','tags':[],'min_images':1,'max_images':1,'min_texts':2,'max_texts':2},spec)
+        result=editor.guide('auto_guide',Request({'type':'http','headers':[]}))
+        self.assertFalse(result['generic']);self.assertEqual(result['windows'][0]['box'],[25,35,40,50])
+        with Image.open(BytesIO(result['overlay'])) as overlay:
+            self.assertEqual(overlay.getpixel((30,50))[3],0)
+            self.assertEqual(overlay.getpixel((43,50))[3],255)
+
 
 if __name__=='__main__':unittest.main()
