@@ -85,10 +85,14 @@
 
     <status-message :message="statusMessage" :show="showStatus" />
     <bottom-tabs active="home" />
+    <generation-notice/><first-use-guide />
   </view>
 </template>
 
 <script>
+import {takeEditDraft,disposeEditDraft} from '@/services/editSession'
+import GenerationNotice from '@/components/GenerationNotice.vue'
+import FirstUseGuide from '@/components/FirstUseGuide.vue'
 import { onMounted, onUnmounted, watch, ref, computed } from 'vue'
 import { onShow, onHide, onShareAppMessage, onLoad } from '@dcloudio/uni-app'
 import UiIcon from '@/components/UiIcon.vue'
@@ -114,7 +118,7 @@ import { useMemeGeneration } from '@/composables/useMemeGeneration'
 
 export default {
   name: 'Index',
-  components: { UiIcon,MoodToy, PopularityStage, AppHeader, CategoryTabs, TemplateGrid, TemplateDetailModal, PreviewModal, StatusMessage, BottomTabs },
+  components: { GenerationNotice, FirstUseGuide, UiIcon,MoodToy, PopularityStage, AppHeader, CategoryTabs, TemplateGrid, TemplateDetailModal, PreviewModal, StatusMessage, BottomTabs },
   setup() {
     const { statusMessage, showStatus, showStatusMessage } = useStatusMessage()
     const account = useLibrary()
@@ -142,7 +146,7 @@ export default {
       fetchMemePreview,
     } = useTemplateData(showStatusMessage)
 
-    const { templateImages, textInputs, extractSubject, selectedTemplateDetail, getImageInputCount, getImageUploadText, getTextInputRange, getTextInputMax, getTextPlaceholder, getTextMaxLength, initializeTemplateInputs, isTemplateInputValid, chooseImagesForTemplate, removeTemplateImage, activeImageIndex, showImageEditor, editorBusy, editorError, editorCanUndo, openImageEditor, closeImageEditor, applyImageEdit, undoImageEdit, restoreImage, resetInputs } = useTemplateInput()
+    const { templateImages, textInputs, extractSubject, selectedTemplateDetail, getImageInputCount, getImageUploadText, getTextInputRange, getTextInputMax, getTextPlaceholder, getTextMaxLength, initializeTemplateInputs, isTemplateInputValid, chooseImagesForTemplate, removeTemplateImage, activeImageIndex, showImageEditor, editorBusy, editorError, editorCanUndo, openImageEditor, closeImageEditor, applyImageEdit, undoImageEdit, restoreImage, resetInputs, restoreDraftImages } = useTemplateInput()
     onUnmounted(resetInputs)
 
     const { showPreview, isGenerating, generatedMeme, generateFromTemplate, closePreview, saveMeme, shareMeme } = useMemeGeneration(showStatusMessage)
@@ -158,10 +162,14 @@ export default {
       await selectCategory(key)
     }
 
+    let templateRequest=0
     const onSelectTemplate = async (key) => {
+      const request=++templateRequest,owner=account.session.value?.profile?.id
+      restoredArgs={}
       selectedTemplate.value = key
       prefetchClientTemplate(key).catch(() => {})
       const detail = (await fetchMemeInfo(key)) || null
+      if(request!==templateRequest || owner!==account.session.value?.profile?.id)return false
       if (detail && !detail.previewImage) fetchMemePreview(key)
       if (!detail) { showStatusMessage('模板暂时不可用，请稍后重试'); return }
       if(!detail.ownPreview)account.recordVisit(key)
@@ -169,8 +177,10 @@ export default {
       selectedTemplateDetail.value = detail
       initializeTemplateInputs(detail)
       showTemplateDetail.value = true
+      return true
     }
 
+    let restoredArgs={}
     const onGenerate = async () => {
       if (!isTemplateInputValid()) {
         showStatusMessage('请完整填写所需信息！')
@@ -178,13 +188,14 @@ export default {
       }
       const texts = (textInputs.value || []).map(t => (t || '').trim()).filter(Boolean)
       const key=selectedTemplate.value
-      const success=await generateFromTemplate(key, templateImages.value, texts, {}, {extractSubject:extractSubject.value})
+      const success=await generateFromTemplate(key, templateImages.value, texts, restoredArgs, {extractSubject:extractSubject.value})
       if(!success || selectedTemplate.value!==key)return
       showTemplateDetail.value = false
     }
     const continueEditing = () => { closePreview(); showTemplateDetail.value = true }
 
     const closeTemplateDetail = () => {
+      templateRequest++
       showTemplateDetail.value = false
       selectedTemplateDetail.value = null
       resetInputs()
@@ -210,6 +221,14 @@ export default {
     const retryTemplates = async () => { await fetchMemeCategories(); await ensurePageLoaded(selectedCategory.value, currentPage.value) }
     onShow(() => {
       sceneActive.value=true
+      const editDraft=takeEditDraft('manual')
+      if(editDraft){
+        closePreview()
+        onSelectTemplate(editDraft.template_key).then(ready=>{
+          if(!ready || selectedTemplate.value!==editDraft.template_key || !selectedTemplateDetail.value){disposeEditDraft(editDraft);return}
+          restoredArgs={...(editDraft.args||{})};restoreDraftImages(editDraft.paths||[],editDraft.temporaryPaths||[]);textInputs.value=[...(editDraft.texts||[])];extractSubject.value=!!editDraft.extract_subject
+        }).catch(e=>{disposeEditDraft(editDraft);showStatusMessage(e.message||'无法恢复编辑内容')})
+      }
       uni.hideTabBar({ animation: false, fail: () => {} })
       if(uni.getStorageSync('gensticker.open-mine')){uni.removeStorageSync('gensticker.open-mine');changeLibrary('mine')}
       else if(libraryMode.value==='mine')refreshMine()

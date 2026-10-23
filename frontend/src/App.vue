@@ -1,14 +1,13 @@
 <script>
-import {trimOwnedFiles} from "@/services/ownedFiles"
+import {startIdleMaintenance,stopIdleMaintenance} from "@/services/modelWarmup"
 import {startStudioNotifications,stopStudioNotifications} from "@/services/studioService"
 export default {
-  onLaunch: function () {
-    trimOwnedFiles({materials:true}).catch(()=>{})
-  },
   onShow: function () {
+    startIdleMaintenance()
     startStudioNotifications()
   },
   onHide: function () {
+    stopIdleMaintenance()
     stopStudioNotifications()
   },
 }

@@ -205,6 +205,23 @@ def job_image(identifier:str,user=Depends(current_user)):
     return FileResponse(path,media_type=filetype.guess_mime(str(path)) or 'image/png',headers={'Cache-Control':'private, no-store'})
 
 
+@router.get('/jobs/{identifier}/edit')
+def edit_job(identifier:str,user=Depends(current_user)):
+    item=get_job(identifier,user)
+    path=root()/'studio_replays'/(identifier+'.json')
+    if item['kind'] not in ('manual','livegif') or not path.is_file():
+        raise HTTPException(410,'这份作品的编辑素材已过期，无法恢复原来的编辑内容')
+    payload=json.loads(path.read_text())
+    if item['kind']=='manual':
+        get_spec(payload['template_key'],user['id'])
+        data={key:payload.get(key) for key in ('template_key','images','texts','args','extract_subject')}
+    else:
+        from .livegif import own
+        meta=own(payload['asset_id'],user['id'])
+        data={**payload,'source_url':f"/studio/live/assets/{payload['asset_id']}/source",'source':{key:meta[key] for key in ('width','height','duration')}}
+    return Response(json.dumps({'kind':item['kind'],'draft':data}),media_type='application/json',headers={'Cache-Control':'private, no-store'})
+
+
 @router.delete('/jobs/{identifier}',status_code=204)
 def delete_job(identifier:str,user=Depends(current_user)):
     item=get_job(identifier,user)

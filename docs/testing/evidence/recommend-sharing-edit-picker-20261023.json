@@ -1,0 +1,64 @@
+{
+  "date": "2026-10-23",
+  "deployment": {
+    "status": "passed",
+    "backup": "/var/backups/gensticker-recommend-edit-1792731080086722993",
+    "routes_authenticated": true,
+    "worker_restarted": false,
+    "schema_changed": false,
+    "other_services_healthy": true
+  },
+  "http": {
+    "status": "passed",
+    "nineRealResults": true,
+    "exactWorkerSubject": true,
+    "restored": [
+      {
+        "slot": 0,
+        "key": "police"
+      },
+      {
+        "slot": 1,
+        "key": "distracted"
+      },
+      {
+        "slot": 2,
+        "key": "auto_story_c0473d2ea1c3957392259ec7"
+      }
+    ],
+    "crossAccountDenied": true,
+    "noNewGenerationOnRestore": true
+  },
+  "wechat": {
+    "status": "passed",
+    "domainValidation": true,
+    "selectedCount": 3,
+    "originalSwitching": true,
+    "shareCurrentOriginal": true,
+    "collageDimensions": {
+      "width": 688,
+      "height": 688
+    },
+    "editedTemplate": "distracted",
+    "actualFlip": true,
+    "regeneratedEditedResult": true,
+    "runtimeErrors": []
+  },
+  "storage": "uses existing 24-hour worker subject cache; no additional retained server copy",
+  "photo_picker": {
+    "immediate_native_invocation": true,
+    "prefer_chooseMedia": true,
+    "legacy_fallback": true,
+    "pre_picker_model_warmup_removed": true,
+    "physical_device_latency": "not measured; requires physical-device retest"
+  },
+  "synthetic_accounts_and_media_cleaned": true,
+  "tests": {
+    "backend": 117,
+    "frontend_regressions": "passed",
+    "production_builds": [
+      "mp-weixin",
+      "h5"
+    ]
+  }
+}

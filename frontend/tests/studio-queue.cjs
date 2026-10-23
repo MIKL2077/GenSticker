@@ -2,7 +2,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('nod
 const source=fs.readFileSync(path.join(__dirname,'../src/composables/useMemeGeneration.js'),'utf8').replace(/^import .*$/gm,'').replace(/export /g,'')
 async function verify(){
  const statuses=[],submitted=[],downloads=[],saved=[];let resolveJob
- const c={ref:value=>({value}),console,setTimeout:fn=>{fn()},supportsStudio:async()=>true,viewStudioJob:async()=>{},rememberGuestMeme:p=>saved.push(p),submitManual:async(...args)=>{submitted.push(args);return{id:'owned-job',status:'queued'}},getStudioJob:()=>new Promise(resolve=>resolveJob=resolve),privateImage:async url=>{downloads.push(url);return'/private-result'},uni:{getStorageSync:()=>({access_token:'token',profile:{id:'alice'}})}}
+ const c={holdBackgroundWork:()=>()=>{},notifyGeneration:()=>{},noticeIdentity:()=>'alice',ref:value=>({value}),console,setTimeout:fn=>{fn()},supportsStudio:async()=>true,viewStudioJob:async()=>{},rememberGuestMeme:p=>saved.push(p),submitManual:async(...args)=>{submitted.push(args);return{id:'owned-job',status:'queued'}},getStudioJob:()=>new Promise(resolve=>resolveJob=resolve),privateImage:async url=>{downloads.push(url);return'/private-result'},uni:{getStorageSync:()=>({access_token:'token',profile:{id:'alice'}})}}
  vm.createContext(c);vm.runInContext(source,c)
  const app=c.useMemeGeneration(s=>statuses.push(s)),run=app.generateFromTemplate('always',['/photo'],[],{},{})
  await new Promise(resolve=>setImmediate(resolve));assert.equal(submitted.length,1);app.closePreview();assert.equal(app.showPreview.value,false)

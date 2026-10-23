@@ -1,3 +1,4 @@
+import {registerCacheFile} from '@/services/ownedFiles'
 import { apiRequest, apiImageRequest } from '@/services/apiService'
 import { API_BASE_URL } from '@/constants'
 
@@ -74,7 +75,7 @@ export function getTemplatePreviewPath(key, background = false) {
       if(r.statusCode!==200) return reject(new Error(`预览加载失败: ${r.statusCode}`))
       const finish = bytes => {
         if(version!==versions.get(key)){uni.getFileSystemManager?.().unlink({filePath:r.tempFilePath,fail:()=>{}});reject(new Error('模板已更新，请重新加载预览'));return}
-        thumbnailBytes-=thumbnailSizes.get(key)||0;thumbnailSizes.delete(key);thumbnailSizes.set(key,bytes);thumbnailBytes+=bytes;resolve(r.tempFilePath);setTimeout(trimThumbnails,0)
+        thumbnailBytes-=thumbnailSizes.get(key)||0;thumbnailSizes.delete(key);thumbnailSizes.set(key,bytes);thumbnailBytes+=bytes;registerCacheFile(r.tempFilePath,{bytes,protected:()=>visibleKeys.has(key),onEvict:()=>{const hit=cached.get('image:'+key);if(hit?.value===r.tempFilePath){cached.delete('image:'+key);thumbnailBytes-=thumbnailSizes.get(key)||0;thumbnailSizes.delete(key)}}});resolve(r.tempFilePath);setTimeout(trimThumbnails,0)
       }
       const fs=uni.getFileSystemManager?.()
       if(fs?.stat) fs.stat({path:r.tempFilePath,success:s=>finish(s.stats.size),fail:()=>finish(256*1024)})

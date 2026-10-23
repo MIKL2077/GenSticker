@@ -49,7 +49,7 @@ const removeAccount=async()=>{
   const keys=uni.getStorageInfoSync?.().keys||[]
   for(const key of keys)if(key.startsWith('gensticker.')&&key.includes(owner)){
    const records=uni.getStorageSync(key)
-   if(Array.isArray(records))for(const item of records){const path=item?.localPath;if(path&&uni.env?.USER_DATA_PATH&&path.startsWith(uni.env.USER_DATA_PATH+'/generated_meme_'))uni.getFileSystemManager?.().unlink({filePath:path,fail:()=>{}})}
+   if(Array.isArray(records))for(const item of records)for(const path of [item?.localPath,...(item?.editDraft?.paths||[])])if(path&&uni.env?.USER_DATA_PATH&&['/generated_meme_','/gensticker_draft_'].some(prefix=>path.startsWith(uni.env.USER_DATA_PATH+prefix)))uni.getFileSystemManager?.().unlink({filePath:path,fail:()=>{}})
    uni.removeStorageSync(key)
   }
   const avatar=`${uni.env?.USER_DATA_PATH}/avatar_${owner}.jpg`

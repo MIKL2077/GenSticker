@@ -1,3 +1,4 @@
+import {registerCacheFile} from '@/services/ownedFiles'
 import { apiRequest } from '@/services/apiService'
 import { API_BASE_URL } from '@/constants'
 import { visitorHeaders, trackTemplate } from '@/services/popularityService'
@@ -5,6 +6,7 @@ import { visitorHeaders, trackTemplate } from '@/services/popularityService'
 const recipes = new Map(), assets = new Map(), inflight = new Map()
 const recipeRequests = new Map(), seeding = new Map()
 let assetBytes = 0, rendering = false
+const rememberAsset=(hash,path,bytes)=>{assets.set(hash,{path,bytes});assetBytes+=bytes;registerCacheFile(path,{bytes,protected:()=>rendering,onEvict:()=>{if(assets.get(hash)?.path===path){assets.delete(hash);assetBytes-=bytes}}})}
 // Only remove files owned by this public material cache, never user pictures.
 if(typeof uni!=='undefined' && uni.env?.USER_DATA_PATH && uni.getFileSystemManager) {
   const fs=uni.getFileSystemManager()
@@ -24,7 +26,7 @@ export function seedClientRecipes(manifest) {
     if(!/^[a-f0-9]{64}$/.test(hash) || typeof value!=='string' || bytes+value.length>180*1024 || assets.has(hash) || seeding.has(hash))continue
     bytes+=value.length
     const path=`${uni.env.USER_DATA_PATH}/gensticker_material_${hash}.png`,size=Math.floor(value.length*3/4)
-    const task=new Promise(resolve=>uni.getFileSystemManager().writeFile({filePath:path,data:value,encoding:'base64',success:()=>{assets.set(hash,{path,bytes:size});assetBytes+=size;trimAssets();resolve()},fail:()=>resolve()})).finally(()=>seeding.delete(hash))
+    const task=new Promise(resolve=>uni.getFileSystemManager().writeFile({filePath:path,data:value,encoding:'base64',success:()=>{rememberAsset(hash,path,size);trimAssets();resolve()},fail:()=>resolve()})).finally(()=>seeding.delete(hash))
     seeding.set(hash,task)
   }
 }
@@ -40,7 +42,7 @@ function assetPath(hash, path) {
     const fs=uni.getFileSystemManager()
     fs.stat({path:r.tempFilePath,success:s=>{
       if(s.stats.size>1024*1024) { fs.unlink({filePath:r.tempFilePath,fail:()=>{}}); return reject(new Error('素材过大')) }
-      assets.set(hash,{path:r.tempFilePath,bytes:s.stats.size}); assetBytes+=s.stats.size
+      rememberAsset(hash,r.tempFilePath,s.stats.size)
       trimAssets()
       resolve(r.tempFilePath)
     },fail:reject})

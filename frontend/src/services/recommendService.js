@@ -1,3 +1,4 @@
+import {withStorageRecovery} from '@/services/ownedFiles'
 import {displayImageSize} from '@/services/imageGeometry'
 import { apiRequest } from '@/services/apiService'
 import { API_BASE_URL } from '@/constants'
@@ -26,9 +27,9 @@ export async function uploadPhoto(path,subjectSelected=false) {
   }))
 }
 
-export function downloadResult(url) {
-  return new Promise((resolve,reject) => uni.downloadFile({
-    url:`${API_BASE_URL}${url}`, header:{Authorization:`Bearer ${token()}`}, timeout:20000,
+export function downloadResult(url,timeout=20000) {
+  return withStorageRecovery(()=>new Promise((resolve,reject) => uni.downloadFile({
+    url:`${API_BASE_URL}${url}`, header:{Authorization:`Bearer ${token()}`}, timeout,
     success:r=>r.statusCode===200 ? resolve(r.tempFilePath) : reject(new Error(r.statusCode===401 ? '登录已过期，请重新登录' : '图片暂时无法下载')), fail:reject,
-  }))
+  })))
 }

@@ -13,6 +13,30 @@ from meme_generator.features.declarative import TemplateSpec, render
 
 
 class FeatureTests(unittest.TestCase):
+    def test_result_edit_restores_exact_worker_subject_without_retaining_more_data(self):
+        import base64,json,time
+        from pathlib import Path
+        row=catalog.publish('auto_reedit_fixture',{'name':'Editable fixture','tags':[], 'min_images':1,'max_images':1,'default_texts':['原模板文字']},{'width':120,'height':80,'layers':[{'type':'subject','box':[0,0,120,80]}]})
+        asset=self.upload();identifier=self.create(asset,'edit-result-fixture').json()['job_id']
+        with patch.object(worker,'candidates',return_value=[row]):self.finish()
+        url=f'/recommend/jobs/{identifier}/results/0/edit'
+        db=connect();source=db.execute('SELECT path FROM assets WHERE id=?',(asset,)).fetchone()['path'];before=db.execute('SELECT count(*) FROM jobs').fetchone()[0];db.close()
+        subject=Path(source).with_suffix('.subject.png');files={str(p) for p in Path(self.directory.name).rglob('*') if p.is_file()}
+        response=self.client.get(url);self.assertEqual(response.status_code,200,response.text)
+        self.assertEqual(response.headers['cache-control'],'private, no-store')
+        draft=response.json()['draft'];self.assertEqual(draft['template_key'],row['key']);self.assertEqual(draft['texts'],['原模板文字'])
+        self.assertEqual(base64.b64decode(draft['images'][0]),subject.read_bytes())
+        self.assertFalse(draft['extract_subject'])
+        self.assertEqual({str(p) for p in Path(self.directory.name).rglob('*') if p.is_file()},files)
+        db=connect();self.assertEqual(db.execute('SELECT count(*) FROM jobs').fetchone()[0],before);db.close()
+        self.owner='another-user';self.assertEqual(self.client.get(url).status_code,404)
+        self.owner='a';db=connect()
+        with db:db.execute('UPDATE templates SET version=version+1 WHERE id=?',(row['id'],))
+        db.close();self.assertEqual(self.client.get(url).status_code,409)
+        db=connect()
+        with db:db.execute('UPDATE assets SET created=? WHERE id=?',(time.time()-86401,asset))
+        db.close();self.assertEqual(self.client.get(url).status_code,410)
+
     def setUp(self):
         self.limits = patch.multiple(recommend, USER_LIMIT=3, GLOBAL_LIMIT=100)
         self.limits.start()

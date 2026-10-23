@@ -30,12 +30,18 @@
    <view v-if="error" class="editor-error"><text>{{error}}</text><button @click="error=''">×</button></view>
 
   </template>
-  <preview-modal :show="showPreview" :is-generating="working" :image="resultPath" :allow-edit="false" @close="closeResult" @save="saveResult" @share="shareResult"/>
+  <preview-modal :show="showPreview" :is-generating="working" :image="resultPath" :allow-edit="!!source" @edit="closeResult" @close="closeResult" @save="saveResult" @share="shareResult"/>
+  <generation-notice/><first-use-guide />
  </view>
 </template>
 <script setup>
+import {holdBackgroundWork} from '@/services/backgroundActivity'
+import {notifyGeneration} from '@/services/generationNotice'
+import GenerationNotice from '@/components/GenerationNotice.vue'
+import FirstUseGuide from '@/components/FirstUseGuide.vue'
 import {ref,watch,nextTick,computed} from 'vue'
-import {onUnload} from '@dcloudio/uni-app'
+import {onUnload,onShow} from '@dcloudio/uni-app'
+import {takeEditDraft,disposeEditDraft} from '@/services/editSession'
 import {useLibrary} from '@/composables/useLibrary'
 import {uniqueKey,beginLocalLive,updateLocalResult,linkLocalResult,syncLocalLiveResults,getStudioJob,privateImage,viewStudioJob} from '@/services/studioService'
 import {chooseAlbumVideo,nativeTrim,mediaInfo,isCancelled,uploadLiveSource,submitVideoJob,prepareLocalSource} from '@/services/videoWorkflow'
@@ -55,12 +61,15 @@ const setTool=value=>{if(value!=='text')hideTextKeyboard();tool.value=value}
 const cycleBackground=()=>{const values=['none','dark','light','color'];captionStyle.value.background=values[(values.indexOf(captionStyle.value.background)+1)%values.length]}
 const quality=ref('balanced'),qualities=[{id:'balanced',label:'均衡'},{id:'smooth',label:'流畅优先'},{id:'clear',label:'清晰优先'}]
 const {session,loginWeChat}=useLibrary(),source=ref(null),mediaPath=ref(''),poster=ref(''),phase=ref('trim'),clip=ref({start:0,duration:3}),crop=ref([0,0,1,1]),rotation=ref(0),flip=ref(false),caption=ref(''),tool=ref('crop'),error=ref(''),working=ref(false),picking=ref(false),progressText=ref('')
+let modelResume=null
+watch(working,value=>{modelResume?.();modelResume=value?holdBackgroundWork():null})
+let restoredDraft=null
 let disposed=false,backgrounded=false,localJob=null,localJobKey='',originalFile=null,wasNativeTrim=false,epoch=0,asset=null,assetOwner='',requestKey='',upload=null,postedJob=null
 const keyboardChanged=event=>{keyboardHeight.value=!disposed&&source.value&&tool.value==='text'&&!working.value?Math.max(0,event.height||0):0}
 uni.onKeyboardHeightChange?.(keyboardChanged)
 const invalidate=()=>{requestKey='';postedJob=null}
 watch([clip,crop,rotation,flip,caption,captionStyle],invalidate,{deep:true})
-const release=()=>{if(working.value&&localJob&&!postedJob)updateLocalResult(localJob.id,{status:'failed',message:'本地制作已中断，请重新选择片段'});epoch++;upload?.abort();upload=null}
+const release=()=>{disposeEditDraft(restoredDraft);restoredDraft=null;if(working.value&&localJob&&!postedJob)updateLocalResult(localJob.id,{status:'failed',message:'本地制作已中断，请重新选择片段'});epoch++;upload?.abort();upload=null}
 onUnload(()=>{uni.offKeyboardHeightChange?.(keyboardChanged);disposed=true;showPreview.value=false;if(working.value)backgrounded=true;else release()})
 watch(()=>session.value?.profile?.id,(id,previous)=>{if(previous&&id!==previous){release();showPreview.value=false;resultPath.value='';source.value=null;asset=null;working.value=false;error.value='';picking.value=false}})
 const showEditor=async()=>{phase.value='edit';tool.value='crop';await nextTick();uni.pageScrollTo({scrollTop:0,duration:0})}
@@ -99,6 +108,7 @@ const generate=async()=>{
   const alive=()=>request===epoch&&owner===session.value?.profile?.id
   if(!localJob||localJobKey!==requestKey){localJob=beginLocalLive(owner);localJobKey=requestKey}else updateLocalResult(localJob.id,{status:'running',message:'正在这台设备制作 GIF'},owner)
   pendingLocal=localJob
+  updateLocalResult(localJob.id,{editDraft:{...options,mediaPath:mediaPath.value,source:{...source.value}}},owner)
   progressText.value='正在本机准备动态画面…'
   const preparedSource=await prepareLocalSource(mediaPath.value,source.value,crop.value)
   if(!alive())return
@@ -132,9 +142,17 @@ const generate=async()=>{
  finally{if(activeRequest===epoch)working.value=false}
 }
 const finishResult=(path,item)=>{
+ notifyGeneration({item:{...item,kind:'livegif',status:'completed'},image:path,message:'动图生成成功！'})
  if(!backgrounded&&!disposed){resultPath.value=path;showPreview.value=true;viewStudioJob(item).catch(()=>{})}
- else if(!disposed)uni.showToast({title:'动图已完成，去生成队列收图',icon:'none'})
+
 }
+onShow(async()=>{
+ const draft=takeEditDraft('livegif');if(!draft)return
+ release();restoredDraft=draft;error.value='';showPreview.value=false;postedJob=null;localJob=null;localJobKey='';requestKey=''
+ source.value=draft.source;mediaPath.value=draft.mediaPath;poster.value='';originalFile=null;asset=null;wasNativeTrim=false
+ clip.value={start:draft.start,duration:draft.duration};crop.value=draft.crop||[0,0,1,1];rotation.value=draft.rotation||0;flip.value=!!draft.flip;caption.value=draft.text||'';captionStyle.value={...captionStyle.value,...draft.caption_style};quality.value=draft.quality||'balanced'
+ await showEditor()
+})
 const closeResult=()=>{if(working.value){backgrounded=true;uni.showToast({title:'已放入生成队列，继续制作中',icon:'none'})}showPreview.value=false}
 const saveResult=async()=>{if(!resultPath.value)return;try{if(typeof document!=='undefined'){const link=document.createElement('a');link.href=resultPath.value;link.download='GenSticker.gif';link.click()}else await uni.saveImageToPhotosAlbum({filePath:resultPath.value});uni.showToast({title:'已保存',icon:'success'})}catch(_){uni.showToast({title:'请在设置中允许保存到相册',icon:'none'})}}
 const shareResult=()=>shareOriginalImage(resultPath.value,title=>uni.showToast({title,icon:'none'}))

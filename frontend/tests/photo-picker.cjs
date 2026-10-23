@@ -1,0 +1,15 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path')
+const source=fs.readFileSync(path.join(__dirname,'../src/services/photoPicker.js'),'utf8').replace(/^import .*$/gm,'').replace(/export /g,'')
+let native,legacy,received,count=0
+const c={holdBackgroundWork:()=>()=>{},Date,Math,wx:{chooseMedia:options=>{count++;native=options}},uni:{chooseImage:options=>{legacy=options}}}
+vm.createContext(c);vm.runInContext(source,c)
+c.choosePhotos({count:2,success:result=>received=result});assert.equal(count,1,'native picker invoked synchronously in the click handler')
+assert.deepEqual(Array.from(native.mediaType),['image']);assert.equal(native.count,2)
+c.choosePhotos();assert.equal(count,1,'repeated tap cannot open another picker')
+native.success({tempFiles:[{tempFilePath:'/one.jpg'},{tempFilePath:'/two.png'}]});assert.deepEqual(Array.from(received.tempFilePaths),['/one.jpg','/two.png'])
+c.choosePhotos();assert.equal(count,2);native.fail({errMsg:'chooseMedia:fail cancel'})
+delete c.wx.chooseMedia;c.choosePhotos({success:result=>received=result});legacy.success({tempFilePaths:['/fallback.jpg']});assert.equal(received.tempFilePaths[0],'/fallback.jpg')
+c.wx.chooseMedia=()=>{throw Error('native failure')};let error;c.choosePhotos({fail:value=>error=value});assert.match(error.message,/native failure/)
+c.wx.chooseMedia=options=>{native=options};c.choosePhotos();assert.ok(native);native.fail({errMsg:'cancel'})
+assert.equal(vm.runInContext('photoPickerTiming()',c).api,'chooseMedia');assert.equal(typeof vm.runInContext('photoPickerTiming()',c).invokeMs,'number')
+console.log('PASS immediate native image-only picker, tap guard, normalized paths, fallback and cancel/failure recovery')

@@ -18,7 +18,7 @@ function runtime({transparent=false,broken=false,capable=true}={}){
   }}
   c.getContext=()=>ctx;c._pixels=()=>pixels;return c
  }
- const c={API_BASE_URL:'https://example.test',ArrayBuffer,Float32Array,Uint8ClampedArray,Promise,Math,Number,String,Date,Error,console,setTimeout:(fn,ms)=>{const timer=setTimeout(fn,ms);if(ms===90000)timer.unref();return timer},clearTimeout,
+ const c={withStorageRecovery:task=>task(),API_BASE_URL:'https://example.test',ArrayBuffer,Float32Array,Uint8ClampedArray,Promise,Math,Number,String,Date,Error,console,setTimeout:(fn,ms)=>{const timer=setTimeout(fn,ms);if(ms===90000)timer.unref();return timer},clearTimeout,
  uni:{env:{USER_DATA_PATH:'/user'},getDeviceInfo:()=>({platform:'ios'}),getImageInfo:o=>o.success({width:40,height:40}),getFileSystemManager:()=>({getFileInfo:o=>o.success({size:4574861,digest:'0a99236f0d5c1916a99a8c401b23e5ef32038606'})}),downloadFile:o=>{requests.push(o);throw Error('cached model must not download')}},
  wx:{createOffscreenCanvas:o=>canvas(o.width,o.height)}}
  if(capable)c.wx.createInferenceSession=options=>{
@@ -48,6 +48,7 @@ function runtime({transparent=false,broken=false,capable=true}={}){
  npu.c.wx.createInferenceSession=options=>{attempts.push(options.allowNPU);if(options.allowNPU)return{onLoad:()=>{},onError:fn=>queueMicrotask(()=>fn(Error('unsupported NPU operator'))),destroy:()=>{failedSessionDestroyed=true}};return factory(options)}
  await npu.c.warmLocalBackground();assert.deepEqual(attempts,[true,false]);assert.equal(failedSessionDestroyed,true)
  assert.equal((await npu.c.prepareForeground('/photo',npu.c.exportCanvas)).method,'device','NPU load failure can still complete on the device')
+ const deferred=runtime();await assert.rejects(deferred.c.warmLocalBackground({canStart:()=>false}),error=>error.code==='WARMUP_DEFERRED');await deferred.c.warmLocalBackground();assert.equal((await deferred.c.prepareForeground('/photo',deferred.c.exportCanvas)).method,'device','deferred startup does not disable subsequent inference')
  const alpha=runtime({transparent:true});const reused=await alpha.c.prepareForeground('/transparent',alpha.c.exportCanvas);assert.equal(reused.method,'alpha');assert.equal(alpha.runs.length,0);assert.equal(alpha.exports[0].width,20)
  await alpha.c.applyForegroundMask('/transparent','/unneeded-mask',alpha.c.exportCanvas);assert.equal(alpha.exports.at(-1).width,20,'an existing cutout is preserved instead of applying a second model mask')
  const unsupported=runtime({capable:false});const fallback=await unsupported.c.prepareForeground('/photo',unsupported.c.exportCanvas);assert.equal(fallback.method,'server');assert.equal(unsupported.exports[0].type,'jpg');assert.equal(unsupported.runs.length,0)

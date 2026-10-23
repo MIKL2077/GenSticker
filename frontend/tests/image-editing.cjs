@@ -16,7 +16,7 @@ async function verify(){
   crop=geometry(400,900,180,180,1)
   assert.equal(crop.width/crop.height,400/900,'square crop preserves source aspect instead of squashing')
   const released=[],callbacks=[],calls=[];let pending,fail=false
-  const c={warmLocalBackground:async()=>{},ref:value=>({value}),parseRange:s=>{const [min,max]=s.split('-').map(Number);return {min,max}},prepareImages:async()=>[],disposeEditedImage:p=>released.push(p),editImage:async(p,o)=>{calls.push([p,o]);if(fail)throw Error('failed edit');return '/edited-'+calls.length+'.png'},removeImageBackground:()=>new Promise(resolve=>pending=resolve),uni:{chooseImage:o=>callbacks.push(o)}}
+  const c={choosePhotos:o=>callbacks.push(o),ref:value=>({value}),parseRange:s=>{const [min,max]=s.split('-').map(Number);return {min,max}},prepareImages:async()=>[],disposeEditedImage:p=>released.push(p),editImage:async(p,o)=>{calls.push([p,o]);if(fail)throw Error('failed edit');return '/edited-'+calls.length+'.png'},removeImageBackground:()=>new Promise(resolve=>pending=resolve),uni:{chooseImage:o=>callbacks.push(o)}}
   vm.createContext(c);vm.runInContext(read('composables/useTemplateInput.js'),c)
   const input=c.useTemplateInput();input.initializeTemplateInputs({imageCount:'1-2',textCount:'0-0'})
   input.chooseImagesForTemplate();callbacks.pop().success({tempFilePaths:['/original-a.png','/original-b.png']})

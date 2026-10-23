@@ -2,6 +2,7 @@
   "name": "uni-preset-vue",
   "version": "0.0.0",
   "scripts": {
+    "check:mp-weixin-package": "node scripts/weixin-package.cjs",
     "test:mp-weixin": "node scripts/verify-weixin.cjs",
     "open:mp-weixin": "node scripts/preview-weixin.cjs --open-only",
     "preview:mp-weixin": "node scripts/preview-weixin.cjs",

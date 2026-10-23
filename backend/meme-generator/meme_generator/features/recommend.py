@@ -413,6 +413,30 @@ def result(
         db.close()
 
 
+@router.get('/jobs/{identifier}/results/{slot}/edit')
+def edit_result(identifier: str, slot: int, user=Depends(current_user)):
+    """Reuse the exact subject already cached by the worker; retain no new copy."""
+    import base64
+    db=connect()
+    try:
+        job=owned(db,identifier,user)
+        result=db.execute('SELECT * FROM results WHERE job_id=? AND slot=?',(identifier,slot)).fetchone()
+        if not result:raise HTTPException(404,'这张表情不存在或尚未生成')
+        asset=db.execute('SELECT path,created FROM assets WHERE id=? AND user_id=?',(job['asset_id'],user['id'])).fetchone()
+        if not asset or asset['created']<=time.time()-86400:
+            raise HTTPException(410,'生成时使用的照片已超过 24 小时保留期，请重新选择照片制作')
+        subject=Path(asset['path']).with_suffix('.subject.png')
+        if not subject.is_file():raise HTTPException(410,'这张表情的主体图片已过期，请重新选择照片制作')
+        template=db.execute("SELECT version FROM templates WHERE id=? AND status='published'",(result['template_id'],)).fetchone()
+        if not template:raise HTTPException(410,'这张表情的模板已下架，暂时无法重新编辑')
+        if template['version']!=result['version']:raise HTTPException(409,'模板已经更新，请从首页打开新版模板重新制作')
+        version=db.execute('SELECT metadata FROM template_versions WHERE template_id=? AND version=?',(result['template_id'],result['version'])).fetchone()
+        metadata=json.loads(version['metadata']) if version else {}
+        draft={'template_key':result['key'],'images':[base64.b64encode(subject.read_bytes()).decode()],'texts':metadata.get('default_texts',[]),'args':{},'extract_subject':False}
+        return Response(json.dumps({'kind':'manual','draft':draft}),media_type='application/json',headers={'Cache-Control':'private, no-store'})
+    finally:db.close()
+
+
 class Selection(BaseModel):
     event_id: str = Field(min_length=8, max_length=100)
     slots: list[int] = Field(max_length=9)

@@ -4,7 +4,7 @@ import { visitorHeaders } from '@/services/popularityService'
 import { prepareImage } from '@/services/imagePreparation'
 import { prepareForeground, applyForegroundMask } from '@/services/localBackground'
 
-import {registerTemporary,releaseTemporary,writeOwnedFile} from '@/services/ownedFiles'
+import {registerTemporary,releaseTemporary,writeOwnedFile,withStorageRecovery} from '@/services/ownedFiles'
 export const disposeEditedImage=releaseTemporary
 
 // Native callbacks reject plain {errMsg} objects, rather than Error instances.
@@ -43,7 +43,7 @@ async function exportCanvas(canvas, fileType='png') {
     if (!blob) throw new Error('图片导出失败，请重试')
     return registerTemporary(URL.createObjectURL(blob))
   }
-  const temporary=await new Promise((resolve,reject)=>wx.canvasToTempFilePath({canvas,fileType,quality:.88,success:r=>resolve(r.tempFilePath),fail:reject}))
+  const temporary=await withStorageRecovery(()=>new Promise((resolve,reject)=>wx.canvasToTempFilePath({canvas,fileType,quality:.88,success:r=>resolve(r.tempFilePath),fail:reject})))
   return registerTemporary(temporary)
 }
 

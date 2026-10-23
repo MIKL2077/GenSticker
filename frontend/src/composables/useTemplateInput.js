@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import { prepareImages } from '@/services/imagePreparation'
 import { parseRange } from '@/utils/validationUtils'
 import { editImage, removeImageBackground, disposeEditedImage } from '@/services/imageEditing'
-import {warmLocalBackground} from '@/services/localBackground'
+import {choosePhotos} from '@/services/photoPicker'
 
 export function useTemplateInput() {
   const templateImages = ref([])
@@ -94,8 +94,7 @@ export function useTemplateInput() {
     const remaining = max - templateImages.value.length
     if (remaining <= 0) return
     const epoch=editEpoch
-    warmLocalBackground().catch(()=>{})
-    uni.chooseImage({
+    choosePhotos({
       count: remaining,
       sizeType: ['compressed'],
       sourceType: ['album', 'camera'],
@@ -163,6 +162,13 @@ export function useTemplateInput() {
     selectedTemplateDetail.value = null
   }
 
+  const restoreDraftImages = (paths,temporaryPaths=[]) => {
+    cleanupImages()
+    templateImages.value=[...paths]
+    for(const path of paths)records.push({original:path,history:[]})
+    for(const path of temporaryPaths)owned.add(path)
+  }
+
   return {
     templateImages,
     textInputs,
@@ -181,5 +187,6 @@ export function useTemplateInput() {
     activeImageIndex, showImageEditor, editorBusy, editorError, editorCanUndo,
     openImageEditor, closeImageEditor, applyImageEdit, undoImageEdit, restoreImage,
     resetInputs,
+    restoreDraftImages,
   }
 }

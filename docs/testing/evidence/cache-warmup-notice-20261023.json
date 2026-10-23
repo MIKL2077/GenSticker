@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-23",
+  "frontend_regression_scripts": 31,
+  "regressions": "passed",
+  "production_builds": [
+    "mp-weixin",
+    "h5"
+  ],
+  "storage": {
+    "server_and_device_quotas_distinct": true,
+    "automatic_recovery": "reusable cache eviction and one retry; preserve originals, active edits, current queue",
+    "genuine_retry_errors_preserved": true,
+    "successful_recovery_silent": true
+  },
+  "warmup": {
+    "idle_delay_ms": 1500,
+    "picker_and_editor_and_render_guard": true,
+    "hidden_app_paused": true,
+    "model_hash_verified": true
+  },
+  "native": {
+    "status": "passed",
+    "domainValidation": true,
+    "doubleTapRequired": true,
+    "firstTapHint": true,
+    "realGeneratedImage": true,
+    "completionLinksToExactResult": true,
+    "saveAndShareAvailable": true,
+    "fadeVerified": true,
+    "lifetimeObservedMs": 5227,
+    "physicalDeviceStoragePressure": false,
+    "physicalDeviceModelInference": false,
+    "runtimeErrors": []
+  }
+}

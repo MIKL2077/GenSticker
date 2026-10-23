@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-23",
+  "cause": "edit recovery backend routes had not been deployed",
+  "deployment": {
+    "status": "passed",
+    "backup": "/var/backups/gensticker-reedit-1792725872725623784",
+    "routes_authenticated": true,
+    "worker_restarted": false,
+    "schema_changed": false,
+    "other_services_healthy": true
+  },
+  "http_verification": {
+    "status": "passed",
+    "manual": {
+      "template": "universal",
+      "photo_and_text_restored": true,
+      "options_restored": true,
+      "new_job_created": false,
+      "cross_account_denied": true
+    },
+    "video": {
+      "original_restored": true,
+      "caption_crop_flip_rotation_clip_restored": true,
+      "cross_account_denied": true
+    }
+  },
+  "storage": "reuses existing seven-day replay assets; no additional retained copy",
+  "frontend": "recovery failures are displayed above the preview in a modal",
+  "wechat_verification": {
+    "status": "passed",
+    "domainValidation": true,
+    "cloudQueueToEditor": true,
+    "template": "universal",
+    "originalPhotoRestored": true,
+    "captionPreserved": true,
+    "runtimeErrors": []
+  },
+  "synthetic_accounts_and_media_cleaned": true
+}

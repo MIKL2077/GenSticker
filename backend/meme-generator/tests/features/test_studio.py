@@ -13,6 +13,43 @@ from meme_generator.features import studio
 from meme_generator import account
 
 class StudioTests(unittest.TestCase):
+    def test_restore_edit_inputs_is_owned_private_and_expires(self):
+        template=self.creation()
+        job=self.client.post('/studio/jobs',json={'template_key':template['id'],'images':[self.image()],'texts':['保留这段文字'],'args':{},'idempotency_key':'edit-draft-owned'}).json()
+        self.assertTrue(studio.work_one())
+        url='/studio/jobs/'+job['id']+'/edit'
+        response=self.client.get(url)
+        self.assertEqual(response.status_code,200)
+        self.assertEqual(response.headers['cache-control'],'private, no-store')
+        value=response.json()
+        self.assertEqual(value['kind'],'manual')
+        self.assertEqual(value['draft']['template_key'],template['id'])
+        self.assertEqual(value['draft']['texts'],['保留这段文字'])
+        self.assertEqual(len(value['draft']['images']),1)
+        self.app.dependency_overrides[account.current_user]=lambda:{'id':'bob'}
+        self.assertEqual(self.client.get(url).status_code,404)
+        self.app.dependency_overrides[account.current_user]=lambda:{'id':'alice'}
+        (studio.root()/'studio_replays'/(job['id']+'.json')).unlink()
+        self.assertEqual(self.client.get(url).status_code,410)
+
+    def test_video_edit_source_checks_owner_and_retention(self):
+        from meme_generator.features import livegif
+        self.app.include_router(livegif.router)
+        identifier='a'*32
+        folder=livegif.directory();folder.mkdir(exist_ok=True,parents=True)
+        (folder/(identifier+'.json')).write_text(json.dumps({'user_id':'alice','created':time.time(),'width':320,'height':240,'duration':4}))
+        (folder/(identifier+'.media')).write_bytes(b'owned-video-sample')
+        url='/studio/live/assets/'+identifier+'/source'
+        response=self.client.get(url)
+        self.assertEqual(response.status_code,200)
+        self.assertEqual(response.content,b'owned-video-sample')
+        self.assertEqual(response.headers['cache-control'],'private, no-store')
+        self.app.dependency_overrides[account.current_user]=lambda:{'id':'bob'}
+        self.assertEqual(self.client.get(url).status_code,404)
+        self.app.dependency_overrides[account.current_user]=lambda:{'id':'alice'}
+        (folder/(identifier+'.json')).write_text(json.dumps({'user_id':'alice','created':time.time()-8*86400}))
+        self.assertEqual(self.client.get(url).status_code,404)
+
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory();self.env=patch.dict(os.environ,{'GENSTICKER_STATE_DIR':self.temp.name});self.env.start()
         db=account.connection()

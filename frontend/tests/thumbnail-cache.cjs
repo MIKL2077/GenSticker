@@ -7,7 +7,7 @@ const source = fs.readFileSync(path.join(__dirname, '../src/services/memeService
   .replace(/\/\/ #ifdef H5[\s\S]*?\/\/ #endif/, '')
 async function verify() {
   let downloads = 0, infos = 0, failNext = true
-  const context = { setTimeout, Map, Date, Promise, Error, API_BASE_URL: 'https://example.test',
+  const context = {registerCacheFile:p=>p, setTimeout, Map, Date, Promise, Error, API_BASE_URL: 'https://example.test',
     apiRequest: async () => { infos++; return { key: 'petpet' } },
     uni: { downloadFile: o => {
       downloads++

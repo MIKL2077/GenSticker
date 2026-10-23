@@ -1,6 +1,6 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path')
 let version=1;const pending=[],removed=[]
-const context={Map,Set,Array,Promise,Date,Error,encodeURIComponent,setTimeout,API_BASE_URL:'https://example.test/api',
+const context={registerCacheFile:p=>p,Map,Set,Array,Promise,Date,Error,encodeURIComponent,setTimeout,API_BASE_URL:'https://example.test/api',
  apiRequest:async()=>({cards:[{key:'same',version}]}),apiImageRequest:()=>{},
  uni:{downloadFile:args=>pending.push(args),getFileSystemManager:()=>({unlink:args=>removed.push(args.filePath)})}}
 vm.createContext(context)

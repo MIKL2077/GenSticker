@@ -11,14 +11,18 @@
       <button v-if="visibleRecords.length < records.length" class="more" @click="limit += 20">加载更多</button>
     </view>
     <button v-if="syncError" class="sync-message" @click="syncLibrary">{{ syncError }} · 点击重试</button>
+    <generation-notice/><first-use-guide />
   </view>
 </template>
 <script>
+import GenerationNotice from '@/components/GenerationNotice.vue'
+import FirstUseGuide from '@/components/FirstUseGuide.vue'
 import { ref, computed, watch } from 'vue'
 import { onLoad, onShow, onHide } from '@dcloudio/uni-app'
 import { useLibrary } from '@/composables/useLibrary'
 import { getTemplateInfo, getTemplatePreviewPath } from '@/services/memeService'
 export default {
+  components:{GenerationNotice,FirstUseGuide},
   setup() {
     const sceneActive=ref(true)
     onHide(()=>{sceneActive.value=false})

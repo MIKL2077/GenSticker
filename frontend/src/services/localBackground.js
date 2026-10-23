@@ -1,3 +1,4 @@
+import {withStorageRecovery} from '@/services/ownedFiles'
 import {API_BASE_URL} from '@/constants'
 
 // The same pinned U2NetP model and normalization as the server. Only public
@@ -20,18 +21,20 @@ async function modelFile(allowDownload=true){
   const result=await call(uni.downloadFile.bind(uni),{url:API_BASE_URL+'/images/subject-model/'+MODEL_SHA+'.onnx',timeout:30000})
   temporary=result.tempFilePath;if(result.statusCode!==200)throw Error('本机模型暂不可用')
   await verify(temporary)
-  await call(fs.saveFile.bind(fs),{tempFilePath:temporary,filePath:path});temporary=''
+  await withStorageRecovery(()=>call(fs.saveFile.bind(fs),{tempFilePath:temporary,filePath:path}));temporary=''
   return path
  }finally{if(temporary)fs.unlink({filePath:temporary,fail:()=>{}})}
 }
-export function warmLocalBackground({allowDownload=true}={}){
+export function warmLocalBackground({allowDownload=true,canStart=()=>true}={}){
  if(!supported() || Date.now()<unavailableUntil)return Promise.reject(Error('使用云端处理'))
  if(sessionTask){keepAlive();return sessionTask}
  sessionTask=(async()=>{
   const model=await modelFile(allowDownload)
+  if(!canStart()){const error=Error('预热已延后');error.code='WARMUP_DEFERRED';throw error}
   // Some iOS devices expose NPU support but reject individual operators.
   // Retry the same verified model with NPU disabled before leaving the device.
   for(const allowNPU of [true,false]){
+   if(!canStart()){const error=Error('预热已延后');error.code='WARMUP_DEFERRED';throw error}
    let loading
    try{
     loading=wx.createInferenceSession({model,precisionLevel:2,allowNPU,allowQuantize:false,typicalShape:{'input.1':[1,3,EDGE,EDGE]}})
@@ -39,7 +42,7 @@ export function warmLocalBackground({allowDownload=true}={}){
     session=loading;keepAlive();return session
    }catch(error){try{loading?.destroy()}catch(_){}if(!allowNPU)throw error}
   }
- })().catch(error=>{sessionTask=null;if(allowDownload)unavailableUntil=Date.now()+60000;throw error})
+ })().catch(error=>{sessionTask=null;if(allowDownload && error.code!=='WARMUP_DEFERRED')unavailableUntil=Date.now()+60000;throw error})
  return sessionTask
 }
 export function modelInput(rgba){

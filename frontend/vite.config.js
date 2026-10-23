@@ -1,10 +1,12 @@
 import { defineConfig } from 'vite'
 import uni from '@dcloudio/vite-plugin-uni'
 import { HttpsProxyAgent } from 'https-proxy-agent'
+import weixinPackage from './scripts/weixin-package.cjs'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   build: process.env.UNI_PLATFORM === 'mp-weixin' ? {
+    minify: process.env.NODE_ENV === 'production' ? 'terser' : false,
     // WeChat transpiles this output again. Mangling can reuse a hoisted optional
     // chaining temporary's name for a nested const, which its Babel pass then
     // treats as a read-only assignment and aborts page initialization.
@@ -23,6 +25,19 @@ export default defineConfig({
       },
     },
     uni(),
+    {
+      name: 'gensticker-weixin-package',
+      apply: 'build',
+      closeBundle: {
+        order: 'post',
+        sequential: true,
+        handler() {
+          if (process.env.UNI_PLATFORM !== 'mp-weixin' || process.env.NODE_ENV !== 'production') return
+          const report = weixinPackage.optimizePackage(process.env.UNI_OUTPUT_DIR)
+          console.log(`WeChat package: ${report.packageBytes} bytes; images/audio: ${report.mediaBytes} / ${report.mediaLimitBytes} bytes; lossless PNG savings: ${report.savedBytes} bytes`)
+        },
+      },
+    },
   ],
   server: {
     proxy: {

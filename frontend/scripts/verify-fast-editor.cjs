@@ -37,6 +37,7 @@ async function main(){
   const alpha=await job();assert.equal(alpha.width,81);assert.equal(alpha.height,121);record('Existing transparency reused locally',alpha)
   await app.reLaunch('/pages/index/index');await wait(()=>app.evaluate(()=>!!getCurrentPages().slice(-1)[0]?.$vm?.currentPageTemplates?.length),'template catalog',60000)
   await app.evaluate(async()=>{await getCurrentPages().slice(-1)[0].$vm.onSelectTemplate('always')})
+  await app.mockWxMethod('chooseMedia',{tempFiles:[{tempFilePath:'/static/qa-alpha.png',fileType:'image',size:10000}]})
   await app.mockWxMethod('chooseImage',{tempFilePaths:['/static/qa-alpha.png'],tempFiles:[{path:'/static/qa-alpha.png',size:1000}]})
   await app.evaluate(()=>getCurrentPages().slice(-1)[0].$vm.chooseImagesForTemplate());const home=await app.currentPage();await wait(()=>home.getElementByXpath('//*[contains(@class,"subject-box")]'),'template immediate crop')
   await (await home.getElementByXpath('//*[contains(@class,"subject-confirm")]')).tap();await wait(()=>app.evaluate(()=>!getCurrentPages().slice(-1)[0].$vm.showImageEditor),'template confirmation')
@@ -45,7 +46,7 @@ async function main(){
  }catch(error){report.status='failed';report.error=error.stack;process.exitCode=1;console.error(error)}finally{
   fs.writeFileSync(path.join(output,'native.json'),JSON.stringify(report,null,2)+'\n')
   await app.evaluate(()=>{if(wx.__qaSavedSession)wx.setStorageSync('gensticker.session.v1',wx.__qaSavedSession);else wx.removeStorageSync('gensticker.session.v1')}).catch(()=>{})
-  await app.restoreWxMethod('chooseImage').catch(()=>{});await app.disconnect()
+  await app.restoreWxMethod('chooseImage').catch(()=>{});await app.restoreWxMethod('chooseMedia').catch(()=>{});await app.disconnect()
  }
 }
 main().catch(error=>{console.error(error);process.exitCode=1})

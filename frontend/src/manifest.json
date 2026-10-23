@@ -46,8 +46,12 @@
     "setting": {
       "urlCheck": true,
       "es6": true,
-      "enhance": true
+      "enhance": true,
+      "minified": true,
+      "minifyWXML": true,
+      "minifyWXSS": true
     },
+    "lazyCodeLoading": "requiredComponents",
     "usingComponents": true
   },
   "mp-alipay": {

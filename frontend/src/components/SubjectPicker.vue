@@ -25,7 +25,7 @@ import {displayImageSize} from '@/services/imageGeometry'
 import {imageEditError} from '@/services/imageEditing'
 import {detectSubjects} from '@/services/subjectSelection'
 import {editImage,removeImageBackground,composeBackgroundMask,disposeEditedImage} from '@/services/imageEditing'
-import {warmLocalBackground} from '@/services/localBackground'
+import {holdBackgroundWork} from '@/services/backgroundActivity'
 import {clampCrop} from '@/services/liveGifService'
 import UiIcon from '@/components/UiIcon.vue'
 const props=defineProps({show:Boolean,src:String,initialRect:Array,busy:Boolean,externalError:String,editable:Boolean,canUndo:Boolean,fileType:{type:String,default:'jpg'},detectEnabled:{type:Boolean,default:true}}),emit=defineEmits(['confirm','cancel','undo','restore'])
@@ -35,6 +35,8 @@ const win=uni.getWindowInfo?.()||uni.getSystemInfoSync(),stage=computed(()=>{con
 const style=box=>({left:box[0]*100+'%',top:box[1]*100+'%',width:box[2]*100+'%',height:box[3]*100+'%'})
 let version=0,drag=null,detectionTask=null,touched=false,backgroundTimer=null,backgroundJob=null
 const owned=new Set()
+let resumeWarmup=null
+watch(()=>props.show,show=>{resumeWarmup?.();resumeWarmup=show?holdBackgroundWork():null},{immediate:true})
 const dropBackground=()=>{clearTimeout(backgroundTimer);backgroundTimer=null;const job=backgroundJob;backgroundJob=null;if(job?.path)disposeEditedImage(job.path)}
 const dispose=()=>{dropBackground();detectionTask?.abort?.();detectionTask=null;for(const path of owned)disposeEditedImage(path);owned.clear()}
 const backgroundKey=()=>JSON.stringify([workingSrc.value,rect.value])
@@ -58,9 +60,6 @@ watch(()=>[props.show,props.src],async()=>{
  const request=++version;processing.value=false;dispose();history.value=[];touched=!!props.initialRect;if(!props.show||!props.src)return
  transparent.value=false;info.value={width:0,height:0};workingSrc.value=props.src;candidates.value=[];rect.value=props.initialRect?[...props.initialRect]:[0,0,1,1];originRect.value=null;selected.value=true;chosen.value='manual';error.value='';message.value='';detecting.value=true
  backgroundHint.value=''
- if(props.editable){
-  warmLocalBackground({allowDownload:false}).then(()=>{if(request===version)scheduleBackground()},()=>{})
- }
  try{
   const size=await dimensions(props.src);if(request!==version)return;info.value=size;originalInfo.value=size
   if(!props.detectEnabled)return
@@ -76,7 +75,7 @@ watch(()=>[props.show,props.src],async()=>{
     })
   }
   if(!candidates.value.length)message.value='可直接调整选框，或点“精细识别”查找更多主体。'
- }catch(e){if(request===version)message.value='可继续调整选框，自动识别暂未完成。'}finally{if(request===version){detecting.value=false;if(props.editable)warmLocalBackground().then(()=>{if(request===version)scheduleBackground()},()=>{})}}
+ }catch(e){if(request===version)message.value='可继续调整选框，自动识别暂未完成。'}finally{if(request===version){detecting.value=false;scheduleBackground()}}
 },{immediate:true})
 watch(()=>[props.show,workingSrc.value,rect.value.join(','),processing.value,detecting.value],scheduleBackground)
 const retryDetection=async()=>{
@@ -126,7 +125,7 @@ const apply=async type=>{
 const undo=()=>{if(locked.value)return;const last=history.value.pop();if(!last){emit('undo');return}workingSrc.value=last.src;info.value=last.info;transparent.value=last.transparent;rect.value=last.rect;originRect.value=last.origin;chosen.value=last.chosen;selected.value=last.selected;error.value='';message.value=''}
 const restore=()=>{if(locked.value)return;touched=true;dispose();history.value=[];transparent.value=false;workingSrc.value=props.src;info.value=originalInfo.value;rect.value=props.initialRect?[...props.initialRect]:[0,0,1,1];originRect.value=null;selected.value=true;chosen.value='manual';message.value='';error.value='';if(props.canUndo)emit('restore')}
 const confirm=async()=>{if(locked.value||!selected.value)return;const request=version;processing.value=true;error.value='';try{const result=await editImage(workingSrc.value,{type:'crop',rect:[...rect.value],fileType:transparent.value?'png':props.fileType});if(request===version){emit('confirm',{path:result,rect:originRect.value?[...originRect.value]:[...rect.value]})}else disposeEditedImage(result)}catch(e){if(request===version){message.value='';error.value=imageEditError(e).message}}finally{if(request===version)processing.value=false}}
-onBeforeUnmount(()=>{version++;dispose()})
+onBeforeUnmount(()=>{version++;dispose();resumeWarmup?.()})
 </script>
 <style scoped>
 .subject-modal{position:fixed;inset:0;background:#263f4877;z-index:2600;display:flex;align-items:center;justify-content:center;padding:24rpx;padding-top:calc(24rpx + env(safe-area-inset-top));padding-bottom:calc(24rpx + env(safe-area-inset-bottom))}.subject-sheet{background:var(--paper);border:3rpx solid white;border-radius:34rpx;padding:24rpx;width:100%;max-width:600px;max-height:100%;display:flex;flex-direction:column;overflow-y:auto}.subject-heading{display:flex;align-items:center;gap:14rpx;margin-bottom:18rpx;flex-shrink:0}.subject-heading>view{flex:1}.subject-heading text{display:block;font-size:28rpx;font-weight:750}.subject-heading text:last-child{font-size:21rpx;font-weight:400;color:var(--muted);margin-top:8rpx}.subject-heading .ui-close{width:64rpx;height:64rpx;min-height:64rpx;flex-shrink:0}.subject-workspace{min-height:0;flex-shrink:0}.subject-stage{position:relative;margin:0 auto;overflow:hidden;background:repeating-conic-gradient(#f4f1e9 0% 25%,#fffaf5 0% 50%) 50%/20px 20px;border-radius:14rpx;touch-action:none}.subject-stage>image{position:absolute;inset:0;width:100%;height:100%}.subject-candidate{position:absolute;border:2px dashed #fff;border-radius:8px;background:#263f4822;color:#fff;font-size:11px;padding:3px;text-align:left;display:flex;align-items:flex-start;line-height:1.3}.subject-box{position:absolute;border:3px solid var(--accent);box-shadow:0 0 0 600px #263f4866;touch-action:none}.subject-box>text{position:absolute;left:4px;top:4px;background:var(--accent);color:white;font-size:11px;padding:2px 5px;border-radius:4px;pointer-events:none}.subject-handle{position:absolute;width:28px;height:28px;border-color:#fff;border-style:solid}.top-left{left:-5px;top:-5px;border-width:5px 0 0 5px}.bottom-right{right:-5px;bottom:-5px;border-width:0 5px 5px 0}.subject-controls{flex-shrink:0}.subject-choices{white-space:nowrap;margin:16rpx 0}.subject-choices button{display:inline-block;font-size:23rpx;padding:12rpx 20rpx;margin-right:14rpx;background:white;border:2rpx solid var(--line);border-radius:18rpx;color:var(--ink);line-height:1.5}.subject-choices button.active{background:var(--peach);color:var(--accent-dark);border-color:#ffb292}.subject-note{display:block;font-size:21rpx;line-height:1.6;color:var(--muted);margin:10rpx 0 16rpx}.subject-confirm{width:100%;min-height:82rpx}.subject-error{display:block;color:var(--accent-dark);font-size:23rpx;margin-top:12rpx}.editor-tools{display:flex;gap:12rpx;margin:14rpx 0 8rpx}.editor-tools button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8rpx;min-height:96rpx;background:#fff;border:2rpx solid var(--line);border-radius:20rpx;font-size:22rpx;color:var(--ink)}.editor-tools button:last-child{background:var(--mint)}.editor-history{display:flex;gap:24rpx}.editor-history button{background:transparent;padding:10rpx 0;color:var(--muted);font-size:22rpx}button[disabled]{opacity:.45}

@@ -1,0 +1,26 @@
+<template>
+ <view v-if="show" class="selected-results-modal"><view class="selected-results-sheet">
+  <view class="selected-results-heading"><view><text class="ui-kicker">MADE BY YOU</text><text class="selected-results-title">{{items.length>1?'选中的 '+items.length+' 张表情':'你的表情，出炉啦'}}</text></view><button class="ui-close" aria-label="关闭预览" @click="$emit('close')">×</button></view>
+  <scroll-view v-if="items.length>1" scroll-x class="selected-results-strip"><view class="selected-results-thumbnails"><button v-for="(item,index) in items" :key="item.slot" class="selected-results-thumbnail" :disabled="busy" :class="{current:index===currentIndex}" :aria-label="'查看第'+(index+1)+'张'" @click="$emit('change',index)"><image :src="item.preview||item.path" mode="aspectFit"/><text>{{index+1}}</text></button></view></scroll-view>
+  <image v-if="current?.path||current?.preview" :src="current.path||current.preview" class="selected-result-image" mode="aspectFit" @click="preview"/>
+  <view class="selected-results-navigation"><button v-if="items.length>1" :disabled="busy||currentIndex===0" @click="$emit('change',currentIndex-1)">‹ 上一张</button><text>{{current?.path?'点击图片放大':'正在读取原图…'}}{{items.length>1?' · '+(currentIndex+1)+' / '+items.length:''}}</text><button v-if="items.length>1" :disabled="busy||currentIndex===items.length-1" @click="$emit('change',currentIndex+1)">下一张 ›</button></view>
+  <text v-if="error" class="selected-results-error">{{error}}</text>
+  <view class="selected-results-actions"><button class="ui-secondary" :disabled="busy||!current?.path" @click="$emit('share')"><ui-icon name="share" tone="accent" :size="28"/>{{items.length>1?'发当前原图':'发原图给好友'}}</button><button class="ui-primary" :disabled="busy" @click="$emit('save')"><ui-icon name="download" tone="white" :size="28"/>{{busy?'正在处理…':items.length>1?'保存这 '+items.length+' 张':'保存相册'}}</button></view>
+  <button v-if="items.length>1" class="selected-results-collage ui-secondary" :disabled="busy" @click="$emit('collage')">{{busy?'正在处理…':'拼成一张分享 · '+items.length+' 张'}}</button>
+  <text v-if="items.length>1" class="selected-results-hint">微信每次只能分享 1 张原图，默认首张勾选；切换后发送当前这张。拼图为静态图，动图也可整组保存后在微信选图发送。</text>
+  <button v-if="allowEdit" class="selected-results-edit ui-secondary" :disabled="busy" @click="$emit('edit')">{{items.length>1?'重新编辑当前表情':'重新编辑'}}</button>
+ </view></view>
+</template>
+<script>
+import UiIcon from '@/components/UiIcon.vue'
+export default {
+ components:{UiIcon},
+ props:{show:Boolean,items:{type:Array,default:()=>[]},currentIndex:{type:Number,default:0},busy:Boolean,error:String,allowEdit:Boolean},
+ emits:['close','change','share','save','collage','edit'],
+ computed:{current(){return this.items[this.currentIndex]}},
+ methods:{preview(){const paths=this.items.map(item=>item.path||item.preview).filter(Boolean);if(this.current?.path||this.current?.preview)uni.previewImage({urls:paths,current:this.current.path||this.current.preview})}},
+}
+</script>
+<style scoped>
+.selected-results-modal{position:fixed;inset:0;z-index:2400;padding:28rpx;display:flex;align-items:center;justify-content:center;background:rgba(29,43,47,.48)}.selected-results-sheet{width:100%;max-width:700rpx;max-height:calc(100% - env(safe-area-inset-top) - env(safe-area-inset-bottom));overflow-y:auto;background:var(--paper);border:3rpx solid #fff;border-radius:38rpx;padding:28rpx;box-shadow:0 10rpx 0 rgba(79,57,112,.2);animation:ui-sheet .24s ease-out}.selected-results-heading{display:flex;align-items:center;justify-content:space-between;gap:12rpx;margin-bottom:24rpx}.selected-results-title{display:block;font-size:31rpx;font-weight:750;margin-top:8rpx}.selected-results-strip{width:100%;margin-bottom:16rpx}.selected-results-thumbnails{display:flex;gap:12rpx;padding:4rpx}.selected-results-thumbnail{position:relative;flex-shrink:0;width:92rpx;height:92rpx;border-radius:18rpx;overflow:hidden;border:3rpx solid var(--line);background:white;padding:0}.selected-results-thumbnail.current{border-color:var(--accent)}.selected-results-thumbnail image{width:100%;height:100%}.selected-results-thumbnail text{position:absolute;bottom:0;right:0;background:var(--accent);color:white;font-size:18rpx;min-width:26rpx;border-top-left-radius:8rpx}.selected-result-image{width:100%;height:340rpx;max-height:32vh;background:#f0ede4;border-radius:22rpx}.selected-results-navigation{display:flex;align-items:center;justify-content:space-between;gap:8rpx;min-height:66rpx;text-align:center;color:var(--muted);font-size:20rpx}.selected-results-navigation>text{flex:1}.selected-results-navigation button{font-size:22rpx;color:var(--accent-dark);padding:14rpx 2rpx;background:transparent;line-height:1.5}.selected-results-actions{display:flex;gap:14rpx}.selected-results-actions button{flex:1;gap:8rpx;font-size:24rpx;padding:18rpx 10rpx;min-height:84rpx;display:flex;align-items:center;justify-content:center}.selected-results-collage,.selected-results-edit{width:100%;min-height:78rpx;margin-top:18rpx;padding:18rpx;font-size:25rpx}.selected-results-hint{display:block;font-size:20rpx;line-height:1.6;color:var(--muted);margin-top:16rpx}.selected-results-error{display:block;color:var(--accent-dark);font-size:22rpx;line-height:1.7;margin:8rpx 0 18rpx}
+</style>

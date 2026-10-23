@@ -1,3 +1,4 @@
+import {notifyGeneration} from '@/services/generationNotice'
 import {ref} from 'vue'
 import { apiRequest } from '@/services/apiService'
 import { API_BASE_URL } from '@/constants'
@@ -91,7 +92,7 @@ export function startStudioNotifications(){
   checking=true
   try{const jobs=await listStudioJobs();if(uni.getStorageSync('gensticker.session.v1')?.profile?.id!==owner)return
    const finished=jobs.filter(j=>pending.includes(j.id)&&!['queued','running'].includes(j.status))
-   if(finished.length){uni.setStorageSync(key,pending.filter(id=>!finished.some(j=>j.id===id)));uni.$emit('studio-completed',finished);uni.showToast({title:finished.some(j=>j.status==='completed')?'小窝喊你收图啦！':'有个任务需要看看',icon:'none',duration:3000})}
+   if(finished.length){uni.setStorageSync(key,pending.filter(id=>!finished.some(j=>j.id===id)));uni.$emit('studio-completed',finished);const ready=finished.find(j=>j.status==='completed'&&['manual','livegif'].includes(j.kind));if(ready)notifyGeneration({item:ready,message:ready.kind==='livegif'?'动图生成成功！':'表情生成成功！'});else if(finished.some(j=>j.status!=='completed'))uni.showToast({title:'有个任务需要看看',icon:'none',duration:5000})}
   }catch(_){}finally{checking=false}
  }
  preloadStudioQueue().catch(()=>{});check();notificationTimer=setInterval(check,5000)
@@ -102,7 +103,7 @@ const localResultsKey=(owner=localOwner())=>`gensticker.manual.local.${owner}.v1
 export function guestResults(owner=localOwner()){const now=Date.now()/1000;return (uni.getStorageSync(localResultsKey(owner))||[]).filter(r=>now-r.created_at<7*86400).map(r=>r.status==='running'&&now-r.created_at>120?{...r,status:'failed',message:'本地制作已中断，请重新选择片段'}:r)}
 export function updateLocalResult(id,changes,owner=localOwner()){if(owner!==localOwner())return;uni.setStorageSync(localResultsKey(owner),guestResults(owner).map(item=>item.id===id?{...item,...changes}:item))}
 export function beginLocalLive(owner=localOwner()){const item={id:uniqueKey(),local:true,kind:'livegif',status:'running',created_at:Date.now()/1000,message:'正在这台设备制作 GIF'};uni.setStorageSync(localResultsKey(owner),[item,...guestResults(owner)].slice(0,12));return item}
-export function rememberGuestMeme(path,viewed=false,kind='manual'){const item={id:uniqueKey(),local:true,kind,status:'completed',created_at:Date.now()/1000,message:'只保存在这台设备，保留近 7 天',localPath:path,...(viewed?{viewedAt:Date.now()}:{})};try{uni.setStorageSync(localResultsKey(),[item,...guestResults()].slice(0,12))}catch(_){}return item}
+export function rememberGuestMeme(path,viewed=false,kind='manual',draft=null){const item={id:uniqueKey(),local:true,kind,status:'completed',created_at:Date.now()/1000,message:'只保存在这台设备，保留近 7 天',localPath:path,...(viewed?{viewedAt:Date.now()}:{})};if(draft){try{const copy=JSON.parse(JSON.stringify(draft));if(copy.paths && uni.getFileSystemManager && uni.env?.USER_DATA_PATH){const fs=uni.getFileSystemManager();copy.paths=copy.paths.map((source,index)=>{const target=uni.env.USER_DATA_PATH+'/gensticker_draft_'+item.id+'_'+index+'.png';fs.copyFileSync(source,target);return target})}item.editDraft=copy}catch(_){}}try{uni.setStorageSync(localResultsKey(),[item,...guestResults()].slice(0,12))}catch(_){}return item}
 export function linkLocalResult(id,serverId,owner=localOwner()){updateLocalResult(id,{serverId},owner)}
 const deletedLocalKey=(owner=localOwner())=>`gensticker.live.deleted.${owner}`
 const scheduleCloudDelete=(id,owner=localOwner())=>{const ids=uni.getStorageSync(deletedLocalKey(owner))||[];uni.setStorageSync(deletedLocalKey(owner),[...new Set([...ids,id])].slice(-50))}

@@ -1,6 +1,7 @@
 """Bounded, private Live Photo motion/video -> editable GIF. No network protocols."""
 from meme_generator.safe_images import open_image
 import json,os,shutil,subprocess,tempfile,time,uuid,threading,hashlib
+import filetype
 from io import BytesIO
 from pathlib import Path
 from typing import Literal
@@ -122,6 +123,13 @@ def prepare(raw,user):
 @router.get('/assets/{identifier}/poster')
 def poster(identifier:str,user=Depends(current_user)):
     own(identifier,user['id']);return FileResponse(directory()/(identifier+'.jpg'),media_type='image/jpeg',headers={'Cache-Control':'private, no-store'})
+
+@router.get('/assets/{identifier}/source')
+def edit_source(identifier:str,user=Depends(current_user)):
+    own(identifier,user['id'])
+    path=directory()/(identifier+'.media')
+    if not path.is_file():raise HTTPException(410,'原视频已过期，无法恢复编辑')
+    return FileResponse(path,media_type=filetype.guess_mime(str(path)) or 'application/octet-stream',headers={'Cache-Control':'private, no-store'})
 
 class LiveJob(BaseModel):
     quality:Literal['balanced','smooth','clear']='balanced'

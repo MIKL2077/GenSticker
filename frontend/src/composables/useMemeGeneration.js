@@ -1,3 +1,6 @@
+import {holdBackgroundWork} from '@/services/backgroundActivity'
+import {notifyGeneration,noticeIdentity} from '@/services/generationNotice'
+import {writeOwnedFile} from '@/services/ownedFiles'
 import { ref } from 'vue'
 import {shareOriginalImage} from '@/services/wechatSharing'
 import {submitManual,getStudioJob,privateImage,rememberGuestMeme,supportsStudio,viewStudioJob} from '@/services/studioService'
@@ -86,7 +89,7 @@ export function useMemeGeneration(showStatusMessage) {
       throw new Error(response.statusCode === 503 ? '服务繁忙，请稍后重试' : response.statusCode === 429 ? '操作太频繁，请稍后再生成' : detail || `生成请求失败: ${response.statusCode}`)
     }
     const filePath = `${uni.env.USER_DATA_PATH}/generated_meme_${Date.now()}.${getFileExtensionFromContentType(ct)}`
-    await new Promise((resolve, reject) => fs.writeFile({ filePath, data: response.data, success: resolve, fail: reject }))
+    await writeOwnedFile(filePath,response.data)
     if(epoch!==generationEpoch){fs.unlink({filePath,fail:()=>{}});return ''}
     // Completed files remain available in the seven-day local queue.
     lastGeneratedFile = filePath
@@ -95,7 +98,7 @@ export function useMemeGeneration(showStatusMessage) {
 
   const generateFromTemplate = async (templateKey, imagesToUpload, texts = [], args = {}, options = {}) => {
     if (isGenerating.value) return false
-    const epoch = ++generationEpoch
+    const epoch = ++generationEpoch,completionOwner=noticeIdentity(),resumeWarmup=holdBackgroundWork()
     backgrounded = false
     let acceptedManual=''
     showPreview.value = true; isGenerating.value = true; generatedMeme.value = ''
@@ -115,27 +118,28 @@ export function useMemeGeneration(showStatusMessage) {
         if(job.status!=='completed'){if(['queued','running'].includes(job.status)){showPreview.value=false;isGenerating.value=false;showStatusMessage?.('任务还在继续，可到我的生成队列查看');return true}acceptedManual='';throw Error(job.message)}
         const output=await privateImage(job.result_url)
         if(backgrounded){isGenerating.value=false;return true}
-        generatedMeme.value=output;isGenerating.value=false;viewStudioJob(job).catch(()=>{});showStatusMessage?.('损图出炉啦！');return true
+        generatedMeme.value=output;isGenerating.value=false;viewStudioJob(job).catch(()=>{});notifyGeneration({item:job,image:output,owner:completionOwner});return true
       }
       const isH5 = typeof window !== 'undefined' && typeof document !== 'undefined'
       if (!isH5 && !options.extractSubject) {
         const local = await tryClientRender(templateKey, await prepareImages(imagesToUpload), texts, args)
         if(epoch!==generationEpoch){if(local)uni.getFileSystemManager().unlink({filePath:local,fail:()=>{}});return false}
         if (local) {
-          rememberGuestMeme(local,!backgrounded)
+          const localItem=rememberGuestMeme(local,!backgrounded,'manual',{template_key:templateKey,paths:[...imagesToUpload],texts:[...texts],args:{...args},extract_subject:!!options.extractSubject})
           lastGeneratedFile = local; generatedMeme.value = local; isGenerating.value = false
-          if(backgrounded){showStatusMessage?.('小窝做好啦，去生成队列收图');return true}
-          showStatusMessage && showStatusMessage('表情已在本机生成！'); return true
+          notifyGeneration({item:localItem,image:local,owner:completionOwner})
+          return true
         }
       }
       const output = isH5
         ? await h5UploadMultipart(`${API_BASE_URL}${getGenerateUrl(templateKey)}`, imagesToUpload, { args, texts, options })
         : await weixinGenerate(templateKey, imagesToUpload, texts, args, epoch, options)
       if(epoch!==generationEpoch)return false
-      rememberGuestMeme(output,!backgrounded)
-      if(backgrounded){isGenerating.value=false;showStatusMessage?.('小窝做好啦，去生成队列收图');return true}
+      const localItem=rememberGuestMeme(output,!backgrounded,'manual',{template_key:templateKey,paths:[...imagesToUpload],texts:[...texts],args:{...args},extract_subject:!!options.extractSubject})
+      notifyGeneration({item:localItem,image:output,owner:completionOwner})
+      if(backgrounded){isGenerating.value=false;return true}
       generatedMeme.value = output; isGenerating.value = false
-      showStatusMessage && showStatusMessage('表情包生成成功！')
+
       return true
     } catch (error) {
       if(epoch!==generationEpoch)return false
@@ -145,7 +149,7 @@ export function useMemeGeneration(showStatusMessage) {
       const message = /timeout/i.test(error.errMsg || error.message || '') ? '网络传输超时，请检查连接后重试；大图会自动压缩' : error.message || error.errMsg || '请稍后重试'
       showStatusMessage && showStatusMessage(`生成失败: ${message}`)
       return false
-    }
+    } finally {resumeWarmup()}
   }
 
   const closePreview = () => {

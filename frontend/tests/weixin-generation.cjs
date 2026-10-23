@@ -9,7 +9,7 @@ const source = fs.readFileSync(path.join(__dirname, '../src/composables/useMemeG
 
 async function verify() {
   const requests = [], writes = [], shares = [], statuses = []
-  const context = {
+  const context = {holdBackgroundWork:()=>()=>{},notifyGeneration:()=>{},noticeIdentity:()=>'guest',writeOwnedFile:async(filePath,data)=>{writes.push({filePath,data})},
     ref: value => ({ value }),
     rememberGuestMeme:()=>{},
     visitorHeaders: () => ({ 'X-Gensticker-Visitor': 'test-visitor-123456789' }),
