@@ -1,0 +1,26 @@
+[Unit]
+Description=GenSticker monthly public template report and verified GitHub archive
+After=network.target
+[Service]
+Type=oneshot
+User=gensticker
+Group=gensticker
+WorkingDirectory=/opt/gensticker-current/meme-generator
+Environment=HOME=/var/lib/gensticker
+Environment=GENSTICKER_STATE_DIR=/var/lib/gensticker
+Environment=PYTHONDONTWRITEBYTECODE=1
+EnvironmentFile=-/etc/gensticker.env
+EnvironmentFile=/etc/gensticker-archive.env
+ExecStart=/opt/gensticker-current/worker-venv/bin/python -m meme_generator.features.template_archive monthly
+TimeoutStartSec=2h
+Slice=gensticker.slice
+CPUQuota=50%
+MemoryMax=1G
+Nice=15
+IOSchedulingClass=idle
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/gensticker
+UMask=0077

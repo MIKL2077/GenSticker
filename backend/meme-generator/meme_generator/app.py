@@ -551,6 +551,8 @@ from meme_generator.features.recommend import router as recommend_router
 bootstrap()
 refresh()
 app.include_router(catalog_router)
+from meme_generator.features.trials import router as trials_router
+app.include_router(trials_router)
 app.include_router(recommend_router)
 from meme_generator.features.popularity import router as popularity_router
 app.include_router(popularity_router)

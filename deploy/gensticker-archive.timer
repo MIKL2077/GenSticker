@@ -1,0 +1,9 @@
+[Unit]
+Description=Monthly GenSticker template inventory and archival
+[Timer]
+OnCalendar=*-*-01 04:00:00 Asia/Shanghai
+RandomizedDelaySec=20m
+Persistent=true
+Unit=gensticker-archive.service
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,12 @@
+#!/bin/sh
+# Root-only operator wrapper. Never pass credentials on a command line.
+set -eu
+if [ "$(id -u)" != 0 ]; then
+    echo 'Run with sudo.' >&2
+    exit 1
+fi
+set -a
+. /etc/gensticker-archive.env
+set +a
+cd /opt/gensticker-current/meme-generator
+exec runuser -u gensticker -- env GENSTICKER_STATE_DIR=/var/lib/gensticker PYTHONPATH=/opt/gensticker-current/meme-generator /opt/gensticker-current/worker-venv/bin/python -m meme_generator.features.template_archive "$@"

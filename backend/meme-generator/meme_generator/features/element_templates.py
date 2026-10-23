@@ -52,6 +52,11 @@ def compile_elements(raw, plans, defaults):
                 if layer.type=='face':
                     if not layer.erase_polygon:raise ValueError('face requires its own measured polygon')
                     from .face_slot import removal_mask
+                    if layer.mask_asset:
+                        from .store import root
+                        data=(root()/'template_assets'/(layer.mask_asset+'.png')).read_bytes()
+                        if hashlib.sha256(data).hexdigest()!=layer.mask_asset:raise ValueError('face mask checksum mismatch')
+                        assets[layer.mask_asset]=data
                     mask=np.asarray(removal_mask(image.size,[layer])).copy()
                 else:
                     if layer.slot>=len(defaults):raise ValueError('caption default missing')

@@ -51,6 +51,19 @@ def sample():
     alerts = []
     if level > alert_level(old):
         alerts.append(f"host egress estimate reached {level}% of planning budget")
+    from .store import connect
+    db=connect()
+    try:
+        latest=db.execute('SELECT started,status,report FROM ingestion_runs ORDER BY started DESC LIMIT 1').fetchone()
+        if latest:
+            report=json.loads(latest['report']);data['authoring']={'status':latest['status'],'published':report.get('published',0),'started':latest['started']}
+            if latest['status'] in {'attention','held-for-quality'}:alerts.append('template authoring needs attention: '+str(report.get('attention') or report.get('reason') or 'inspect private ingestion report')[:100])
+            if time.time()-latest['started']>24*3600:alerts.append('template authoring has not run for over 24 hours')
+        archive=db.execute('SELECT month,report FROM template_monthly_reports ORDER BY month DESC LIMIT 1').fetchone()
+        if archive:
+            report=json.loads(archive['report']);data['template_archive']={'month':archive['month'],'status':report.get('status'),'archived':len(report.get('archived',[]))}
+            if report.get('status')=='attention':alerts.append('monthly template archive needs attention')
+    finally:db.close()
     if data["free_disk_bytes"] < 10 * 1024**3:
         alerts.append("private storage low disk water mark")
     if data["available_memory_bytes"] < 3 * 1024**3:

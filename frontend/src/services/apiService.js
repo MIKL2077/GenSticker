@@ -9,7 +9,7 @@ export async function apiRequest(url, options = {}, retries = 3) {
         method: options.method || 'GET',
         data: options.data,
         header: {
-          ...((url === '/account' || url === '/templates/reports' || url.startsWith('/account/') || url.startsWith('/auth/') || url.startsWith('/recommend/') || url.startsWith('/studio/')) && options.auth !== false && uni.getStorageSync('gensticker.session.v1')?.access_token
+          ...((url === '/account' || url === '/templates/reports' || url.startsWith('/templates/trial') || url.startsWith('/account/') || url.startsWith('/auth/') || url.startsWith('/recommend/') || url.startsWith('/studio/')) && options.auth !== false && uni.getStorageSync('gensticker.session.v1')?.access_token
             ? { Authorization: `Bearer ${uni.getStorageSync('gensticker.session.v1').access_token}` } : {}),
           ...options.header,
         },

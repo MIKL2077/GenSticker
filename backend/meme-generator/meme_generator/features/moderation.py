@@ -21,7 +21,7 @@ def withdraw(key, reason):
                     (key, reason, time.time()),
                 )
                 db.execute(
-                    "UPDATE templates SET status='withdrawn' WHERE key=?", (key,)
+                    "UPDATE templates SET status='withdrawn' WHERE key=? AND status!='archived'", (key,)
                 )
                 db.execute(
                     "UPDATE studio_templates SET status='rejected',message='维护者已下架，请检查素材使用权和内容',updated=? WHERE id=?",
@@ -95,6 +95,7 @@ class AvailabilityGuard:
                     blocked = db.execute(
                         "SELECT 1 FROM template_blocks WHERE key=?", (key,)
                     ).fetchone()
+                    archived = bool(db.execute("SELECT 1 FROM templates WHERE key=? AND status='archived'",(key,)).fetchone())
                     withdrawn = (
                         key.startswith("user_")
                         and not db.execute(
@@ -104,11 +105,11 @@ class AvailabilityGuard:
                     )
                 finally:
                     db.close()
-                if blocked or withdrawn:
+                if blocked or withdrawn or archived:
                     from starlette.responses import JSONResponse
 
                     return await JSONResponse(
-                        {"detail": "模板已撤回或下架"},
+                        {"detail": "模板已归档，可由维护者恢复" if archived else "模板已撤回或下架"},
                         status_code=404,
                         headers={"Cache-Control": "no-store"},
                     )(scope, receive, send)

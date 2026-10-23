@@ -33,7 +33,7 @@ def emotion_tags(name):
     ] or ["general"]
 
 
-def publish(key, metadata, spec=None, *, minimum_version=1):
+def publish(key, metadata, spec=None, *, minimum_version=1, publication=None):
     db=connect()
     try:blocked=db.execute('SELECT 1 FROM template_blocks WHERE key=?',(key,)).fetchone()
     finally:db.close()
@@ -59,6 +59,10 @@ def publish(key, metadata, spec=None, *, minimum_version=1):
         with db:
             db.execute("BEGIN IMMEDIATE")
             old = db.execute("SELECT * FROM templates WHERE key=?", (key,)).fetchone()
+            if old and old['status']=='archived':
+                raise ValueError('template archived; restore the verified archive explicitly')
+            if (not old or old['status']!='published') and db.execute("SELECT count(*) FROM templates WHERE status='published'").fetchone()[0] >= min(8000,max(1,int(os.getenv('GENSTICKER_PUBLIC_TEMPLATE_LIMIT','8000')))):
+                raise ValueError('public template limit reached; archive old templates before publication')
             if old and old["fingerprint"] == fingerprint and old['version'] >= minimum_version:
                 return dict(old)
             version = max((old["version"] + 1 if old and old['fingerprint'] != fingerprint else old['version'] if old else 1), minimum_version)
@@ -78,6 +82,9 @@ def publish(key, metadata, spec=None, *, minimum_version=1):
                 "INSERT INTO template_versions VALUES(?,?,?,?,?)",
                 (identifier, version, fingerprint, values[4], values[5]),
             )
+            if publication:
+                import time
+                db.execute('INSERT INTO template_publications VALUES(?,?,?,?) ON CONFLICT(key) DO UPDATE SET batch_id=excluded.batch_id,published=excluded.published,score=excluded.score',(key,publication['batch_id'],time.time(),publication['score']))
         return dict(
             db.execute("SELECT * FROM templates WHERE key=?", (key,)).fetchone()
         )
@@ -87,7 +94,7 @@ def publish(key, metadata, spec=None, *, minimum_version=1):
 
 def bootstrap():
     db=connect()
-    try:blocked={r[0] for r in db.execute('SELECT key FROM template_blocks')}
+    try:blocked={r[0] for r in db.execute('SELECT key FROM template_blocks')} | {r[0] for r in db.execute("SELECT key FROM templates WHERE status='archived'")}
     finally:db.close()
     for meme in get_memes():
         if meme.key in blocked:continue
@@ -133,7 +140,7 @@ def rows():
 def refresh():
     published = rows()
     db=connect()
-    try:blocked={r[0] for r in db.execute('SELECT key FROM template_blocks')}
+    try:blocked={r[0] for r in db.execute('SELECT key FROM template_blocks')} | {r[0] for r in db.execute("SELECT key FROM templates WHERE status='archived'")}
     finally:db.close()
     published=[row for row in published if row['key'] not in blocked]
     current = {row['key'] for row in published}

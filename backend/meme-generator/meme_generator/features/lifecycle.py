@@ -302,6 +302,7 @@ def delete_account(params: Deletion, user=Depends(current_user)):
                     "INSERT OR REPLACE INTO deleted_accounts VALUES(?,?)",
                     (uid, time.time()),
                 )
+                db.execute('DELETE FROM template_trial_uses WHERE actor=?',(hashlib.sha256(('user:'+uid).encode()).hexdigest(),))
                 for identifier in owned:
                     forget_public(db, identifier)
                 for jid in job_ids:

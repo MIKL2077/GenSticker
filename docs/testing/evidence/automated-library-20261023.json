@@ -1,0 +1,74 @@
+{
+  "date": "2026-10-23",
+  "rollout": "partial-quality-held",
+  "public_templates": 944,
+  "backend_feature_tests": 143,
+  "backend_account_tests": 6,
+  "frontend_tests": 32,
+  "wechat_package": {
+    "bytes": 846355,
+    "media_bytes": 199585,
+    "media_limit": 204800
+  },
+  "native_trial": {
+    "real_generation": true,
+    "hidden_after_use": true,
+    "hidden_after_reload": true,
+    "runtime_errors": [],
+    "authenticated_request_headers": "separate regression passed"
+  },
+  "logs": {
+    "applied": true,
+    "journal_limit_bytes": 1073741824,
+    "retention_days": 14,
+    "text_log_rotation": "hourly checks; daily or 50MiB; 14 compressed rotations",
+    "docker_default": "local / 20MiB x 3; existing stopped containers not recreated"
+  },
+  "archive": {
+    "repository": "MIKL2077/GenSticker",
+    "branch": "template-archive",
+    "monthly_timer": "first day 04:00 Asia/Shanghai plus jitter",
+    "online_limit": 8000,
+    "monthly_status": "completed",
+    "monthly_archived": 59,
+    "live_bytes_freed": 13137006,
+    "archive_payload_bytes": 13866867,
+    "remaining": 0,
+    "errors": [],
+    "total_archived_including_fixture": 60,
+    "uuid_version_and_artwork_roundtrip": true,
+    "restored_original_status": "withdrawn",
+    "final_fixture_archive_commit": "e1149e080e8d2cfb81210a2d179fe1d8206ffdeb",
+    "private_user_material_excluded": true
+  },
+  "minimax": {
+    "model": "MiniMax-M3",
+    "api": "Mainland subscription key; native Messages plus coding_plan/vlm",
+    "scheduled_automatic_publication_enabled": false,
+    "scheduled_mode": "held-for-quality; metadata-only collection continues",
+    "latest_live_discovered_metadata": 113,
+    "latest_live_new_metadata": 113,
+    "latest_live_published": 0,
+    "requested_minimum_new_public_templates_per_run": 3,
+    "minimum_accepted": false,
+    "same_source_comparison": {
+      "independent_samples": 4,
+      "ordinary_portrait_passed": 1,
+      "occlusion_multiline_animation_rejected": 3,
+      "separate_calibration_sample_rejected": 1
+    },
+    "independently_accepted_new_private_examples": [
+      "auto_fe3c93637403bf05ce67a6e3",
+      "auto_305e9ed41fc696643bf69eb3"
+    ],
+    "observed_primary_score_false_positive": 96,
+    "vlm_verdict_varied_between_prompts": true,
+    "known_partial_face_overlay_now_rejected_by_local_geometry": true,
+    "generic_recommendation_photo_false_positive_rejected": true,
+    "publication_boundary": "source contract, full-frame local geometry and protected pixels, opaque/cutout/blank/changed renders, native and VLM reviews; no scores-only admission",
+    "no_user_photos_sent_to_model": true,
+    "live_publication_from_pilots": 0,
+    "credential_tracked_in_git": false
+  },
+  "artifacts": "Large public-source visual comparisons stay in ignored artifacts/automated-library-20261023; no user photographs are included in this evidence."
+}

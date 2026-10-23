@@ -50,11 +50,14 @@ def restore(*, include_batches=True):
                 if old:
                     metadata = json.loads(old['metadata'])
                     if metadata.get('conversion') == 'reaction-story-v1' and metadata.get('original_hash') == item['original_hash']:
-                        db.execute("UPDATE templates SET status='withdrawn' WHERE key=?", (item['key'],))
+                        db.execute("UPDATE templates SET status='withdrawn' WHERE key=? AND status!='archived'", (item['key'],))
             for key in retired:
-                db.execute("UPDATE templates SET status='withdrawn' WHERE key=?", (key,))
+                db.execute("UPDATE templates SET status='withdrawn' WHERE key=? AND status!='archived'", (key,))
         for item in manifest["templates"]:
             if item['key'] in retired:
+                continue
+            archived=db.execute("SELECT 1 FROM templates WHERE key=? AND status='archived'",(item['key'],)).fetchone()
+            if archived:
                 continue
             metadata = item["metadata"]
             source_reference = metadata.get('source_use') == 'explicit-user-request-with-attribution' and metadata.get('review', {}).get('visual_status') == 'approved' and metadata.get('origin') in {'chinesebqb', 'weshine'}

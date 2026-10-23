@@ -1,0 +1,11 @@
+Guide sample images: photo.jpg, always.jpg, batch.jpg
+Photo: Cat August 2010-4.jpg by Alvesgaspar.
+Source: https://commons.wikimedia.org/wiki/File:Cat_August_2010-4.jpg
+License: Creative Commons Attribution-ShareAlike 3.0 Unported
+https://creativecommons.org/licenses/by-sa/3.0/
+Changes: cropped, resized and JPEG encoded; combined with real GenSticker templates.
+These sample image derivatives are distributed under CC BY-SA 3.0.
+validation-cutout.png is an alpha derivative of the same licensed photograph,
+extracted locally using the project's checksum-pinned U2Netp model.
+Template keys: always, petpet, throw_gif, perfect, hug_leg, suck, tightly, taunt, paint.
+Template implementations and their artwork retain their respective existing credits.

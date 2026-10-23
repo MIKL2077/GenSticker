@@ -1,0 +1,5 @@
+style-reference.jpg is a private authoring calibration board: public source on the left and the previously accepted GenSticker face replacement on the right.
+Source: https://github.com/zhaoolee/ChineseBQB/blob/5f4064293f739ae249d0f616458ac77449cad62b/001Funny_%E6%BB%91%E7%A8%BD%E5%A4%A7%E4%BD%AC%F0%9F%98%8FBQB/%E6%BB%91%E7%A8%BD%E5%A4%A7%E4%BD%AC00089-%E5%96%9D%E8%8C%B6.jpg
+Original author and per-image rights unverified; collected under the explicit operator instruction to preserve attribution.
+The cat photograph is a CC BY-SA 3.0 derivative; see VALIDATION-LICENSE.txt.
+This calibration is not a successful held-out test of MiniMax.

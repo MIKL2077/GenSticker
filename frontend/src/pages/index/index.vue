@@ -3,7 +3,7 @@
     <app-header />
     <view class="welcome-card ui-enter"><view class="welcome-copy-block"><view class="studio-tag fx-enter"><view/>私有造梗神器 · 今日也营业</view><text class="welcome-title">一键套模板，<text class="title-pop">把 Ta 玩成梗。</text></text><text class="welcome-copy">紧跟热梗，简单几步就能整活。</text><button class="welcome-action" @click="openRecommend">为 Ta 生成 9 张 <text>↗</text></button></view><view class="hero-toys"><mood-toy :active="sceneActive && !showTemplateDetail && !showPreview"/></view><text class="hero-serial">GENSTICKER / MOOD LAB 001</text></view>
     <popularity-stage v-if="!loadError && (spotlight.length || !isLoadingTemplates)" :items="spotlight" :active="sceneActive && !showTemplateDetail && !showPreview" @select="onSelectTemplate"/>
-    <view v-if="trialTemplate" class="trial-card fx-enter" @click="onSelectTemplate(trialTemplate.key)"><image v-if="trialTemplate.previewImage" :src="trialTemplate.previewImage" mode="aspectFit"/><view><text class="trial-label">新模板试用</text><text class="trial-title">{{ trialTemplate.name }}</text><text class="trial-hint">换上你的照片，给它一个新表情 ↗</text></view></view>
+    <view v-if="trialTemplate" class="trial-card fx-enter" @click="onSelectTemplate(trialTemplate.key)"><image v-if="trialTemplate.previewImage" :src="trialTemplate.previewImage" mode="aspectFit"/><view><text class="trial-label">{{trialTemplate.trialLabel}}</text><text class="trial-title">{{ trialTemplate.name }}</text><text class="trial-hint">{{trialTemplate.trialImageSlots?'换上你的照片，给它一个新表情 ↗':'换句你的文案，接住今天的新梗 ↗'}}</text></view></view>
     <button class="live-entry" @click="openLive"><ui-icon name="video" tone="accent" :size="52"/><view><text>视频转 GIF</text><text>选一段视频 · 自由裁剪 + 自己配文</text></view><ui-icon name="arrow" :size="30"/></button>
     <view class="meme-templates">
       <view class="template-header fx-enter">
@@ -90,6 +90,7 @@
 </template>
 
 <script>
+import {getCurrentTrial,hasUsedTrial,markTrialUsed} from '@/services/trialService'
 import {takeEditDraft,disposeEditDraft} from '@/services/editSession'
 import GenerationNotice from '@/components/GenerationNotice.vue'
 import FirstUseGuide from '@/components/FirstUseGuide.vue'
@@ -151,7 +152,30 @@ export default {
 
     const { showPreview, isGenerating, generatedMeme, generateFromTemplate, closePreview, saveMeme, shareMeme } = useMemeGeneration(showStatusMessage)
 
-    const trialTemplate = computed(() => [...templateDetails.value.values()].find(item => item.featuredTrial))
+    const trialCandidate=ref(null),trialUseEpoch=ref(0)
+    let trialRequest=0,trialTimer=null
+    const trialTemplate=computed(()=>{
+      trialUseEpoch.value
+      const trial=trialCandidate.value
+      if(!trial || trial.used || hasUsedTrial(trial.key))return null
+      const detail=templateDetails.value.get(trial.key)
+      return detail?{...detail,trialLabel:trial.label,trialImageSlots:trial.image_slots}:null
+    })
+    const refreshTrial=async()=>{
+      const request=++trialRequest,identity=account.session.value?.profile?.id || 'guest'
+      trialUseEpoch.value++
+      try{
+        const trial=await getCurrentTrial()
+        if(request!==trialRequest || identity!==(account.session.value?.profile?.id || 'guest'))return
+        if(trial){await fetchMemeInfo(trial.key);await fetchMemePreview(trial.key,true)}
+        if(request===trialRequest && identity===(account.session.value?.profile?.id || 'guest'))trialCandidate.value=trial
+      }catch(_){/* Keep the previous valid offer during a transient network failure. */}
+    }
+    const trialUsed=()=>{trialUseEpoch.value++}
+    uni.$on('gensticker:trial-used',trialUsed)
+    watch(()=>account.session.value?.profile?.id,()=>{trialCandidate.value=null;refreshTrial()})
+    onHide(()=>{clearInterval(trialTimer);trialRequest++})
+    onUnmounted(()=>{clearInterval(trialTimer);trialRequest++;uni.$off('gensticker:trial-used',trialUsed)})
     const sceneActive = ref(true)
     onHide(()=>{sceneActive.value=false})
     const selectedTemplate = ref('')
@@ -187,8 +211,9 @@ export default {
         return
       }
       const texts = (textInputs.value || []).map(t => (t || '').trim()).filter(Boolean)
-      const key=selectedTemplate.value
+      const key=selectedTemplate.value,trialOwner=account.session.value?.profile?.id || 'guest'
       const success=await generateFromTemplate(key, templateImages.value, texts, restoredArgs, {extractSubject:extractSubject.value})
+      if(success && trialOwner===(account.session.value?.profile?.id || 'guest'))markTrialUsed(key)
       if(!success || selectedTemplate.value!==key)return
       showTemplateDetail.value = false
     }
@@ -221,6 +246,7 @@ export default {
     const retryTemplates = async () => { await fetchMemeCategories(); await ensurePageLoaded(selectedCategory.value, currentPage.value) }
     onShow(() => {
       sceneActive.value=true
+      refreshTrial();clearInterval(trialTimer);trialTimer=setInterval(refreshTrial,60000)
       const editDraft=takeEditDraft('manual')
       if(editDraft){
         closePreview()
