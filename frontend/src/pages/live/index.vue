@@ -35,6 +35,8 @@
  </view>
 </template>
 <script setup>
+import {useShareCard} from '@/composables/useShareCard'
+useShareCard()
 import {holdBackgroundWork} from '@/services/backgroundActivity'
 import {notifyGeneration} from '@/services/generationNotice'
 import GenerationNotice from '@/components/GenerationNotice.vue'

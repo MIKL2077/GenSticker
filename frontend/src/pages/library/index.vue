@@ -15,6 +15,7 @@
   </view>
 </template>
 <script>
+import {useShareCard} from '@/composables/useShareCard'
 import GenerationNotice from '@/components/GenerationNotice.vue'
 import FirstUseGuide from '@/components/FirstUseGuide.vue'
 import { ref, computed, watch } from 'vue'
@@ -24,6 +25,7 @@ import { getTemplateInfo, getTemplatePreviewPath } from '@/services/memeService'
 export default {
   components:{GenerationNotice,FirstUseGuide},
   setup() {
+    useShareCard()
     const sceneActive=ref(true)
     onHide(()=>{sceneActive.value=false})
     const account = useLibrary(), mode = ref('history'), details = ref({}), limit = ref(20)

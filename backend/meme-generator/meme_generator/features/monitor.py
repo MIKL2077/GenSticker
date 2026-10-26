@@ -57,7 +57,7 @@ def sample():
         latest=db.execute('SELECT started,status,report FROM ingestion_runs ORDER BY started DESC LIMIT 1').fetchone()
         if latest:
             report=json.loads(latest['report']);data['authoring']={'status':latest['status'],'published':report.get('published',0),'started':latest['started']}
-            if latest['status'] in {'attention','held-for-quality'}:alerts.append('template authoring needs attention: '+str(report.get('attention') or report.get('reason') or 'inspect private ingestion report')[:100])
+            if latest['status'] in {'partial','attention','held-for-quality'}:alerts.append('template authoring needs attention: '+str(report.get('attention') or report.get('reason') or 'inspect private ingestion report')[:100])
             if time.time()-latest['started']>24*3600:alerts.append('template authoring has not run for over 24 hours')
         archive=db.execute('SELECT month,report FROM template_monthly_reports ORDER BY month DESC LIMIT 1').fetchone()
         if archive:

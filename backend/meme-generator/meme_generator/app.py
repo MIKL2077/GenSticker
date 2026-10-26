@@ -15,7 +15,7 @@ from pathlib import Path
 
 import filetype
 from PIL import Image
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from fastapi import Depends, FastAPI, Form, File, HTTPException, Response, UploadFile, Request
 from pydantic import BaseModel, Field, ValidationError
 
@@ -110,6 +110,15 @@ class GenerateRequest(BaseModel):
 @app.get('/healthz')
 def healthz():
     return {'status': 'ok', 'templates': len(get_meme_keys())}
+
+
+@app.get('/share/cover-v2.jpg',include_in_schema=False)
+def share_cover():
+    # Versioned public brand artwork. Never use a visitor's private photo for
+    # the default share card, or run inference while WeChat fetches a cover.
+    return FileResponse(Path(__file__).parent/'assets/share/cover-v2.jpg',media_type='image/jpeg',
+                        headers={'Cache-Control':'public, max-age=31536000, immutable',
+                                 'X-Content-Type-Options':'nosniff'})
 
 
 class SubjectPreviewRequest(BaseModel):

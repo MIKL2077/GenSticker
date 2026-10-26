@@ -14,6 +14,7 @@
  </view>
 </template>
 <script>
+import {useShareCard} from '@/composables/useShareCard'
 import GenerationNotice from '@/components/GenerationNotice.vue'
 import FirstUseGuide from '@/components/FirstUseGuide.vue'
 import {ref} from 'vue'
@@ -26,6 +27,7 @@ import UiIcon from '@/components/UiIcon.vue'
 import {unreadCount,refreshUnread,preloadStudioQueue} from '@/services/studioService'
 import {openRecommend} from '@/services/navigation'
 export default{components: { GenerationNotice, FirstUseGuide,BottomTabs,UiIcon,DataControls,AccountActionCard},setup(){
+ useShareCard()
  const sceneActive=ref(true)
  onHide(()=>{sceneActive.value=false})
  const account=useLibrary(),profileVisible=ref(false),nickname=ref(''),chosenAvatar=ref(''),loginError=ref(''),submitting=ref(false)

@@ -96,6 +96,7 @@ import GenerationNotice from '@/components/GenerationNotice.vue'
 import FirstUseGuide from '@/components/FirstUseGuide.vue'
 import { onMounted, onUnmounted, watch, ref, computed } from 'vue'
 import { onShow, onHide, onShareAppMessage, onLoad } from '@dcloudio/uni-app'
+import {shareCard} from '@/services/shareCard'
 import UiIcon from '@/components/UiIcon.vue'
 import MoodToy from '@/components/MoodToy.vue'
 import PopularityStage from '@/components/PopularityStage.vue'
@@ -179,7 +180,7 @@ export default {
     const sceneActive = ref(true)
     onHide(()=>{sceneActive.value=false})
     const selectedTemplate = ref('')
-    onShareAppMessage(()=>({title:generatedMeme.value?'我刚造的梗，你也来整一张？':'私有造梗神器，一键为 Ta 生成损图',path:'/pages/index/index'+(selectedTemplate.value && (!selectedTemplateDetail.value?.ownPreview || selectedTemplateDetail.value?.status==='published')?'?template='+encodeURIComponent(selectedTemplate.value):''),...(generatedMeme.value?{imageUrl:generatedMeme.value}:{})}))
+    onShareAppMessage(()=>shareCard({image:generatedMeme.value,template:selectedTemplate.value && (!selectedTemplateDetail.value?.ownPreview || selectedTemplateDetail.value?.status==='published')?selectedTemplate.value:''}))
     const showTemplateDetail = ref(false)
 
     const onSelectCategory = async (key) => {

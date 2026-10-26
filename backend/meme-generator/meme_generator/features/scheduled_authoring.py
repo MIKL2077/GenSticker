@@ -19,6 +19,51 @@ from .minimax_authoring import MiniMax,ModelUnavailable,author,normalize
 from .public_sources import discover,fetch_candidate,SourceUnavailable
 
 
+def validate_publication(product):
+    """Fail closed at the catalog boundary, including resumed/imported products.
+
+    Rendering successfully or a high model score alone is never admission.
+    Bind both reviewers, all frames and measured placements to this recipe.
+    """
+    from .element_templates import validate_elements
+    from .minimax_authoring import load_skill
+    spec=product['spec'];meta=product['metadata'];quality=meta.get('quality',{})
+    validate_elements(spec,meta)
+    frames=spec['frames'];count=len(frames)
+    review=product.get('review',{})
+    flags=['approved','intent_preserved','old_face_removed','captions_complete','props_preserved','clean_background','motion_verified','no_extra_panels']
+    rows=review.get('frames',[]);score=review.get('score')
+    if (not all(review.get(flag) is True for flag in flags)
+        or type(score) not in (int,float) or not 85<=score<=100
+        or quality.get('score')!=score or quality.get('review_frames')!=count
+        or len(rows)!=count or {r.get('index') for r in rows}!=set(range(count))
+        or not all(r.get('passed') is True and r.get('issues')==[] for r in rows)):
+        raise ValueError('primary full-frame visual approval required before publication')
+    if meta.get('review',{}).get('skill_sha256')!=load_skill()[1]:
+        raise ValueError('authoring skill changed; revalidation required')
+    contract=quality.get('source_contract',{})
+    if contract.get('usable') is not True or contract.get('image_slots')!=meta.get('max_images') or contract.get('captions')!=meta.get('default_texts'):
+        raise ValueError('source contract differs from published inputs')
+    geometry=quality.get('local_geometry',{})
+    expected={(i,l.get('slot',0)) for i,f in enumerate(frames) for l in f['layers'] if l['type']=='face'}
+    placements=geometry.get('placements',[])
+    if (geometry.get('verified') is not True or len(placements)!=len(expected)
+        or {(p.get('frame'),p.get('slot')) for p in placements}!=expected
+        or any(type(p.get('coverage')) not in (int,float) or not .68<=p['coverage']<=1 for p in placements)):
+        raise ValueError('independently measured source face geometry required for every placement')
+    verification=quality.get('cross_visual_review',{});reviews=verification.get('reviews',[])
+    if (verification.get('analyzed_frames')!=count or len(reviews)!=count or not reviews
+        or not all(all(row.get(field) is True for field in ['passed','old_face_fully_removed','caption_complete','props_preserved']) for row in reviews)):
+        raise ValueError('independent full-frame VLM review required before publication')
+    if not meta.get('source_url','').startswith('https://') or not meta.get('author') or not meta.get('source_use'):
+        raise ValueError('public source attribution required before publication')
+    assets=product['assets']
+    if not assets or len(assets)>200 or sum(map(len,assets.values()))>32*1024**2:
+        raise ValueError('publication asset budget exceeded')
+    if any(hashlib.sha256(data).hexdigest()!=digest for digest,data in assets.items()):
+        raise ValueError('asset content hash mismatch')
+
+
 @contextmanager
 def staging(directory):
     old=os.environ.get('GENSTICKER_STATE_DIR')
@@ -45,12 +90,7 @@ def public_write_guard(incoming,files=0):
 
 def publish_product(product,batch_id):
     from .catalog import publish
-    from .element_templates import validate_elements
-    validate_elements(product['spec'],product['metadata'])
-    if product['metadata'].get('max_images',0) and product['metadata'].get('quality',{}).get('local_geometry',{}).get('verified') is not True:raise ValueError('independently measured source face geometry required for automatic publication')
-    verification=product['metadata'].get('quality',{}).get('cross_visual_review',{})
-    reviews=verification.get('reviews',[])
-    if verification.get('analyzed_frames')!=len(product['spec'].get('frames',[])) or len(reviews)!=verification.get('analyzed_frames') or not reviews or not all(all(review.get(field) is True for field in ['passed','old_face_fully_removed','caption_complete','props_preserved']) for review in reviews):raise ValueError('independent full-frame VLM review required before publication')
+    validate_publication(product)
     assets=product['assets'];directory=root()/'template_assets'
     required={digest:data for digest,data in assets.items() if not (directory/(digest+('.gif' if data.startswith(b'GIF') else '.png'))).exists()}
     with public_write_guard(sum(map(len,required.values()))+256*1024,len(required)+1):
@@ -67,7 +107,10 @@ def publish_product(product,batch_id):
             if hashlib.sha256(data).hexdigest()!=digest:raise ValueError('asset content hash mismatch')
             path=directory/(digest+('.gif' if data.startswith(b'GIF') else '.png'))
             temporary=path.with_suffix(path.suffix+'.partial');temporary.write_bytes(data);os.replace(temporary,path)
-        row=publish(product['key'],product['metadata'],product['spec'],publication={'batch_id':batch_id,'score':product['metadata']['quality']['score']})
+        metadata={**product['metadata'],'quality':{**product['metadata']['quality'],
+                  'primary_visual_review':product['review'],
+                  'publication_policy':'skill-full-frame-local-geometry-dual-review-v2'}}
+        row=publish(product['key'],metadata,product['spec'],publication={'batch_id':batch_id,'score':metadata['quality']['score']})
         return row
 
 
@@ -133,7 +176,7 @@ def run(*,client=None,candidates=None,force=False,target=None,max_attempts=None)
         db=connect()
         try:
             previous=db.execute('SELECT status,report FROM ingestion_runs WHERE id=?',(identifier,)).fetchone()
-            if previous and previous['status']=='completed':return json.loads(previous['report'])
+            if previous and previous['status'] in {'completed','partial','attention'}:return json.loads(previous['report'])
         finally:db.close()
         report={'id':identifier,'status':'running','target':min(10,max(3,target or int(os.getenv('GENSTICKER_INGEST_TARGET','5')))),'published':0,'discovered':0,'attempted':0,'scanned':0,'results':[],'source_errors':[]}
         if previous:
@@ -202,8 +245,8 @@ def run(*,client=None,candidates=None,force=False,target=None,max_attempts=None)
                     entry.update(status='quality-pending',reason=reason)
                 save_candidate(digest,item,entry)
                 report['results'].append(entry);save_report(identifier,started,report,'running')
-            report.update(status='completed' if report['published']>=3 else 'attention',model_calls=client.calls,model_tokens=client.tokens,elapsed_seconds=round(time.time()-started,1))
-            if report['published']<3:report['attention']='fewer-than-three-validated-new-templates'
+            report.update(status='completed' if report['published']>=report['target'] else 'partial' if report['published'] else 'attention',model_calls=client.calls,model_tokens=client.tokens,elapsed_seconds=round(time.time()-started,1))
+            if report['published']<report['target']:report['attention']='fewer-than-target-validated-new-templates; rejected candidates stay pending'
         except (ValueError,OSError) as error:report.update(status='attention',reason=str(error)[:200])
         finally:
             if owned and client:client.close()
@@ -218,4 +261,4 @@ if __name__=='__main__':
     signal.signal(signal.SIGTERM,interrupted)
     parser=argparse.ArgumentParser();parser.add_argument('--force',action='store_true');args=parser.parse_args()
     result=run(force=args.force);print(json.dumps(result,ensure_ascii=False),flush=True)
-    raise SystemExit(0 if result['status'] in {'completed','already-running','held-for-quality'} else 1)
+    raise SystemExit(0 if result['status'] in {'completed','partial','already-running','held-for-quality'} else 1)

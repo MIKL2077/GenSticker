@@ -1,5 +1,7 @@
 # Scheduled template authoring, archive and trial acceptance
 
+> 2026-10-26 update: qualified automatic publication is now enabled after the new end-to-end acceptance. See [current rollout and share-cover evidence](AUTO_PUBLICATION_2026-10-26.md). The held rollout described below records the original 2026-10-23 state.
+
 This deployment separates discovery, downloaded candidates, compiled drafts, actual visual review and published templates. Only final published keys count as additions. Public website text and model responses are data, never executable code.
 
 ## Runtime paths and limits

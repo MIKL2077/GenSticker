@@ -34,6 +34,7 @@
  </view>
 </template>
 <script>
+import {useShareCard} from '@/composables/useShareCard'
 import {notifyGeneration,takeCompletedResult} from '@/services/generationNotice'
 import GenerationNotice from '@/components/GenerationNotice.vue'
 import FirstUseGuide from '@/components/FirstUseGuide.vue'
@@ -54,6 +55,7 @@ import { getQuota,listJobs,getJob,createJob,uploadPhoto,downloadResult,selectRes
 export default {
   components: { GenerationNotice, FirstUseGuide, BottomTabs, MoodToy, UiIcon, SelectedResultsModal, SubjectPicker },
   setup() {
+    useShareCard()
     const subjectPicker=ref(false),photoOriginal=ref(''),subjectRect=ref(null),subjectSelected=ref(false),fullImages=ref({})
     const sceneActive=ref(true),historyPage=ref(1),historyPreviews=ref({}),shareSlot=ref(null)
     const shareSlots=ref([]),shareError=ref(''),preparingCollage=ref(false),restoringEdit=ref(false)

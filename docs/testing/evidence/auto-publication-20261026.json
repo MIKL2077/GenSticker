@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-26",
+  "rollout": "qualified-automatic-publication-enabled",
+  "scheduled_every_hours": 6,
+  "online_template_limit": 8000,
+  "public_templates": 946,
+  "live_acceptance": {
+    "status": "partial",
+    "attempted": 2,
+    "published": 2,
+    "model_calls": 8,
+    "model_tokens": 19025,
+    "keys": [
+      "auto_305e9ed41fc696643bf69eb3",
+      "auto_fe3c93637403bf05ce67a6e3"
+    ],
+    "same_effect_scope": "independently inspected accepted two samples; no universal complex-source equivalence claim"
+  },
+  "admission_policy": "skill-full-frame-local-geometry-dual-review-v2",
+  "tests": {
+    "backend_features": 145,
+    "backend_account": 6,
+    "frontend": 33,
+    "native_seven_pages": "passed",
+    "native_runtime_errors": []
+  },
+  "share": {
+    "status": "passed",
+    "card": {
+      "title": "让世界更有趣，来做你的专属表情包",
+      "path": "/pages/index/index",
+      "imageUrl": "https://www.shangkun.uk/gensticker/api/share/cover-v2.jpg"
+    },
+    "cover": {
+      "width": 600,
+      "height": 480
+    },
+    "runtimeErrors": [],
+    "bytes": 103957,
+    "sha256": "5ff9d33219d2ce2e3252fcc1bd20e66da401e0b4e656ba508570bc47bebc536a",
+    "media_added_to_mini_program": 0
+  },
+  "trial": {
+    "status": "passed",
+    "initial": {
+      "key": "auto_305e9ed41fc696643bf69eb3",
+      "name": "莲蓬头男孩00003-我就是这么强大",
+      "label": "新模板试用"
+    },
+    "realGeneration": true,
+    "hiddenAfterUse": true,
+    "hiddenAfterReload": true,
+    "runtimeErrors": []
+  },
+  "package": {
+    "bytes": 847528,
+    "media_bytes": 199585,
+    "media_limit_bytes": 204800
+  },
+  "credentials_in_git": false,
+  "frontend_release": "production build ready; WeChat upload/review remains a user release step"
+}

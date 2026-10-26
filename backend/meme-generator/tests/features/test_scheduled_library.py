@@ -130,6 +130,39 @@ class ScheduledLibraryTests(unittest.TestCase):
   self.assertEqual(report['published'],0);self.assertEqual(report['status'],'attention')
   db=connect();self.assertEqual(db.execute('SELECT count(*) FROM templates').fetchone()[0],0);db.close()
 
+ def qualified_product(self):
+  from meme_generator.features.minimax_authoring import load_skill
+  from meme_generator.features.element_templates import fingerprint
+  image=Image.new('RGB',(128,128),'white');buf=BytesIO();image.save(buf,'PNG')
+  plan=Plan.model_validate({'status':'ready','name':'caption','intent':'edit the complete caption','frames':[[{'type':'text','box':[5,90,118,30],'slot':0,'value':'test','font_size':18}]],'defaults':['test'],'caption_inventory':[{'original_text':'test','editable':True,'slot':0}]})
+  spec,assets,_,boards,_=local_validate(plan,buf.getvalue(),[image],image)
+  flags=['approved','intent_preserved','old_face_removed','captions_complete','props_preserved','clean_background','motion_verified','no_extra_panels']
+  review={**dict.fromkeys(flags,True),'score':95,'frames':[{'index':0,'passed':True,'issues':[]}]}
+  quality={'spec_sha256':fingerprint(spec),'analyzed_frames':1,'protected_pixel_mae':0,'actual_replacement_verified':True,'caption_inventory_complete':True,'motion_verified':True,'score':95,'review_frames':1,'source_contract':{'usable':True,'image_slots':0,'captions':['test']},'local_geometry':{'verified':True,'placements':[]},'cross_visual_review':{'analyzed_frames':1,'reviews':[dict.fromkeys(['passed','old_face_fully_removed','caption_complete','props_preserved'],True)]}}
+  meta={'name':'caption','conversion':'element-replacement-v1','source_canvas':[128,128],'min_images':0,'max_images':0,'min_texts':1,'max_texts':1,'default_texts':['test'],'caption_inventory':[{'original_text':'test','editable':True,'slot':0}],'quality':quality,'review':{'visual_status':'approved','skill_sha256':load_skill()[1]},'source_url':'https://public.example/meme','author':'source author','source_use':'explicit-user-request-with-attribution'}
+  return {'key':'qualified','spec':spec,'metadata':meta,'review':review,'assets':assets,'boards':boards}
+
+ def test_auto_publication_requires_complete_bound_approvals_not_just_a_score(self):
+  from copy import deepcopy
+  from meme_generator.features.scheduled_authoring import publish_product
+  product=self.qualified_product()
+  mutations=[lambda p:p.pop('review'),lambda p:p['review'].update(approved=False),lambda p:p['review']['frames'][0].update(issues=['old letters remain']),lambda p:p['metadata']['review'].update(skill_sha256='outdated'),lambda p:p['metadata']['quality']['source_contract'].update(image_slots=1),lambda p:p['metadata']['quality']['cross_visual_review']['reviews'][0].update(old_face_fully_removed=False),lambda p:p['metadata']['quality'].update(score=99),lambda p:p['assets'].update({'bad-hash':b'bad'})]
+  for change in mutations:
+   altered=deepcopy(product);change(altered)
+   with self.assertRaises(ValueError):publish_product(altered,'batch')
+  db=connect();self.assertEqual(db.execute('SELECT count(*) FROM templates').fetchone()[0],0);db.close()
+  row=publish_product(product,'batch');self.assertEqual(row['key'],'qualified')
+  receipt=json.loads(row['metadata'])['quality'];self.assertEqual(receipt['primary_visual_review'],product['review']);self.assertEqual(receipt['publication_policy'],'skill-full-frame-local-geometry-dual-review-v2')
+  db=connect();self.assertEqual(db.execute('SELECT batch_id FROM template_publications').fetchone()[0],'batch');db.close()
+
+ def test_finished_six_hour_batch_is_idempotent_even_when_below_target(self):
+  from meme_generator.features.scheduled_authoring import run
+  class Client: calls=0;tokens=0
+  first=run(client=Client(),candidates=[],target=3)
+  self.assertEqual(first['status'],'attention')
+  with patch('meme_generator.features.scheduled_authoring.author',side_effect=AssertionError('finished interval must not run again')):
+   self.assertEqual(run(client=Client(),candidates=[{}],target=3),first)
+
  def test_observed_absolute_polygon_is_translated_exactly_and_bad_geometry_rejected(self):
   class Client:
    def vision(self,*a,**kw):return {'status':'ready','name':'face','intent':'preserve original scene','faces':[{'frames':[{'index':0,'box':[40,50,30,40],'erase_polygon':self.polygon}]}],'captions':[],'fixed_texts':[],'protected':[]}

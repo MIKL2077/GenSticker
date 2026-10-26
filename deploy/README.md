@@ -29,6 +29,10 @@ npm run check:mp-weixin-package
 
 共享主机上的应用加固不能替代历史高权限事件后的可信重建和服务商侧密钥轮换。实际主机、事件记录、备份与访问资料通过私下渠道交接，不放入公开仓库。
 
-模板自动维护流程见 [采集、归档与试用卡片验收说明](../docs/testing/AUTOMATED_LIBRARY_2026-10-23.md)。`gensticker-ingest.timer` 每六小时运行来源发现、MiniMax skill 拆解、真实图片复核，默认目标五个、范围三至十个；不足三个应报告 attention，不能用不合格模板补数。订阅凭据单独保存在 root 私有环境文件，环境示例不包含密钥；开启自动发布前必须检查同源模板对照图。`package-scheduled-library.py` 与 `apply-scheduled-library.py` 支持当前运行版本的文件哈希校验、无活跃制作任务时更新及健康检查回滚，不会自动开启新定时任务。
+模板自动维护流程见 [采集、归档与试用卡片验收说明](../docs/testing/AUTOMATED_LIBRARY_2026-10-23.md)；当前上线状态见 [2026-10-26 自动发布与分享封面验收](../docs/testing/AUTO_PUBLICATION_2026-10-26.md)。`gensticker-ingest.timer` 每六小时运行来源发现、MiniMax skill 拆解、真实图片复核，默认目标五个、范围三至十个。达到配置目标记 completed；仅部分合格记 partial，仅发布合格项；零个合格记 attention，不能用不合格模板补数。同一时段的终态报告不会因重复启动而重做，显式重试用 `--force`。订阅凭据单独保存在 root 私有环境文件，环境示例不包含密钥；开启自动发布前必须检查同源模板对照图。`package-scheduled-library.py` 与 `apply-scheduled-library.py` 支持当前运行版本的文件哈希校验、无活跃制作任务时更新及健康检查回滚，不会自动开启新定时任务。
+
+2026-10-26 已通过真实模板验收并在现有服务器私有配置中启用 `GENSTICKER_MINIMAX_ENABLED=1`，不需要人工逐张点击发布。不合格项仍留待处理。发布入口会再次验证完整主审核记录、当前 skill 哈希、源图输入契约、每帧每个人脸槽的本地覆盖证据、逐帧 VLM 复核和素材哈希；审核记录随模板版本保存。新环境的示例开关保留 0，避免未经验收直接上线。
+
+分享封面通过公开、无登录要求的 `GET /share/cover-v2.jpg` 提供，部署包包含 `meme_generator/assets/share/cover-v2.jpg`。它是 logo 衍生的三张表情插画，600×480 JPEG，版本化 URL 可公开缓存一年，不增加小程序媒体包体。首页默认分享及其他六个页面使用该封面；明确分享已生成图片时沿用该图片。分享个人页／队列等页面时链接指向公开首页，不带账号或任务信息。后续换图应递增 URL 版本，避免缓存旧封面。
 
 `gensticker-archive.timer` 每月一日统计并归档公共模板，线上发布数量硬上限 8000。当前归档目标是项目仓库的独立 `template-archive` 分支；先推送并重新拉取验证，才释放未共享的本地素材。通过 `sudo gensticker-template-admin report/list/restore` 查看报告与恢复模板。日志策略安装器 `apply-log-policy.py` 限制 journal 和文本日志轮转并设置新 Docker 容器的默认日志预算，不重建已有容器。
