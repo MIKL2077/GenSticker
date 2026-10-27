@@ -3,6 +3,7 @@ import {ref} from 'vue'
 import { apiRequest } from '@/services/apiService'
 import { API_BASE_URL } from '@/constants'
 import { prepareImage } from '@/services/imagePreparation'
+import { encodeGenerationImages } from '@/services/generationUpload'
 import { downloadResult } from '@/services/recommendService'
 // Keep small metadata separate from full images. Account + session generation
 // prevents late preloads from repopulating another account after a switch.
@@ -76,9 +77,9 @@ const pendingKey=()=>`gensticker.studio.pending.${uni.getStorageSync('gensticker
 export function trackStudioJob(item,owner=uni.getStorageSync('gensticker.session.v1')?.profile?.id){if(owner!==uni.getStorageSync('gensticker.session.v1')?.profile?.id)return item;invalidateQueue();const pending=uni.getStorageSync(pendingKey())||[];uni.setStorageSync(pendingKey(),[...new Set([...pending,item.id])].slice(-50));return item}
 export async function submitManual(template_key,paths,texts,args,options){
  const session=uni.getStorageSync('gensticker.session.v1'),owner=session?.profile?.id
- const images=[];for(const path of paths)images.push(await encodePhoto(path))
+ const upload=await encodeGenerationImages(paths)
  if(owner!==uni.getStorageSync('gensticker.session.v1')?.profile?.id)throw Error('账号已切换，请重新制作')
- return trackStudioJob(await apiRequest('/studio/jobs',{method:'POST',timeout:60000,header:{Authorization:`Bearer ${session.access_token}`},data:{template_key,images,texts,args,extract_subject:!!options.extractSubject,idempotency_key:options.idempotencyKey||uniqueKey()}},1),owner)
+ return trackStudioJob(await apiRequest('/studio/jobs',{method:'POST',timeout:60000,timeoutMessage:'图片上传超时，请重试；已自动压缩并保留原图',header:{Authorization:`Bearer ${session.access_token}`},data:{template_key,...upload,texts,args,extract_subject:!!options.extractSubject,idempotency_key:options.idempotencyKey||uniqueKey()}},1),owner)
 }
 export async function submitAITemplate(path,key,rights_attested=true){const session=uni.getStorageSync('gensticker.session.v1'),owner=session?.profile?.id,image=await encodePhoto(path);if(owner!==uni.getStorageSync('gensticker.session.v1')?.profile?.id)throw Error('账号已切换，请重新提交');return trackStudioJob(await apiRequest('/studio/templates/ai',{method:'POST',timeout:60000,header:{Authorization:`Bearer ${session.access_token}`},data:{image,idempotency_key:key,rights_attested}},1),owner)}
 export const privateImage=downloadResult

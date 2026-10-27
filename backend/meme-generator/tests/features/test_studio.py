@@ -84,6 +84,20 @@ class StudioTests(unittest.TestCase):
         db=studio.init()
         with db:db.execute('UPDATE studio_jobs SET created=?',(time.time()-8*86400,))
         db.close();studio.cleanup();self.assertFalse((studio.root()/'studio_results'/identifier).exists())
+    def test_compressed_cutout_matches_legacy_upload_and_retry(self):
+        from meme_generator.features.upload_images import restore_upload_masks
+        item=self.creation();colour=BytesIO();Image.new('RGB',(80,160),'red').save(colour,'JPEG')
+        mask=BytesIO();alpha=Image.new('L',(80,160));alpha.putdata([i%256 for i in range(80*160)]);alpha.save(mask,'PNG')
+        masks=[base64.b64encode(mask.getvalue()).decode()]
+        payload={'template_key':item['id'],'images':[base64.b64encode(colour.getvalue()).decode()],'image_masks':masks,'idempotency_key':'compressed-cutout'}
+        first=self.client.post('/studio/jobs',json=payload);self.assertEqual(first.status_code,201,first.text)
+        self.assertEqual(self.client.post('/studio/jobs',json=payload).json()['id'],first.json()['id'])
+        canonical=base64.b64encode(restore_upload_masks([colour.getvalue()],masks)[0]).decode()
+        self.assertEqual(self.client.post('/studio/jobs',json={**payload,'images':[canonical],'image_masks':[]}).json()['id'],first.json()['id'])
+        db=studio.init();stored=json.loads(db.execute('SELECT payload FROM studio_jobs WHERE id=?',(first.json()['id'],)).fetchone()[0]);db.close()
+        self.assertNotIn('image_masks',stored)
+        with Image.open(BytesIO(base64.b64decode(stored['images'][0]))) as restored:self.assertEqual(restored.getchannel('A').tobytes(),alpha.tobytes())
+        self.assertTrue(studio.work_one());self.assertEqual(self.client.get('/studio/jobs/'+first.json()['id']).json()['status'],'completed')
     def test_queue_thumbnail_is_small_static_private_and_expires(self):
         item=self.creation();job=self.client.post('/studio/jobs',json={'template_key':item['id'],'images':[self.image()],'texts':['hello'],'idempotency_key':'queue-thumb-test'}).json()
         identifier=job['id'];self.assertTrue(studio.work_one())

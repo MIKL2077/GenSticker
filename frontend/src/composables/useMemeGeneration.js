@@ -4,7 +4,8 @@ import {writeOwnedFile} from '@/services/ownedFiles'
 import { ref } from 'vue'
 import {shareOriginalImage} from '@/services/wechatSharing'
 import {submitManual,getStudioJob,privateImage,rememberGuestMeme,supportsStudio,viewStudioJob} from '@/services/studioService'
-import { prepareImage, prepareImages } from '@/services/imagePreparation'
+import { prepareImages } from '@/services/imagePreparation'
+import { encodeGenerationImages } from '@/services/generationUpload'
 import { tryClientRender } from '@/services/clientRenderer'
 import { visitorHeaders } from '@/services/popularityService'
 import { API_BASE_URL } from '@/constants'
@@ -63,20 +64,11 @@ export function useMemeGeneration(showStatusMessage) {
 
   const weixinGenerate = async (templateKey, localPaths, texts, args, epoch, options) => {
     const fs = uni.getFileSystemManager()
-    const images = []
-    let totalSize = 0
-    for (const originalPath of localPaths) {
-      const filePath = await prepareImage(originalPath)
-      const info = await new Promise((resolve, reject) => fs.stat({ path: filePath, success: resolve, fail: reject }))
-      totalSize += info.stats.size
-      if (totalSize > 10 * 1024 * 1024) throw new Error('图片总大小不能超过 10 MB')
-      const image = await new Promise((resolve, reject) => fs.readFile({ filePath, encoding: 'base64', success: r => resolve(r.data), fail: reject }))
-      images.push(image)
-    }
+    const upload = await encodeGenerationImages(localPaths)
     const response = await uni.request({
       url: `${API_BASE_URL}/memes/${encodeURIComponent(templateKey)}/generate`,
       method: 'POST',
-      data: { images, texts, args, extract_subject:!!options?.extractSubject },
+      data: { ...upload, texts, args, extract_subject:!!options?.extractSubject },
       header: { 'Content-Type': 'application/json', ...visitorHeaders() },
       timeout: 60000,
       responseType: 'arraybuffer',

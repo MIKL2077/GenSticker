@@ -10,6 +10,11 @@ async function verify(){
  c.getStudioJob=async()=>({id:'owned-job',status:'completed',result_url:'/studio/jobs/owned-job/image'})
  const complete=await app.generateFromTemplate('always',['/photo'],[],{},{})
  assert.equal(complete,true);assert.equal(app.generatedMeme.value,'/private-result');assert.equal(downloads[0],'/studio/jobs/owned-job/image')
+ let attempt=0;const keys=[]
+ c.submitManual=async(...args)=>{keys.push(args[4].idempotencyKey);if(!attempt++)throw Error('图片上传超时');return{id:'owned-job',status:'completed',result_url:'/studio/jobs/owned-job/image'}}
+ assert.equal(await app.generateFromTemplate('always',['/photo']),false)
+ assert.equal(await app.generateFromTemplate('always',['/photo']),true)
+ assert.equal(keys[0],keys[1],'a lost upload acknowledgement can be retried without another job')
  console.log('PASS durable manual jobs keep running when sheet closes, completed results download through auth and guest records stay separate')
 }
 verify().catch(e=>{console.error(e);process.exitCode=1})

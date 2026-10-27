@@ -109,6 +109,7 @@ def prepare_inputs(images, identity):
 
 class GenerateRequest(BaseModel):
     images: list[str] = Field(default_factory=list, max_length=10)
+    image_masks: list[str] = Field(default_factory=list, max_length=10)
     texts: list[str] = Field(default_factory=list, max_length=20)
     args: dict[str, Any] = Field(default_factory=dict,max_length=32)
     extract_subject: bool = Field(default=False,strict=True)
@@ -178,7 +179,7 @@ async def generate_json(key: str, params: GenerateRequest, request: Request):
         raise HTTPException(status_code=404, detail=e.message)
     if any(len(text) > 2000 for text in params.texts):
         raise HTTPException(status_code=413, detail='文字过长')
-    if sum(len(image) for image in params.images) > 14 * 1024 * 1024:
+    if sum(len(image) for image in params.images + params.image_masks) > 14 * 1024 * 1024:
         raise HTTPException(status_code=413, detail='图片总大小不能超过 10 MB')
     try:
         images = [base64.b64decode(image, validate=True) for image in params.images]
@@ -192,7 +193,7 @@ async def generate_json(key: str, params: GenerateRequest, request: Request):
         raise HTTPException(status_code=422, detail=str(e))
     from meme_generator.features.popularity import record, actor
     identity = actor(request)
-    cache_key = hashlib.sha256(json.dumps([identity, key, loaded_versions.get(key, 1), params.images, params.texts, model_dump(args),params.extract_subject],sort_keys=True).encode()).hexdigest()
+    cache_key = hashlib.sha256(json.dumps([identity, key, loaded_versions.get(key, 1), params.images, params.image_masks, params.texts, model_dump(args),params.extract_subject],sort_keys=True).encode()).hexdigest()
     cacheable = key.startswith('auto_') or key in {'always','petpet','my_friend','look_flat','look_this_icon'}
     cached = render_cache.get(cache_key) if cacheable else None
     if cached:
@@ -203,6 +204,8 @@ async def generate_json(key: str, params: GenerateRequest, request: Request):
     started = time.perf_counter()
     async with generation_slots:
         try:
+            from meme_generator.features.upload_images import restore_upload_masks
+            images=await run_sync(restore_upload_masks)(images,params.image_masks)
             if params.extract_subject:images=await run_sync(prepare_inputs)(images,identity)
             result = await run_sync(meme)(images=images, texts=params.texts, args=model_dump(args))
         except MemeGeneratorException as e:

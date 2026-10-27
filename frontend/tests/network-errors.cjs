@@ -8,6 +8,7 @@ async function verify(){
   await assert.rejects(c.apiRequest('/memes/categories'),e=>e.code==='ACCESS_DENIED')
   c.uni.request=async()=>{throw {errMsg:'request:fail timeout'}}
   await assert.rejects(c.apiRequest('/memes/categories',{},1),e=>e.code==='NETWORK_TIMEOUT')
+  await assert.rejects(c.apiRequest('/studio/jobs',{method:'POST',timeoutMessage:'图片上传超时，请重试'},1),e=>e.code==='NETWORK_TIMEOUT'&&e.message==='图片上传超时，请重试')
   assert.equal(c.requestError({errMsg:'request:fail ssl hand shake error'}).code,'TLS_ERROR')
   assert.equal(c.requestError({errMsg:'request:fail net::ERR_CERT_AUTHORITY_INVALID'}).code,'TLS_ERROR')
   assert.equal(c.requestError({errMsg:'request:fail net::ERR_NAME_NOT_RESOLVED'}).code,'DNS_ERROR')

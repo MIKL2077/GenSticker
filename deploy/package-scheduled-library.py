@@ -9,6 +9,7 @@ def main():
  project=Path(__file__).resolve().parents[1];base=project/'backend/meme-generator';files=['meme_generator/app.py','meme_generator/meme.py']
  files+=['meme_generator/features/'+name+'.py' for name in ['catalog','seed','store','monitor','lifecycle','moderation','element_templates','minimax_authoring','public_sources','scheduled_authoring','template_archive','trials','share','declarative','face_slot','frame_render','studio','worker','public_preview','search_terms','common_scenes','face_fusion']]
  files+=['meme_generator/features/common_scenes.json','meme_generator/features/template_batches/20261027-face-repair.json']
+ files+=['meme_generator/features/upload_images.py']
  files += [str(f.relative_to(base)) for f in sorted((base/'meme_generator/features/template_batches').glob('20261027-cpu-fusion-*.json'))]
  files += [str(f.relative_to(base)) for f in (base/'meme_generator/features/authoring').iterdir() if f.is_file()]
  files += [str(f.relative_to(base)) for f in sorted((base/'meme_generator/assets/share').glob('cover-v*.jpg'))]

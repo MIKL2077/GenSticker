@@ -85,6 +85,7 @@ class ManualJob(BaseModel):
     model_config=ConfigDict(extra='forbid')
     template_key: str=Field(min_length=1,max_length=100)
     images: list[str]=Field(default_factory=list,max_length=10)
+    image_masks: list[str]=Field(default_factory=list,max_length=10)
     texts: list[str]=Field(default_factory=list,max_length=20)
     args: dict=Field(default_factory=dict,max_length=32)
     extract_subject: bool=False
@@ -141,7 +142,7 @@ def job_view(row):
 
 @router.post('/jobs',status_code=201)
 def create_manual(params:ManualJob,user=Depends(current_user)):
-    if sum(len(i) for i in params.images)>14*1024*1024 or any(len(t)>2000 for t in params.texts):raise HTTPException(413,'素材过大，请先裁剪')
+    if sum(len(i) for i in params.images+params.image_masks)>14*1024*1024 or any(len(t)>2000 for t in params.texts):raise HTTPException(413,'素材过大，请先裁剪')
     if len(json.dumps(params.args).encode())>32768:raise HTTPException(413,'模板参数过大，请减少参数后重试')
     # Validate ownership before persisting a job. Published built-ins stay unchanged.
     spec=get_spec(params.template_key,user['id'])
@@ -151,9 +152,18 @@ def create_manual(params:ManualJob,user=Depends(current_user)):
         refresh()
         try:get_meme(params.template_key)
         except Exception:raise HTTPException(404,'模板暂时不可用')
-    images=[base64.b64encode(decode_image(i)).decode() for i in params.images]
+    from .upload_images import restore_upload_masks
+    raw_images=[decode_image(i) for i in params.images] if not params.image_masks else []
+    if params.image_masks:
+        # Reconstruct before normalizing/persisting so workers, replay and older
+        # clients keep using the same canonical RGBA image format.
+        try: raw_images=[base64.b64decode(i,validate=True) for i in params.images]
+        except (ValueError,binascii.Error):raise HTTPException(422,'图片必须为有效的 base64')
+        raw_images=restore_upload_masks(raw_images,params.image_masks)
+        raw_images=[decode_image(base64.b64encode(i).decode()) for i in raw_images]
+    images=[base64.b64encode(i).decode() for i in raw_images]
     if sum(map(len,images))>14*1024*1024:raise HTTPException(413,'图片处理后过大，请减少图片或先裁剪')
-    return enqueue('manual',{**params.model_dump(exclude={'idempotency_key'}),'images':images},params.idempotency_key,user)
+    return enqueue('manual',{**params.model_dump(exclude={'idempotency_key','image_masks'}),'images':images},params.idempotency_key,user)
 
 
 @router.get('/jobs')

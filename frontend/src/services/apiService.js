@@ -42,6 +42,7 @@ export async function apiRequest(url, options = {}, retries = 3) {
       }
     } catch (failure) {
       const error=requestError(failure)
+      if(error.code==='NETWORK_TIMEOUT' && options.timeoutMessage)error.message=options.timeoutMessage
       if (i === retries - 1 || error.retryable===false || (error.statusCode >= 400 && error.statusCode < 500)) throw error
       await new Promise(r => setTimeout(r, 1000 * (i + 1)))
     }
