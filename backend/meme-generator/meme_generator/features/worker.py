@@ -159,13 +159,23 @@ def run_job(job):
             for r in db.execute("SELECT slot FROM results WHERE job_id=?", (job["id"],))
         }
 
+        # One transient portrait per nine-result job, shared read-only by the
+        # two rendering threads. No photo/landmark result enters a global cache.
+        import threading
+        fusion_inputs={};fusion_lock=threading.Lock()
+
         def render_one(slot, row):
             metadata = json.loads(row["metadata"])
             if row["spec"]:
+                if metadata.get('compositing_method')=='cpu-character-v1':
+                    with fusion_lock:
+                        if 0 not in fusion_inputs:
+                            from .face_fusion import prepare
+                            fusion_inputs[0]=prepare(subject)
                 output = render(
                     json.loads(row["spec"]),
                     [subject],
-                    metadata.get("default_texts", []), face_blend="replace",
+                    metadata.get("default_texts", []), face_blend="replace", _fusion_inputs=fusion_inputs,
                 )
             else:
                 output = get_meme(row["key"])(
@@ -361,6 +371,11 @@ def main():
             "Local segmentation unavailable; original-image fallback enabled",
             flush=True,
         )
+    try:
+        from .face_fusion import warmup as warm_fusion
+        warm_fusion()
+    except Exception:
+        print('Portrait locator unavailable; authored image-slot fallback enabled',flush=True)
     last = 0
     while True:
         if time.time() - last > 3600:

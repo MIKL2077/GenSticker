@@ -1,4 +1,4 @@
-"""Composite a supplied image/cutout in a pre-authored slot; no face detector."""
+"""Composite an input in an authored slot, optionally with portrait geometry."""
 from PIL import Image, ImageOps, ImageDraw, ImageFilter, ImageChops
 from ..exception import MemeGeneratorException
 
@@ -31,8 +31,13 @@ def prepared_background(reference, layers):
     cleaned=Image.fromarray(cv2.inpaint(np.asarray(reference.convert('RGB')),np.array(mask),3,cv2.INPAINT_TELEA))
     return cleaned
 
-def composite(canvas, source, layer, *, background_prepared=False, mode='replace', reference=None):
+def composite(canvas, source, layer, *, background_prepared=False, mode='replace', reference=None, fusion_inputs=None):
     if mode not in {'replace','color','seamless','expression'}:raise FaceInputError('请选择有效的融合方式')
+    if layer.fusion and mode=='replace':
+        from . import face_fusion
+        cache={} if fusion_inputs is None else fusion_inputs
+        if layer.slot not in cache:cache[layer.slot]=face_fusion.prepare(source)
+        if face_fusion.composite(canvas,cache[layer.slot],layer,reference):return
     x,y,w,h=layer.box
     image=ImageOps.exif_transpose(source).convert('RGBA')
     if image.width*image.height>4_000_000:raise FaceInputError('图片过大，请先裁剪或压缩')
@@ -41,15 +46,17 @@ def composite(canvas, source, layer, *, background_prepared=False, mode='replace
     # Transparent input is already processed; preserve its foreground alpha.
     box=image.getchannel('A').getbbox();image=image.crop(box)
     if layer.rotation:image=image.rotate(layer.rotation,resample=Image.Resampling.BICUBIC,expand=True)
-    image=ImageOps.fit(image,(w,h),method=Image.Resampling.LANCZOS) if layer.fit=='cover' else ImageOps.contain(image,(w,h),method=Image.Resampling.LANCZOS)
+    fx,fy,fw,fh=layer.fusion.fallback_box if layer.fusion and layer.fusion.fallback_box else (0,0,w,h)
+    image=ImageOps.fit(image,(fw,fh),method=Image.Resampling.LANCZOS) if layer.fit=='cover' else ImageOps.contain(image,(fw,fh),method=Image.Resampling.LANCZOS)
     if layer.tone=='grayscale':
         alpha=image.getchannel('A');image=ImageOps.autocontrast(image.convert('L'),cutoff=1).convert('RGBA');image.putalpha(alpha)
     mask=removal_mask(canvas.size,[layer]);local=mask.crop((x,y,x+w,y+h))
     if not background_prepared:
         # Compatibility only. Newly authored templates repair this offline.
         canvas.paste(prepared_background(canvas,[layer]),(0,0),mask)
-    foreground=Image.new('RGBA',(w,h));foreground.alpha_composite(image,((w-image.width)//2,(h-image.height)//2))
-    alpha=foreground.getchannel('A').filter(ImageFilter.GaussianBlur(layer.feather))
+    foreground=Image.new('RGBA',(w,h));foreground.alpha_composite(image,(fx+(fw-image.width)//2,fy+(fh-image.height)//2))
+    original_alpha=foreground.getchannel('A')
+    alpha=ImageChops.multiply(original_alpha,original_alpha.filter(ImageFilter.GaussianBlur(layer.feather)))
     alpha=ImageChops.multiply(alpha,local)
     if mode!='replace':
         import cv2

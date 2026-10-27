@@ -7,9 +7,10 @@ from meme_generator.safe_images import open_image
 from .store import root
 
 
-def render_frames(spec, images, texts=None, *, preview=False, face_blend="replace"):
+def render_frames(spec, images, texts=None, *, preview=False, face_blend="replace", _fusion_inputs=None):
     from .declarative import TemplateSpec, render
     frames, durations = [], []
+    fusion_inputs={} if _fusion_inputs is None else _fusion_inputs
     decoded = {}
     for frame in spec.frames:
         digest=frame.reference_asset if preview and frame.reference_asset else frame.asset
@@ -32,8 +33,7 @@ def render_frames(spec, images, texts=None, *, preview=False, face_blend="replac
             static = TemplateSpec(width=spec.width,height=spec.height,defaults=spec.defaults,
                 background_prepared=True,layers=frame.layers)
             # Keep plates lossless until the final image/GIF encoding.
-            with open_image(render(static,images,texts,_transparent=True,_base=base,_reference=base,face_blend=face_blend)) as source:
-                result=source.convert('RGB')
+            result=render(static,images,texts,_transparent=True,_base=base,_reference=base,face_blend=face_blend,_fusion_inputs=fusion_inputs,_return_image=True).convert('RGB')
         frames.append(result)
         durations.append(frame.duration_ms)
         if preview:break

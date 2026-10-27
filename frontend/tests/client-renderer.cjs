@@ -20,6 +20,8 @@ vm.runInContext(fs.readFileSync(path.join(__dirname,'../src/services/clientRende
  assert.equal(await context.tryClientRender('auto_test',['/photo.jpg'],['新文字']),'/local.jpg');assert.ok(draws.some(d=>d[0]==='stroke'));assert.equal(ctx.textAlign,'left');
  const badStyle=JSON.parse(JSON.stringify(recipe));badStyle.spec.layers[1].stroke_width=9;assert.throws(()=>context.validateRecipe(badStyle));
  const executable=JSON.parse(JSON.stringify(recipe));executable.spec.layers[0].type='script';assert.throws(()=>context.validateRecipe(executable))
+ const fusion=JSON.parse(JSON.stringify(recipe));fusion.spec.layers[0]={type:'face',box:[0,0,128,96],slot:0,fusion:{method:'cpu-character-v1',eyes:[[40,40],[70,40]]}};assert.throws(()=>context.validateRecipe(fusion),'portrait fusion requires server geometry; canvas must never degrade it to a pasted rectangle')
+ const authoredMotion=JSON.parse(JSON.stringify(recipe));authoredMotion.spec.frames=[{asset:'a'.repeat(64),duration_ms:100,layers:[]}];assert.throws(()=>context.validateRecipe(authoredMotion),'authored GIF loops require server rendering')
  const animated=JSON.parse(JSON.stringify(recipe));animated.spec.animation_asset='a'.repeat(64);assert.throws(()=>context.validateRecipe(animated),'native JPEG rendering must never flatten a reaction GIF')
  // A wrapped caption must draw every explicit line; independent captions keep
  // separate slots so editing one never silently replaces only half a meme.

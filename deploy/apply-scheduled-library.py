@@ -66,6 +66,20 @@ def main():
             else:dst.unlink(missing_ok=True)
         if (backup/wrapper.name).exists():shutil.copy2(backup/wrapper.name,wrapper)
         else:wrapper.unlink(missing_ok=True)
+        # These recipes add DSL fields. Restore only the exact template rows
+        # changed by this delta; leave private jobs/assets and newer operator
+        # edits intact. A whole-database rollback could erase incoming work.
+        saved=sqlite3.connect(backup/'features.sqlite3');saved.row_factory=sqlite3.Row
+        live=sqlite3.connect('/var/lib/gensticker/features/features.sqlite3');live.row_factory=sqlite3.Row
+        try:
+            with live:
+                for key,update in manifest.get('template_updates',{}).items():
+                    current=live.execute('SELECT * FROM templates WHERE key=?',(key,)).fetchone()
+                    old=saved.execute('SELECT * FROM templates WHERE key=?',(key,)).fetchone()
+                    if current and old and current['version']==update['version'] and json.loads(current['metadata']).get('quality',{}).get('spec_sha256')==update['spec_sha256']:
+                        fields=['version','fingerprint','metadata','spec','status']
+                        live.execute('UPDATE templates SET '+','.join(n+'=?' for n in fields)+' WHERE key=?',tuple(old[n] for n in fields)+(key,))
+        finally:live.close();saved.close()
         command('systemctl','daemon-reload');command('systemctl','restart','gensticker-worker');command('systemctl','restart','gensticker');raise
 
 

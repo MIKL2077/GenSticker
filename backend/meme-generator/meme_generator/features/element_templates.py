@@ -113,6 +113,11 @@ def validate_elements(spec, metadata):
     if metadata.get('source_canvas')!=[value.width,value.height]:raise ValueError('source canvas changed')
     if quality.get('analyzed_frames')!=len(value.frames) or quality.get('protected_pixel_mae')!=0:
         raise ValueError('frame/protected-pixel analysis missing')
+    fused=[f for f in value.frames if any(l.fusion for l in f.layers)]
+    if fused:
+        from .face_fusion import MODEL_SHA256, REVISION
+        if metadata.get('compositing_method')!=REVISION or quality.get('fusion_model_sha256')!=MODEL_SHA256 or quality.get('fusion_checked_frames')!=len(fused) or quality.get('fusion_fixed_pixel_max_error')!=0:
+            raise ValueError('portrait fusion lacks bound frame/model/protected-pixel evidence')
     faces={l.slot for f in value.frames for l in f.layers if l.type=='face'}
     texts={l.slot for f in value.frames for l in f.layers if l.type=='text'}
     if faces!=set(range(metadata.get('max_images',0))) or texts!=set(range(metadata.get('max_texts',0))):

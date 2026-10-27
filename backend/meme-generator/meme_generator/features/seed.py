@@ -31,7 +31,8 @@ def restore(*, include_batches=True):
                 if elements:
                     from .element_templates import validate_elements
                     validate_elements(item['spec'], m)
-                if not (allowed and source.scheme == 'https' and m.get('source_use') == 'explicit-user-request-with-attribution'
+                user_source=(m.get('origin')=='user-provided' and m.get('review',{}).get('explicit_user_request') is True and elements)
+                if not (((allowed and source.scheme == 'https' and m.get('source_use') == 'explicit-user-request-with-attribution') or user_source)
                         and m.get('review', {}).get('visual_status') == 'approved' and (caption or story or elements)):
                     raise ValueError('unreviewed source batch')
                 if story:

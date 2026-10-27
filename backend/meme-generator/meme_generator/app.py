@@ -43,11 +43,13 @@ async def lifespan(app):
             subject_cache.prune()
     from meme_generator.features.subjects import warm_subject_model
     async def warm_foreground():
-        try:
-            await run_sync(warm_subject_model)()
-        except Exception:
-            import logging
-            logging.getLogger(__name__).warning('foreground model warmup unavailable; retry on demand')
+        from meme_generator.features.face_fusion import warmup as warm_fusion
+        for function,label in [(warm_subject_model,'foreground'),(warm_fusion,'portrait')]:
+            try:
+                await run_sync(function)()
+            except Exception:
+                import logging
+                logging.getLogger(__name__).warning('%s model warmup unavailable; retry on demand',label)
     warm_task = asyncio.create_task(warm_foreground())
     task = asyncio.create_task(expire_private_cache())
     try:
@@ -59,6 +61,8 @@ async def lifespan(app):
         task.cancel()
         with suppress(asyncio.CancelledError):
             await task
+        from meme_generator.features.face_fusion import close as close_fusion
+        close_fusion()
         render_cache.items.clear()
         render_cache.bytes = 0
         subject_cache.items.clear();subject_cache.bytes=0

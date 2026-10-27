@@ -9,6 +9,22 @@ from pydantic import BaseModel, Field, ConfigDict, model_validator
 from .store import root
 
 
+class FusionRecipe(BaseModel):
+    """Measured head geometry, relative to the face layer's bounded box."""
+    model_config = ConfigDict(extra="forbid")
+    method: Literal['cpu-character-v1'] = 'cpu-character-v1'
+    include_hair: bool = True
+    style: Literal['natural','photocopy'] = 'natural'
+    eyes: tuple[tuple[float,float],tuple[float,float]]
+    hair: list[tuple[float,float]] = Field(default_factory=list,max_length=6)
+    mouth: tuple[float,float] | None = None
+    chin: tuple[float,float] | None = None
+    fallback_box: tuple[int,int,int,int] | None = None
+    edge: float = Field(default=4,ge=1,le=16)
+    pyramid_levels: int = Field(default=3,ge=2,le=4)
+    color_match: float = Field(default=.12,ge=0,le=.4)
+
+
 class Layer(BaseModel):
     model_config = ConfigDict(extra="forbid")
     type: Literal["subject", "face", "text", "asset"]
@@ -33,6 +49,7 @@ class Layer(BaseModel):
     rotation: int = Field(default=0,ge=-180,le=180)
     line_spacing: int = Field(default=4,ge=0,le=16)
     direction: Literal['horizontal','vertical'] = 'horizontal'
+    fusion: FusionRecipe | None = None
 
 
 class TemplateFrame(BaseModel):
@@ -79,6 +96,16 @@ class TemplateSpec(BaseModel):
                 or y + h > self.height
             ):
                 raise ValueError("layer outside canvas")
+            if layer.fusion:
+                f=layer.fusion
+                points=list(f.eyes)+f.hair+[p for p in [f.mouth,f.chin] if p is not None]
+                import math
+                if layer.type!='face' or len(f.hair) not in {0,6} or any(not math.isfinite(px) or not math.isfinite(py) or px<0 or py<0 or px>=w or py>=h for px,py in points):
+                    raise ValueError('fusion geometry outside face slot')
+                if f.fallback_box:
+                    fx,fy,fw,fh=f.fallback_box
+                    if min(fx,fy)<0 or min(fw,fh)<1 or fx+fw>w or fy+fh>h:raise ValueError('fallback outside fusion slot')
+                if math.dist(*f.eyes)<2 or f.eyes[0][0]>=f.eyes[1][0]:raise ValueError('fusion eyes require ordered distinct anchors')
             if layer.type == "asset" and (
                 len(layer.value) != 64
                 or any(c not in "0123456789abcdef" for c in layer.value)
@@ -123,14 +150,16 @@ def font(size, bold=False):
     return ImageFont.load_default(size=size)
 
 
-def render(spec, images, texts=None, *, preview=False, _transparent=False, _base=None, _reference=None, face_blend="replace"):
+def render(spec, images, texts=None, *, preview=False, _transparent=False, _base=None, _reference=None, face_blend="replace", _fusion_inputs=None, _return_image=False):
     spec = TemplateSpec.model_validate(spec)
     if spec.frames:
         from .frame_render import render_frames
-        return render_frames(spec,images,texts,preview=preview,face_blend=face_blend)
+        return render_frames(spec,images,texts,preview=preview,face_blend=face_blend,_fusion_inputs=_fusion_inputs)
     if spec.animation_asset:
         from .reaction_animation import render_animation
         return render_animation(spec,images,texts,preview=preview)
+    if _fusion_inputs is None:
+        _fusion_inputs={}
     canvas = _base.convert('RGBA').copy() if _base is not None else Image.new("RGBA", (spec.width, spec.height), (0,0,0,0) if _transparent else spec.background)
     if not preview and spec.reference_asset and face_blend!='replace':
         with open_image(root()/'template_assets'/(spec.reference_asset+'.png')) as original:
@@ -146,7 +175,7 @@ def render(spec, images, texts=None, *, preview=False, _transparent=False, _base
             from .face_slot import composite, FaceInputError
             if layer.slot >= len(images):
                 raise FaceInputError('请上传一张清晰的单人正面照片')
-            composite(canvas, images[layer.slot], layer, background_prepared=spec.background_prepared, mode=face_blend, reference=_reference)
+            composite(canvas, images[layer.slot], layer, background_prepared=spec.background_prepared, mode=face_blend, reference=_reference, fusion_inputs=_fusion_inputs)
         elif layer.type in ("subject", "asset"):
             if preview and spec.reference_asset and layer.type=='asset':continue
             if layer.type == "subject":
@@ -219,6 +248,7 @@ def render(spec, images, texts=None, *, preview=False, _transparent=False, _base
                 length = bbox[2]-bbox[0]
                 left = x + (w-length)/2 if layer.align == "center" else x+w-length if layer.align == "right" else x
                 draw.text((left-bbox[0], y + index*(line_height+layer.line_spacing)-bbox[1]), line, font=face, fill=layer.color, stroke_width=layer.stroke_width, stroke_fill=layer.stroke_color)
+    if _return_image:return canvas
     output = BytesIO()
     if _transparent:canvas.save(output,'PNG')
     else:canvas.convert("RGB").save(output, "JPEG", quality=90)

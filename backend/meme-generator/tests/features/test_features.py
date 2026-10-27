@@ -112,6 +112,23 @@ class FeatureTests(unittest.TestCase):
             worker.run_job(job)
         return job["id"]
 
+    def test_nine_result_job_prepares_one_private_portrait_for_all_fusion_templates(self):
+        import json
+        from meme_generator.features import face_fusion
+        rows=[]
+        for i in range(9):
+            rows.append(catalog.publish('auto_fusion_batch_fixture_'+str(i),{'name':'Fusion fixture','tags':[],
+                'min_images':1,'max_images':1,'compositing_method':'cpu-character-v1'},
+                {'width':120,'height':80,'layers':[{'type':'subject','box':[0,0,120,80]}]}))
+        asset=self.upload();job=self.create(asset,'fusion-once').json()['job_id'];portrait=object();seen=[]
+        def draw(spec,images,texts,**kwargs):
+            self.assertIs(kwargs['_fusion_inputs'][0],portrait);seen.append(1)
+            result=BytesIO();Image.new('RGB',(120,80),'blue').save(result,'PNG');result.seek(0);return result
+        with patch.object(worker,'candidates',return_value=rows),patch.object(face_fusion,'prepare',return_value=portrait) as prepare,patch.object(worker,'render',side_effect=draw):
+            self.finish();self.assertEqual(prepare.call_count,1)
+        self.assertEqual(len(seen),9)
+        result=self.client.get('/recommend/jobs/'+job).json();self.assertEqual(result['status'],'completed');self.assertEqual(len(result['results']),9)
+
     def test_source_metadata_stays_in_details_without_changing_generated_canvas(self):
         import json
         source = 'https://example.test/' + 'long-source-path/' * 30
