@@ -165,7 +165,7 @@ def run_job(job):
                 output = render(
                     json.loads(row["spec"]),
                     [subject],
-                    metadata.get("default_texts", []),
+                    metadata.get("default_texts", []), face_blend="replace",
                 )
             else:
                 output = get_meme(row["key"])(

@@ -123,15 +123,18 @@ def font(size, bold=False):
     return ImageFont.load_default(size=size)
 
 
-def render(spec, images, texts=None, *, preview=False, _transparent=False, _base=None):
+def render(spec, images, texts=None, *, preview=False, _transparent=False, _base=None, _reference=None, face_blend="replace"):
     spec = TemplateSpec.model_validate(spec)
     if spec.frames:
         from .frame_render import render_frames
-        return render_frames(spec,images,texts,preview=preview)
+        return render_frames(spec,images,texts,preview=preview,face_blend=face_blend)
     if spec.animation_asset:
         from .reaction_animation import render_animation
         return render_animation(spec,images,texts,preview=preview)
     canvas = _base.convert('RGBA').copy() if _base is not None else Image.new("RGBA", (spec.width, spec.height), (0,0,0,0) if _transparent else spec.background)
+    if not preview and spec.reference_asset and face_blend!='replace':
+        with open_image(root()/'template_assets'/(spec.reference_asset+'.png')) as original:
+            _reference=original.convert('RGBA')
     if preview and spec.reference_asset:
         with open_image(root()/'template_assets'/(spec.reference_asset+'.png')) as reference:
             canvas.alpha_composite(reference.convert('RGBA'))
@@ -143,7 +146,7 @@ def render(spec, images, texts=None, *, preview=False, _transparent=False, _base
             from .face_slot import composite, FaceInputError
             if layer.slot >= len(images):
                 raise FaceInputError('请上传一张清晰的单人正面照片')
-            composite(canvas, images[layer.slot], layer, background_prepared=spec.background_prepared)
+            composite(canvas, images[layer.slot], layer, background_prepared=spec.background_prepared, mode=face_blend, reference=_reference)
         elif layer.type in ("subject", "asset"):
             if preview and spec.reference_asset and layer.type=='asset':continue
             if layer.type == "subject":

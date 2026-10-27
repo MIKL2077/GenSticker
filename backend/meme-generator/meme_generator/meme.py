@@ -27,6 +27,7 @@ class UserInfo(BaseModel):
 
 
 class MemeArgsModel(BaseModel):
+    face_blend: Literal["replace", "color", "seamless", "expression"] = "replace"
     user_infos: list[UserInfo] = Field(default_factory=list,max_length=10)
 
 

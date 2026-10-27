@@ -26,6 +26,11 @@ def main():
     db.close()
     if count:raise SystemExit('defer deployment until current user jobs finish')
     backup=Path('/var/backups')/('gensticker-scheduled-library-'+str(int(time.time())));backup.mkdir(mode=0o700)
+    # Preserve the template versions before bootstrap restores reviewed additions.
+    source=sqlite3.connect('/var/lib/gensticker/features/features.sqlite3')
+    destination=sqlite3.connect(backup/'features.sqlite3')
+    try:source.backup(destination)
+    finally:destination.close();source.close()
     wrapper=Path('/usr/local/sbin/gensticker-template-admin')
     if wrapper.exists():shutil.copy2(wrapper,backup/wrapper.name)
     changed=[]

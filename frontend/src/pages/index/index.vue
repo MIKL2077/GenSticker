@@ -44,6 +44,7 @@
 
     <text class="home-footer fx-enter">热梗追得上，私梗造得出。</text>
     <template-detail-modal
+      id="template-detail"
       :show="showTemplateDetail"
       :detail="selectedTemplateDetail"
       :template-images="templateImages"
@@ -61,6 +62,9 @@
       :get-text-max-length="getTextMaxLength"
       :can-generate="isTemplateInputValid()"
       :favorite="isFavorite(selectedTemplate)"
+      :face-blend="faceBlend"
+      :fusion-experiments="enableFusionLab"
+      @blend="faceBlend=$event"
       @favorite="favoriteTemplate"
       @chooseImages="chooseImagesForTemplate"
       @removeImage="removeTemplateImage"
@@ -90,6 +94,7 @@
 </template>
 
 <script>
+import {holdBackgroundWork} from '@/services/backgroundActivity'
 import {getCurrentTrial,hasUsedTrial,markTrialUsed} from '@/services/trialService'
 import {takeEditDraft,disposeEditDraft} from '@/services/editSession'
 import GenerationNotice from '@/components/GenerationNotice.vue'
@@ -180,6 +185,7 @@ export default {
     const sceneActive = ref(true)
     onHide(()=>{sceneActive.value=false})
     const selectedTemplate = ref('')
+    const faceBlend=ref('replace'),enableFusionLab=ref(false)
     onShareAppMessage(()=>shareCard({image:generatedMeme.value,template:selectedTemplate.value && (!selectedTemplateDetail.value?.ownPreview || selectedTemplateDetail.value?.status==='published')?selectedTemplate.value:''}))
     const showTemplateDetail = ref(false)
 
@@ -190,7 +196,7 @@ export default {
     let templateRequest=0
     const onSelectTemplate = async (key) => {
       const request=++templateRequest,owner=account.session.value?.profile?.id
-      restoredArgs={}
+      restoredArgs={};faceBlend.value='replace'
       selectedTemplate.value = key
       prefetchClientTemplate(key).catch(() => {})
       const detail = (await fetchMemeInfo(key)) || null
@@ -213,7 +219,7 @@ export default {
       }
       const texts = (textInputs.value || []).map(t => (t || '').trim()).filter(Boolean)
       const key=selectedTemplate.value,trialOwner=account.session.value?.profile?.id || 'guest'
-      const success=await generateFromTemplate(key, templateImages.value, texts, restoredArgs, {extractSubject:extractSubject.value})
+      const success=await generateFromTemplate(key, templateImages.value, texts, enableFusionLab.value && selectedTemplateDetail.value?.faceBlend?{...restoredArgs,face_blend:faceBlend.value}:restoredArgs, {extractSubject:extractSubject.value})
       if(success && trialOwner===(account.session.value?.profile?.id || 'guest'))markTrialUsed(key)
       if(!success || selectedTemplate.value!==key)return
       showTemplateDetail.value = false
@@ -253,7 +259,7 @@ export default {
         closePreview()
         onSelectTemplate(editDraft.template_key).then(ready=>{
           if(!ready || selectedTemplate.value!==editDraft.template_key || !selectedTemplateDetail.value){disposeEditDraft(editDraft);return}
-          restoredArgs={...(editDraft.args||{})};restoreDraftImages(editDraft.paths||[],editDraft.temporaryPaths||[]);textInputs.value=[...(editDraft.texts||[])];extractSubject.value=!!editDraft.extract_subject
+          restoredArgs={...(editDraft.args||{})};faceBlend.value=restoredArgs.face_blend||'replace';restoreDraftImages(editDraft.paths||[],editDraft.temporaryPaths||[]);textInputs.value=[...(editDraft.texts||[])];extractSubject.value=!!editDraft.extract_subject
         }).catch(e=>{disposeEditDraft(editDraft);showStatusMessage(e.message||'无法恢复编辑内容')})
       }
       uni.hideTabBar({ animation: false, fail: () => {} })
@@ -273,15 +279,16 @@ export default {
       onCleanup(()=>{canceled=true;clearTimeout(timer)})
     })
 
-    onLoad(query=>{if(query?.template)uni.setStorageSync('gensticker.open-template',query.template)})
+    onLoad(query=>{enableFusionLab.value=query?.fusionLab==='1';if(query?.template)uni.setStorageSync('gensticker.open-template',query.template)})
     onMounted(async () => {
+      const resumeWarmup=holdBackgroundWork()
       try {
         await fetchMemeCategories()
         await ensurePageLoaded(selectedCategory.value, 1)
         prefetchAdjacent(selectedCategory.value, 1)
       } catch (e) {
         showStatusMessage('初始化失败，请刷新页面重试')
-      }
+      } finally {resumeWarmup()}
     })
 
     return {
@@ -311,7 +318,7 @@ export default {
       prevPage,
       nextPage,
       // 模板选择
-      trialTemplate,
+      trialTemplate,faceBlend,enableFusionLab,
       selectedTemplate,
       showTemplateDetail,
       selectedTemplateDetail,

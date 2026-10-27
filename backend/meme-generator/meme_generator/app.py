@@ -32,6 +32,7 @@ from meme_generator.meme import CommandShortcut, Meme, MemeArgsModel, ParserOpti
 from meme_generator.utils import MemeProperties, render_meme_list, run_sync
 from meme_generator.version import __version__
 from meme_generator.account import router as account_router
+from meme_generator.features.search_terms import keywords as search_keywords
 
 @asynccontextmanager
 async def lifespan(app):
@@ -226,6 +227,7 @@ class MemeParamsResponse(BaseModel):
 
 class MemeInfoResponse(BaseModel):
     key: str
+    face_blend: bool = False
     template_id: str = ''
     version: int = 1
     input_hint: str = ''
@@ -367,13 +369,14 @@ def register_routers():
 
         from meme_generator.features.store import connect
         db=connect()
-        try: catalog_entry=db.execute('SELECT id,version,metadata FROM templates WHERE key=?',(key,)).fetchone()
+        try: catalog_entry=db.execute('SELECT id,version,metadata,spec FROM templates WHERE key=?',(key,)).fetchone()
         finally: db.close()
         attribution={k:json.loads(catalog_entry['metadata']).get(k,'') for k in ['author','license','source_url','license_url']} if catalog_entry else {}
         if not attribution.get('source_url'):
             attribution={'author':'MemeCrafters 模板合集','license':'素材权利信息见上游','source_url':'https://github.com/MemeCrafters/meme-generator','license_url':''}
         return MemeInfoResponse(
             key=meme.key,
+            face_blend=bool(catalog_entry and catalog_entry['spec'] and '"face"' in catalog_entry['spec']),
             template_id=catalog_entry['id'] if catalog_entry else '',
             version=catalog_entry['version'] if catalog_entry else 1,
             input_hint=json.loads(catalog_entry['metadata']).get('input_hint','') if catalog_entry else '',
@@ -388,7 +391,7 @@ def register_routers():
                 default_texts=meme.params_type.default_texts,
                 args_type=args_type_response,
             ),
-            keywords=meme.keywords,
+            keywords=search_keywords({**(json.loads(catalog_entry['metadata']) if catalog_entry else {}),'name':(meme.keywords or [meme.key])[0]},meme.keywords),
             shortcuts=meme.shortcuts,
             tags=meme.tags,
             date_created=meme.date_created,
@@ -407,32 +410,22 @@ def register_routers():
         media_type = str(filetype.guess_mime(content)) or "text/plain"
         return Response(content=content, media_type=media_type)
 
-    @lru_cache(maxsize=128)
-    def thumbnail(key: str) -> bytes:
-        meme = get_meme(key)
-        directory = Path(__file__).parent / 'memes' / key
-        example = next((directory / ('example' + ext) for ext in ['.gif', '.jpg', '.jpeg', '.png'] if (directory / ('example' + ext)).is_file()), None)
-        source = example if example else meme.generate_preview()
-        with open_image(source) as image:
-            image.seek(0)
-            image = image.convert('RGBA')
-            image.thumbnail((256, 256))
-            output = BytesIO()
-            image.save(output, format='PNG', optimize=True)
-            return output.getvalue()
-
     @app.get('/memes/{key}/thumbnail')
-    async def get_thumbnail(key: str):
-        if key.startswith('auto_'):
-            from meme_generator.features.catalog import thumbnail as declared_thumbnail
-            return await run_sync(declared_thumbnail)(key)
+    async def get_thumbnail(key: str, v: str | None = None):
+        from meme_generator.features.catalog import refresh, declared
+        from meme_generator.features.public_preview import response, declared_source
         try:
-            from meme_generator.features.catalog import refresh
-            refresh();get_meme(key)
-            content = await run_sync(thumbnail)(key)
-        except MemeGeneratorException as e:
-            raise HTTPException(status_code=e.status_code, detail=e.message)
-        return Response(content=content, media_type='image/png', headers={'Cache-Control': 'public, max-age=86400'})
+            row=declared(key)
+        except HTTPException:
+            if key.startswith('auto_'):raise
+            refresh()
+            try:meme=get_meme(key)
+            except MemeGeneratorException as e:raise HTTPException(e.status_code,e.message)
+            directory=Path(__file__).parent/'memes'/key
+            example=next((directory/('example'+ext) for ext in ['.gif','.jpg','.jpeg','.png'] if (directory/('example'+ext)).is_file()),None)
+            from meme_generator.features.client_render import version
+            return await run_sync(response)(key,version(key),lambda: example or meme.generate_preview(),v)
+        return await run_sync(response)(key,row['version'],lambda:declared_source(row),v)
 
     @app.get("/memes/{key}/example")
     def _(key: str):
@@ -484,7 +477,7 @@ def register_routers():
             )
 
     @app.get("/memes/categories")
-    def _():
+    def _(compact: bool = False):
         """按输入需求对表情进行分类并返回各分类的 key 列表。
         
         分类规则（基于支持的输入类型，含可选文字）：
@@ -514,7 +507,7 @@ def register_routers():
             attribution = {k:metadata.get(k,'') for k in ('author','license','source_url','license_url')}
             if not attribution['source_url']:
                 attribution = {'author':'MemeCrafters 模板合集','license':'素材权利信息见上游','source_url':'https://github.com/MemeCrafters/meme-generator','license_url':''}
-            cards.append({'key':meme.key, 'name':(meme.keywords or [meme.key])[0], 'animated':bool(metadata.get('animated')), 'keywords':meme.keywords, 'tags':sorted(meme.tags)[:6], 'template_id':entry.get('id',''), 'version':entry.get('version',1), 'creator':metadata.get('creator',{}),'created_at':metadata.get('created_at',0),'featured_trial':bool(metadata.get('featured_trial')), 'input_hint':metadata.get('input_hint',''), 'attribution':attribution, 'params_type':{'min_images':params.min_images,'max_images':params.max_images,'min_texts':params.min_texts,'max_texts':params.max_texts,'default_texts':params.default_texts}, **popularity.get(meme.key, {'heat':0, 'counts':{}})})
+            cards.append({'key':meme.key, 'name':(meme.keywords or [meme.key])[0], 'animated':bool(metadata.get('animated')), 'keywords':search_keywords({**metadata,'name':(meme.keywords or [meme.key])[0]},meme.keywords), 'face_blend':bool(entry.get('spec') and '"face"' in entry['spec']), 'tags':sorted(meme.tags)[:6], 'template_id':entry.get('id',''), 'version':entry.get('version',1), 'creator':metadata.get('creator',{}),'created_at':metadata.get('created_at',0),'featured_trial':bool(metadata.get('featured_trial')), 'input_hint':metadata.get('input_hint',''), 'attribution':attribution, 'params_type':{'min_images':params.min_images,'max_images':params.max_images,'min_texts':params.min_texts,'max_texts':params.max_texts,'default_texts':params.default_texts}, **popularity.get(meme.key, {'heat':0, 'counts':{}})})
             if params.max_images == 0 and params.max_texts > 0:
                 text_only.append(meme.key)
             elif params.max_texts == 0 and params.max_images > 0:
@@ -522,9 +515,13 @@ def register_routers():
             elif params.max_images > 0 and params.max_texts > 0:
                 mixed.append(meme.key)
 
+        if compact:
+            for card in cards:
+                for name in ('attribution','counts','creator','featured_trial'):
+                    card.pop(name,None)
         from meme_generator.features.client_render import public_recipes
         return {
-            "client": public_recipes(),
+            "client": {} if compact else public_recipes(),
             "all": all_keys,
             "text_only": text_only,
             "image_only": image_only,
@@ -575,14 +572,17 @@ app.include_router(export_router)
 
 
 @app.post('/memes/{key}/')
-async def generate_dynamic_multipart(key: str, request: Request, images: list[UploadFile] = [], texts: list[str] = Form(default=[]), extract_subject: bool = Form(default=False)):
+async def generate_dynamic_multipart(key: str, request: Request, images: list[UploadFile] = [], texts: list[str] = Form(default=[]), args: str = Form(default='{}'), extract_subject: bool = Form(default=False)):
     # Published user templates are loaded after startup and share the existing renderer.
     encoded=[];total=0
     for image in images:
         raw=await image.read(10*1024*1024+1);total+=len(raw)
         if total>10*1024*1024:raise HTTPException(413,'图片总大小不能超过 10 MB')
         encoded.append(base64.b64encode(raw).decode())
-    return await generate_json(key,GenerateRequest(images=encoded,texts=texts,extract_subject=extract_subject),request)
+    try:options=json.loads(args)
+    except (ValueError,TypeError):raise HTTPException(422,'模板参数必须是 JSON 对象')
+    if not isinstance(options,dict):raise HTTPException(422,'模板参数必须是 JSON 对象')
+    return await generate_json(key,GenerateRequest(images=encoded,texts=texts,args=options,extract_subject=extract_subject),request)
 
 
 if __name__ == "__main__":

@@ -436,7 +436,7 @@ def work_one():
                     from .subjects import extract_subject
                     images=[extract_subject(i) for i in images]
                 spec=get_spec(payload['template_key'],job['user_id'])
-                if spec is not None:output=render(spec,[open_image(BytesIO(i)).convert('RGBA') for i in images],payload['texts'])
+                if spec is not None:output=render(spec,[open_image(BytesIO(i)).convert('RGBA') for i in images],payload['texts'],face_blend=payload.get('args',{}).get('face_blend','replace'))
                 else:
                     from .catalog import refresh
                     from ..manager import get_meme

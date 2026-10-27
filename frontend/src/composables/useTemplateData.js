@@ -97,11 +97,7 @@ export function useTemplateData(showStatusMessage) {
     }
   }))
 
-  const fetchMemeCategories = async (force=false) => {
-    try {
-      isLoadingTemplates.value = true
-      loadError.value = ''
-      const data = await getCategories(force)
+  const applyCatalog = data => {
       seedClientRecipes(data.client)
       const localKeys=new Set((data.client?.recipes || []).map(r=>r.key))
       categoryKeys.value = {
@@ -115,18 +111,28 @@ export function useTemplateData(showStatusMessage) {
         if(existing.version!==undefined && existing.version!==card.version) {
           previewImageCache.value.delete(card.key);loadingStates.value.delete(card.key)
           existing.previewImage=null;existing.isLoadingPreview=true
+          existing.attribution=null;existing.metadataLoaded=false
         }
         const params=card.params_type
-        templateDetails.value.set(card.key, { ...existing, name:card.name, animated:!!card.animated, featuredTrial:!!card.featured_trial, inputHint:card.input_hint || '', keywords:card.keywords || [], tags:card.tags || [], heat:card.heat || 0, createdAt:card.created_at || 0, creator:card.creator, counts:card.counts || {}, localCapable:localKeys.has(card.key), ...(params ? {metadataLoaded:true, templateId:card.template_id, version:card.version, attribution:card.attribution || {}, imageCount:`${params.min_images}-${params.max_images}`, textCount:`${params.min_texts}-${params.max_texts}`, defaultTexts:params.default_texts || []} : {}) })
+        templateDetails.value.set(card.key, { ...existing, name:card.name, animated:!!card.animated, faceBlend:!!card.face_blend, featuredTrial:!!card.featured_trial, inputHint:card.input_hint || '', keywords:card.keywords || [], tags:card.tags || [], heat:card.heat || 0, createdAt:card.created_at || 0, creator:card.creator, counts:card.counts || {}, localCapable:localKeys.has(card.key), ...(params ? {metadataLoaded:!!card.attribution || !!existing.attribution?.source_url, templateId:card.template_id, version:card.version, attribution:card.attribution || existing.attribution || {}, imageCount:`${params.min_images}-${params.max_images}`, textCount:`${params.min_texts}-${params.max_texts}`, defaultTexts:params.default_texts || []} : {}) })
       }
-      for(const card of data.cards || [])if(card.featured_trial)fetchMemePreview(card.key, true)
-      spotlight.value.forEach(item => fetchMemePreview(item.key, true))
       categoryLoadedPages.value.clear()
       categories.value = categories.value.map(c => {
         const apiKey = CATEGORY_UI_TO_API[c.key]
         const len = categoryKeys.value[apiKey]?.length || 0
         return { ...c, count: len }
       })
+      const publicKeys=new Set(data.all || [])
+      for(const [key,detail] of templateDetails.value)if(!detail.ownPreview && !publicKeys.has(key)){templateDetails.value.delete(key);previewImageCache.value.delete(key)}
+      currentPage.value=Math.min(currentPage.value,totalPages.value)
+  }
+
+  const fetchMemeCategories = async (force=false) => {
+    try {
+      isLoadingTemplates.value = true
+      loadError.value = ''
+      const data = await getCategories(force, data=>{applyCatalog(data);ensurePageLoaded(selectedCategory.value,currentPage.value).then(()=>prefetchAdjacent(selectedCategory.value,currentPage.value))})
+      applyCatalog(data)
     } catch (error) {
       console.error('获取分类失败:', error)
       loadError.value = `${error.message || error.errMsg || '模板暂时无法加载，请检查网络后重试'}${error.code ? '（'+error.code+'）' : ''}`
@@ -145,6 +151,7 @@ export function useTemplateData(showStatusMessage) {
       const info = await getTemplateInfo(key)
       const existingDetail = templateDetails.value.get(key) || { key }
       existingDetail.inputHint = info.input_hint || ''
+      existingDetail.faceBlend = !!info.face_blend
       existingDetail.creator=info.creator
       existingDetail.createdAt=info.created_at || 0
       existingDetail.templateId = info.template_id
@@ -232,8 +239,9 @@ export function useTemplateData(showStatusMessage) {
   }
 
   const prefetchAdjacent = (category, page) => {
-    // No loading spinner or navigation blocking for speculative downloads.
-    return Promise.allSettled([page + 1, page - 1, page + 2].map(p => ensurePageLoaded(category, p, true)))
+    spotlight.value.forEach(item=>fetchMemePreview(item.key,true))
+    // Preload one next page, retaining already visited pages in the file cache.
+    return Promise.allSettled([page + 1].map(p => ensurePageLoaded(category, p, true)))
   }
 
   const selectCategory = async (categoryKey) => {

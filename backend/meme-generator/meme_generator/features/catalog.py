@@ -7,6 +7,7 @@ import uuid
 from PIL import Image
 from fastapi import APIRouter, HTTPException, Response
 from .store import connect
+from .search_terms import keywords as search_keywords
 from .declarative import TemplateSpec, render
 from ..manager import get_memes, add_meme, get_meme_keys, get_meme
 
@@ -44,6 +45,8 @@ def publish(key, metadata, spec=None, *, minimum_version=1, publication=None):
     if spec is not None:
         spec = TemplateSpec.model_validate(spec).model_dump()
     metadata = dict(metadata)
+    from .search_terms import keywords
+    metadata["keywords"] = keywords(metadata)
     if spec is not None:
         # Publication gate: deterministic rendering must succeed with representative subjects.
         sample = Image.new("RGBA", (512, 384), "#e0c3b0")
@@ -124,6 +127,8 @@ def bootstrap():
         from .seed import restore
 
         restore()
+        from .common_scenes import restore as restore_scenes
+        restore_scenes()
 
 
 def rows():
@@ -157,12 +162,12 @@ def refresh():
         metadata = json.loads(row["metadata"])
 
         def generate(images, texts, args, spec=spec):
-            return render(spec, [img.image for img in images], texts)
+            return render(spec, [img.image for img in images], texts, face_blend=getattr(args,"face_blend","replace"))
 
         if row["key"] in keys:
             meme = get_meme(row["key"])
             meme.function = generate
-            meme.keywords = [metadata["name"]]
+            meme.keywords = metadata.get("keywords") or [metadata["name"]]
             meme.tags = set(metadata["tags"])
             for name in [
                 "min_images",
@@ -185,7 +190,7 @@ def refresh():
                 min_texts=metadata.get("min_texts", 0),
                 max_texts=metadata.get("max_texts", 0),
                 default_texts=metadata.get("default_texts", []),
-                keywords=[metadata["name"]],
+                keywords=metadata.get("keywords") or [metadata["name"]],
                 tags=set(metadata["tags"]),
             )
         loaded_versions[row["key"]] = row["version"]
@@ -208,7 +213,7 @@ def declared(key):
     db = connect()
     try:
         row = db.execute(
-            "SELECT * FROM templates WHERE key=? AND spec IS NOT NULL AND status='published'",
+            "SELECT * FROM templates WHERE key=? AND spec IS NOT NULL AND status='published' AND NOT EXISTS (SELECT 1 FROM template_blocks WHERE template_blocks.key=templates.key)",
             (key,),
         ).fetchone()
     finally:
@@ -226,7 +231,8 @@ def info(key):
         "key": key,
         "template_id": r["id"],
         "version": r["version"],
-        "keywords": [m["name"]],
+        "keywords": search_keywords(m),
+        "face_blend": "\"face\"" in r["spec"],
         "tags": m["tags"],
         "params_type": {
             k: m.get(k, [] if k == "default_texts" else 0)
@@ -242,19 +248,7 @@ def info(key):
 
 
 @router.get("/memes/{key}/thumbnail")
-def thumbnail(key):
-    r = declared(key)
-    output = render(
-        json.loads(r["spec"]), [Image.new("RGBA", (256, 256), "#ffcbad")] * 2, preview=True
-    )
-    with open_image(output) as image:
-        image.thumbnail((256, 256))
-        from io import BytesIO
-
-        small = BytesIO()
-        image.save(small, "JPEG", quality=75)
-    return Response(
-        small.getvalue(),
-        media_type="image/jpeg",
-        headers={"Cache-Control": "public, max-age=300"},
-    )
+def thumbnail(key, v: str | None = None):
+    from .public_preview import response, declared_source
+    row=declared(key)
+    return response(key,row['version'],lambda:declared_source(row),v)
