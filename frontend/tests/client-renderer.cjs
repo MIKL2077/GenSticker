@@ -5,7 +5,7 @@ let canvas,big=false
 const ctx={fillRect:()=>{},save:()=>{},restore:()=>{},translate:()=>{},measureText:s=>({width:s.length*10}),fillText:(...a)=>draws.push(a),strokeText:(...a)=>draws.push(['stroke',...a]),drawImage:(...a)=>draws.push(a)}
 const context={API_BASE_URL:'https://example.test/api',apiRequest:async url=>url.includes('/always/')?{supported:true,key:'always',version:1,layout:'always-normal-v1',assets:{},attribution:{},expires:Date.now()/1000+300,receipt:'signed'}:url.includes('/look_flat/')?{supported:true,key:'look_flat',version:1,layout:'look-flat-v1',assets:{},attribution:{},expires:Date.now()/1000+300,receipt:'signed'}:recipe,visitorHeaders:()=>({}),trackTemplate:(...a)=>events.push(a),console,Date,Map,Promise,Object,Number,String,Math,setTimeout,clearTimeout,
 wx:{createOffscreenCanvas:o=>{canvas={...o,getContext:()=>ctx,createImage:()=>{const img={width:big?10000:80,height:big?10000:100};Object.defineProperty(img,'src',{set:()=>queueMicrotask(()=>img.onload())});return img}};return canvas},canvasToTempFilePath:o=>{savedCanvases.push([o.canvas.width,o.canvas.height]);o.success({tempFilePath:'/local.jpg'})}},uni:{getImageInfo:o=>o.success({width:big?10000:80,height:big?10000:100,type:'jpeg'})}}
-vm.createContext(context)
+Object.assign(context,require('./helpers/owned-files.cjs')(context));vm.createContext(context)
 vm.runInContext(fs.readFileSync(path.join(__dirname,'../src/services/clientRenderer.js'),'utf8').replace(/^import .*$/gm,'').replace(/export /g,''),context)
 ;(async()=>{
  assert.equal(await context.tryClientRender('auto_test',['/photo.jpg'],['标题']),'/local.jpg')

@@ -7,12 +7,12 @@ function session(){
  apiRequest:()=>{network++;return new Promise(resolve=>{resolveCatalog=()=>resolve(card())})},
  uni:{env:{USER_DATA_PATH:'/owned'},getStorageSync:key=>storage.get(key),setStorageSync:(key,value)=>storage.set(key,JSON.parse(JSON.stringify(value))),
  getFileSystemManager:()=>({access:o=>files.has(o.path)?o.success():o.fail(),copyFile:o=>{files.add(o.destPath);o.success()},stat:o=>o.success({stats:{size:2000}}),unlink:o=>{files.delete(o.filePath);o.success?.()}}),
- downloadFile:o=>{downloads++;o.success({statusCode:200,tempFilePath:'/temp.gif'})}}}
- vm.createContext(c);vm.runInContext(source,c);return c
+ downloadFile:o=>{downloads++;const file='/temp-'+downloads+'.gif';files.add(file);o.success({statusCode:200,tempFilePath:file})}}}
+ Object.assign(c,require('./helpers/owned-files.cjs')(c));vm.createContext(c);vm.runInContext(source,c);return c
 }
 ;(async()=>{
  let c=session();let task=c.getCategories();resolveCatalog();await task
- let path=await c.getTemplatePreviewPath('animated');assert.match(path,/\.gif$/);assert.equal(downloads,1)
+ let path=await c.getTemplatePreviewPath('animated');assert.match(path,/\.gif$/);assert.equal(downloads,1);assert.ok(![...files].some(p=>p.startsWith('/temp-')),'successful copy removes the download original')
  c=session();let refreshed=false;let immediate=await c.getCategories(false,()=>{refreshed=true});assert.equal(immediate.cards[0].version,1);assert.equal(refreshed,false)
  assert.equal(await c.getTemplatePreviewPath('animated'),path);assert.equal(downloads,1,'new session uses persistent public GIF')
  version=2;resolveCatalog();await new Promise(r=>setImmediate(r));assert.equal(refreshed,true)

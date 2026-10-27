@@ -34,7 +34,7 @@ async function verify() {
       showShareImageMenu: o => shares.push(o),
     },
   }
-  vm.createContext(context)
+  Object.assign(context,require('./helpers/owned-files.cjs')(context));vm.createContext(context)
   vm.runInContext(fs.readFileSync(path.join(__dirname,'../src/services/imageGeometry.js'),'utf8').replace(/export /g,''),context)
   const preparation = fs.readFileSync(path.join(__dirname, '../src/services/imagePreparation.js'),'utf8').replace(/^import .*$/gm,'').replace(/export /g,'')
   vm.runInContext(preparation,context)

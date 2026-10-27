@@ -1,4 +1,4 @@
-import {withStorageRecovery} from '@/services/ownedFiles'
+import {withStorageRecovery,registerTemporary,releaseTemporary} from '@/services/ownedFiles'
 import {displayImageSize} from '@/services/imageGeometry'
 import { apiRequest } from '@/services/apiService'
 import { API_BASE_URL } from '@/constants'
@@ -14,22 +14,26 @@ export const setPersonalization = enabled => apiRequest('/recommend/preferences'
 
 export async function uploadPhoto(path,subjectSelected=false) {
   const session=uni.getStorageSync('gensticker.session.v1'),owner=session?.profile?.id,uploadToken=session?.access_token
+  const original=path
+  try {
   const info = await uni.getImageInfo({ src:path })
   if (info.type === 'jpeg' || info.type === 'jpg') {
     const scale = Math.min(1,1280 / Math.max(info.width,info.height))
-    const compressed = await uni.compressImage({ src:path, quality:82, compressedWidth:Math.round(displayImageSize(info).width*scale), compressedHeight:Math.round(displayImageSize(info).height*scale) })
+    const compressed = await withStorageRecovery(()=>uni.compressImage({ src:path, quality:82, compressedWidth:Math.round(displayImageSize(info).width*scale), compressedHeight:Math.round(displayImageSize(info).height*scale) }))
     path = compressed.tempFilePath
+    if(path!==original)registerTemporary(path)
   }
   if(owner!==uni.getStorageSync('gensticker.session.v1')?.profile?.id)throw Error('账号已切换，请重新选图')
-  return new Promise((resolve,reject) => uni.uploadFile({
+  return await new Promise((resolve,reject) => uni.uploadFile({
     url:`${API_BASE_URL}/recommend/assets`, filePath:path, name:'file', formData:{subject_selected:String(subjectSelected)}, header:{Authorization:`Bearer ${uploadToken}`}, timeout:30000,
     success:r=>{try {const data=JSON.parse(r.data);if(r.statusCode===201) resolve(data);else reject(Object.assign(new Error(data.detail || '上传失败'),{statusCode:r.statusCode}))}catch(e){reject(e)}}, fail:reject,
   }))
+  }finally{if(path!==original)releaseTemporary(path)}
 }
 
 export function downloadResult(url,timeout=20000) {
   return withStorageRecovery(()=>new Promise((resolve,reject) => uni.downloadFile({
     url:`${API_BASE_URL}${url}`, header:{Authorization:`Bearer ${token()}`}, timeout,
-    success:r=>r.statusCode===200 ? resolve(r.tempFilePath) : reject(new Error(r.statusCode===401 ? '登录已过期，请重新登录' : '图片暂时无法下载')), fail:reject,
+    success:r=>{if(r.tempFilePath)registerTemporary(r.tempFilePath);if(r.statusCode===200)resolve(r.tempFilePath);else{if(r.tempFilePath)releaseTemporary(r.tempFilePath);reject(new Error(r.statusCode===401 ? '登录已过期，请重新登录' : '图片暂时无法下载'))}}, fail:reject,
   })))
 }

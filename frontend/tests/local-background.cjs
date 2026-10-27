@@ -30,7 +30,7 @@ function runtime({transparent=false,broken=false,capable=true}={}){
   }}
  }
 
- vm.createContext(c);vm.runInContext(source,c)
+ Object.assign(c,require('./helpers/owned-files.cjs')(c));vm.createContext(c);vm.runInContext(source,c)
  c.exportCanvas=async(canvas,type)=>{exports.push({width:canvas.width,height:canvas.height,pixels:canvas._pixels().slice(),type});return '/export-'+exports.length+'.'+type}
  return {c,exports,requests,runs,destroyed}
 }

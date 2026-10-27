@@ -3,6 +3,7 @@ import { prepareImages } from '@/services/imagePreparation'
 import { parseRange } from '@/utils/validationUtils'
 import { editImage, removeImageBackground, disposeEditedImage } from '@/services/imageEditing'
 import {choosePhotos} from '@/services/photoPicker'
+import {retainFile} from '@/services/ownedFiles'
 
 export function useTemplateInput() {
   const templateImages = ref([])
@@ -12,9 +13,10 @@ export function useTemplateInput() {
   const activeImageIndex = ref(0), showImageEditor = ref(false), editorBusy = ref(false), editorError = ref(''), editorCanUndo = ref(false)
   let editEpoch = 0
   const records = [], owned = new Set()
+  const sourceRecord=path=>({original:path,history:[],unpin:retainFile(path)})
   const release = path => { if(owned.delete(path))disposeEditedImage(path) }
   const syncUndo = () => { editorCanUndo.value=!!records[activeImageIndex.value]?.history.length }
-  const cleanupImages = () => { editEpoch++;for(const path of owned)disposeEditedImage(path);owned.clear();records.length=0;showImageEditor.value=false;editorBusy.value=false;editorError.value='';editorCanUndo.value=false;activeImageIndex.value=0 }
+  const cleanupImages = () => { editEpoch++;for(const record of records)record.unpin?.();for(const path of owned)disposeEditedImage(path);owned.clear();records.length=0;showImageEditor.value=false;editorBusy.value=false;editorError.value='';editorCanUndo.value=false;activeImageIndex.value=0 }
 
   const getImageInputCount = () => {
     const info = selectedTemplateDetail.value
@@ -100,7 +102,7 @@ export function useTemplateInput() {
       sourceType: ['album', 'camera'],
       success: (res) => {
         if(epoch!==editEpoch)return
-        for(const path of res.tempFilePaths){records.push({original:path,history:[]});if(path.startsWith('blob:'))owned.add(path)}
+        for(const path of res.tempFilePaths){records.push(sourceRecord(path));if(path.startsWith('blob:'))owned.add(path)}
         const firstNew=templateImages.value.length
         const newImages = [...templateImages.value, ...res.tempFilePaths]
         templateImages.value = newImages
@@ -126,7 +128,7 @@ export function useTemplateInput() {
       const output=operation.type==='prepared' ? operation.path : operation.type==='background' ? await removeImageBackground(input) : await editImage(input,operation)
       if(epoch!==editEpoch || templateImages.value[index]!==path){disposeEditedImage(output);return}
       owned.add(output)
-      const record=records[index] || (records[index]={original:path,history:[]})
+      const record=records[index] || (records[index]=sourceRecord(path))
       record.history.push(path)
       if(record.history.length>4){const old=record.history.shift();if(old!==record.original)release(old)}
       templateImages.value[index]=output;extractSubject.value=false;syncUndo();if(operation.complete)closeImageEditor();return true
@@ -150,6 +152,7 @@ export function useTemplateInput() {
   const removeTemplateImage = (index) => {
     if(editorBusy.value)return
     const record=records[index]
+    record?.unpin?.()
     if(record)for(const path of [...record.history,templateImages.value[index],record.original])release(path)
     records.splice(index,1);templateImages.value.splice(index,1);activeImageIndex.value=Math.max(0,Math.min(activeImageIndex.value,templateImages.value.length-1));syncUndo()
   }
@@ -165,7 +168,7 @@ export function useTemplateInput() {
   const restoreDraftImages = (paths,temporaryPaths=[]) => {
     cleanupImages()
     templateImages.value=[...paths]
-    for(const path of paths)records.push({original:path,history:[]})
+    for(const path of paths)records.push(sourceRecord(path))
     for(const path of temporaryPaths)owned.add(path)
   }
 

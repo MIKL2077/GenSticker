@@ -17,7 +17,7 @@ async function verify() {
       })
     } },
   }
-  vm.createContext(context); vm.runInContext(source, context)
+  Object.assign(context,require('./helpers/owned-files.cjs')(context));vm.createContext(context); vm.runInContext(source, context)
   await assert.rejects(context.getTemplatePreviewPath('petpet'), /offline/)
   const results = await Promise.all([context.getTemplatePreviewPath('petpet'), context.getTemplatePreviewPath('petpet')])
   assert.equal(downloads, 2)

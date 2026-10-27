@@ -1,20 +1,36 @@
 <template><view class="editor-mask" @touchmove.stop><view class="editor-sheet"><view class="sheet-grip"/><view class="editor-heading"><view><text class="editor-title">把主角放进模板里</text><text class="editor-sub">单指挪位置 · 双指捏合缩放 · 窗口内就是要上传的画面</text></view><button class="editor-close" aria-label="关闭图片编辑" @click="$emit('close')">×</button></view><scroll-view scroll-y class="editor-scroll" :style="{height:bodyHeight+'px'}"><view class="editor-inner"><view class="guide-status"><text>{{guideLoading?'正在打开模板参照…':guide?.generic?'自由裁剪 · 单指移动，双指缩放':'对照模板 · 图片 '+(activeIndex+1)}}</text><button @click="showGuide=!showGuide">{{showGuide?'隐藏参照':'显示参照'}}</button></view><view class="alignment-stage" :style="{width:stageWidth+'px',height:stageHeight+'px'}"><image v-if="previewImage && showGuide" :src="previewImage" class="ghost-template" mode="scaleToFill"/><view class="target-window checker" :style="windowStyle" @touchstart="start" @touchmove.stop.prevent="move" @touchend="end" @touchcancel="drag=null" @mousedown.stop.prevent="start" @mousemove="move" @mouseup="drag=null" @mouseleave="drag=null"><image :src="src" :style="imageStyle" mode="aspectFit"/></view><image v-if="overlay && showGuide" :src="overlay" class="guide-overlay" mode="scaleToFill"/><view class="window-outline" :style="windowStyle"><view class="corner tl"/><view class="corner tr"/><view class="corner bl"/><view class="corner br"/></view><view v-if="busy" class="processing"><view class="editor-spinner"/><text>正在把主角准备好…</text></view></view><view class="gesture-caption"><text>框外只是参照，框内才是主角</text><button @click="reset">复位</button></view><view v-if="guide?.generic" class="ratios"><button v-for="r in ratios" :key="r.label" :class="{chosen:effectiveRatio===r.value}" @click="fallbackRatio=r.value;reset()">{{r.label}}</button></view><view v-if="images.length>1" class="editor-thumbnails"><button v-for="(path,index) in images" :key="index" :class="{selected:index===activeIndex}" @click="!busy && $emit('select',index)"><image :src="path" mode="aspectFill"/><text>{{index+1}}</text></button></view><view class="editor-tools"><button :disabled="busy" @click="$emit('edit',{type:'flip'})"><ui-icon name="flip"/><text>左右翻转</text></button><button :disabled="busy" @click="$emit('edit',{type:'rotate'})"><ui-icon name="rotate"/><text>旋转 90°</text></button><button :disabled="busy" @click="zoom=Math.min(8,zoom+0.25)"><ui-icon name="plus"/><text>放大一点</text></button></view><button v-if="allowBackground" class="background-tool" :disabled="busy" @click="$emit('edit',{type:'background'})"><ui-icon name="cutout"/><view><text>一键抠图 · 留下主角</text><text class="tool-sub">照片、宠物、物品都可以试试，透明背景实时预览</text></view></button><text v-if="error" class="editor-error">{{error}}</text><view class="editor-history"><button :disabled="busy || !canUndo" @click="$emit('undo')">撤销上一步</button><button :disabled="busy || !canUndo" @click="$emit('restore')">还原上传图</button><text>{{zoom.toFixed(1)}}×</text></view></view></scroll-view><view class="done-bar"><button class="ui-primary" :disabled="busy || guideLoading || !info.width" @click="confirm">截取窗口，就用这张 <ui-icon name="check" tone="white"/></button></view></view></view></template>
 <script setup>
-import {ref,computed,watch} from 'vue'
+import {ref,computed,watch,onBeforeUnmount} from 'vue'
 import {cropGeometry} from '@/services/imageEditing'
 import {apiRequest} from '@/services/apiService'
 import {visitorHeaders} from '@/services/popularityService'
 import {API_BASE_URL} from '@/constants'
 import UiIcon from '@/components/UiIcon.vue'
+import {registerTemporary,releaseTemporary,withStorageRecovery} from '@/services/ownedFiles'
 const props=defineProps({src:String,templateKey:String,previewImage:String,allowBackground:{type:Boolean,default:true},images:{type:Array,default:()=>[]},activeIndex:{type:Number,default:0},busy:Boolean,error:String,canUndo:Boolean})
 const emit=defineEmits(['close','select','edit','undo','restore'])
 const win=uni.getWindowInfo?.()||uni.getSystemInfoSync(),info=ref({width:0,height:0}),guide=ref(null),overlay=ref(''),guideLoading=ref(false),showGuide=ref(true),zoom=ref(1),offsetX=ref(0),offsetY=ref(0),fallbackRatio=ref(0)
 const bodyHeight=Math.max(240,win.windowHeight-265),maxWidth=Math.min(win.windowWidth-36,420)
-let drag=null,epoch=0
+let drag=null,epoch=0,guideEpoch=0
 const reset=()=>{zoom.value=1;offsetX.value=0;offsetY.value=0}
 watch(()=>props.activeIndex,reset)
 watch(()=>props.src,path=>{const version=++epoch,previous=info.value;info.value={width:0,height:0};if(path)uni.getImageInfo({src:path,success:r=>{if(epoch!==version)return;if(previous.width!==r.width || previous.height!==r.height)reset();info.value=r},fail:()=>{}})},{immediate:true})
-watch(()=>props.templateKey,async key=>{guideLoading.value=true;guide.value=null;overlay.value='';if(!key){guide.value={generic:true};guideLoading.value=false;return}try{const data=await apiRequest(`/images/templates/${encodeURIComponent(key)}/guide`,{header:visitorHeaders(),timeout:30000},1);if(key!==props.templateKey)return;guide.value=data;const file=await new Promise((resolve,reject)=>uni.downloadFile({url:API_BASE_URL+data.overlay_url,header:visitorHeaders(),timeout:20000,success:r=>r.statusCode===200?resolve(r.tempFilePath):reject(Error()),fail:reject}));if(key===props.templateKey)overlay.value=file}catch(_){if(key===props.templateKey)guide.value={generic:true}}finally{if(key===props.templateKey)guideLoading.value=false}},{immediate:true})
+watch(()=>props.templateKey,async key=>{
+ const request=++guideEpoch
+ if(overlay.value)releaseTemporary(overlay.value)
+ guideLoading.value=true;guide.value=null;overlay.value=''
+ if(!key){guide.value={generic:true};guideLoading.value=false;return}
+ try{
+  const data=await apiRequest(`/images/templates/${encodeURIComponent(key)}/guide`,{header:visitorHeaders(),timeout:30000},1)
+  if(request!==guideEpoch)return
+  guide.value=data
+  const file=await withStorageRecovery(()=>new Promise((resolve,reject)=>uni.downloadFile({url:API_BASE_URL+data.overlay_url,header:visitorHeaders(),timeout:20000,success:r=>{if(r.tempFilePath)registerTemporary(r.tempFilePath);if(r.statusCode===200)resolve(r.tempFilePath);else{if(r.tempFilePath)releaseTemporary(r.tempFilePath);reject(Error())}},fail:reject})))
+  if(request===guideEpoch)overlay.value=file
+  else releaseTemporary(file)
+ }catch(_){if(request===guideEpoch)guide.value={generic:true}}
+ finally{if(request===guideEpoch)guideLoading.value=false}
+},{immediate:true})
+onBeforeUnmount(()=>{guideEpoch++;if(overlay.value)releaseTemporary(overlay.value)})
 const canvasRatio=computed(()=>guide.value&&!guide.value.generic?guide.value.width/guide.value.height:1)
 const stageWidth=computed(()=>Math.min(maxWidth,Math.min(360,win.windowHeight*.39)*canvasRatio.value)),stageHeight=computed(()=>stageWidth.value/canvasRatio.value)
 const effectiveRatio=computed(()=>fallbackRatio.value || (info.value.width||1)/(info.value.height||1))

@@ -1,4 +1,4 @@
-import {withStorageRecovery} from '@/services/ownedFiles'
+import {withStorageRecovery,registerTemporary,releaseTemporary} from '@/services/ownedFiles'
 import {API_BASE_URL} from '@/constants'
 
 // The same pinned U2NetP model and normalization as the server. Only public
@@ -19,11 +19,11 @@ async function modelFile(allowDownload=true){
  let temporary=''
  try{
   const result=await call(uni.downloadFile.bind(uni),{url:API_BASE_URL+'/images/subject-model/'+MODEL_SHA+'.onnx',timeout:30000})
-  temporary=result.tempFilePath;if(result.statusCode!==200)throw Error('本机模型暂不可用')
+  temporary=registerTemporary(result.tempFilePath);if(result.statusCode!==200)throw Error('本机模型暂不可用')
   await verify(temporary)
-  await withStorageRecovery(()=>call(fs.saveFile.bind(fs),{tempFilePath:temporary,filePath:path}));temporary=''
+  await withStorageRecovery(()=>call(fs.saveFile.bind(fs),{tempFilePath:temporary,filePath:path}));releaseTemporary(temporary);temporary=''
   return path
- }finally{if(temporary)fs.unlink({filePath:temporary,fail:()=>{}})}
+ }finally{if(temporary)releaseTemporary(temporary)}
 }
 export function warmLocalBackground({allowDownload=true,canStart=()=>true}={}){
  if(!supported() || Date.now()<unavailableUntil)return Promise.reject(Error('使用云端处理'))

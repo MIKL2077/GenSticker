@@ -9,7 +9,7 @@ function schedule(){
   timer=null;if(!enabled||!isBackgroundIdle())return;running=true
   let deferred=false
   try{
-   if(Date.now()-lastCleanup>30000){await trimOwnedFiles();lastCleanup=Date.now()}
+   if(Date.now()-lastCleanup>30000){await trimOwnedFiles({canContinue:isBackgroundIdle});lastCleanup=Date.now()}
    if(!isBackgroundIdle())return
    if(Date.now()-lastWarm>45000){await warmLocalBackground({canStart:isBackgroundIdle});lastWarm=Date.now()}
   }catch(error){deferred=error.code==='WARMUP_DEFERRED'}finally{running=false;if(deferred&&isBackgroundIdle())schedule()}

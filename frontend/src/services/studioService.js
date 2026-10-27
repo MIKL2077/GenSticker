@@ -5,6 +5,7 @@ import { API_BASE_URL } from '@/constants'
 import { prepareImage } from '@/services/imagePreparation'
 import { encodeGenerationImages } from '@/services/generationUpload'
 import { downloadResult } from '@/services/recommendService'
+import {registerOwnedResult,releaseTemporary} from '@/services/ownedFiles'
 // Keep small metadata separate from full images. Account + session generation
 // prevents late preloads from repopulating another account after a switch.
 let queueOwner='',queueToken='',queueItems=[],queueAt=0,queueRequest=null,queueRevision=0
@@ -13,6 +14,7 @@ const queueStorage=owner=>`gensticker.studio.queue.${owner}.v1`
 function queueIdentity(){
  const session=uni.getStorageSync('gensticker.session.v1'),owner=session?.profile?.id||'',token=session?.access_token||''
  if(owner!==queueOwner||token!==queueToken){
+  for(const path of queueImages.values())releaseTemporary(path)
   queueOwner=owner;queueToken=token;queueItems=[];queueAt=0;queueRequest=null;queueRevision++;queueImages.clear();queueImageRequests.clear()
   if(owner)try{const saved=uni.getStorageSync(queueStorage(owner));if(saved?.savedAt>Date.now()-7*86400000 && Array.isArray(saved.items))queueItems=saved.items.filter(j=>j.created_at>Date.now()/1000-7*86400).slice(0,100)}catch(_){}
  }
@@ -41,7 +43,7 @@ export async function queueThumbnail(item){
  if(item.localPath)return item.localPath
  if(queueImages.has(key))return queueImages.get(key)
  if(queueImageRequests.has(key))return queueImageRequests.get(key)
- const request=scheduleThumbnail(()=>{if(!sameQueue(identity))throw Error('账号已切换');return downloadResult(url)}).then(path=>{if(!sameQueue(identity))throw Error('账号已切换');queueImages.set(key,path);while(queueImages.size>40)queueImages.delete(queueImages.keys().next().value);return path}).finally(()=>{if(sameQueue(identity)&&queueImageRequests.get(key)===request)queueImageRequests.delete(key)})
+ const request=scheduleThumbnail(()=>{if(!sameQueue(identity))throw Error('账号已切换');return downloadResult(url)}).then(path=>{if(!sameQueue(identity)){releaseTemporary(path);throw Error('账号已切换')}queueImages.set(key,path);while(queueImages.size>40)queueImages.delete(queueImages.keys().next().value);return path}).finally(()=>{if(sameQueue(identity)&&queueImageRequests.get(key)===request)queueImageRequests.delete(key)})
  queueImageRequests.set(key,request);return request
 }
 export function cachedQueueThumbnail(item){queueIdentity();return item.localPath||queueImages.get('thumb:'+item.id)||''}
@@ -102,9 +104,9 @@ export function startStudioNotifications(){
 const localOwner=()=>uni.getStorageSync('gensticker.session.v1')?.profile?.id||'guest'
 const localResultsKey=(owner=localOwner())=>`gensticker.manual.local.${owner}.v1`
 export function guestResults(owner=localOwner()){const now=Date.now()/1000;return (uni.getStorageSync(localResultsKey(owner))||[]).filter(r=>now-r.created_at<7*86400).map(r=>r.status==='running'&&now-r.created_at>120?{...r,status:'failed',message:'本地制作已中断，请重新选择片段'}:r)}
-export function updateLocalResult(id,changes,owner=localOwner()){if(owner!==localOwner())return;uni.setStorageSync(localResultsKey(owner),guestResults(owner).map(item=>item.id===id?{...item,...changes}:item))}
+export function updateLocalResult(id,changes,owner=localOwner()){if(owner!==localOwner())return;uni.setStorageSync(localResultsKey(owner),guestResults(owner).map(item=>item.id===id?{...item,...changes}:item));if(changes.localPath)registerOwnedResult(changes.localPath)}
 export function beginLocalLive(owner=localOwner()){const item={id:uniqueKey(),local:true,kind:'livegif',status:'running',created_at:Date.now()/1000,message:'正在这台设备制作 GIF'};uni.setStorageSync(localResultsKey(owner),[item,...guestResults(owner)].slice(0,12));return item}
-export function rememberGuestMeme(path,viewed=false,kind='manual',draft=null){const item={id:uniqueKey(),local:true,kind,status:'completed',created_at:Date.now()/1000,message:'只保存在这台设备，保留近 7 天',localPath:path,...(viewed?{viewedAt:Date.now()}:{})};if(draft){try{const copy=JSON.parse(JSON.stringify(draft));if(copy.paths && uni.getFileSystemManager && uni.env?.USER_DATA_PATH){const fs=uni.getFileSystemManager();copy.paths=copy.paths.map((source,index)=>{const target=uni.env.USER_DATA_PATH+'/gensticker_draft_'+item.id+'_'+index+'.png';fs.copyFileSync(source,target);return target})}item.editDraft=copy}catch(_){}}try{uni.setStorageSync(localResultsKey(),[item,...guestResults()].slice(0,12))}catch(_){}return item}
+export function rememberGuestMeme(path,viewed=false,kind='manual',draft=null){const item={id:uniqueKey(),local:true,kind,status:'completed',created_at:Date.now()/1000,message:'只保存在这台设备，保留近 7 天',localPath:path,...(viewed?{viewedAt:Date.now()}:{})};if(draft){try{const copy=JSON.parse(JSON.stringify(draft));if(copy.paths && uni.getFileSystemManager && uni.env?.USER_DATA_PATH){const fs=uni.getFileSystemManager();copy.paths=copy.paths.map((source,index)=>{const target=uni.env.USER_DATA_PATH+'/gensticker_draft_'+item.id+'_'+index+'.png';fs.copyFileSync(source,target);registerOwnedResult(target);return target})}item.editDraft=copy}catch(_){}}try{uni.setStorageSync(localResultsKey(),[item,...guestResults()].slice(0,12));registerOwnedResult(path)}catch(_){}return item}
 export function linkLocalResult(id,serverId,owner=localOwner()){updateLocalResult(id,{serverId},owner)}
 const deletedLocalKey=(owner=localOwner())=>`gensticker.live.deleted.${owner}`
 const scheduleCloudDelete=(id,owner=localOwner())=>{const ids=uni.getStorageSync(deletedLocalKey(owner))||[];uni.setStorageSync(deletedLocalKey(owner),[...new Set([...ids,id])].slice(-50))}

@@ -3,7 +3,7 @@ let version=1;const pending=[],removed=[]
 const context={registerCacheFile:p=>p,Map,Set,Array,Promise,Date,Error,encodeURIComponent,setTimeout,API_BASE_URL:'https://example.test/api',
  apiRequest:async()=>({cards:[{key:'same',version}]}),apiImageRequest:()=>{},
  uni:{downloadFile:args=>pending.push(args),getFileSystemManager:()=>({unlink:args=>removed.push(args.filePath)})}}
-vm.createContext(context)
+Object.assign(context,require('./helpers/owned-files.cjs')(context));vm.createContext(context)
 const source=fs.readFileSync(path.join(__dirname,'../src/services/memeService.js'),'utf8')
  .replace(/^import .*$/gm,'').replace(/export /g,'')
  .replace(/  \/\/ #ifdef H5[\s\S]*?  \/\/ #endif/,'')

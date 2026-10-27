@@ -1,4 +1,4 @@
-import {registerCacheFile} from '@/services/ownedFiles'
+import {registerCacheFile,registerTemporary,releaseTemporary,withStorageRecovery} from '@/services/ownedFiles'
 import { apiRequest } from '@/services/apiService'
 import { API_BASE_URL } from '@/constants'
 import { visitorHeaders, trackTemplate } from '@/services/popularityService'
@@ -38,14 +38,15 @@ function assetPath(hash, path) {
   if(seeding.has(hash))return seeding.get(hash).then(()=>assetPath(hash,path))
   if(inflight.has(hash)) return inflight.get(hash)
   const task = new Promise((resolve,reject) => uni.downloadFile({ url:`${API_BASE_URL}${path}`, timeout:10000, success:r=>{
-    if(r.statusCode!==200) return reject(new Error('本地素材暂不可用'))
+    if(r.tempFilePath)registerTemporary(r.tempFilePath)
+    if(r.statusCode!==200){if(r.tempFilePath)releaseTemporary(r.tempFilePath);return reject(new Error('本地素材暂不可用'))}
     const fs=uni.getFileSystemManager()
     fs.stat({path:r.tempFilePath,success:s=>{
-      if(s.stats.size>1024*1024) { fs.unlink({filePath:r.tempFilePath,fail:()=>{}}); return reject(new Error('素材过大')) }
+      if(s.stats.size>1024*1024) { releaseTemporary(r.tempFilePath); return reject(new Error('素材过大')) }
       rememberAsset(hash,r.tempFilePath,s.stats.size)
       trimAssets()
       resolve(r.tempFilePath)
-    },fail:reject})
+    },fail:error=>{releaseTemporary(r.tempFilePath);reject(error)}})
   },fail:reject})).finally(()=>inflight.delete(hash))
   inflight.set(hash,task); return task
 }
@@ -145,7 +146,7 @@ export async function tryClientRender(key,paths,texts,args={}) {
         if(size<30)throw new Error('本地文字超出排版范围')
         ctx.textAlign='center';ctx.fillText(text,250,imageH+(80-size)/2)
       }
-      const output=await new Promise((resolve,reject)=>wx.canvasToTempFilePath({canvas,fileType:'jpg',quality:.9,success:r=>resolve(r.tempFilePath),fail:reject}))
+      const output=registerTemporary(await withStorageRecovery(()=>new Promise((resolve,reject)=>wx.canvasToTempFilePath({canvas,fileType:'jpg',quality:.9,success:r=>resolve(r.tempFilePath),fail:reject}))))
       reportSuccess(key,recipe);return output
     }
     const s=recipe.spec
@@ -169,7 +170,7 @@ export async function tryClientRender(key,paths,texts,args={}) {
         ctx.textAlign='left'
       }
     }
-    const result=await new Promise((resolve,reject)=>wx.canvasToTempFilePath({canvas,fileType:'jpg',quality:.9,success:r=>resolve(r.tempFilePath),fail:reject}))
+    const result=registerTemporary(await withStorageRecovery(()=>new Promise((resolve,reject)=>wx.canvasToTempFilePath({canvas,fileType:'jpg',quality:.9,success:r=>resolve(r.tempFilePath),fail:reject}))))
     reportSuccess(key,recipe)
     return result
   } catch(e) { console.info('本地模板回退服务器:',e.message || e.errMsg);return null }

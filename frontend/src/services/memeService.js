@@ -1,4 +1,4 @@
-import {registerCacheFile} from '@/services/ownedFiles'
+import {registerCacheFile,registerTemporary,releaseTemporary} from '@/services/ownedFiles'
 import { apiRequest, apiImageRequest } from '@/services/apiService'
 import { API_BASE_URL } from '@/constants'
 
@@ -124,17 +124,19 @@ export function getTemplatePreviewPath(key, background = false) {
     }
     return scheduledDownload(key, () => new Promise((resolve, reject) => {
     uni.downloadFile({ url, timeout: 20000, success: r => {
-      if(r.statusCode!==200) return reject(new Error(`预览加载失败: ${r.statusCode}`))
+      if(r.tempFilePath)registerTemporary(r.tempFilePath)
+      if(r.statusCode!==200){if(r.tempFilePath)releaseTemporary(r.tempFilePath);return reject(new Error(`预览加载失败: ${r.statusCode}`))}
       const finish = async bytes => {
-        if(version!==versions.get(key)){uni.getFileSystemManager?.().unlink({filePath:r.tempFilePath,fail:()=>{}});reject(new Error('模板已更新，请重新加载预览'));return}
+        if(version!==versions.get(key)){releaseTemporary(r.tempFilePath);reject(new Error('模板已更新，请重新加载预览'));return}
         let path=r.tempFilePath
         if(fs?.copyFile && uni.env?.USER_DATA_PATH){
           const contentType=r.header?.['Content-Type']||r.header?.['content-type']||''
           const extension=contentType.includes('gif')||animatedKeys.has(key)||/\.gif$/i.test(r.tempFilePath)?'gif':'jpg'
           const destination=`${uni.env.USER_DATA_PATH}/gensticker_material_thumb_${encodeURIComponent(key)}_${version||1}_motion4.${extension}`
           path=await new Promise(resolve=>fs.copyFile({srcPath:r.tempFilePath,destPath:destination,success:()=>resolve(destination),fail:()=>resolve(r.tempFilePath)}))
+          if(path!==r.tempFilePath)releaseTemporary(r.tempFilePath)
         }
-        if(version!==versions.get(key)){fs?.unlink({filePath:path,fail:()=>{}});reject(new Error('模板已更新，请重新加载预览'));return}
+        if(version!==versions.get(key)){releaseTemporary(registerTemporary(path));reject(new Error('模板已更新，请重新加载预览'));return}
         thumbnailBytes-=thumbnailSizes.get(key)||0;thumbnailSizes.delete(key);thumbnailSizes.set(key,bytes);thumbnailBytes+=bytes;rememberPreview(key,path,bytes,version);resolve(path);setTimeout(trimThumbnails,0)
       }
       const fs=uni.getFileSystemManager?.()

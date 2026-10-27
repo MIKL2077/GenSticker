@@ -5,7 +5,7 @@ const flush=()=>new Promise(resolve=>setImmediate(resolve))
  const store=new Map();let owner='alice',token='token-a',requests=0,resolveList,downloads=[],active=0,maxActive=0
  const imageFinishes=[]
  const c={ref:value=>({value}),console,Date,Math,Map,Set,Promise,Object,JSON,Error,setInterval:()=>0,clearInterval:()=>{},uni:{getStorageSync:key=>key==='gensticker.session.v1'?(owner?{access_token:token,profile:{id:owner}}:null):store.get(key),setStorageSync:(k,v)=>store.set(k,JSON.parse(JSON.stringify(v)))},apiRequest:()=>{requests++;return new Promise(resolve=>resolveList=resolve)},downloadResult:url=>{downloads.push(url);active++;maxActive=Math.max(active,maxActive);return new Promise(resolve=>imageFinishes.push(()=>{active--;resolve('/thumb-'+url.split('/')[3])}))}}
- vm.createContext(c);vm.runInContext(source,c)
+ Object.assign(c,require('./helpers/owned-files.cjs')(c));vm.createContext(c);vm.runInContext(source,c)
  const rows=Array.from({length:9},(_,i)=>({id:'job-'+i,kind:'livegif',status:'completed',created_at:Date.now()/1000,viewed:false,result_url:'/studio/jobs/job-'+i+'/image'}))
  const before=c.preloadStudioQueue(),second=c.listStudioJobs();assert.equal(requests,1,'entry preload and queue navigation coalesce metadata requests');resolveList(rows)
  const loaded=await before;await second;assert.equal(loaded.length,9);await flush();assert.ok(downloads.length<=3);assert.ok(downloads.every(url=>url.endsWith('/thumbnail')),'preload never downloads full GIFs')
