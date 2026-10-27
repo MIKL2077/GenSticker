@@ -35,14 +35,14 @@
  </view>
 </template>
 <script setup>
-import {useShareCard} from '@/composables/useShareCard'
-useShareCard()
+import {shareCard} from '@/services/shareCard'
+onShareAppMessage(()=>shareCard())
 import {holdBackgroundWork} from '@/services/backgroundActivity'
 import {notifyGeneration} from '@/services/generationNotice'
 import GenerationNotice from '@/components/GenerationNotice.vue'
 import FirstUseGuide from '@/components/FirstUseGuide.vue'
 import {ref,watch,nextTick,computed} from 'vue'
-import {onUnload,onShow} from '@dcloudio/uni-app'
+import {onUnload,onShow,onShareAppMessage} from '@dcloudio/uni-app'
 import {takeEditDraft,disposeEditDraft} from '@/services/editSession'
 import {useLibrary} from '@/composables/useLibrary'
 import {uniqueKey,beginLocalLive,updateLocalResult,linkLocalResult,syncLocalLiveResults,getStudioJob,privateImage,viewStudioJob} from '@/services/studioService'

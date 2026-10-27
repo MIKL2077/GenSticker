@@ -14,20 +14,20 @@
  </view>
 </template>
 <script>
-import {useShareCard} from '@/composables/useShareCard'
+import {shareCard} from '@/services/shareCard'
 import GenerationNotice from '@/components/GenerationNotice.vue'
 import FirstUseGuide from '@/components/FirstUseGuide.vue'
 import {ref} from 'vue'
 import DataControls from '@/components/DataControls.vue'
 import AccountActionCard from '@/components/AccountActionCard.vue'
-import {onShow,onHide} from '@dcloudio/uni-app'
+import {onShow,onHide,onShareAppMessage} from '@dcloudio/uni-app'
 import BottomTabs from '@/components/BottomTabs.vue'
 import {useLibrary} from '@/composables/useLibrary'
 import UiIcon from '@/components/UiIcon.vue'
 import {unreadCount,refreshUnread,preloadStudioQueue} from '@/services/studioService'
 import {openRecommend} from '@/services/navigation'
 export default{components: { GenerationNotice, FirstUseGuide,BottomTabs,UiIcon,DataControls,AccountActionCard},setup(){
- useShareCard()
+ onShareAppMessage(()=>shareCard())
  const sceneActive=ref(true)
  onHide(()=>{sceneActive.value=false})
  const account=useLibrary(),profileVisible=ref(false),nickname=ref(''),chosenAvatar=ref(''),loginError=ref(''),submitting=ref(false)

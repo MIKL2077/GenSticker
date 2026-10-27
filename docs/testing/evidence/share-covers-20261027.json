@@ -1,0 +1,122 @@
+{
+  "date": "2026-10-27",
+  "status": "deployed-and-verified",
+  "new_covers": 3,
+  "cover_pool": 4,
+  "selection": "random per native share callback; exclude previous cover within app session",
+  "explicit_generated_image": "preserved without consuming random choice",
+  "assets": [
+    {
+      "name": "cover-v2.jpg",
+      "bytes": 103957,
+      "sha256": "5ff9d33219d2ce2e3252fcc1bd20e66da401e0b4e656ba508570bc47bebc536a",
+      "public_https": "passed"
+    },
+    {
+      "name": "cover-v3.jpg",
+      "bytes": 105054,
+      "sha256": "a0aa3987fa57a2936123f7bec578a18deb6908686f8aff8b1ae931ff338c904f",
+      "public_https": "passed"
+    },
+    {
+      "name": "cover-v4.jpg",
+      "bytes": 117661,
+      "sha256": "a110783ba1ef78f004042a748f4e2fbfe47340332920ba1582a17e29c2f9a109",
+      "public_https": "passed"
+    },
+    {
+      "name": "cover-v5.jpg",
+      "bytes": 107660,
+      "sha256": "e22aedd4d7bbd85fce81f38cf6f05d784fb80d1e48bc94ccaca9878fbabf9ba3",
+      "public_https": "passed"
+    }
+  ],
+  "tests": {
+    "frontend_scripts": 33,
+    "backend_share_tests": 2,
+    "native": {
+      "status": "passed",
+      "shareCallbacks": 16,
+      "consecutiveRepeats": 0,
+      "variantsObserved": [
+        "https://www.shangkun.uk/gensticker/api/share/cover-v3.jpg",
+        "https://www.shangkun.uk/gensticker/api/share/cover-v2.jpg",
+        "https://www.shangkun.uk/gensticker/api/share/cover-v5.jpg",
+        "https://www.shangkun.uk/gensticker/api/share/cover-v4.jpg"
+      ],
+      "covers": [
+        {
+          "url": "https://www.shangkun.uk/gensticker/api/share/cover-v2.jpg",
+          "width": 600,
+          "height": 480
+        },
+        {
+          "url": "https://www.shangkun.uk/gensticker/api/share/cover-v3.jpg",
+          "width": 600,
+          "height": 480
+        },
+        {
+          "url": "https://www.shangkun.uk/gensticker/api/share/cover-v4.jpg",
+          "width": 600,
+          "height": 480
+        },
+        {
+          "url": "https://www.shangkun.uk/gensticker/api/share/cover-v5.jpg",
+          "width": 600,
+          "height": 480
+        }
+      ],
+      "otherPages": [
+        {
+          "page": "my",
+          "title": "让世界更有趣，来做你的专属表情包",
+          "path": "/pages/index/index",
+          "imageUrl": "https://www.shangkun.uk/gensticker/api/share/cover-v4.jpg"
+        },
+        {
+          "page": "recommend",
+          "title": "让世界更有趣，来做你的专属表情包",
+          "path": "/pages/index/index",
+          "imageUrl": "https://www.shangkun.uk/gensticker/api/share/cover-v5.jpg"
+        },
+        {
+          "page": "library",
+          "title": "让世界更有趣，来做你的专属表情包",
+          "path": "/pages/index/index",
+          "imageUrl": "https://www.shangkun.uk/gensticker/api/share/cover-v4.jpg"
+        },
+        {
+          "page": "queue",
+          "title": "让世界更有趣，来做你的专属表情包",
+          "path": "/pages/index/index",
+          "imageUrl": "https://www.shangkun.uk/gensticker/api/share/cover-v3.jpg"
+        },
+        {
+          "page": "create",
+          "title": "让世界更有趣，来做你的专属表情包",
+          "path": "/pages/index/index",
+          "imageUrl": "https://www.shangkun.uk/gensticker/api/share/cover-v5.jpg"
+        },
+        {
+          "page": "live",
+          "title": "让世界更有趣，来做你的专属表情包",
+          "path": "/pages/index/index",
+          "imageUrl": "https://www.shangkun.uk/gensticker/api/share/cover-v3.jpg"
+        }
+      ],
+      "domainValidation": true,
+      "runtimeErrors": []
+    }
+  },
+  "package": {
+    "bytes": 847869,
+    "media_bytes": 199585,
+    "media_limit_bytes": 204800,
+    "media_added": 0
+  },
+  "frontend_release": "new production build ready; upload mini-program experience/release version to enable for users",
+  "image_generation": {
+    "mode": "built-in imagegen",
+    "prompts": "backend/meme-generator/meme_generator/assets/share/PROMPTS.md"
+  }
+}

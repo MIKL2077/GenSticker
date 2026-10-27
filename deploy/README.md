@@ -35,4 +35,8 @@ npm run check:mp-weixin-package
 
 分享封面通过公开、无登录要求的 `GET /share/cover-v2.jpg` 提供，部署包包含 `meme_generator/assets/share/cover-v2.jpg`。它是 logo 衍生的三张表情插画，600×480 JPEG，版本化 URL 可公开缓存一年，不增加小程序媒体包体。首页默认分享及其他六个页面使用该封面；明确分享已生成图片时沿用该图片。分享个人页／队列等页面时链接指向公开首页，不带账号或任务信息。后续换图应递增 URL 版本，避免缓存旧封面。
 
+2026-10-27 新增 `cover-v3.jpg`、`cover-v4.jpg`、`cover-v5.jpg`，与 v2 组成四张封面池。每次分享回调随机选择一张，同一次小程序会话内避免连续两次相同；明确分享成品图片时沿用成品。后端 `features/share.py` 仅允许四个公开文件名，保留一年公开缓存和旧 v2 地址。打包脚本包含分享路由及全部版本化封面；更新前端后需重新上传小程序，服务器封面部署完成后立即可用。原始生成提示词见 [封面素材说明](../backend/meme-generator/meme_generator/assets/share/README.md)。
+
+七个页面必须直接调用 `onShareAppMessage` 注册分享回调：当前固定版本的 uni-app 编译器不会从间接调用的 composable 中推导页面所需的原生分享方法。构建时页面产物应带分享 runtime hook，微信原生页面上应存在可调用的 `onShareAppMessage`。只检查 Vue 初始化成功或单测 composable 回调并不能验收右上角分享菜单。
+
 `gensticker-archive.timer` 每月一日统计并归档公共模板，线上发布数量硬上限 8000。当前归档目标是项目仓库的独立 `template-archive` 分支；先推送并重新拉取验证，才释放未共享的本地素材。通过 `sudo gensticker-template-admin report/list/restore` 查看报告与恢复模板。日志策略安装器 `apply-log-policy.py` 限制 journal 和文本日志轮转并设置新 Docker 容器的默认日志预算，不重建已有容器。

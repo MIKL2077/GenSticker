@@ -15,17 +15,17 @@
   </view>
 </template>
 <script>
-import {useShareCard} from '@/composables/useShareCard'
+import {shareCard} from '@/services/shareCard'
 import GenerationNotice from '@/components/GenerationNotice.vue'
 import FirstUseGuide from '@/components/FirstUseGuide.vue'
 import { ref, computed, watch } from 'vue'
-import { onLoad, onShow, onHide } from '@dcloudio/uni-app'
+import { onLoad, onShow, onHide,onShareAppMessage} from '@dcloudio/uni-app'
 import { useLibrary } from '@/composables/useLibrary'
 import { getTemplateInfo, getTemplatePreviewPath } from '@/services/memeService'
 export default {
   components:{GenerationNotice,FirstUseGuide},
   setup() {
-    useShareCard()
+    onShareAppMessage(()=>shareCard())
     const sceneActive=ref(true)
     onHide(()=>{sceneActive.value=false})
     const account = useLibrary(), mode = ref('history'), details = ref({}), limit = ref(20)
