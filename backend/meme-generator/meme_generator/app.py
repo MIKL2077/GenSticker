@@ -44,7 +44,8 @@ async def lifespan(app):
     from meme_generator.features.subjects import warm_subject_model
     async def warm_foreground():
         from meme_generator.features.face_fusion import warmup as warm_fusion
-        for function,label in [(warm_subject_model,'foreground'),(warm_fusion,'portrait')]:
+        from meme_generator.features.expression_runtime import warmup as warm_expression
+        for function,label in [(warm_subject_model,'foreground'),(warm_fusion,'portrait'),(warm_expression,'expression')]:
             try:
                 await run_sync(function)()
             except Exception:
@@ -63,6 +64,8 @@ async def lifespan(app):
             await task
         from meme_generator.features.face_fusion import close as close_fusion
         close_fusion()
+        from meme_generator.features.expression_runtime import close as close_expression
+        close_expression()
         render_cache.items.clear()
         render_cache.bytes = 0
         subject_cache.items.clear();subject_cache.bytes=0

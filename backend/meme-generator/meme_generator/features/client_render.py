@@ -25,6 +25,11 @@ def version(key):
 
 def builtin_recipe(key):
     if key not in BUILTIN_LAYOUTS:return None
+    db=connect()
+    try:
+        row=db.execute("SELECT metadata FROM templates WHERE key=? AND status='published'",(key,)).fetchone()
+        if row and json.loads(row['metadata']).get('expression_policy'):return None
+    finally:db.close()
     try:
         current=version(key)
     except HTTPException:
@@ -63,6 +68,7 @@ def verify_receipt(token, key, identity):
 def public_recipe(row):
     spec = TemplateSpec.model_validate_json(row['spec'])
     metadata = json.loads(row['metadata'])
+    if metadata.get('expression_policy'):return None
     if spec.frames or spec.animation_asset or any(layer.type == 'face' or layer.original_asset or layer.slot>1 or layer.font_size<10 or layer.line_spacing!=4 or layer.direction!='horizontal' for layer in spec.layers):
         return None
     if spec.width > 768 or spec.height > 768 or len(spec.layers)>12:

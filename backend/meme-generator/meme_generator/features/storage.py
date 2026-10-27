@@ -52,6 +52,7 @@ def size(path):
 
 def asset_refs(spec):
     spec = json.loads(spec) if isinstance(spec, str) else spec
+    spec = spec or {}
     refs = {l["value"] for l in spec.get("layers", []) if l.get("type") == "asset"}
     if spec.get("reference_asset"):
         refs.add(spec["reference_asset"])
@@ -59,6 +60,11 @@ def asset_refs(spec):
     for layer in spec.get('layers',[]):
         for field in ['original_asset','mask_asset']:
             if layer.get(field):refs.add(layer[field])
+    for layer in spec.get('layers',[]) + [l for f in spec.get('frames',[]) for l in f.get('layers',[])]:
+        if recipe := layer.get('expression'):
+            refs.update(recipe[field] for field in ['reference_asset','base_asset','mask_asset'])
+    if recipe := spec.get('expression_policy',{}).get('recipe'):
+        refs.update(recipe[field] for field in ['reference_asset','base_asset','mask_asset'])
     for frame in spec.get('frames',[]):
         refs.add(frame['asset'])
         if frame.get('reference_asset'):refs.add(frame['reference_asset'])
@@ -261,9 +267,10 @@ def collect_orphans(min_age=86400):
             for table in ("templates", "template_versions", "studio_templates"):
                 if table in tables:
                     for row in db.execute(
-                        f"SELECT spec FROM {table} WHERE spec IS NOT NULL"
+                        f"SELECT spec,metadata FROM {table}"
                     ):
-                        refs.update(asset_refs(row[0]))
+                        refs.update(asset_refs(row[0]) if row[0] else set())
+                        refs.update(asset_refs(json.loads(row[1])))
         finally:
             db.close()
         removed = 0

@@ -167,7 +167,12 @@ def run_job(job):
         def render_one(slot, row):
             metadata = json.loads(row["metadata"])
             if row["spec"]:
-                if metadata.get('compositing_method')=='cpu-character-v1':
+                if metadata.get('expression_policy',{}).get('supported_regions',0):
+                    with fusion_lock:
+                        if ('expression',0) not in fusion_inputs:
+                            from .expression_runtime import prepare
+                            fusion_inputs[('expression',0)]=prepare(subject)
+                if metadata.get('compositing_method')=='cpu-character-v1' and fusion_inputs.get(('expression',0)) is None:
                     with fusion_lock:
                         if 0 not in fusion_inputs:
                             from .face_fusion import prepare
@@ -178,9 +183,15 @@ def run_job(job):
                     metadata.get("default_texts", []), face_blend="replace", _fusion_inputs=fusion_inputs,
                 )
             else:
-                output = get_meme(row["key"])(
-                    images=[raw], texts=metadata.get("default_texts", [])
-                )
+                from .expression_runtime import shared_inputs, prepare
+                if metadata.get('expression_policy',{}).get('supported_regions',0):
+                    with fusion_lock:
+                        if ('expression',0) not in fusion_inputs:
+                            fusion_inputs[('expression',0)]=prepare(subject)
+                with shared_inputs(fusion_inputs):
+                    output = get_meme(row["key"])(
+                        images=[raw], texts=metadata.get("default_texts", [])
+                    )
             from .animation import save_result_files
             path,preview=save_result_files(output,directory,slot,job["user_id"])
             return slot, row, metadata, path, preview
@@ -376,6 +387,11 @@ def main():
         warm_fusion()
     except Exception:
         print('Portrait locator unavailable; authored image-slot fallback enabled',flush=True)
+    try:
+        from .expression_runtime import warmup as warm_expression
+        warm_expression()
+    except Exception:
+        print('A/B expression models unavailable; authored image-slot fallback enabled',flush=True)
     last = 0
     while True:
         if time.time() - last > 3600:

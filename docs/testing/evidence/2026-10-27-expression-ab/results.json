@@ -1,0 +1,41 @@
+{
+  "scope": "local CPU; 100 preselected templates x six retained test photos; original and updated production call paths; no personal photos or outputs included in this report",
+  "frozen_math_sha256": "217d629e9e74d59ee0253d9effbc61ebdc54278c3b8543791f84455478923713",
+  "image_templates": 482,
+  "modes": {
+    "B": 241,
+    "A": 241
+  },
+  "templates_with_expression_rig": 235,
+  "templates_with_fallback_only": 247,
+  "selected_templates": 100,
+  "input_count": 6,
+  "cases": 600,
+  "statuses": {
+    "fused": 252,
+    "fallback": 348
+  },
+  "fused_templates_in_sample": 42,
+  "gif_outputs": 270,
+  "rendered_frames": 5490,
+  "dimension_mismatches": 0,
+  "timeline_mismatches": 0,
+  "loop_mismatches": 0,
+  "max_fixed_pixel_error_before_encoding": 0,
+  "cases_with_folded_geometry": 240,
+  "peak_rss_mib": 1297.9,
+  "render_ms_p50": 58.2,
+  "render_ms_p95": 848.4,
+  "regression_tests": 174,
+  "regression_tests_passed": true,
+  "visual_quality_approved": false,
+  "limitations": [
+    "42 of 100 sampled templates actually fused; the remaining templates use explicit fallback.",
+    "Geometry folds are diagnostic warnings, not necessarily all visible defects; they occur in 240 of 252 fused cases.",
+    "B can reduce identity resemblance because its mouth pixels come from the template.",
+    "Animals, anime, glasses, profiles and small source faces have visible warps, hard edges or holes in some inspected results.",
+    "GIF fixed-region checks are before palette encoding, not a claim of post-encoding exact equality."
+  ],
+  "fallback_cases_with_pixel_changes": 0,
+  "fused_cases_without_pixel_changes": 0
+}

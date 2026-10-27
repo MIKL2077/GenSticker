@@ -13,6 +13,7 @@ from ..manager import get_memes, add_meme, get_meme_keys, get_meme
 
 router = APIRouter()
 loaded_versions = {}
+_native_functions = {}
 NAMESPACE = uuid.UUID("bcd6c8b6-6ffb-409c-92c0-69238a97c80c")
 
 
@@ -42,6 +43,14 @@ def publish(key, metadata, spec=None, *, minimum_version=1, publication=None):
     retired=json.loads(Path(__file__).with_name("template_policy.json").read_text())["retired_keys"]
     if key in retired:
         raise ValueError("template withdrawn by owner")
+    if spec is None and metadata.get('origin')=='bundled' and 'expression_policy' not in metadata:
+        # Native bootstrap must retain the versioned A/B policy on restarts.
+        db=connect()
+        try:
+            old=db.execute('SELECT metadata FROM templates WHERE key=?',(key,)).fetchone()
+            if old and (policy:=json.loads(old['metadata']).get('expression_policy')):
+                metadata={**metadata,'expression_policy':policy}
+        finally:db.close()
     if spec is not None:
         spec = TemplateSpec.model_validate(spec).model_dump()
     metadata = dict(metadata)
@@ -129,6 +138,8 @@ def bootstrap():
         restore()
         from .common_scenes import restore as restore_scenes
         restore_scenes()
+        from .expression_library import restore as restore_expression
+        restore_expression()
 
 
 def rows():
@@ -143,7 +154,9 @@ def rows():
 
 
 def refresh():
-    published = rows()
+    db=connect()
+    try:published=[dict(r) for r in db.execute("SELECT key,version FROM templates WHERE status='published'")]
+    finally:db.close()
     db=connect()
     try:blocked={r[0] for r in db.execute('SELECT key FROM template_blocks')} | {r[0] for r in db.execute("SELECT key FROM templates WHERE status='archived'")}
     finally:db.close()
@@ -156,7 +169,20 @@ def refresh():
             loaded_versions.pop(key, None)
     keys = set(get_meme_keys())
     for row in published:
-        if not row["spec"] or loaded_versions.get(row["key"]) == row["version"]:
+        if loaded_versions.get(row["key"]) == row["version"]:
+            continue
+        db=connect()
+        try:row=dict(db.execute("SELECT * FROM templates WHERE key=? AND status='published'",(row['key'],)).fetchone() or {})
+        finally:db.close()
+        if not row:continue
+        if not row['spec']:
+            if row['key'] in keys:
+                meme=get_meme(row['key'])
+                original=_native_functions.setdefault(row['key'],meme.function)
+                policy=json.loads(row['metadata']).get('expression_policy')
+                from .expression_runtime import wrap_native
+                meme.function=wrap_native(original,policy) if policy else original
+                loaded_versions[row['key']]=row['version']
             continue
         spec = json.loads(row["spec"])
         metadata = json.loads(row["metadata"])
@@ -196,16 +222,26 @@ def refresh():
         loaded_versions[row["key"]] = row["version"]
 
 
+def public_metadata(raw):
+    data=json.loads(raw) if isinstance(raw,str) else dict(raw)
+    if policy:=data.get('expression_policy'):
+        data['expression_policy']={k:v for k,v in policy.items() if k!='recipe'}
+    return data
+
+
 @router.get("/templates")
 def catalog():
+    db=connect()
+    try:published=[dict(r) for r in db.execute("SELECT id,key,version,metadata FROM templates WHERE status='published'")]
+    finally:db.close()
     return [
         {
             "template_id": r["id"],
             "key": r["key"],
             "version": r["version"],
-            **json.loads(r["metadata"]),
+            **public_metadata(r["metadata"]),
         }
-        for r in rows()
+        for r in published
     ]
 
 

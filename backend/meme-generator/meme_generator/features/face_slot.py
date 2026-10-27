@@ -33,6 +33,10 @@ def prepared_background(reference, layers):
 
 def composite(canvas, source, layer, *, background_prepared=False, mode='replace', reference=None, fusion_inputs=None):
     if mode not in {'replace','color','seamless','expression'}:raise FaceInputError('请选择有效的融合方式')
+    if layer.expression and mode=='replace':
+        from . import expression_runtime
+        cache={} if fusion_inputs is None else fusion_inputs
+        if expression_runtime.composite(canvas,source,layer.expression,layer.slot,cache):return
     if layer.fusion and mode=='replace':
         from . import face_fusion
         cache={} if fusion_inputs is None else fusion_inputs

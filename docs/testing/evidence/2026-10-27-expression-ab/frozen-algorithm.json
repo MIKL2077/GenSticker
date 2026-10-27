@@ -1,0 +1,13 @@
+{
+  "frozen_experiment_sha256": "6cf3e02a5912b4b1bbce11121f9780cf6a5043700e93947c49e6be94cf286314",
+  "functions": {
+    "basis": true,
+    "normalized": true,
+    "unnormalized": true,
+    "poly": true,
+    "triangles": true,
+    "warp": true,
+    "retarget": true,
+    "render_frame": true
+  }
+}

@@ -154,7 +154,9 @@ def archive_template(key,store=None):
         refs=set()
         for version in versions:
             if version['spec']:refs.update(asset_refs(version['spec']))
+            refs.update(asset_refs(version['metadata']))
         refs.update(asset_refs(row['spec']))
+        refs.update(asset_refs(row['metadata']))
         files={};assets={}
         for ref in refs:
             found=[p for suffix in ['.png','.gif'] if (p:=root()/'template_assets'/(ref+suffix)).is_file()]
@@ -183,7 +185,8 @@ def archive_template(key,store=None):
             retained=set()
             for table in ['templates','template_versions','studio_templates']:
                 if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?",(table,)).fetchone():
-                    for v in db.execute('SELECT spec FROM '+table+' WHERE spec IS NOT NULL'):retained.update(asset_refs(v[0]))
+                    for v in db.execute('SELECT spec,metadata FROM '+table):
+                        retained.update(asset_refs(v[0]));retained.update(asset_refs(v[1]))
             freed=0
             for ref in refs-retained:
                 for suffix in ['.png','.gif']:

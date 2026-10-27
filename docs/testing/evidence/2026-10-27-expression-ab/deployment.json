@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "templates": 958,
+  "updated": 482,
+  "modes": {
+    "A": 241,
+    "B": 241
+  },
+  "services": {
+    "gensticker": "active",
+    "gensticker-worker": "active"
+  },
+  "restore": "UPDATED 482",
+  "caption_templates_unchanged": 476
+}

@@ -1,0 +1,312 @@
+{
+  "source_slot_crop_repairs": [
+    {
+      "key": "auto_story_028e26b18d1b31309ba69116",
+      "regions": 7
+    },
+    {
+      "key": "auto_story_055b6b17484ea8aa59486c88",
+      "regions": 1
+    },
+    {
+      "key": "auto_story_10ad556735d9ff96e3f7be9a",
+      "regions": 3
+    },
+    {
+      "key": "auto_story_1c75b235586990c9f770388c",
+      "regions": 1
+    },
+    {
+      "key": "auto_story_23ab34a19c739aead68e09a7",
+      "regions": 6
+    },
+    {
+      "key": "auto_story_36ff464b00bffbdf823133d6",
+      "regions": 7
+    },
+    {
+      "key": "auto_story_3e8ecc9cc887e954f472c660",
+      "regions": 2
+    },
+    {
+      "key": "auto_story_41bab85e04708fed862a6ebd",
+      "regions": 1
+    },
+    {
+      "key": "auto_story_42d2d4648e4330f3532946b7",
+      "regions": 3
+    },
+    {
+      "key": "auto_story_44be0f5d8d059c441ab5be5a",
+      "regions": 1
+    },
+    {
+      "key": "auto_story_598c17753cd4c04fe42651fd",
+      "regions": 1
+    },
+    {
+      "key": "auto_story_5d05f08a358a8525c5248d02",
+      "regions": 1
+    },
+    {
+      "key": "auto_story_8060429b61bea0ad088f8d42",
+      "regions": 1
+    },
+    {
+      "key": "auto_story_89c0bf562601536fee3b930a",
+      "regions": 1
+    },
+    {
+      "key": "auto_story_8e4af07e9a129d44120fa664",
+      "regions": 2
+    },
+    {
+      "key": "auto_story_953a9d204656d2ef4d3b7f12",
+      "regions": 7
+    },
+    {
+      "key": "auto_story_9967284a70219e69fa30828d",
+      "regions": 2
+    },
+    {
+      "key": "auto_story_9f1a888a6edd42df96d65565",
+      "regions": 1
+    },
+    {
+      "key": "auto_story_a9cf95393b8d87b18edc4ed3",
+      "regions": 3
+    },
+    {
+      "key": "auto_story_b93490c179db01e736f90945",
+      "regions": 4
+    },
+    {
+      "key": "auto_story_c0473d2ea1c3957392259ec7",
+      "regions": 2
+    },
+    {
+      "key": "auto_story_c67116d47734a6eb4ef48c4f",
+      "regions": 1
+    },
+    {
+      "key": "auto_story_c900a27f6ab3bdd502f49758",
+      "regions": 5
+    },
+    {
+      "key": "auto_story_d28a29440519a8bff3490f4b",
+      "regions": 2
+    },
+    {
+      "key": "auto_story_d826f805409450ce9330c45d",
+      "regions": 1
+    },
+    {
+      "key": "auto_story_dd74fcdfab46087c6cf93df7",
+      "regions": 4
+    },
+    {
+      "key": "auto_story_e33ee7837b1a4976d456ba00",
+      "regions": 1
+    },
+    {
+      "key": "auto_story_ed74fb7e4ce1cec8fbda03f4",
+      "regions": 3
+    },
+    {
+      "key": "auto_story_f3ab02fe93cce98173d652e1",
+      "regions": 5
+    }
+  ],
+  "lossless_clean_patch_checks": 1499,
+  "timeline_fills": [
+    {
+      "key": "auto_story_055b6b17484ea8aa59486c88",
+      "filled_regions": 5
+    },
+    {
+      "key": "auto_story_0629220fd26a0a7d787d3d65",
+      "filled_regions": 1
+    },
+    {
+      "key": "auto_story_0dd9d695a6cd0234df990009",
+      "filled_regions": 6
+    },
+    {
+      "key": "auto_story_10ad556735d9ff96e3f7be9a",
+      "filled_regions": 2
+    },
+    {
+      "key": "auto_story_17614d3aefdd49fe5dbd7c0a",
+      "filled_regions": 1
+    },
+    {
+      "key": "auto_story_203ad53781ef270c8b41e68a",
+      "filled_regions": 4
+    },
+    {
+      "key": "auto_story_22a6b3805881fb5a35a335c0",
+      "filled_regions": 3
+    },
+    {
+      "key": "auto_story_23ab34a19c739aead68e09a7",
+      "filled_regions": 5
+    },
+    {
+      "key": "auto_story_30c804cb091cf9f0f0df9f2d",
+      "filled_regions": 1
+    },
+    {
+      "key": "auto_story_30d8b52d719f8646b6d89263",
+      "filled_regions": 2
+    },
+    {
+      "key": "auto_story_34632141f7f99ad1e842d188",
+      "filled_regions": 1
+    },
+    {
+      "key": "auto_story_36ff464b00bffbdf823133d6",
+      "filled_regions": 15
+    },
+    {
+      "key": "auto_story_39204a5853d3578cfbd506b8",
+      "filled_regions": 2
+    },
+    {
+      "key": "auto_story_42d2d4648e4330f3532946b7",
+      "filled_regions": 7
+    },
+    {
+      "key": "auto_story_46f0051ef3a042c7d3cfee49",
+      "filled_regions": 4
+    },
+    {
+      "key": "auto_story_477e3e96a7eb470fdcd9cc52",
+      "filled_regions": 3
+    },
+    {
+      "key": "auto_story_4ac56144307a053dfaad60b5",
+      "filled_regions": 1
+    },
+    {
+      "key": "auto_story_5843927caac94d51fa5f420b",
+      "filled_regions": 2
+    },
+    {
+      "key": "auto_story_5c263ea87a500125746c5fe6",
+      "filled_regions": 3
+    },
+    {
+      "key": "auto_story_612c778e0adb0e300b94e93e",
+      "filled_regions": 17
+    },
+    {
+      "key": "auto_story_61b970d661bb4d7876aba308",
+      "filled_regions": 3
+    },
+    {
+      "key": "auto_story_63e2b43d145d9be296659ad7",
+      "filled_regions": 1
+    },
+    {
+      "key": "auto_story_698c3d93ef451911ced2da8d",
+      "filled_regions": 5
+    },
+    {
+      "key": "auto_story_6c924331723f24026b535db0",
+      "filled_regions": 10
+    },
+    {
+      "key": "auto_story_8060429b61bea0ad088f8d42",
+      "filled_regions": 1
+    },
+    {
+      "key": "auto_story_89c0bf562601536fee3b930a",
+      "filled_regions": 3
+    },
+    {
+      "key": "auto_story_8c8b04033230a7991957de5a",
+      "filled_regions": 3
+    },
+    {
+      "key": "auto_story_8e4af07e9a129d44120fa664",
+      "filled_regions": 3
+    },
+    {
+      "key": "auto_story_953a9d204656d2ef4d3b7f12",
+      "filled_regions": 5
+    },
+    {
+      "key": "auto_story_9967284a70219e69fa30828d",
+      "filled_regions": 9
+    },
+    {
+      "key": "auto_story_a9cf95393b8d87b18edc4ed3",
+      "filled_regions": 11
+    },
+    {
+      "key": "auto_story_b93490c179db01e736f90945",
+      "filled_regions": 4
+    },
+    {
+      "key": "auto_story_c67116d47734a6eb4ef48c4f",
+      "filled_regions": 4
+    },
+    {
+      "key": "auto_story_c6aea7dd50fe82f74ccd0702",
+      "filled_regions": 4
+    },
+    {
+      "key": "auto_story_c900a27f6ab3bdd502f49758",
+      "filled_regions": 2
+    },
+    {
+      "key": "auto_story_cb8281ab0f54976b15fd8d1d",
+      "filled_regions": 14
+    },
+    {
+      "key": "auto_story_d5d3057db3299fe82a59e43d",
+      "filled_regions": 13
+    },
+    {
+      "key": "auto_story_d826f805409450ce9330c45d",
+      "filled_regions": 2
+    },
+    {
+      "key": "auto_story_dd74fcdfab46087c6cf93df7",
+      "filled_regions": 2
+    },
+    {
+      "key": "auto_story_e2ea7227bc08283a8646b47e",
+      "filled_regions": 1
+    },
+    {
+      "key": "auto_story_e559a450daf7f309bf6a0cbf",
+      "filled_regions": 5
+    },
+    {
+      "key": "auto_story_ed74fb7e4ce1cec8fbda03f4",
+      "filled_regions": 20
+    },
+    {
+      "key": "auto_story_ed909a1d4667be204c9ab884",
+      "filled_regions": 10
+    },
+    {
+      "key": "auto_story_f08656a0a30229b0684a33ce",
+      "filled_regions": 3
+    },
+    {
+      "key": "auto_story_f3214a93a915c5bf6113ebf8",
+      "filled_regions": 4
+    },
+    {
+      "key": "auto_story_f3ab02fe93cce98173d652e1",
+      "filled_regions": 2
+    }
+  ],
+  "filled_regions": 229,
+  "batch_count": 5,
+  "batch_bytes": 51943026,
+  "visual_quality_approved": false,
+  "cache_only_dependency_assets_fixed": 2
+}

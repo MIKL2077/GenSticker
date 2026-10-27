@@ -1,0 +1,1630 @@
+{
+  "scope": "deployed production code; 100 preselected templates x S03; isolated CPUQuota100%, MemoryMax1536MiB, Nice10; no queue or network timing",
+  "cases": [
+    {
+      "id": "T001",
+      "key": "erised_mirror",
+      "mode": "A",
+      "ms": 2327.0,
+      "bytes": 528770,
+      "applied_regions": 1,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        720,
+        786
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T002",
+      "key": "auto_story_017aff25460a9abf80b2a1bc",
+      "mode": "A",
+      "ms": 2292.2,
+      "bytes": 260116,
+      "applied_regions": 21,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        197,
+        132
+      ],
+      "frames": 21
+    },
+    {
+      "id": "T003",
+      "key": "auto_story_3290df18f861f5f30a2ddb59",
+      "mode": "A",
+      "ms": 1974.6,
+      "bytes": 536724,
+      "applied_regions": 15,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        208,
+        256
+      ],
+      "frames": 15
+    },
+    {
+      "id": "T004",
+      "key": "auto_story_0088a90546d881e9980dd99e",
+      "mode": "A",
+      "ms": 68.3,
+      "bytes": 163954,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        376,
+        380
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T005",
+      "key": "stickman_dancing",
+      "mode": "A",
+      "ms": 1166.0,
+      "bytes": 1680387,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        500,
+        500
+      ],
+      "frames": 109
+    },
+    {
+      "id": "T006",
+      "key": "auto_story_b93490c179db01e736f90945",
+      "mode": "A",
+      "ms": 2299.7,
+      "bytes": 310197,
+      "applied_regions": 21,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        240,
+        240
+      ],
+      "frames": 21
+    },
+    {
+      "id": "T007",
+      "key": "seal",
+      "mode": "A",
+      "ms": 224.7,
+      "bytes": 345484,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        535,
+        602
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T008",
+      "key": "look_flat",
+      "mode": "A",
+      "ms": 378.4,
+      "bytes": 27184,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        500,
+        361
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T009",
+      "key": "auto_story_4b65fe4df77f45b67546f107",
+      "mode": "A",
+      "ms": 388.2,
+      "bytes": 195949,
+      "applied_regions": 1,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        512,
+        486
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T010",
+      "key": "paint",
+      "mode": "A",
+      "ms": 27.4,
+      "bytes": 14368,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        300,
+        288
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T011",
+      "key": "upside_down",
+      "mode": "A",
+      "ms": 209.0,
+      "bytes": 38505,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        500,
+        642
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T012",
+      "key": "dog_dislike",
+      "mode": "A",
+      "ms": 721.7,
+      "bytes": 1301208,
+      "applied_regions": 1,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        320,
+        432
+      ],
+      "frames": 34
+    },
+    {
+      "id": "T013",
+      "key": "perfect",
+      "mode": "A",
+      "ms": 34.6,
+      "bytes": 33661,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        652,
+        524
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T014",
+      "key": "capoo_strike",
+      "mode": "A",
+      "ms": 129.9,
+      "bytes": 96594,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        400,
+        255
+      ],
+      "frames": 7
+    },
+    {
+      "id": "T015",
+      "key": "auto_story_5843927caac94d51fa5f420b",
+      "mode": "A",
+      "ms": 830.0,
+      "bytes": 227094,
+      "applied_regions": 6,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        240,
+        240
+      ],
+      "frames": 6
+    },
+    {
+      "id": "T016",
+      "key": "overtime",
+      "mode": "A",
+      "ms": 40.9,
+      "bytes": 51334,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        428,
+        454
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T017",
+      "key": "dinosaur",
+      "mode": "A",
+      "ms": 122.0,
+      "bytes": 88937,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        1080,
+        1080
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T018",
+      "key": "auto_story_5153fbf86fd3f11745fd6a40",
+      "mode": "A",
+      "ms": 289.7,
+      "bytes": 42084,
+      "applied_regions": 1,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        208,
+        243
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T019",
+      "key": "symmetric",
+      "mode": "A",
+      "ms": 20.3,
+      "bytes": 38800,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        534,
+        602
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T020",
+      "key": "applaud",
+      "mode": "A",
+      "ms": 47.1,
+      "bytes": 94533,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        240,
+        240
+      ],
+      "frames": 5
+    },
+    {
+      "id": "T021",
+      "key": "marriage",
+      "mode": "A",
+      "ms": 96.4,
+      "bytes": 92051,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        959,
+        1080
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T022",
+      "key": "tom_tease",
+      "mode": "A",
+      "ms": 398.7,
+      "bytes": 715786,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        544,
+        404
+      ],
+      "frames": 11
+    },
+    {
+      "id": "T023",
+      "key": "auto_story_ff15c664b2f475783fb0352a",
+      "mode": "A",
+      "ms": 52.2,
+      "bytes": 4427,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        80,
+        80
+      ],
+      "frames": 3
+    },
+    {
+      "id": "T024",
+      "key": "auto_story_b12f73194a2f1315294c3e57",
+      "mode": "A",
+      "ms": 443.9,
+      "bytes": 363081,
+      "applied_regions": 1,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        512,
+        484
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T025",
+      "key": "auto_story_9ba8304587802ca782d75364",
+      "mode": "A",
+      "ms": 282.1,
+      "bytes": 46113,
+      "applied_regions": 1,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        200,
+        200
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T026",
+      "key": "gun",
+      "mode": "A",
+      "ms": 37.5,
+      "bytes": 32386,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        500,
+        500
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T027",
+      "key": "auto_story_2a3dc1091ebb12de6d588dbc",
+      "mode": "A",
+      "ms": 285.9,
+      "bytes": 52029,
+      "applied_regions": 1,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        239,
+        240
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T028",
+      "key": "auto_story_81735af298f4a62b9845c0f2",
+      "mode": "A",
+      "ms": 271.0,
+      "bytes": 408487,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        256,
+        256
+      ],
+      "frames": 11
+    },
+    {
+      "id": "T029",
+      "key": "dont_touch",
+      "mode": "A",
+      "ms": 66.6,
+      "bytes": 109782,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        720,
+        730
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T030",
+      "key": "wechat_pay",
+      "mode": "A",
+      "ms": 158.6,
+      "bytes": 122792,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        1242,
+        1692
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T031",
+      "key": "shake_head",
+      "mode": "A",
+      "ms": 181.8,
+      "bytes": 1069270,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        429,
+        482
+      ],
+      "frames": 20
+    },
+    {
+      "id": "T032",
+      "key": "run_away",
+      "mode": "A",
+      "ms": 1085.6,
+      "bytes": 2914935,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        432,
+        486
+      ],
+      "frames": 42
+    },
+    {
+      "id": "T033",
+      "key": "play_game",
+      "mode": "A",
+      "ms": 52.4,
+      "bytes": 47342,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        526,
+        503
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T034",
+      "key": "auto_story_59c69ac053b831f415a1e634",
+      "mode": "A",
+      "ms": 2755.2,
+      "bytes": 329220,
+      "applied_regions": 24,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        124,
+        159
+      ],
+      "frames": 24
+    },
+    {
+      "id": "T035",
+      "key": "auto_story_efc307a82de81ce79475f5b4",
+      "mode": "A",
+      "ms": 1667.9,
+      "bytes": 355668,
+      "applied_regions": 13,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        240,
+        240
+      ],
+      "frames": 13
+    },
+    {
+      "id": "T036",
+      "key": "auto_story_41a66a2454850ed0cfd2e2bc",
+      "mode": "A",
+      "ms": 26.4,
+      "bytes": 29915,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        191,
+        190
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T037",
+      "key": "always",
+      "mode": "A",
+      "ms": 55.3,
+      "bytes": 40323,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        500,
+        684
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T038",
+      "key": "flick",
+      "mode": "A",
+      "ms": 942.0,
+      "bytes": 629052,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        240,
+        240
+      ],
+      "frames": 28
+    },
+    {
+      "id": "T039",
+      "key": "auto_story_2d9930d12d36c5bc780d6ac6",
+      "mode": "A",
+      "ms": 2220.2,
+      "bytes": 345093,
+      "applied_regions": 20,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        200,
+        200
+      ],
+      "frames": 20
+    },
+    {
+      "id": "T040",
+      "key": "auto_fe3c93637403bf05ce67a6e3",
+      "mode": "A",
+      "ms": 283.1,
+      "bytes": 25476,
+      "applied_regions": 1,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        300,
+        300
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T041",
+      "key": "auto_story_c6aea7dd50fe82f74ccd0702",
+      "mode": "A",
+      "ms": 2202.5,
+      "bytes": 509124,
+      "applied_regions": 21,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        192,
+        185
+      ],
+      "frames": 21
+    },
+    {
+      "id": "T042",
+      "key": "lost_dog",
+      "mode": "A",
+      "ms": 2912.8,
+      "bytes": 98698,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        800,
+        1033
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T043",
+      "key": "auto_story_aea53d8111260099d8f6428b",
+      "mode": "A",
+      "ms": 337.6,
+      "bytes": 128061,
+      "applied_regions": 1,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        440,
+        437
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T044",
+      "key": "acg_entrance",
+      "mode": "A",
+      "ms": 70.3,
+      "bytes": 57081,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        640,
+        962
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T045",
+      "key": "roll",
+      "mode": "A",
+      "ms": 86.8,
+      "bytes": 223157,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        300,
+        300
+      ],
+      "frames": 8
+    },
+    {
+      "id": "T046",
+      "key": "auto_story_69a5693cbea8924f5c23c3e6",
+      "mode": "A",
+      "ms": 2369.9,
+      "bytes": 210187,
+      "applied_regions": 22,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        120,
+        120
+      ],
+      "frames": 22
+    },
+    {
+      "id": "T047",
+      "key": "auto_story_8e4af07e9a129d44120fa664",
+      "mode": "A",
+      "ms": 2520.5,
+      "bytes": 429072,
+      "applied_regions": 24,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        240,
+        240
+      ],
+      "frames": 24
+    },
+    {
+      "id": "T048",
+      "key": "capoo_rip",
+      "mode": "A",
+      "ms": 106.4,
+      "bytes": 129396,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        366,
+        284
+      ],
+      "frames": 14
+    },
+    {
+      "id": "T049",
+      "key": "raise_image",
+      "mode": "A",
+      "ms": 51.6,
+      "bytes": 42565,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        900,
+        603
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T050",
+      "key": "auto_story_b1473190d63da87412a1dbf9",
+      "mode": "A",
+      "ms": 299.0,
+      "bytes": 45676,
+      "applied_regions": 1,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        249,
+        202
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T051",
+      "key": "pepe_raise",
+      "mode": "B",
+      "ms": 254.0,
+      "bytes": 125237,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        518,
+        518
+      ],
+      "frames": 4
+    },
+    {
+      "id": "T052",
+      "key": "pyramid",
+      "mode": "B",
+      "ms": 860.3,
+      "bytes": 375971,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        300,
+        300
+      ],
+      "frames": 30
+    },
+    {
+      "id": "T053",
+      "key": "auto_story_6b2f0280b3a8a8ee2e6de8fc",
+      "mode": "B",
+      "ms": 378.0,
+      "bytes": 127740,
+      "applied_regions": 1,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        360,
+        319
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T054",
+      "key": "flash_blind",
+      "mode": "B",
+      "ms": 487.9,
+      "bytes": 591429,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        500,
+        562
+      ],
+      "frames": 4
+    },
+    {
+      "id": "T055",
+      "key": "auto_story_c41355f05dbd6e6bf5daebc0",
+      "mode": "B",
+      "ms": 2856.2,
+      "bytes": 424784,
+      "applied_regions": 24,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        240,
+        240
+      ],
+      "frames": 24
+    },
+    {
+      "id": "T056",
+      "key": "repeat",
+      "mode": "B",
+      "ms": 7438.2,
+      "bytes": 5045048,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        1079,
+        1192
+      ],
+      "frames": 50
+    },
+    {
+      "id": "T057",
+      "key": "petpet",
+      "mode": "B",
+      "ms": 52.8,
+      "bytes": 27879,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        112,
+        112
+      ],
+      "frames": 5
+    },
+    {
+      "id": "T058",
+      "key": "auto_story_299db0b9320d55b6bcb5a6fb",
+      "mode": "B",
+      "ms": 85.7,
+      "bytes": 174154,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        471,
+        512
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T059",
+      "key": "beat_up",
+      "mode": "B",
+      "ms": 68.7,
+      "bytes": 64338,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        272,
+        208
+      ],
+      "frames": 3
+    },
+    {
+      "id": "T060",
+      "key": "auto_story_21d8ad3dbc0261420383964d",
+      "mode": "B",
+      "ms": 446.2,
+      "bytes": 231899,
+      "applied_regions": 1,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        512,
+        510
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T061",
+      "key": "auto_story_4ed3e24ab9c674a9a0e6f649",
+      "mode": "B",
+      "ms": 1981.4,
+      "bytes": 340046,
+      "applied_regions": 14,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        240,
+        240
+      ],
+      "frames": 14
+    },
+    {
+      "id": "T062",
+      "key": "auto_story_9f5e2c20c0185b0b936dbc94",
+      "mode": "B",
+      "ms": 62.7,
+      "bytes": 242724,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        512,
+        287
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T063",
+      "key": "auto_story_d6212b11f60542e22b9e72d1",
+      "mode": "B",
+      "ms": 499.6,
+      "bytes": 8037,
+      "applied_regions": 3,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        80,
+        80
+      ],
+      "frames": 3
+    },
+    {
+      "id": "T064",
+      "key": "bubble_tea",
+      "mode": "B",
+      "ms": 36.7,
+      "bytes": 29061,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        500,
+        500
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T065",
+      "key": "auto_story_08afdc8603324014d0636493",
+      "mode": "B",
+      "ms": 302.2,
+      "bytes": 59441,
+      "applied_regions": 1,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        222,
+        227
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T066",
+      "key": "auto_story_08409e5df75f88ea3fe9da53",
+      "mode": "B",
+      "ms": 389.6,
+      "bytes": 181171,
+      "applied_regions": 1,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        439,
+        503
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T067",
+      "key": "you_dont_get",
+      "mode": "B",
+      "ms": 25.7,
+      "bytes": 17314,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        370,
+        320
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T068",
+      "key": "police1",
+      "mode": "B",
+      "ms": 28.8,
+      "bytes": 21345,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        399,
+        397
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T069",
+      "key": "love_you",
+      "mode": "B",
+      "ms": 30.4,
+      "bytes": 17656,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        202,
+        205
+      ],
+      "frames": 2
+    },
+    {
+      "id": "T070",
+      "key": "thump",
+      "mode": "B",
+      "ms": 51.6,
+      "bytes": 33917,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        200,
+        200
+      ],
+      "frames": 4
+    },
+    {
+      "id": "T071",
+      "key": "auto_story_9846dfa799e33eb926fb4a20",
+      "mode": "B",
+      "ms": 453.2,
+      "bytes": 353559,
+      "applied_regions": 1,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        468,
+        512
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T072",
+      "key": "auto_story_1f9abab4895b1108cdf3a872",
+      "mode": "B",
+      "ms": 3068.3,
+      "bytes": 610405,
+      "applied_regions": 24,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        192,
+        148
+      ],
+      "frames": 24
+    },
+    {
+      "id": "T073",
+      "key": "jump",
+      "mode": "B",
+      "ms": 508.4,
+      "bytes": 17357,
+      "applied_regions": 1,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        70,
+        95
+      ],
+      "frames": 8
+    },
+    {
+      "id": "T074",
+      "key": "auto_story_f590e40e365daf253dbb9034",
+      "mode": "B",
+      "ms": 615.9,
+      "bytes": 11512,
+      "applied_regions": 4,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        100,
+        100
+      ],
+      "frames": 4
+    },
+    {
+      "id": "T075",
+      "key": "jiji_king",
+      "mode": "B",
+      "ms": 39.5,
+      "bytes": 27316,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        510,
+        400
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T076",
+      "key": "sekaiichi_kawaii",
+      "mode": "B",
+      "ms": 67.4,
+      "bytes": 116008,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        675,
+        900
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T077",
+      "key": "auto_story_90b85ce741e015f800772c1d",
+      "mode": "B",
+      "ms": 283.8,
+      "bytes": 8563,
+      "applied_regions": 1,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        70,
+        66
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T078",
+      "key": "cyan",
+      "mode": "B",
+      "ms": 312.9,
+      "bytes": 34057,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        500,
+        500
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T079",
+      "key": "why_at_me",
+      "mode": "B",
+      "ms": 49.9,
+      "bytes": 40959,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        462,
+        513
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T080",
+      "key": "auto_94a791fdabf54599f5f89bbd",
+      "mode": "B",
+      "ms": 351.6,
+      "bytes": 164931,
+      "applied_regions": 1,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        324,
+        322
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T081",
+      "key": "bite",
+      "mode": "B",
+      "ms": 151.2,
+      "bytes": 185516,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        362,
+        364
+      ],
+      "frames": 16
+    },
+    {
+      "id": "T082",
+      "key": "universal",
+      "mode": "B",
+      "ms": 33.8,
+      "bytes": 37612,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        500,
+        637
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T083",
+      "key": "auto_story_6b4abde6d3f56c797df6bdc5",
+      "mode": "B",
+      "ms": 1703.1,
+      "bytes": 36322,
+      "applied_regions": 14,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        80,
+        80
+      ],
+      "frames": 14
+    },
+    {
+      "id": "T084",
+      "key": "walnut_zoom",
+      "mode": "B",
+      "ms": 3240.0,
+      "bytes": 2715646,
+      "applied_regions": 1,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        960,
+        540
+      ],
+      "frames": 24
+    },
+    {
+      "id": "T085",
+      "key": "lick_candy",
+      "mode": "B",
+      "ms": 1875.6,
+      "bytes": 1015476,
+      "applied_regions": 1,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        300,
+        300
+      ],
+      "frames": 91
+    },
+    {
+      "id": "T086",
+      "key": "auto_story_5c263ea87a500125746c5fe6",
+      "mode": "B",
+      "ms": 1445.5,
+      "bytes": 28222,
+      "applied_regions": 12,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        80,
+        80
+      ],
+      "frames": 12
+    },
+    {
+      "id": "T087",
+      "key": "arona_throw",
+      "mode": "B",
+      "ms": 390.8,
+      "bytes": 407792,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        540,
+        540
+      ],
+      "frames": 16
+    },
+    {
+      "id": "T088",
+      "key": "fill_head",
+      "mode": "B",
+      "ms": 35.8,
+      "bytes": 28624,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        548,
+        558
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T089",
+      "key": "plana_eat",
+      "mode": "B",
+      "ms": 239.0,
+      "bytes": 698142,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        1024,
+        1024
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T090",
+      "key": "auto_story_3cbf28c2b2c479e305439766",
+      "mode": "B",
+      "ms": 347.8,
+      "bytes": 129392,
+      "applied_regions": 1,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        512,
+        320
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T091",
+      "key": "auto_story_46f0051ef3a042c7d3cfee49",
+      "mode": "B",
+      "ms": 2854.3,
+      "bytes": 541336,
+      "applied_regions": 22,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        240,
+        238
+      ],
+      "frames": 22
+    },
+    {
+      "id": "T092",
+      "key": "auto_story_46e266ad3d4f7cdea9b2a391",
+      "mode": "B",
+      "ms": 28.0,
+      "bytes": 28608,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        225,
+        225
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T093",
+      "key": "stare_at_you",
+      "mode": "B",
+      "ms": 106.5,
+      "bytes": 208859,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        400,
+        400
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T094",
+      "key": "follow",
+      "mode": "B",
+      "ms": 31.1,
+      "bytes": 17049,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        624,
+        300
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T095",
+      "key": "maimai_join",
+      "mode": "B",
+      "ms": 39.1,
+      "bytes": 36478,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        500,
+        500
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T096",
+      "key": "step_on",
+      "mode": "B",
+      "ms": 490.8,
+      "bytes": 48191,
+      "applied_regions": 1,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        300,
+        300
+      ],
+      "frames": 5
+    },
+    {
+      "id": "T097",
+      "key": "auto_story_4a631e05702b0ab21bf5fdae",
+      "mode": "B",
+      "ms": 379.6,
+      "bytes": 4658,
+      "applied_regions": 2,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        68,
+        68
+      ],
+      "frames": 2
+    },
+    {
+      "id": "T098",
+      "key": "little_angel",
+      "mode": "B",
+      "ms": 91.2,
+      "bytes": 59613,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        600,
+        792
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T099",
+      "key": "look_this_icon",
+      "mode": "B",
+      "ms": 573.8,
+      "bytes": 90327,
+      "applied_regions": 1,
+      "source_prepare_calls": 1,
+      "status": "fused",
+      "fixed_pixel_max": 0,
+      "size": [
+        1170,
+        1143
+      ],
+      "frames": 1
+    },
+    {
+      "id": "T100",
+      "key": "daynight",
+      "mode": "B",
+      "ms": 63.0,
+      "bytes": 47155,
+      "applied_regions": 0,
+      "source_prepare_calls": 0,
+      "status": "fallback",
+      "fixed_pixel_max": 0,
+      "size": [
+        682,
+        718
+      ],
+      "frames": 1
+    }
+  ],
+  "peak_rss_mib": 1043.2,
+  "expression_math_sha256": "217d629e9e74d59ee0253d9effbc61ebdc54278c3b8543791f84455478923713",
+  "expression_runtime_sha256": "ef5c89895d2ea796fc6d334dfa10cf7b7d9618f7a35a044836bab109a914419d",
+  "counts": {
+    "fused": 42,
+    "fallback": 58
+  },
+  "local_status_mismatches": [],
+  "cross_platform_shape_differences": [
+    {
+      "template": "T082",
+      "key": "universal",
+      "local_size": [
+        500,
+        635
+      ],
+      "server_size": [
+        500,
+        637
+      ],
+      "local_frames": 1,
+      "server_frames": 1
+    }
+  ],
+  "cross_platform_shape_note": "The native fallback template universal is two pixels taller on Linux due to font metrics. Its deployed baseline and updated output are byte-identical (500x637)."
+}

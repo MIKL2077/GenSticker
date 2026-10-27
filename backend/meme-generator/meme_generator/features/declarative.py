@@ -25,6 +25,21 @@ class FusionRecipe(BaseModel):
     color_match: float = Field(default=.12,ge=0,le=.4)
 
 
+class ExpressionRecipe(BaseModel):
+    """Offline authored, full-canvas semantic rig; A/B parameters are immutable."""
+    model_config = ConfigDict(extra="forbid", allow_inf_nan=False)
+    method: Literal['cpu-expression-ab-v1'] = 'cpu-expression-ab-v1'
+    mode: Literal['A','B']
+    domain: Literal['human','ink','anime','animal']
+    points: list[tuple[float,float]] = Field(min_length=478,max_length=478)
+    reference_asset: str = Field(pattern=r'^[a-f0-9]{64}$')
+    base_asset: str = Field(pattern=r'^[a-f0-9]{64}$')
+    base_box: tuple[int,int,int,int] | None = None
+    reference_format: Literal['png','gif'] = 'png'
+    reference_index: int = Field(default=0,ge=0,le=39)
+    mask_asset: str = Field(pattern=r'^[a-f0-9]{64}$')
+
+
 class Layer(BaseModel):
     model_config = ConfigDict(extra="forbid")
     type: Literal["subject", "face", "text", "asset"]
@@ -50,6 +65,7 @@ class Layer(BaseModel):
     line_spacing: int = Field(default=4,ge=0,le=16)
     direction: Literal['horizontal','vertical'] = 'horizontal'
     fusion: FusionRecipe | None = None
+    expression: ExpressionRecipe | None = None
 
 
 class TemplateFrame(BaseModel):
@@ -96,6 +112,15 @@ class TemplateSpec(BaseModel):
                 or y + h > self.height
             ):
                 raise ValueError("layer outside canvas")
+            if layer.expression:
+                import math
+                if layer.type!='face' or any(not math.isfinite(px) or not math.isfinite(py) or px < -self.width or px > 2*self.width or py < -self.height or py > 2*self.height for px,py in layer.expression.points):
+                    raise ValueError('expression rig outside canvas bounds')
+                if layer.expression.base_box:
+                    bx,by,bw,bh=layer.expression.base_box
+                    if min(bx,by)<0 or min(bw,bh)<1 or bx+bw>self.width or by+bh>self.height:raise ValueError('expression clean patch outside canvas')
+                if math.dist(layer.expression.points[33],layer.expression.points[263])<2:
+                    raise ValueError('expression rig requires distinct eye anchors')
             if layer.fusion:
                 f=layer.fusion
                 points=list(f.eyes)+f.hair+[p for p in [f.mouth,f.chin] if p is not None]
