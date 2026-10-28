@@ -1,0 +1,236 @@
+{
+  "date": "2026-10-29",
+  "choices": [
+    {
+      "id": "T004",
+      "key": "auto_story_0088a90546d881e9980dd99e",
+      "name": "柯南突然兴奋",
+      "base_version": 4,
+      "choice": "gan-emotionnet",
+      "note": "",
+      "action": "apply-selected-driver",
+      "version": 5
+    },
+    {
+      "id": "T015",
+      "key": "auto_story_5843927caac94d51fa5f420b",
+      "name": "猫咪缩回壳里",
+      "base_version": 4,
+      "choice": "gan-emotionnet",
+      "note": "",
+      "action": "apply-selected-driver",
+      "version": 5
+    },
+    {
+      "id": "T028",
+      "key": "auto_story_81735af298f4a62b9845c0f2",
+      "name": "美少女空难过",
+      "base_version": 4,
+      "choice": "gan-emotionnet",
+      "note": "",
+      "action": "apply-selected-driver",
+      "version": 5
+    },
+    {
+      "id": "T146",
+      "key": "auto_story_2299e8c9f5c97b151d265c6c",
+      "name": "杨超越在线作法",
+      "base_version": 4,
+      "choice": "gan-emotionnet",
+      "note": "",
+      "action": "apply-selected-driver",
+      "version": 5
+    },
+    {
+      "id": "T147",
+      "key": "auto_story_22a6b3805881fb5a35a335c0",
+      "name": "汪蛋左右看",
+      "base_version": 3,
+      "choice": "gan-emotionnet",
+      "note": "",
+      "action": "apply-selected-driver",
+      "version": 4
+    },
+    {
+      "id": "T164",
+      "key": "auto_story_35f74b3f4f0c8ec77ed6f542",
+      "name": "虚拟少女喝饮料",
+      "base_version": 3,
+      "choice": "gan-emotionnet",
+      "note": "",
+      "action": "apply-selected-driver",
+      "version": 4
+    },
+    {
+      "id": "T188",
+      "key": "auto_story_5914a75432db767f4ab74825",
+      "name": "汪蛋哭着挥手",
+      "base_version": 3,
+      "choice": "gan-emotionnet",
+      "note": "",
+      "action": "apply-selected-driver",
+      "version": 4
+    },
+    {
+      "id": "T196",
+      "key": "auto_story_612c778e0adb0e300b94e93e",
+      "name": "猫咪饿得嗷嗷叫",
+      "base_version": 3,
+      "choice": "reject",
+      "note": "这个主要问题是每一帧会变，但当前每一帧效果差不多",
+      "action": "rejected-no-rollout",
+      "version": 3
+    },
+    {
+      "id": "T203",
+      "key": "auto_story_6a18cff07d3414fa89c5fac7",
+      "name": "柴犬情侣贴贴",
+      "base_version": 3,
+      "choice": "reject",
+      "note": "",
+      "action": "rejected-no-rollout",
+      "version": 3
+    },
+    {
+      "id": "T207",
+      "key": "auto_story_70baeef07fbe2441c5f5548e",
+      "name": "卡通少年惊喜",
+      "base_version": 3,
+      "choice": "gan-emotionnet",
+      "note": "",
+      "action": "apply-selected-driver",
+      "version": 4
+    },
+    {
+      "id": "T210",
+      "key": "auto_story_7669780316298abe59cfac79",
+      "name": "甄嬛白眼矫情",
+      "base_version": 3,
+      "choice": "geometry",
+      "note": "",
+      "action": "apply-selected-driver",
+      "version": 4
+    },
+    {
+      "id": "T234",
+      "key": "auto_story_911fab94e7d81aa223fba2cd",
+      "name": "花泽香菜偷笑",
+      "base_version": 3,
+      "choice": "baseline",
+      "note": "",
+      "action": "retain-reviewed-baseline",
+      "version": 3
+    },
+    {
+      "id": "T241",
+      "key": "auto_story_9ab242928889e3c88d4b9b9f",
+      "name": "吴京夸的人在这儿",
+      "base_version": 3,
+      "choice": "baseline",
+      "note": "",
+      "action": "retain-reviewed-baseline",
+      "version": 3
+    },
+    {
+      "id": "T244",
+      "key": "auto_story_9b03b0892f2e41052c8610ea",
+      "name": "姚明帅到慌张",
+      "base_version": 4,
+      "choice": "baseline",
+      "note": "",
+      "action": "retain-reviewed-baseline",
+      "version": 4
+    },
+    {
+      "id": "T247",
+      "key": "auto_story_9e3b54d5fb9375b647cf3279",
+      "name": "蔡徐坤满脸写着开心",
+      "base_version": 3,
+      "choice": "gan-emotionnet",
+      "note": "",
+      "action": "apply-selected-driver",
+      "version": 4
+    },
+    {
+      "id": "T264",
+      "key": "auto_story_b058a6a6336fd0cff6bb71da",
+      "name": "罗翔觉得也未尝不可",
+      "base_version": 4,
+      "choice": "baseline",
+      "note": "",
+      "action": "retain-reviewed-baseline",
+      "version": 4
+    },
+    {
+      "id": "T266",
+      "key": "auto_story_b409bc56223f09ca1a811cd3",
+      "name": "猫咪高傲挑眉",
+      "base_version": 3,
+      "choice": "geometry",
+      "note": "",
+      "action": "apply-selected-driver",
+      "version": 4
+    },
+    {
+      "id": "T281",
+      "key": "auto_story_c900a27f6ab3bdd502f49758",
+      "name": "柴犬爱心发射",
+      "base_version": 3,
+      "choice": "baseline",
+      "note": "",
+      "action": "retain-reviewed-baseline",
+      "version": 3
+    },
+    {
+      "id": "T301",
+      "key": "auto_story_dd74fcdfab46087c6cf93df7",
+      "name": "猫咪大口嚎叫",
+      "base_version": 3,
+      "choice": "gan-emotionnet",
+      "note": "",
+      "action": "apply-selected-driver",
+      "version": 4
+    },
+    {
+      "id": "T303",
+      "key": "auto_story_e0a91f20d30669baa1eed3cf",
+      "name": "猫咪掌握方向盘",
+      "base_version": 3,
+      "choice": "gan-emotionnet",
+      "note": "",
+      "action": "apply-selected-driver",
+      "version": 4
+    }
+  ],
+  "applied_templates": 13,
+  "preserved_baselines": 5,
+  "rejected_unchanged": 2,
+  "local_verified_cases": 39,
+  "selected_raw_frames_checked": 255,
+  "max_raw_frame_error": 0,
+  "local_untouched_image_templates": 470,
+  "server_verified_cases": 39,
+  "server_peak_rss_mib": 633.5,
+  "server_two_thread_job": "passed",
+  "deploy": {
+    "status": "passed",
+    "templates": 959,
+    "updated": 13,
+    "modes": {
+      "A": 9,
+      "B": 4
+    },
+    "untouched_templates_verified": 1012,
+    "services": {
+      "gensticker": "active",
+      "gensticker-worker": "active"
+    },
+    "restore": "UPDATED 13"
+  },
+  "private_images_in_batch": false,
+  "T196_repair": {
+    "status": "private-review-only",
+    "frames": 24,
+    "action_states": 13
+  }
+}

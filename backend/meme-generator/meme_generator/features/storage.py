@@ -63,8 +63,10 @@ def asset_refs(spec):
     for layer in spec.get('layers',[]) + [l for f in spec.get('frames',[]) for l in f.get('layers',[])]:
         if recipe := layer.get('expression'):
             refs.update(recipe[field] for field in ['reference_asset','base_asset','mask_asset'])
+            refs.update(c['mask_asset'] for c in (recipe.get('controls') or {}).get('components',[]))
     if recipe := spec.get('expression_policy',{}).get('recipe'):
         refs.update(recipe[field] for field in ['reference_asset','base_asset','mask_asset'])
+        refs.update(c['mask_asset'] for c in (recipe.get('controls') or {}).get('components',[]))
     for frame in spec.get('frames',[]):
         refs.add(frame['asset'])
         if frame.get('reference_asset'):refs.add(frame['reference_asset'])

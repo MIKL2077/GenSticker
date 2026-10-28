@@ -33,10 +33,25 @@ def restore():
                 # Never overwrite a newer operator edit or a different source.
                 continue
             policy=item['metadata']['expression_policy']
-            if policy['mode'] not in {'A','B'} or policy['visual_status']!='pending-user-review':
-                raise ValueError('invalid experimental policy')
+            if policy['mode'] not in {'A','B'} or policy['visual_status'] not in {'pending-user-review', 'user-approved'}:
+                raise ValueError('invalid expression policy')
+            if policy['visual_status'] == 'user-approved':
+                review = policy.get('review', {})
+                if (review.get('source') != 'local-smallmodel-review'
+                        or review.get('template_key') != item['key']
+                        or review.get('source_version') != item['base_version']
+                        or review.get('choice') not in {'geometry', 'gan-emotionnet'}
+                        or len(review.get('annotation_sha256', '')) != 64):
+                    raise ValueError('missing versioned expression approval')
             if policy.get('recipe'):ExpressionRecipe.model_validate(policy['recipe'])
             if item['spec']:TemplateSpec.model_validate(item['spec'])
+            if policy['visual_status'] == 'user-approved':
+                expected = {'geometry': 'geometry-v1', 'gan-emotionnet': 'ganimation-emotionnet-v1'}[review['choice']]
+                spec = item['spec'] or {}
+                recipes = [layer.get('expression') or {} for frame in spec.get('frames') or [spec]
+                           for layer in frame.get('layers', []) if layer['type'] == 'face']
+                if not recipes or any((r.get('driver') or {}).get('method') != expected for r in recipes):
+                    raise ValueError('approved choice and expression driver differ')
             refs=asset_refs(item['spec']) | asset_refs(item['metadata'])
             directory=root()/'template_assets';directory.mkdir(exist_ok=True)
             for digest in refs:

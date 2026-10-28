@@ -71,6 +71,8 @@ def close():
         _detector = _segmenter = None
     _asset.cache_clear()
     _timeline.cache_clear()
+    from .expression_driver import close as close_driver
+    close_driver()
 
 
 def prepare(source):
@@ -132,7 +134,11 @@ def guide(recipe):
         if patch.shape[:2]!=(h,w):raise ValueError('expression clean patch size mismatch')
         base=original.copy();base[y:y+h,x:x+w]=patch
     else:base=patch
-    return {'original':original,'base':base,'mask':_asset(directory,recipe.mask_asset,'L'),'p':np.array(recipe.points,np.float32)}
+    authored={'original':original,'base':base,'mask':_asset(directory,recipe.mask_asset,'L'),'p':np.array(recipe.points,np.float32)}
+    if recipe.controls:
+        authored['components']=[(c,_asset(directory,c.mask_asset,'L')) for c in recipe.controls.components]
+        if any(mask.shape!=original.shape[:2] for _,mask in authored['components']):raise ValueError('component guide size mismatch')
+    return authored
 
 
 def composite(canvas, source, recipe, slot, cache):
@@ -147,7 +153,18 @@ def composite(canvas, source, recipe, slot, cache):
     authored = guide(recipe)
     if authored['base'].shape[:2] != (canvas.height,canvas.width) or authored['mask'].shape != (canvas.height,canvas.width):
         raise ValueError('expression guide size mismatch')
-    result, metrics = math.render_frame(portrait,authored,.58 if recipe.mode=='A' else .94,recipe.domain)
+    if recipe.driver:
+        from .expression_driver import render_frame
+        driven = render_frame(portrait, authored, recipe.driver, cache, slot)
+        if driven is None:
+            stats.append({'mode': recipe.mode, 'applied': False, 'reason': 'expression_driver_unavailable'})
+            return False
+        result, metrics = driven
+    elif recipe.controls:
+        from .expression_controls import render_frame
+        result,metrics=render_frame(portrait,authored,.58 if recipe.mode=='A' else .94,recipe.domain,recipe.controls)
+    else:
+        result, metrics = math.render_frame(portrait,authored,.58 if recipe.mode=='A' else .94,recipe.domain)
     # Restore CURRENT canvas outside support: text/other subjects may already be edited.
     pixels = np.array(canvas)
     allowed = authored['mask']>0
@@ -164,6 +181,9 @@ def native_input(source, recipe, cache, slot):
     Native scripts retain their own transforms, text, layers, timing and encoders.
     A native template without a measured expression recipe preserves its input.
     """
+    if recipe.driver:
+        # Reviewed drivers have a declarative-canvas contract only.
+        return source
     key = ('expression',slot)
     if key not in cache:
         cache[key] = prepare(source)
@@ -181,7 +201,15 @@ def native_input(source, recipe, cache, slot):
     mask = math.poly((h,w),portrait['p'][math.OVAL])
     mask[np.array(portrait['image'].getchannel('A'))==0] = 0
     local = {'original':original,'base':portrait['rgb'],'mask':mask,'p':target}
-    out, metrics = math.render_frame(portrait,local,.58 if recipe.mode=='A' else .94,recipe.domain)
+    if recipe.controls:
+        from .expression_controls import render_frame
+        local['components']=[]
+        for component,component_mask in authored.get('components',[]):
+            _,alpha,_=math.warp(authored['original'],component_mask.astype('float32')/255,authored['p'][math.IDS],target[math.IDS],(h,w))
+            local['components'].append((component,(np.clip(alpha,0,1)*255).astype('uint8')))
+        out,metrics=render_frame(portrait,local,.58 if recipe.mode=='A' else .94,recipe.domain,recipe.controls)
+    else:
+        out, metrics = math.render_frame(portrait,local,.58 if recipe.mode=='A' else .94,recipe.domain)
     pixels = np.array(portrait['image']);allowed = mask>0
     pixels[allowed,:3] = np.array(out)[allowed]
     cache.setdefault('expression_stats',[]).append({'mode':recipe.mode,'applied':True,**metrics})

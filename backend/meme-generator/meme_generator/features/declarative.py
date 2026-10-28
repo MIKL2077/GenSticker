@@ -25,6 +25,47 @@ class FusionRecipe(BaseModel):
     color_match: float = Field(default=.12,ge=0,le=.4)
 
 
+class ExpressionComponent(BaseModel):
+    model_config = ConfigDict(extra='forbid', allow_inf_nan=False)
+    name: Literal['left-eye','right-eye','nose','mouth','accessory']
+    mask_asset: str = Field(pattern=r'^[a-f0-9]{64}$')
+    strength: float = Field(default=1,ge=0,le=1)
+
+
+class ExpressionControls(BaseModel):
+    """Opt-in, per-frame controls; omitted recipes keep the frozen A/B path."""
+    model_config = ConfigDict(extra='forbid', allow_inf_nan=False)
+    eye_strength: float = Field(default=0,ge=0,le=1)
+    eye_aperture: tuple[float,float] | None = None
+    mouth: Literal['ab','source','geometry','template'] = 'ab'
+    pose_weight: float = Field(default=0,ge=0,le=1)
+    profile: float = Field(default=0,ge=-1,le=1)
+    ink_contrast: float = Field(default=.5,ge=0,le=1)
+    blur: float = Field(default=0,ge=0,le=8)
+    opacity: float = Field(default=1,ge=0,le=1)
+    lower_face_only: bool = False
+    components: list[ExpressionComponent] = Field(default_factory=list,max_length=6)
+
+    @model_validator(mode='after')
+    def ranges(self):
+        import math
+        if self.eye_aperture and any(not math.isfinite(v) or not .015<=v<=1 for v in self.eye_aperture):raise ValueError('eye aperture outside bounds')
+        return self
+
+
+class ExpressionDriver(BaseModel):
+    """Reviewed 128px CPU drivers; no arbitrary model or remote locations."""
+    model_config = ConfigDict(extra='forbid', allow_inf_nan=False)
+    method: Literal['geometry-v1', 'ganimation-emotionnet-v1']
+    aus: tuple[float, ...] = Field(min_length=17, max_length=17)
+
+    @model_validator(mode='after')
+    def ranges(self):
+        if any(not 0 <= value <= 1 for value in self.aus):
+            raise ValueError('action unit intensity outside bounds')
+        return self
+
+
 class ExpressionRecipe(BaseModel):
     """Offline authored, full-canvas semantic rig; A/B parameters are immutable."""
     model_config = ConfigDict(extra="forbid", allow_inf_nan=False)
@@ -38,6 +79,14 @@ class ExpressionRecipe(BaseModel):
     reference_format: Literal['png','gif'] = 'png'
     reference_index: int = Field(default=0,ge=0,le=39)
     mask_asset: str = Field(pattern=r'^[a-f0-9]{64}$')
+    controls: ExpressionControls | None = None
+    driver: ExpressionDriver | None = None
+
+    @model_validator(mode='after')
+    def one_driver(self):
+        if self.driver is not None and self.controls is not None:
+            raise ValueError('expression drivers cannot mix with donor controls')
+        return self
 
 
 class Layer(BaseModel):

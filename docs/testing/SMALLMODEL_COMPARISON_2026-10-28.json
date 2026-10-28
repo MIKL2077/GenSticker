@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-28",
+  "template_count": 20,
+  "sample_count": 3,
+  "baseline_outputs": 60,
+  "candidate_outputs": 186,
+  "candidate_render_failures": 0,
+  "structurally_rejected": 6,
+  "metrics_scope": "render includes warm inference and compositing, excludes preparation, cold load, encoding, upload and queue",
+  "methods": [
+    {
+      "method": "gan-celeba",
+      "cases": 60,
+      "failures": 0,
+      "median_render_ms": 313.5,
+      "p95_render_ms": 1400.2,
+      "max_render_ms": 5656.2,
+      "peak_rss_mib": 233.4,
+      "max_encode_ms": 725.0,
+      "cold_load_ms": 120.2,
+      "model_calls": 138,
+      "structurally_rejected": 0
+    },
+    {
+      "method": "gan-emotionnet",
+      "cases": 60,
+      "failures": 0,
+      "median_render_ms": 312.2,
+      "p95_render_ms": 1453.9,
+      "max_render_ms": 5533.6,
+      "peak_rss_mib": 233.3,
+      "max_encode_ms": 707.6,
+      "cold_load_ms": 119.1,
+      "model_calls": 138,
+      "structurally_rejected": 0
+    },
+    {
+      "method": "geometry",
+      "cases": 60,
+      "failures": 0,
+      "median_render_ms": 144.3,
+      "p95_render_ms": 2063.4,
+      "max_render_ms": 2125.0,
+      "peak_rss_mib": 126.5,
+      "max_encode_ms": 693.4,
+      "cold_load_ms": 0.0,
+      "model_calls": 0,
+      "structurally_rejected": 0
+    },
+    {
+      "method": "geometry-3d",
+      "cases": 6,
+      "failures": 0,
+      "median_render_ms": 367.7,
+      "p95_render_ms": 641.0,
+      "max_render_ms": 643.5,
+      "peak_rss_mib": 133.0,
+      "max_encode_ms": 99.8,
+      "cold_load_ms": 179.5,
+      "model_calls": 0,
+      "structurally_rejected": 6
+    }
+  ],
+  "production_services_unchanged": true,
+  "resource_limits": {
+    "cpu_quota_percent": 100,
+    "memory_max_mib": 768,
+    "swap_max_mib": 0,
+    "concurrency": 1,
+    "runtime_max_seconds_per_method": 120
+  }
+}

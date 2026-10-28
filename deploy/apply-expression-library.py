@@ -31,6 +31,16 @@ def main():
         if Path(name).is_absolute() or '..' in Path(name).parts:raise ValueError('invalid runtime path')
         if sha(runtime/name)!=info['old_sha256'] or sha(PACKAGE/'runtime'/name)!=info['sha256']:raise ValueError('runtime changed: '+name)
     if sha(PACKAGE/'selfie_multiclass_256x256.tflite')!=manifest['model_sha256']:raise ValueError('model checksum mismatch')
+    driver=manifest.get('driver_model')
+    if driver:
+        if (driver['name']!='ganimation-emotionnet-v1.onnx'
+                or driver['sha256']!='e4ceefd1c354a1e13a1d46e322108aeb5024d846ee7536468d19aca3f51b6f46'
+                or (PACKAGE/driver['name']).stat().st_size>36_000_000
+                or sha(PACKAGE/driver['name'])!=driver['sha256']):raise ValueError('unreviewed expression model')
+        existing=DB.parent/'models'/driver['name']
+        if existing.exists() and sha(existing)!=driver['sha256']:raise ValueError('existing expression model differs')
+        for name in ['api-venv','worker-venv']:
+            command(str(release/name/'bin/python'),'-c','import onnxruntime;print(onnxruntime.__version__)')
     live=sqlite3.connect('file:'+str(DB)+'?mode=ro',uri=True);live.row_factory=sqlite3.Row
     try:
         untouched={row['key']:dict(row) for row in live.execute('SELECT key,version,fingerprint,metadata,spec,status FROM templates') if row['key'] not in manifest['updates']}
@@ -49,9 +59,12 @@ def main():
                 for layer in frame.get('layers',[]):
                     if layer.get('type')=='asset':refs.add(layer['value'])
                     refs.update(layer[k] for k in ['mask_asset','original_asset'] if layer.get(k))
-                    if recipe:=layer.get('expression'):refs.update(recipe[k] for k in ['reference_asset','base_asset','mask_asset'])
+                    if recipe:=layer.get('expression'):
+                        refs.update(recipe[k] for k in ['reference_asset','base_asset','mask_asset'])
+                        refs.update(c['mask_asset'] for c in (recipe.get('controls') or {}).get('components',[]))
             if recipe:=item['metadata'].get('expression_policy',{}).get('recipe'):
                 refs.update(recipe[k] for k in ['reference_asset','base_asset','mask_asset'])
+                refs.update(c['mask_asset'] for c in (recipe.get('controls') or {}).get('components',[]))
             for digest in refs:
                 if digest not in batch['assets'] and not any((artwork/(digest+suffix)).is_file() for suffix in ['.png','.gif']):
                     raise ValueError('missing artwork before deployment: '+item['key']+' / '+digest)
@@ -78,6 +91,9 @@ def main():
             target=runtime/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(PACKAGE/'runtime'/name,target);target.chmod(0o644);changed.append(name)
         if not model.exists():
             temporary=model.with_suffix('.tmp');shutil.copy2(PACKAGE/'selfie_multiclass_256x256.tflite',temporary);temporary.chmod(0o644);temporary.replace(model)
+        if driver and not (DB.parent/'models'/driver['name']).exists():
+            target=DB.parent/'models'/driver['name'];temporary=target.with_suffix('.tmp')
+            shutil.copy2(PACKAGE/driver['name'],temporary);temporary.chmod(0o644);temporary.replace(target)
         environment={**os.environ,'GENSTICKER_STATE_DIR':'/var/lib/gensticker','PYTHONPATH':str(runtime),'GENSTICKER_BOOTSTRAP_SEEDS':'0'}
         count=command(str(release/'api-venv/bin/python'),'-c','from meme_generator.features.expression_library import restore;print("UPDATED",restore())',env=environment,cwd=runtime,timeout=120)
         # Validate as the real service user before opening requests again.
@@ -95,6 +111,11 @@ for filename in ['face_landmarker-v1.task','selfie_multiclass_256x256.tflite']:
 print('READABLE',count)
 '''
         command('runuser','-u','gensticker','--',str(release/'api-venv/bin/python'),'-c',verify,env=environment,cwd=runtime,timeout=60)
+        if driver:
+            for name in ['api-venv','worker-venv']:
+                command('runuser','-u','gensticker','--',str(release/name/'bin/python'),'-c',
+                        'from meme_generator.features.expression_driver import warmup;assert warmup();print("CPU_DRIVER_READY")',
+                        env=environment,cwd=runtime,timeout=45)
         command('systemctl','start','gensticker-worker');command('systemctl','start','gensticker')
         for attempt in range(60):
             try:
@@ -108,6 +129,7 @@ print('READABLE',count)
             for key,expected in manifest['updates'].items():
                 row=live.execute('SELECT * FROM templates WHERE key=?',(key,)).fetchone();policy=json.loads(row['metadata']).get('expression_policy',{})
                 if row['version']!=expected['version'] or policy.get('mode')!=expected['mode']:raise RuntimeError('updated policy/version mismatch: '+key)
+                if expected.get('driver') and (policy.get('driver')!=expected['driver'] or policy.get('visual_status')!=expected['visual_status']):raise RuntimeError('reviewed driver mismatch: '+key)
                 counts[policy['mode']]+=1
             for key,expected in untouched.items():
                 actual=live.execute('SELECT key,version,fingerprint,metadata,spec,status FROM templates WHERE key=?',(key,)).fetchone()

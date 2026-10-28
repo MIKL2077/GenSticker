@@ -76,3 +76,34 @@ The repository helpers are `tools/qa/repair_expression_regions.py`,
 `evaluate_template_review.py`, `build_template_review_gallery.py` and
 `serve_template_review.py`. The measured 2026-10-28 plans are examples only:
 remeasure each new source instead of copying their coordinates.
+
+## Compare expression drivers before changing an accepted library
+
+When the user requests natural movement of their own features, distinguish
+source-texture geometry, learned expression editing and template-component
+transplantation. Pasting a template's eyes or mouth can preserve an action yet
+violate that request. Label borrowed pixels explicitly; do not carry a rejected
+transplant strategy into the next candidate under a different name.
+
+Retain the exact reviewed baseline, recipe version, model hash, full animation
+and identical test photos. Keep candidate choices separate from prior ratings.
+If new masks or compositing are used, state that comparison with the baseline
+also includes those changes. Disclose hand-authored AU curves rather than
+describing them as automatic expression analysis. Blink and brow movement do
+not implement gaze direction. Record unsupported tongue, unseen teeth and
+profile texture instead of counting them as solved.
+
+Check mesh orientation before treating a geometry result as selectable. Folded
+triangles can produce an encoded image while making the projection unusable.
+Preserve such outputs as diagnosed failures and exclude them from choices.
+Inspect glasses across blink/open-mouth states. Fixed-pixel checks before GIF
+encoding do not prove exact colors after quantization or natural appearance.
+
+Benchmark in an independent CPU process before API/worker integration. Separate
+source preparation, cold load, warm inference, compositing and GIF encoding;
+include full-template timing and repeated-action cache counts. Weight size
+alone does not establish runtime memory. Use enforced CPU, memory, swap and
+runtime limits appropriate to the host, single concurrency, and API/worker
+health and restart counters before/after. Save each small report immediately:
+a failed bulk media transfer must not destroy completed measurements. Resource
+success does not approve picture quality or production integration.
