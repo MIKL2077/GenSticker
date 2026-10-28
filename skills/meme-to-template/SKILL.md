@@ -37,6 +37,8 @@ The helper precomputes template background repair and stores a reference asset f
 
 ## Transfer and improve
 
+For repairs driven by actual template ratings, read [review calibration and region diagnosis](references/review-calibration.md). Preserve accepted algorithms, distinguish incomplete support from bad semantic anchors or an avatar used as a prop, and carry versioned annotations into the next evaluation round.
+
 Another model should be able to inspect a new reference, write the intent/regions/slots brief, run this helper and judge the comparison images without knowing the original conversation. Copy the skill folder plus use the compatible GenSticker runtime; the skill is not a standalone neural model. Record failure reasons in the brief/quality report, improve a specific mask or adapter and rerender. Do not weaken gates to inflate counts, copy example coordinates blindly, fabricate humour/accuracy claims or declare success solely because detection found a face.
 
 ## Large ChineseBQB / Weshine batches

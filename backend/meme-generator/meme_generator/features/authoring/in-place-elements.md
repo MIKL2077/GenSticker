@@ -63,3 +63,9 @@ For expression-dependent animals (squinting, puffed cheeks, crying, mouth shapes
 
 
 For reviewed CPU character fusion, see [the bounded fusion contract](cpu-fusion.md). It preserves arbitrary-input paste fallback and requires actual-output/per-frame evidence; the older four blend controls remain experiments.
+
+## Calibrate from actual template reviews
+
+Read [review calibration](review-calibration.md) when repairing a reviewed library. Preserve accepted algorithms and actual output frames. For incomplete replacements, measure the entire intended face before changing fusion strength: a landmark rig may be correct while an inscribed ellipse still leaves an old eye or half a snout visible. Keep expression support, fallback support and the prepared clean patch consistent. An uploaded avatar inside a sign or screen is a prop; a detected background character must not automatically become its expression donor.
+
+Tiny animal/cartoon rigs need semantic-anchor inspection. Check that both eyes, nose, mouth and jaw lie on the intended features; inspect source-color proposals because pink skin or a collar can be mistaken for a mouth. Preserve fixed hands, phones, other characters and captions independently on every frame, including scene cuts and later captions. Keep corrected recipes pending until the human reviews actual output. Save ratings by key/version/sample, retain prior decisions and expose the whole requested image-template library with failures included; a successful render does not approve it.

@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "backup": "/var/backups/gensticker-expression-ab-1793156807",
+  "templates": 959,
+  "updated": 66,
+  "modes": {
+    "A": 33,
+    "B": 33
+  },
+  "untouched_templates_verified": 959,
+  "services": {
+    "gensticker": "active",
+    "gensticker-worker": "active"
+  },
+  "restore": "UPDATED 66"
+}

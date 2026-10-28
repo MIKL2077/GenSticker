@@ -1,0 +1,39 @@
+{
+  "published_snapshot": 959,
+  "image_templates_tested": 483,
+  "new_evaluation_coverage": 383,
+  "sample": "S03 as representative per explicit user instruction",
+  "counts": {
+    "fallback": 247,
+    "fused": 236
+  },
+  "output_frames": 4451,
+  "animated_outputs": 221,
+  "accepted_preserved": 31,
+  "direct_paste_decisions": 53,
+  "corrected_pending_review": 13,
+  "region_repaired_templates": 12,
+  "region_repaired_frames": 85,
+  "unrelated_background_donor_disabled": 1,
+  "updates": 66,
+  "dimension_mismatches": 0,
+  "timeline_mismatches": 0,
+  "loop_mismatches": 0,
+  "accepted_output_changes": 0,
+  "accepted_matches_prior_round": 31,
+  "expression_math_byte_identical_to_previous_commit": true,
+  "expression_math_sha256": "217d629e9e74d59ee0253d9effbc61ebdc54278c3b8543791f84455478923713",
+  "visual_quality_approved": false,
+  "full_evaluation_peak_rss_mib": 2040.3,
+  "server_smoke_peak_rss_mib": 698.3,
+  "server_smoke_cases": 15,
+  "feature_tests": 175,
+  "synthetic_object_fallback": {
+    "templates": 12,
+    "checked_frames": 85,
+    "fixed_pixel_max_error": 0,
+    "input": "synthetic partial-alpha triangle; no detectable face"
+  },
+  "local_media_private": true,
+  "private_server_qa_removed": true
+}

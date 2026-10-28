@@ -33,6 +33,7 @@ def main():
     if sha(PACKAGE/'selfie_multiclass_256x256.tflite')!=manifest['model_sha256']:raise ValueError('model checksum mismatch')
     live=sqlite3.connect('file:'+str(DB)+'?mode=ro',uri=True);live.row_factory=sqlite3.Row
     try:
+        untouched={row['key']:dict(row) for row in live.execute('SELECT key,version,fingerprint,metadata,spec,status FROM templates') if row['key'] not in manifest['updates']}
         for key,expected in manifest['updates'].items():
             row=live.execute('SELECT * FROM templates WHERE key=?',(key,)).fetchone()
             if not row or row['status']!='published' or row['version']!=expected['base_version'] or row['fingerprint']!=expected['base_fingerprint']:raise ValueError('template changed: '+key)
@@ -108,8 +109,11 @@ print('READABLE',count)
                 row=live.execute('SELECT * FROM templates WHERE key=?',(key,)).fetchone();policy=json.loads(row['metadata']).get('expression_policy',{})
                 if row['version']!=expected['version'] or policy.get('mode')!=expected['mode']:raise RuntimeError('updated policy/version mismatch: '+key)
                 counts[policy['mode']]+=1
+            for key,expected in untouched.items():
+                actual=live.execute('SELECT key,version,fingerprint,metadata,spec,status FROM templates WHERE key=?',(key,)).fetchone()
+                if not actual or dict(actual)!=expected:raise RuntimeError('unrelated template changed: '+key)
         finally:live.close()
-        result={'status':'passed','backup':str(backup),'templates':health['templates'],'updated':len(manifest['updates']),'modes':counts,'services':{name:command('systemctl','is-active',name) for name in ['gensticker','gensticker-worker']},'restore':count.splitlines()[-1]}
+        result={'status':'passed','backup':str(backup),'templates':health['templates'],'updated':len(manifest['updates']),'modes':counts,'untouched_templates_verified':len(untouched),'services':{name:command('systemctl','is-active',name) for name in ['gensticker','gensticker-worker']},'restore':count.splitlines()[-1]}
         (PACKAGE/'deployment-result.json').write_text(json.dumps(result,indent=2));print(json.dumps(result))
     except Exception:
         if stopped:command('systemctl','stop','gensticker')
