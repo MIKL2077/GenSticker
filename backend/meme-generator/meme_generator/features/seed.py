@@ -25,6 +25,10 @@ def restore(*, include_batches=True):
                 from urllib.parse import urlsplit
                 source = urlsplit(m.get('source_url', ''))
                 allowed = (m.get('origin') == 'chinesebqb' and source.hostname == 'github.com' and source.path.startswith('/zhaoolee/ChineseBQB/blob/')) or (m.get('origin') == 'weshine' and source.hostname == 'u.weshineapp.com')
+                if m.get('origin')=='tenor':
+                    from .reviewed_faces import validate_tenor_face
+                    validate_tenor_face(item['key'],item['spec'],m)
+                    allowed=True
                 caption=(m.get('conversion')=='caption-preserved-v2' and q.get('observed_min_confidence',0)>=.95 and q.get('round_trip_mae',100)<=12 and q.get('protected_pixel_mae',100)<=.1)
                 story=(m.get('conversion')=='reaction-story-v1' and q.get('reference_preserved') is True and q.get('replacement_verified') is True and q.get('slot_overlap_pixels',1)==0 and (not m.get('animated') or q.get('motion_verified') is True))
                 elements = m.get('conversion') == 'element-replacement-v1'
@@ -61,7 +65,7 @@ def restore(*, include_batches=True):
             if archived:
                 continue
             metadata = item["metadata"]
-            source_reference = metadata.get('source_use') == 'explicit-user-request-with-attribution' and metadata.get('review', {}).get('visual_status') == 'approved' and metadata.get('origin') in {'chinesebqb', 'weshine'}
+            source_reference = metadata.get('source_use') == 'explicit-user-request-with-attribution' and metadata.get('review', {}).get('visual_status') == 'approved' and metadata.get('origin') in {'chinesebqb', 'weshine','tenor'}
             user_test = metadata.get('origin') == 'user-provided' and metadata.get('review', {}).get('explicit_user_request') is True
             if not user_test and not source_reference and metadata["license"] not in {"CC BY-SA 4.0", "Public domain"}:
                 raise ValueError("unreviewed seed license")

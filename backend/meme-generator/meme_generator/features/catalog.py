@@ -110,7 +110,7 @@ def bootstrap():
     finally:db.close()
     for meme in get_memes():
         if meme.key in blocked:continue
-        if meme.key.startswith("auto_"):
+        if meme.key.startswith(("auto_", "tenor_face_")):
             continue
         p = meme.params_type
         name = (meme.keywords or [meme.key])[0]

@@ -1,0 +1,41 @@
+{
+  "published": 5,
+  "before": 959,
+  "after": 964,
+  "unrelated_rows_unchanged": 1025,
+  "keys": [
+    "tenor_face_4ecbb4201a7d1b81cb476b3d",
+    "tenor_face_7ab53a98c0d7c3a87347d330",
+    "tenor_face_a78c2b39fb5ca63825bb7675",
+    "tenor_face_bd06256d1ce62e8e509ea821",
+    "tenor_face_dad4b09b3e0ffcdf68ac0967"
+  ],
+  "fingerprints": {
+    "tenor_face_4ecbb4201a7d1b81cb476b3d": "9866027b43b50ec378e420c472f479a1fc5f0f928c61bcc0aaab58cfb8c0f151",
+    "tenor_face_a78c2b39fb5ca63825bb7675": "1c29b769900fffc9fe4171aa18e7bbf543848f0e5d213e509b37b9d6339184bf",
+    "tenor_face_7ab53a98c0d7c3a87347d330": "56fb28ec86ead6fa38bfb442d66e100b9242405ca5a3aad3d1d60101b56f137c",
+    "tenor_face_bd06256d1ce62e8e509ea821": "280e686cbe73ae282096738b70ac50a4665fcacba125d11c7ea79cd1b2eb29ba",
+    "tenor_face_dad4b09b3e0ffcdf68ac0967": "ecba012d737946aa2ba5d55ec460415869e3d406e44ae03befb7656cf0a817eb"
+  },
+  "backup": "/var/backups/gensticker-tenor-20261030",
+  "time": 1793332591.1907458,
+  "linux": {
+    "status": "passed",
+    "templates": 5,
+    "idempotent": true,
+    "seconds": 1.94,
+    "peak_rss_mib": 308.7,
+    "keys": [
+      "tenor_face_4ecbb4201a7d1b81cb476b3d",
+      "tenor_face_dad4b09b3e0ffcdf68ac0967",
+      "tenor_face_bd06256d1ce62e8e509ea821",
+      "tenor_face_7ab53a98c0d7c3a87347d330",
+      "tenor_face_a78c2b39fb5ca63825bb7675"
+    ]
+  },
+  "exact_reviewed_gifs": 15,
+  "public_healthz": {
+    "status": "ok",
+    "templates": 964
+  }
+}
