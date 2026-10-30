@@ -64,7 +64,7 @@ def export(directory,audit_directory,output,*,keys=None,batch_prefix='20261030-t
             subject_types=['person','animal','object','unknown'],
             input_hint='上传头像，融合到猫脸内部并驱动表情；保留猫耳、身体、原字幕和场景。侧脸、眼镜遮挡效果可能受限。',
             review={'visual_status':'approved','source':'local-tenor-face-review','template_key':key,
-                'method':'eye-v2' if actual_method=='geometry-eye-v2' else review['method'],
+                'method':{'geometry-eye-v2':'eye-v2','geometry-eye-v4':'eye-v4'}.get(actual_method,review['method']),
                 'annotation_sha256':annotation,'selected_spec_sha256':fingerprint(spec),'reviewed_at':review['updated_at']},
             quality={'spec_sha256':fingerprint(spec),'analyzed_frames':len(spec['frames']),
                 'protected_pixel_mae':0,'actual_replacement_verified':True,

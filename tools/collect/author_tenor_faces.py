@@ -205,9 +205,11 @@ def build(directory,brief,row,neutral):
                 elif method=='geometry':layer['expression']['driver']['method']=brief.get('geometry_method','geometry-v1')
                 elif method=='hybrid':layer['expression']['driver']['method']='ganimation-mouth-eye-v3'
                 if method=='gan' and brief['action']=='surprise':
-                    aus=layer['expression']['driver']['aus']
+                    # Model normalization stores AU values as an immutable tuple.
+                    aus=list(layer['expression']['driver']['aus'])
                     for action,maximum in [(1,.2),(2,.25),(5,.35)]:
                         aus[AU_ORDER.index(action)]=min(aus[AU_ORDER.index(action)],maximum)
+                    layer['expression']['driver']['aus']=aus
         spec=TemplateSpec.model_validate(spec).model_dump()
         variants[method]={'label':label,'spec':spec,'spec_sha256':fingerprint(spec)}
     recommended=brief.get('recommended_method','geometry' if brief['action'] in {'body','surprise','angry','blink','closed','stare'} else 'gan')

@@ -1,0 +1,242 @@
+{
+  "version": 1,
+  "status": "pending-human-review",
+  "published_count": 967,
+  "target": 1500,
+  "repaired_templates": 14,
+  "variant_recipes": 42,
+  "decoded_gifs": 126,
+  "analyzed_frames": 1494,
+  "fixed_pixel_max_error_before_gif_quantization": 0,
+  "preserved_reviews": 50,
+  "approved_recipes_reproduced_byte_identically": 24,
+  "runtime_deployment": "local-review-only; production unchanged",
+  "templates": [
+    {
+      "key": "tenor_face_6267e9fb8a6c475ffa377910",
+      "name": "白猫一脸茫然看着你",
+      "revision": 2,
+      "spec_sha256": "0cb06f8129acd9a1f1903be4d999b833f6fd82ca1bcf28e950aa667f9d759940",
+      "variants": {
+        "geometry": "0cb06f8129acd9a1f1903be4d999b833f6fd82ca1bcf28e950aa667f9d759940",
+        "gan": "ecb52ed3ea01dae920d14e79be4cc66a443acb0c18da1f666c742926ab1cac40",
+        "hybrid": "2923062ba6728fd31c8ec39f5250cedf2257909b1b4066b4adeb31534ad6c0c9"
+      },
+      "outputs": 9,
+      "frames": 39,
+      "source_frames": 39,
+      "blocked_methods": {
+        "gan": "三头像复查：强睁眼的全脸模型对照存在眼珠重影或鼻唇色块，保留诊断，不可选用。",
+        "hybrid": "三头像复查：无需张嘴的动作出现嘴唇收缩或鼻下色块；保留诊断，当前选几何跟随方案。"
+      }
+    },
+    {
+      "key": "tenor_face_8aef48a8bff849ce917dc715",
+      "name": "奶牛猫满脸写着不耐烦",
+      "revision": 2,
+      "spec_sha256": "1033bc5dc88ab8abf49af2ad6fb85e4aa80a57abe9a08dac32d91ccbfc0a8287",
+      "variants": {
+        "geometry": "1033bc5dc88ab8abf49af2ad6fb85e4aa80a57abe9a08dac32d91ccbfc0a8287",
+        "gan": "fcb4c71a952b8c8cd07be9e9c9edc6ef001984f7b390f60d3143f14000f43af9",
+        "hybrid": "305791d8731281b768887412da42f5aeb31c2e97ee84fd7174239039e8cbc5f4"
+      },
+      "outputs": 9,
+      "frames": 40,
+      "source_frames": 81,
+      "blocked_methods": {}
+    },
+    {
+      "key": "tenor_face_ff50ab7b3f06e6def116ae7c",
+      "name": "灰猫惊讶得嘴巴合不上",
+      "revision": 2,
+      "spec_sha256": "ac10f199587224ac1d878435ff8202a59731db05d5c25bdf95f6433bb382800b",
+      "variants": {
+        "geometry": "30685cfff375d275eee69c4aa0f6e3807cdbbe727b7a7fc1bd99cd3efa2901d8",
+        "gan": "034579a7a0ae7ca8042ca624ee739092ed8922841c3923893889a30dc34c57f9",
+        "hybrid": "ac10f199587224ac1d878435ff8202a59731db05d5c25bdf95f6433bb382800b"
+      },
+      "outputs": 9,
+      "frames": 40,
+      "source_frames": 76,
+      "blocked_methods": {}
+    },
+    {
+      "key": "tenor_face_c47e6cc4fd638181cbe0b98a",
+      "name": "白猫坐在玻璃后面发呆",
+      "revision": 2,
+      "spec_sha256": "90bfd101ce9a8aaab77b1a9c28ea816cbb1a9eb0fc5b88a8f77f54dc285af247",
+      "variants": {
+        "geometry": "90bfd101ce9a8aaab77b1a9c28ea816cbb1a9eb0fc5b88a8f77f54dc285af247",
+        "gan": "fb9f5f7ae12c004499d79a7f482acabf3c4a953a594dc437f03b756c0927879e",
+        "hybrid": "35ca85e5a211e7cc00a2a101a10f8fe5f67c6f42518f13b04df05fd5cb54c5b3"
+      },
+      "outputs": 9,
+      "frames": 39,
+      "source_frames": 58,
+      "blocked_methods": {}
+    },
+    {
+      "key": "tenor_face_a74a3bb57dc2a9c4078aeb62",
+      "name": "橘猫被摸头后慢慢眨眼",
+      "revision": 2,
+      "spec_sha256": "4318257a421416c8235be9349b28f1d08b431b94b8c783e00386cbabcd794184",
+      "variants": {
+        "geometry": "4318257a421416c8235be9349b28f1d08b431b94b8c783e00386cbabcd794184",
+        "gan": "7111d969aece0b2b7136b5ef3deabecdab00893322a029330acb44ecf1e1f440",
+        "hybrid": "4481ca979b7e8ef8786995a9c6dffd64b32ea2f2817a6f049e141096e15937a3"
+      },
+      "outputs": 9,
+      "frames": 40,
+      "source_frames": 68,
+      "blocked_methods": {}
+    },
+    {
+      "key": "tenor_face_eb9a26aa92f4ee16522ce182",
+      "name": "灰猫凶巴巴盯着你",
+      "revision": 2,
+      "spec_sha256": "2c14dc03cfe0814f0c9c94a502e58d8135f2bd3166e1068036d79ea8d356a21e",
+      "variants": {
+        "geometry": "bcf3e5349521ae686e32eeb9521feb7869305fe7d32d8eb70341cf0482f824d4",
+        "gan": "4554cf75015f6acb031364cf6266feacdba193964032a7501c9bcf586389b356",
+        "hybrid": "2c14dc03cfe0814f0c9c94a502e58d8135f2bd3166e1068036d79ea8d356a21e"
+      },
+      "outputs": 9,
+      "frames": 31,
+      "source_frames": 31,
+      "blocked_methods": {}
+    },
+    {
+      "key": "tenor_face_fc87654620ce1164e13d7b29",
+      "name": "猫咪眯眼露出得意微笑",
+      "revision": 2,
+      "spec_sha256": "11fb943583529d01253d4eb130d53d07e4f9f5c943bd3b277d221c4e9ad4f150",
+      "variants": {
+        "geometry": "11fb943583529d01253d4eb130d53d07e4f9f5c943bd3b277d221c4e9ad4f150",
+        "gan": "39e33242ac6e6983d18fb065951c6f4af43d8d84bf3f019374fb294fdb46a4fc",
+        "hybrid": "fd2ed8f84a55f940d53b9d900664fe8599257fa46b0dc2a1927e10d856bdd5de"
+      },
+      "outputs": 9,
+      "frames": 40,
+      "source_frames": 51,
+      "blocked_methods": {}
+    },
+    {
+      "key": "tenor_face_bb590b46026353fec8551f27",
+      "name": "长毛猫抬头认真听",
+      "revision": 2,
+      "spec_sha256": "8f09a1cb20961efd6a9d811b9e8cf7f3b46a7db0c636dd84157d497b15c4d634",
+      "variants": {
+        "geometry": "8f09a1cb20961efd6a9d811b9e8cf7f3b46a7db0c636dd84157d497b15c4d634",
+        "gan": "ee947d23586c7faaa609a4eaec01d73e12ecddb1c3abe0d2ff2a555bcf8e6353",
+        "hybrid": "7ffe04650dfd75e12d7c50d7539d1a71c28a926e26bf3750d4c0d0ec34791931"
+      },
+      "outputs": 9,
+      "frames": 16,
+      "source_frames": 16,
+      "blocked_methods": {
+        "gan": "三头像复查：强睁眼的全脸模型对照存在眼珠重影或鼻唇色块，保留诊断，不可选用。",
+        "hybrid": "三头像复查：无需张嘴的动作出现嘴唇收缩或鼻下色块；保留诊断，当前选几何跟随方案。"
+      }
+    },
+    {
+      "key": "tenor_face_70a150aa598c852c6ef7001c",
+      "name": "狸花猫一边抖一边瞪眼",
+      "revision": 2,
+      "spec_sha256": "bd4f82a33dc19100087cf8a514a4195169a06e8a35b77e6114e5b4f3ec2e1a0c",
+      "variants": {
+        "geometry": "bd4f82a33dc19100087cf8a514a4195169a06e8a35b77e6114e5b4f3ec2e1a0c",
+        "gan": "6608d18b5d72ad1691923f9c2cf1d0a8fab3f06343799f166d8f2df6f5b8452d",
+        "hybrid": "14c949bf444fac4aa58819683c9fbdbb0fec834c443f28d4e94ae809956c33a5"
+      },
+      "outputs": 9,
+      "frames": 40,
+      "source_frames": 84,
+      "blocked_methods": {
+        "gan": "三头像复查：强睁眼的全脸模型对照存在眼珠重影或鼻唇色块，保留诊断，不可选用。",
+        "hybrid": "三头像复查：无需张嘴的动作出现嘴唇收缩或鼻下色块；保留诊断，当前选几何跟随方案。"
+      }
+    },
+    {
+      "key": "tenor_face_8068202b965d661d27b00b69",
+      "name": "圆脸猫歪头看你",
+      "revision": 2,
+      "spec_sha256": "a67cfeaf47f4ff1a72d7c275d6fb3f5fee1c22a822a3e24141b02b78e750802f",
+      "variants": {
+        "geometry": "a67cfeaf47f4ff1a72d7c275d6fb3f5fee1c22a822a3e24141b02b78e750802f",
+        "gan": "30cfc0d368d914443fbe37cb39d901de8dd5bba1497b7b73550a0ca427b32e79",
+        "hybrid": "67dc5ee4fc3763cb27aac7fc7995708fa64c52623758e3dfe4a1701ff6682151"
+      },
+      "outputs": 9,
+      "frames": 40,
+      "source_frames": 64,
+      "blocked_methods": {}
+    },
+    {
+      "key": "tenor_face_572af628414054de3fb85499",
+      "name": "白猫站着打哈欠",
+      "revision": 2,
+      "spec_sha256": "7400184a73b1fc0ae72f27519b3228887f815e59ea5f3f89a74649bd51140b91",
+      "variants": {
+        "geometry": "cc14430572ac819e4d31005e1d1830c6d0f9d5e0e0aad3581507fdbf1abe118c",
+        "gan": "2845fcf13816c3a8e3044aa2e892aa4356d0bbb193be056fef85f94109c7238b",
+        "hybrid": "7400184a73b1fc0ae72f27519b3228887f815e59ea5f3f89a74649bd51140b91"
+      },
+      "outputs": 9,
+      "frames": 40,
+      "source_frames": 43,
+      "blocked_methods": {}
+    },
+    {
+      "key": "tenor_face_9073e1619db79f9657d78af5",
+      "name": "狸花猫歪头疑问",
+      "revision": 2,
+      "spec_sha256": "1ad0e7aeb21bdbf22ccbf7e96f9e4aef2278a7065e85a03972b453b2c45370b3",
+      "variants": {
+        "geometry": "1ad0e7aeb21bdbf22ccbf7e96f9e4aef2278a7065e85a03972b453b2c45370b3",
+        "gan": "4f649018c6757ffd41dbcd6af6fbd2dd847630f8b199f0ac96294e90b5968697",
+        "hybrid": "a0e50efc25d297a6a0efe6265db55a24be773acaf12b7e0c2167b4589bfcef16"
+      },
+      "outputs": 9,
+      "frames": 40,
+      "source_frames": 54,
+      "blocked_methods": {
+        "gan": "修订实测：S03 嘴唇仍有收缩色块，保留完整小模型诊断对照，不可作为可用方案。",
+        "hybrid": "修订实测：低强度嘴部模型仍有不自然的嘴唇收缩，本版仅供问题对照。"
+      }
+    },
+    {
+      "key": "tenor_face_2214ee7402f0c6d8e724edd1",
+      "name": "狸花猫张嘴咆哮",
+      "revision": 2,
+      "spec_sha256": "9db350351eb9712abc5bebab46213a92105e71a5cea8fe68436e2b1e07819fec",
+      "variants": {
+        "geometry": "aba7bd984dda4beafb61a67664729478443f8751cac0da40dbaf2bddcbf11b86",
+        "gan": "d47085884d1bdce5ec55e67591a6c5644aca4cedd23c2a711b4994cb421267f8",
+        "hybrid": "9db350351eb9712abc5bebab46213a92105e71a5cea8fe68436e2b1e07819fec"
+      },
+      "outputs": 9,
+      "frames": 13,
+      "source_frames": 13,
+      "blocked_methods": {}
+    },
+    {
+      "key": "tenor_face_348889355a67b404b5c8c1f5",
+      "name": "白猫在床上打哈欠",
+      "revision": 2,
+      "spec_sha256": "8ac83e54887b1eabc200e30c11f290099f70fe3c939ec5bf38d4b90e22c67859",
+      "variants": {
+        "geometry": "8ac83e54887b1eabc200e30c11f290099f70fe3c939ec5bf38d4b90e22c67859",
+        "gan": "c3cf817259d65077c27ad8e3a56ea87942980b79a8bee09fa677c2ee3ce6cbfb",
+        "hybrid": "d31fe705254c4ab46d09d4ee7caa6be164e219147e2b5ec00e5c8c8bb15ee931"
+      },
+      "outputs": 9,
+      "frames": 40,
+      "source_frames": 47,
+      "blocked_methods": {
+        "gan": "修订实测：S03 嘴唇仍有收缩色块，保留完整小模型诊断对照，不可作为可用方案。",
+        "hybrid": "修订实测：低强度嘴部模型仍有不自然的嘴唇收缩，本版仅供问题对照。"
+      }
+    }
+  ],
+  "diagnostic_only_templates": 5
+}

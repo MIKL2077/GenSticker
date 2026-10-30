@@ -56,21 +56,21 @@ class ExpressionControls(BaseModel):
 class ExpressionDriver(BaseModel):
     """Bounded 128px CPU drivers; approval is bound per template and recipe."""
     model_config = ConfigDict(extra='forbid', allow_inf_nan=False)
-    method: Literal['geometry-v1', 'geometry-eye-v2', 'ganimation-emotionnet-v1', 'ganimation-mouth-eye-v3']
+    method: Literal['geometry-v1', 'geometry-eye-v2', 'geometry-eye-v4', 'ganimation-emotionnet-v1', 'ganimation-mouth-eye-v3']
     aus: tuple[float, ...] = Field(min_length=17, max_length=17)
     gaze_x: float = Field(default=0.0,ge=-.2,le=.2)
 
     @model_serializer(mode='wrap')
     def serialize(self, handler):
         value=handler(self)
-        if self.method!='geometry-eye-v2':value.pop('gaze_x',None)
+        if self.method not in {'geometry-eye-v2','geometry-eye-v4'}:value.pop('gaze_x',None)
         return value
 
     @model_validator(mode='after')
     def ranges(self):
         if any(not 0 <= value <= 1 for value in self.aus):
             raise ValueError('action unit intensity outside bounds')
-        if self.gaze_x and self.method != 'geometry-eye-v2':
+        if self.gaze_x and self.method not in {'geometry-eye-v2','geometry-eye-v4'}:
             raise ValueError('gaze control requires the versioned eye adapter')
         return self
 

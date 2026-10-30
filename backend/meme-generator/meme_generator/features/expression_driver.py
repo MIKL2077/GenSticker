@@ -94,7 +94,7 @@ def deform(rgb, points, desired):
     return out
 
 
-def eye_geometry(rgb, points, values, gaze_x=0):
+def eye_geometry(rgb, points, values, gaze_x=0, *, inner_brow=False):
     """Opt-in v2: monotone eyelid remap of the person's own texture.
 
     Each vertical scanline maps a narrow eyelid band into a bounded aperture,
@@ -109,6 +109,10 @@ def eye_geometry(rgb, points, values, gaze_x=0):
     for brow in [m.L_BROW,m.R_BROW]:
         center=points[brow].mean(0)
         inner=1-np.clip(np.abs(points[brow,0]-64)/28,0,1)
+        if inner_brow:
+            # Opt-in v4: AU1 raises the inner brow independently of AU2.
+            # V2 retains its original uniform brow lift and exact output.
+            desired[brow,1]=points[brow,1]-aus[1]*5*inner-aus[2]*3*(1-inner)
         desired[brow,1]+=aus[4]*(inner*3.5-1.0)
         desired[brow,0]+=(64-center[0])*aus[4]*.025
     out=deform(rgb,points,desired) if np.any(desired!=points) else rgb.copy()
@@ -208,6 +212,8 @@ def render_frame(source, guide, driver, cache, slot):
                 rgb = deform(portrait['rgb'], portrait['p'], geometric(portrait['p'], values))
             elif driver.method == 'geometry-eye-v2':
                 rgb = eye_geometry(portrait['rgb'], portrait['p'], values, driver.gaze_x)
+            elif driver.method == 'geometry-eye-v4':
+                rgb = eye_geometry(portrait['rgb'], portrait['p'], values, driver.gaze_x, inner_brow=True)
             else:
                 tensor = (portrait['rgb'].astype('float32') / 127.5 - 1).transpose(2, 0, 1)[None].copy()
                 rgb = _session.run(None, {'image': tensor, 'aus': values[None]})[0]
