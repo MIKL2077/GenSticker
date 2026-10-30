@@ -25,6 +25,18 @@ export function useTemplateData(showStatusMessage) {
   const sortMode = ref('hot')
   const searchQuery=ref('')
   const normalizeSearch=value=>String(value||'').normalize('NFKC').toLowerCase().replace(/\s+/g,' ').trim()
+  const searchStopwords=new Set(['的','表情','表情包','模板'])
+  let searchVocabulary=[]
+  const joinedSearchTerms=term=>{
+    const parts=[];let index=0
+    while(index<term.length){
+      const word=searchVocabulary.find(word=>term.startsWith(word,index))
+      if(!word)return []
+      if(!searchStopwords.has(word))parts.push(word)
+      index+=word.length
+    }
+    return parts
+  }
   const setSearchQuery=value=>{searchQuery.value=String(value||'').slice(0,80);currentPage.value=1}
   const libraryMode=ref('warehouse'),mineKeys=ref([]),favoriteKeys=ref([]),mineTemplates=ref([])
 
@@ -46,11 +58,11 @@ export function useTemplateData(showStatusMessage) {
         return category==='image'?im>0&&!tx:category==='text'?tx>0&&!im:im>0&&tx>0
       })
     }
-    const terms=normalizeSearch(searchQuery.value).split(' ').filter(Boolean)
+    const terms=normalizeSearch(searchQuery.value).split(/[\s,，、;；]+/).filter(Boolean).map(term=>({term,parts:joinedSearchTerms(term)}))
     if(terms.length)keys=keys.filter(key=>{
       const d=templateDetails.value.get(key)||{}
       const text=normalizeSearch([key,d.templateId,d.name,...(d.keywords||[]),...(d.tags||[]),d.animated?'动图 GIF 动态':'静图 静态'].join(' '))
-      return terms.every(term=>text.includes(term))
+      return terms.every(({term,parts})=>text.includes(term)||(parts.length>0&&parts.every(part=>text.includes(part))))
     })
     return [...keys].sort((a,b)=>{
       const x=templateDetails.value.get(a)||{},y=templateDetails.value.get(b)||{}
@@ -116,6 +128,10 @@ export function useTemplateData(showStatusMessage) {
         const params=card.params_type
         templateDetails.value.set(card.key, { ...existing, name:card.name, animated:!!card.animated, faceBlend:!!card.face_blend, featuredTrial:!!card.featured_trial, inputHint:card.input_hint || '', keywords:card.keywords || [], tags:card.tags || [], heat:card.heat || 0, createdAt:card.created_at || 0, creator:card.creator, counts:card.counts || {}, localCapable:localKeys.has(card.key), ...(params ? {metadataLoaded:!!card.attribution || !!existing.attribution?.source_url, templateId:card.template_id, version:card.version, attribution:card.attribution || existing.attribution || {}, imageCount:`${params.min_images}-${params.max_images}`, textCount:`${params.min_texts}-${params.max_texts}`, defaultTexts:params.default_texts || []} : {}) })
       }
+      searchVocabulary=[...new Set(['动图','动态','gif','静图','静态','猫','狗','哭','笑',...searchStopwords,
+        ...(data.cards||[]).flatMap(card=>[card.name,...(card.keywords||[]),...(card.tags||[])])]
+        .map(normalizeSearch).filter(word=>word.length>=2&&word.length<=40||['猫','狗','哭','笑','的'].includes(word)))]
+        .sort((a,b)=>b.length-a.length||a.localeCompare(b))
       categoryLoadedPages.value.clear()
       categories.value = categories.value.map(c => {
         const apiKey = CATEGORY_UI_TO_API[c.key]

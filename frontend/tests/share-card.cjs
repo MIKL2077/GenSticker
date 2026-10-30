@@ -1,4 +1,5 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm')
+process.chdir(require('node:path').resolve(__dirname,'..'))
 let randomValue=0,randomCalls=0
 const ctx={API_BASE_URL:'https://www.shangkun.uk/gensticker/api',Math:{floor:Math.floor,random:()=>{randomCalls++;return randomValue}}}
 vm.createContext(ctx)

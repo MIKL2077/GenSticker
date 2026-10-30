@@ -1,0 +1,77 @@
+{
+  "observed_at": "2026-10-30T02:30:53.023414+00:00",
+  "publication": "not-published; human review required",
+  "public_catalog": {
+    "total": 959,
+    "animated": 392,
+    "text": 476,
+    "image": 320,
+    "mixed": 163
+  },
+  "target": 1500,
+  "needed_approvals": 541,
+  "candidates": {
+    "converted_drafts": 951,
+    "selected": 652,
+    "animated": 650,
+    "ranked_animated": 281,
+    "image_slots": 150,
+    "reserve": 136,
+    "held": 163,
+    "unconverted": 306
+  },
+  "selection_sha256": "b66cf605d2b8ba7a35e951212643eac3024b5a7cce63f5d92324ee616c774c03",
+  "preflight_holds": {
+    "large-caption-erasure-needs-repair": 14,
+    "unreliable-caption-ocr": 59,
+    "caption-inventory-needs-completeness-review": 56,
+    "small-or-low-face-anchor-needs-manual-check": 28,
+    "source-credit-is-not-an-editable-caption": 7,
+    "weak-tracking-needs-repair": 6,
+    "perceptual-near-duplicate": 8
+  },
+  "technical": {
+    "audited": 951,
+    "passed": 951,
+    "failed": 0,
+    "human_review": "required",
+    "publication": "not-published"
+  },
+  "search": {
+    "keyword_average_before": 3.42,
+    "keyword_average_after": 11.2,
+    "minimum_keywords_after": 2,
+    "synonym_groups": 175,
+    "deployed_module_sha256": "2cd0628ccd11e142150898d45b0fa6ab2b66695f07ad8704123c78eb72062215",
+    "template_recipe_hashes_unchanged": 1025
+  },
+  "verification": {
+    "status": "passed",
+    "frontend_groups": 37,
+    "backend_cases": 204,
+    "builds": [
+      "mp-weixin",
+      "h5"
+    ],
+    "native_pages": 7,
+    "sdk": "3.17.5"
+  },
+  "sources": [
+    {
+      "source": "Weshine public rankings",
+      "url": "https://u.weshineapp.com/rank/expression_tot_1",
+      "ranked_animated_selected": 281,
+      "popularity_scope": "observed source ranking, not app usage or publication date",
+      "license": "unverified"
+    },
+    {
+      "source": "ChineseBQB",
+      "url": "https://github.com/zhaoolee/ChineseBQB",
+      "revision": "94fd6cc1daa7c2b6c26c8200204ceeff22472bfb",
+      "popularity_scope": "no per-image heat fabricated",
+      "license": "unverified"
+    }
+  ],
+  "privacy": "portraits and generated media remain on local authoring machine; no avatar/media in git or production deployment",
+  "release_scope": "search and private review tooling only; no formal public-release approval"
+}

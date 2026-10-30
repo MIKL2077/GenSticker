@@ -1,4 +1,5 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm')
+process.chdir(require('node:path').resolve(__dirname,'..'))
 const saved=new Map(),events=[];let session=null
 const ctx={visitorHeaders:()=>({}),uni:{getStorageSync:key=>key==='gensticker.session.v1'?session:saved.get(key),setStorageSync:(key,value)=>saved.set(key,value),$emit:(...a)=>events.push(a)},apiRequest:async()=>({key:'next'})}
 vm.createContext(ctx);vm.runInContext(fs.readFileSync('src/services/trialService.js','utf8').replace(/^import .*$/gm,'').replace(/export /g,''),ctx)
