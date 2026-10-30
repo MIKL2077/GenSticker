@@ -4,31 +4,39 @@
     "verified_published": 967,
     "target": 1500,
     "remaining": 533,
-    "approved_this_round": 8,
+    "approved_this_round": 9,
     "revisions_pending": 2,
-    "new_pending": 40,
+    "new_pending": 39,
     "held_drafts": 2,
     "original_profile_held": 1,
     "indexed_sources": 2836,
     "downloaded_sources": 1100,
     "decoded_animated_sources_after_byte_deduplication": 727,
     "content_deduplication": "incomplete; source inventory is not a template count",
-    "technical_variants": 99,
-    "decoded_variant_outputs": 297,
-    "checked_variant_frames": 2166,
+    "technical_variants": 127,
+    "decoded_variant_outputs": 381,
+    "checked_variant_frames": 2811,
     "latest_wave": {
       "measured": 28,
       "new_pending": 23,
       "source_holds": 5,
       "near_duplicate_queue": 65
+    },
+    "published_this_round": 8,
+    "approved_waiting_publication": 1,
+    "full_gan_backfill": {
+      "templates": 28,
+      "decoded_full_gifs": 84,
+      "all_valid_drafts_have_gan": 50,
+      "previous_approvals_preserved": 9
     }
   },
   "technical_checks": {
-    "variants": 99,
-    "decoded_full_gifs": 297,
-    "preencoding_frames": 2166,
+    "variants": 127,
+    "decoded_full_gifs": 381,
+    "preencoding_frames": 2811,
     "audit_revision": 2,
-    "passed": 99,
+    "passed": 127,
     "failed": 0,
     "visual_approval": "human-required; technical checks include blocked diagnostics"
   },
@@ -42,7 +50,9 @@
       "template-search",
       "template-paging",
       "client-renderer"
-    ]
+    ],
+    "gan_backfill_backend": 19,
+    "gan_preview_ui": "passed: full GAN card preview and four-column method comparison in browser"
   },
   "runtime_linux": {
     "status": "passed",
@@ -71,7 +81,7 @@
       "frames": 24,
       "duration_ms": 2730,
       "methods": {
-        "direct": "462ae647310aa6effbb25d73c6a09afe14ced5b31ebe928b2d8fcdda54e7e45f",
+        "direct": "ef7fca607b9350ac8da4cd06d7f9e461c196103b545bcf707c3d5385b32f3a73",
         "geometry": "cd065f37263cd6956c14a0f5a0432ea0b8ef5d87663904a8ba44165085d57415",
         "gan": "ec0fd607bf8db449e8a1e12d246de3cc03607b22945fc4c9f1fa7ed4b14549a1"
       },
@@ -146,7 +156,8 @@
         "气鼓鼓",
         "郁闷",
         "闷闷不乐"
-      ]
+      ],
+      "comparison_note": null
     },
     {
       "key": "tenor_face_08be037d5075197ad7722331",
@@ -161,8 +172,9 @@
       "frames": 24,
       "duration_ms": 1450,
       "methods": {
-        "geometry": "2128b6aa2bb6362183bfdfc3a41d542abfad0ef0c2d6d5d71e0edae6834ea533",
-        "hybrid": "f648604220934c8cdaff7f531938880d5c44c1159c34ca0ed7f4b31a8398217d"
+        "geometry": "b753c5ffdb573184bb3bde49c1cbe8fed0fe4d5691937ecdf75938910a420dbb",
+        "hybrid": "f648604220934c8cdaff7f531938880d5c44c1159c34ca0ed7f4b31a8398217d",
+        "gan": "9da17dd937788a1c10e899afacb6ee1383b90334f8f3e669ed686ac2c9878282"
       },
       "blocked_methods": {},
       "brief": {
@@ -267,7 +279,8 @@
         "screaming",
         "Cat",
         "Kitten"
-      ]
+      ],
+      "comparison_note": "补充完整 GANimation 对照，原推荐方案与审核记录保留；表情参数沿用本模板原手工曲线。"
     },
     {
       "key": "tenor_face_135c55a3ca1b7a4e20922d24",
@@ -278,11 +291,12 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "8bcd65aeacea21c7f94090ff01421f169937a5694c30d2a42b2aa6b31d7f203c",
+      "spec_sha256": "fc565755baa6ff23c581f0cf093272c2e4bd5f24e7018e1e241b6663ef5bc66d",
       "frames": 24,
       "duration_ms": 3080,
       "methods": {
-        "geometry": "8bcd65aeacea21c7f94090ff01421f169937a5694c30d2a42b2aa6b31d7f203c"
+        "geometry": "fc565755baa6ff23c581f0cf093272c2e4bd5f24e7018e1e241b6663ef5bc66d",
+        "gan": "728f76044f2aacd4ffd131e581eba9f8f532526f29753a32d588335c9c3a4978"
       },
       "blocked_methods": {},
       "brief": {
@@ -388,7 +402,8 @@
         "享受",
         "satisfied",
         "contented"
-      ]
+      ],
+      "comparison_note": "补充完整 GANimation 对照，原推荐方案与审核记录保留；表情参数沿用本模板原手工曲线。"
     },
     {
       "key": "tenor_face_1c81bcedf25849f3cb551a30",
@@ -399,11 +414,11 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "ab657ac8d66d5139c47af82d894a6a50da6a325be82d78e71d6e0508caaa31c1",
+      "spec_sha256": "9ec89bce8db7518e308eb171c6cc116d6140ccdfbb141d24ed551262b71b0485",
       "frames": 24,
       "duration_ms": 3230,
       "methods": {
-        "geometry": "ab657ac8d66d5139c47af82d894a6a50da6a325be82d78e71d6e0508caaa31c1",
+        "geometry": "9ec89bce8db7518e308eb171c6cc116d6140ccdfbb141d24ed551262b71b0485",
         "gan": "0d88224091142e661a1eb05f475ea00ac5753b791c8d327db7ff713d1fcc78aa",
         "hybrid": "0e3db65e56d979315be4e76c20fc15e1243e59e3fea54b2302f2c8bb33790a7d"
       },
@@ -544,7 +559,8 @@
         "cat surprised",
         "surprised cat stare",
         "cat stare"
-      ]
+      ],
+      "comparison_note": null
     },
     {
       "key": "tenor_face_21cbc78b6c702142c9061453",
@@ -555,11 +571,12 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "0434dfe4207226c93a4ce328108c0d50ffb626ffef0dcff979460ea967211a15",
+      "spec_sha256": "440f92c38a1586ca6ce738e649530d7c8aa59402986fd241c2b46aa55a28c48c",
       "frames": 24,
       "duration_ms": 4150,
       "methods": {
-        "geometry": "0434dfe4207226c93a4ce328108c0d50ffb626ffef0dcff979460ea967211a15"
+        "geometry": "440f92c38a1586ca6ce738e649530d7c8aa59402986fd241c2b46aa55a28c48c",
+        "gan": "52453d637a906183f161295fa79ac74881015859484ab0eb0bedc26b24d41d6a"
       },
       "blocked_methods": {},
       "brief": {
@@ -642,7 +659,8 @@
         "sleepy",
         "sleepy Cat",
         "Insomia"
-      ]
+      ],
+      "comparison_note": "补充完整 GANimation 对照，原推荐方案与审核记录保留；表情参数沿用本模板原手工曲线。"
     },
     {
       "key": "tenor_face_2214ee7402f0c6d8e724edd1",
@@ -760,7 +778,8 @@
         "凶凶",
         "roar",
         "hissing"
-      ]
+      ],
+      "comparison_note": null
     },
     {
       "key": "tenor_face_26c7dff5fec3ab4d4d619f2c",
@@ -775,7 +794,8 @@
       "frames": 24,
       "duration_ms": 2500,
       "methods": {
-        "geometry": "419cd9690a8f841b3f09f9f913e40176b9b1332400643714a8d7b5c1df264fa9"
+        "geometry": "419cd9690a8f841b3f09f9f913e40176b9b1332400643714a8d7b5c1df264fa9",
+        "gan": "7998fd500ae8ef3ea9432712cec5f2a4735adf20887e8bb704b726ad831fc803"
       },
       "blocked_methods": {},
       "brief": {
@@ -891,7 +911,8 @@
         "pet",
         "Petting Cat",
         "cute"
-      ]
+      ],
+      "comparison_note": "补充完整 GANimation 对照，原推荐方案与审核记录保留；表情参数沿用本模板原手工曲线。"
     },
     {
       "key": "tenor_face_2dfeb94b2e5b78a6950b7e96",
@@ -906,7 +927,7 @@
       "frames": 24,
       "duration_ms": 3200,
       "methods": {
-        "direct": "d864272432fe387464578856ea1a8fc3490abcee7fa64b8363fd5f30e2919287",
+        "direct": "cb9c6a9c3483460a7ffa0909c8dd504b88fa4d4d0450b01655ff6e533396f1ca",
         "geometry": "2d06748e3bf87eb6f922f809e04fd7c23320815701dbc3bf54602d871dadd76e",
         "gan": "8d9d43e9fc7bb396fd5a30d359b20ad6aea6b973a1a368448baeaea1a46a0775"
       },
@@ -1048,7 +1069,8 @@
         "盯着",
         "不说话",
         "gato"
-      ]
+      ],
+      "comparison_note": null
     },
     {
       "key": "tenor_face_3260fdec0faff2d1b19b58d8",
@@ -1063,7 +1085,7 @@
       "frames": 24,
       "duration_ms": 5230,
       "methods": {
-        "direct": "394f3d6cf0d6767e68aad86f3f5b2e5f7ccb0a3c99b3d7073cae87958c7b1a29",
+        "direct": "263de6212176bbdba6e9650a0aecbb4e7d28f55dcf9957df6b79881ee7bb4c76",
         "geometry": "6f762ae2fd88609ccc5821a45cd8274e85f360f02c5c9bd706aacac0628bd89e",
         "gan": "70c6cabd5e9b5790948c36968ba0a5c7cee1d3d2777f487e06fc6737ff52321c"
       },
@@ -1144,7 +1166,8 @@
         "大眼睛",
         "wide-eyed",
         "happy cat"
-      ]
+      ],
+      "comparison_note": null
     },
     {
       "key": "tenor_face_326d501a23e85e9b6fc0e66c",
@@ -1245,7 +1268,8 @@
         "开怀大笑",
         "哈哈大笑",
         "笑到合不拢嘴"
-      ]
+      ],
+      "comparison_note": null
     },
     {
       "key": "tenor_face_348889355a67b404b5c8c1f5",
@@ -1367,7 +1391,8 @@
         "yawning",
         "啊啊啊",
         "screaming"
-      ]
+      ],
+      "comparison_note": null
     },
     {
       "key": "tenor_face_432aa67561d30c2b33b08e71",
@@ -1378,11 +1403,11 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "a4a2561aa435864a23c00eea15298b1865519e24bc9520ddad1f32a7d2e3451e",
+      "spec_sha256": "d474b272d28e7884ee81164bda234a587ee84ce03c3a6230baf1db5d2c63b96e",
       "frames": 24,
       "duration_ms": 2700,
       "methods": {
-        "geometry": "a4a2561aa435864a23c00eea15298b1865519e24bc9520ddad1f32a7d2e3451e",
+        "geometry": "d474b272d28e7884ee81164bda234a587ee84ce03c3a6230baf1db5d2c63b96e",
         "gan": "4dd7c7e515c78721077b01eb61cdbf793cb1af02c7e12c8ad32f86c959878a38",
         "hybrid": "cf8d2e5c9c59c10cde447a54720d910a5916f2e1e00f6c2da3fa45331394bf24"
       },
@@ -1477,7 +1502,8 @@
         "big eyes",
         "big eyed cat",
         "cute"
-      ]
+      ],
+      "comparison_note": null
     },
     {
       "key": "tenor_face_43f9ec2fdd363a654340c01a",
@@ -1488,11 +1514,12 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "9a2c66bfbf7968318e529742096bc1cfeacfafa14254fdb5262bdc86dbbcaba3",
+      "spec_sha256": "70910d8e2e31b445ef7797d9410a4975942e49c67e29fa6e91a15b56a281cfba",
       "frames": 12,
       "duration_ms": 1200,
       "methods": {
-        "geometry": "9a2c66bfbf7968318e529742096bc1cfeacfafa14254fdb5262bdc86dbbcaba3"
+        "geometry": "70910d8e2e31b445ef7797d9410a4975942e49c67e29fa6e91a15b56a281cfba",
+        "gan": "027f1beac81c756799285ebb5e06ce54c430b76990966d3ab8ce493557887e86"
       },
       "blocked_methods": {},
       "brief": {
@@ -1580,7 +1607,8 @@
         "can",
         "food can",
         "ear"
-      ]
+      ],
+      "comparison_note": "补充完整 GANimation 对照，原推荐方案与审核记录保留；表情参数沿用本模板原手工曲线。"
     },
     {
       "key": "tenor_face_4ab6ab4b9ffea525826fac29",
@@ -1698,7 +1726,8 @@
         "huh",
         "啊啊啊",
         "screaming"
-      ]
+      ],
+      "comparison_note": null
     },
     {
       "key": "tenor_face_4ecbb4201a7d1b81cb476b3d",
@@ -1713,7 +1742,7 @@
       "frames": 24,
       "duration_ms": 4510,
       "methods": {
-        "direct": "517191200154be71bd10ea9d3ba01e27376fb88a5d34f14df98d96b0047c0d76",
+        "direct": "3f95d1ccffc14955b504b127a0885ac37b8a791d9546c06f9fe9d1f01bc8a981",
         "geometry": "b4239ba8372c60e28a147eab20ebee8b23374dab4df1d95a3041f0763b391370",
         "gan": "6f47fa337bb84cb875625246ceb6a162788b22036612c67adc3ddf8b52453b9a"
       },
@@ -1801,7 +1830,8 @@
         "爆笑",
         "哈哈哈",
         "笑到肚子疼"
-      ]
+      ],
+      "comparison_note": null
     },
     {
       "key": "tenor_face_572af628414054de3fb85499",
@@ -1953,7 +1983,8 @@
         "yawning",
         "啊啊啊",
         "screaming"
-      ]
+      ],
+      "comparison_note": null
     },
     {
       "key": "tenor_face_612e810f47b7d39bf8935d00",
@@ -1964,11 +1995,12 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "24b5885c60d63feec8448603cb908e7d7355a4d2a1e7f7ade423346a6a326f9d",
+      "spec_sha256": "47788f80c4913d105ce6188eb26f6848ac435a1fbb9f6e0d00a86907b78ea9ec",
       "frames": 21,
       "duration_ms": 2100,
       "methods": {
-        "geometry": "24b5885c60d63feec8448603cb908e7d7355a4d2a1e7f7ade423346a6a326f9d"
+        "geometry": "47788f80c4913d105ce6188eb26f6848ac435a1fbb9f6e0d00a86907b78ea9ec",
+        "gan": "7f35051e631ac541d7e68aa10fc54eb6a8d5cce4afc5107c5196e6810b278487"
       },
       "blocked_methods": {},
       "brief": {
@@ -2131,7 +2163,8 @@
         "Pat Cat",
         "Blanket Wrap",
         "qwertyjahm"
-      ]
+      ],
+      "comparison_note": "补充完整 GANimation 对照，原推荐方案与审核记录保留；表情参数沿用本模板原手工曲线。"
     },
     {
       "key": "tenor_face_6267e9fb8a6c475ffa377910",
@@ -2142,11 +2175,12 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "f6f224748db6ca712f721b7c692e020956acd8329197f14f4ffd60f8689a525c",
+      "spec_sha256": "64a265d26bf310b2eb1c04f384aeef114d663964c2c1c29c84e21b635e7fa239",
       "frames": 24,
       "duration_ms": 1950,
       "methods": {
-        "geometry": "f6f224748db6ca712f721b7c692e020956acd8329197f14f4ffd60f8689a525c"
+        "geometry": "64a265d26bf310b2eb1c04f384aeef114d663964c2c1c29c84e21b635e7fa239",
+        "gan": "7d8b86e39437fc5f54f0232534692c9a9514f33db7aebd5132e82e0d9cb254d4"
       },
       "blocked_methods": {},
       "brief": {
@@ -2332,7 +2366,8 @@
         "睁眼",
         "抬眉",
         "Jimmy"
-      ]
+      ],
+      "comparison_note": "补充完整 GAN 对照；动作时序沿用原手工曲线，GAN 瞪眼幅度单独限幅标定，未改变原几何方案或原成品。"
     },
     {
       "key": "tenor_face_66a929495e13c50c21de75bf",
@@ -2343,11 +2378,12 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "bc2865177e7d95e97f35d64470c050e02819c85108be5027d2d1591630b07b04",
+      "spec_sha256": "3e7eb1c50b9aa336ca199ba65ddc697d17611c6b57691d63f1883f71ec22287e",
       "frames": 24,
       "duration_ms": 5460,
       "methods": {
-        "geometry": "bc2865177e7d95e97f35d64470c050e02819c85108be5027d2d1591630b07b04"
+        "geometry": "3e7eb1c50b9aa336ca199ba65ddc697d17611c6b57691d63f1883f71ec22287e",
+        "gan": "828dd74c9e863deb7af393dd99d0faa6b6384e7df7a9525803e056ed7fe6eec9"
       },
       "blocked_methods": {},
       "brief": {
@@ -2439,7 +2475,8 @@
         "ugh cat",
         "disgusted",
         "disgusting"
-      ]
+      ],
+      "comparison_note": "补充完整 GANimation 对照，原推荐方案与审核记录保留；表情参数沿用本模板原手工曲线。"
     },
     {
       "key": "tenor_face_6ab17df1942d66ada5d06eca",
@@ -2450,11 +2487,11 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "59a0e5409572980e2f2b0e25835fb93d23fda0c13aa8659e4085a6579ee4fe99",
+      "spec_sha256": "fa57e6184f1725a7f38b2027442a9b234d60ccda4969a569553b9352c0695ce1",
       "frames": 24,
       "duration_ms": 5000,
       "methods": {
-        "geometry": "59a0e5409572980e2f2b0e25835fb93d23fda0c13aa8659e4085a6579ee4fe99",
+        "geometry": "fa57e6184f1725a7f38b2027442a9b234d60ccda4969a569553b9352c0695ce1",
         "gan": "762386eed57beca464200077e5d56b0c6e10263d4a9c020c70223b49e389c2fd",
         "hybrid": "cd476157b5494a0d7786123621c7bc1253dde7bc2cc273e2996b65d0ec5dbeba"
       },
@@ -2649,7 +2686,8 @@
         "big eye",
         "funny",
         "gof"
-      ]
+      ],
+      "comparison_note": null
     },
     {
       "key": "tenor_face_70a150aa598c852c6ef7001c",
@@ -2660,11 +2698,12 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "3950e532cb4a916b978472d62de1cecde84497d330ab238221d163a588009e94",
+      "spec_sha256": "61f677ef9ed78e7b40b3353eca641484b41669f32c9fcdf9d95e011758ac58b9",
       "frames": 24,
       "duration_ms": 2880,
       "methods": {
-        "geometry": "3950e532cb4a916b978472d62de1cecde84497d330ab238221d163a588009e94"
+        "geometry": "61f677ef9ed78e7b40b3353eca641484b41669f32c9fcdf9d95e011758ac58b9",
+        "gan": "ef0c7c2058e2a67c8ffa2533ee6cbadc0b32c2fbb739eb9c3493e12b796001a1"
       },
       "blocked_methods": {},
       "brief": {
@@ -2809,7 +2848,8 @@
         "睁大眼",
         "大眼睛",
         "wide-eyed"
-      ]
+      ],
+      "comparison_note": "补充完整 GAN 对照；动作时序沿用原手工曲线，GAN 瞪眼幅度单独限幅标定，未改变原几何方案或原成品。"
     },
     {
       "key": "tenor_face_739776e8f11c0fe690662f36",
@@ -2915,7 +2955,8 @@
         "surprised",
         "啊啊啊",
         "screaming"
-      ]
+      ],
+      "comparison_note": null
     },
     {
       "key": "tenor_face_7ab53a98c0d7c3a87347d330",
@@ -2930,7 +2971,7 @@
       "frames": 3,
       "duration_ms": 150,
       "methods": {
-        "direct": "ccef651c4101af749afccbd2832ddf1e24d0d43327a73ffd972c5c27db6d4b05",
+        "direct": "ee18ba3a1f397f36d360170f31a8c8d317b6b1dabe86e6f51d0567329a70a449",
         "geometry": "85184baaed24855a85d9ef72f3255170a3c4ad604f98900c204301cccccdb9f3",
         "gan": "3fd19d99a4a693d47a6147818f3cef0a922c9ba8e4f5d90d321d30ea042133a3"
       },
@@ -3005,7 +3046,8 @@
         "大叫",
         "呐喊",
         "嚎叫"
-      ]
+      ],
+      "comparison_note": null
     },
     {
       "key": "tenor_face_8068202b965d661d27b00b69",
@@ -3016,11 +3058,11 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "c906453860cbbeb5a504884dc33f6b5b9f1a5525e31cdb5fe091c0032e35ed03",
+      "spec_sha256": "0d2873775819c02709cac073869c956f545e99740afdd057d2c93991c33fd681",
       "frames": 24,
       "duration_ms": 3200,
       "methods": {
-        "geometry": "c906453860cbbeb5a504884dc33f6b5b9f1a5525e31cdb5fe091c0032e35ed03",
+        "geometry": "0d2873775819c02709cac073869c956f545e99740afdd057d2c93991c33fd681",
         "gan": "bf77171b8935a9864814ffea0da7ea0941a26a773480e7ed5ff2e9512f6f0378",
         "hybrid": "dc45ff15cc98dad1fde0b1b552e6ca8d8d010129d92803c888e57d7596ca7a23"
       },
@@ -3133,7 +3175,8 @@
         "ai cat",
         "cat ai",
         "ai"
-      ]
+      ],
+      "comparison_note": null
     },
     {
       "key": "tenor_face_8aef48a8bff849ce917dc715",
@@ -3144,11 +3187,12 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "3387bdef0535c42051889a51e44396334878c0fdc0bf1e6823152fac1edfda96",
+      "spec_sha256": "5a0bb062b33f907db3fd817d4799b67dd3796fb307966b6ecf6e14f961ca9a92",
       "frames": 24,
       "duration_ms": 4050,
       "methods": {
-        "geometry": "3387bdef0535c42051889a51e44396334878c0fdc0bf1e6823152fac1edfda96"
+        "geometry": "5a0bb062b33f907db3fd817d4799b67dd3796fb307966b6ecf6e14f961ca9a92",
+        "gan": "2f879e5323e690b50ca408ea8d82a38d48569561b6e007a33b3a990ca520fd2a"
       },
       "blocked_methods": {},
       "brief": {
@@ -3242,7 +3286,8 @@
         "嫌烦",
         "不想听",
         "irritated"
-      ]
+      ],
+      "comparison_note": "补充完整 GANimation 对照，原推荐方案与审核记录保留；表情参数沿用本模板原手工曲线。"
     },
     {
       "key": "tenor_face_9073e1619db79f9657d78af5",
@@ -3257,7 +3302,8 @@
       "frames": 24,
       "duration_ms": 5400,
       "methods": {
-        "geometry": "cff9d8d2687da6fe0f5433c0bcabdad348867190ac9d2b2f6fa7b4f64c3ac1c6"
+        "geometry": "cff9d8d2687da6fe0f5433c0bcabdad348867190ac9d2b2f6fa7b4f64c3ac1c6",
+        "gan": "565abff1ecbb903b75bb799f47e17acd711849f14a58eec8fda852b2b9964404"
       },
       "blocked_methods": {},
       "brief": {
@@ -3371,7 +3417,8 @@
         "什么情况",
         "tilt",
         "confused"
-      ]
+      ],
+      "comparison_note": "补充完整 GANimation 对照，原推荐方案与审核记录保留；表情参数沿用本模板原手工曲线。"
     },
     {
       "key": "tenor_face_9a3519e782bf56ab8d08a1e8",
@@ -3386,7 +3433,8 @@
       "frames": 24,
       "duration_ms": 4100,
       "methods": {
-        "geometry": "3cd9ff7d8ecf137e82789bd1f54527f3e18a3a1f1910f792d30ee150e4eeed85"
+        "geometry": "3cd9ff7d8ecf137e82789bd1f54527f3e18a3a1f1910f792d30ee150e4eeed85",
+        "gan": "a570b5af490505ee07566f9c1027c4fbe1044280fec9373df257a308db32acd4"
       },
       "blocked_methods": {},
       "brief": {
@@ -3492,7 +3540,8 @@
         "owo cat",
         "uwu cat",
         "cat uwu"
-      ]
+      ],
+      "comparison_note": "补充完整 GANimation 对照，原推荐方案与审核记录保留；表情参数沿用本模板原手工曲线。"
     },
     {
       "key": "tenor_face_a26451282135c8acf1d74fe3",
@@ -3507,7 +3556,8 @@
       "frames": 24,
       "duration_ms": 6800,
       "methods": {
-        "geometry": "0113cda4c6301fe433e91d7393c994c39dd6d11f40f48dfa672b776159947966"
+        "geometry": "0113cda4c6301fe433e91d7393c994c39dd6d11f40f48dfa672b776159947966",
+        "gan": "47017b04e31d10a1e7c3862ec05606af583b38d56d1fda15eac264e23cf95c3b"
       },
       "blocked_methods": {},
       "brief": {
@@ -3636,7 +3686,8 @@
         "funny",
         "laughing",
         "gif"
-      ]
+      ],
+      "comparison_note": "补充完整 GANimation 对照，原推荐方案与审核记录保留；表情参数沿用本模板原手工曲线。"
     },
     {
       "key": "tenor_face_a74a3bb57dc2a9c4078aeb62",
@@ -3647,11 +3698,12 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "66498bc7e7377df2616b8a84d90b3752dfec0ed8cfbf1ca60264e9e082157a14",
+      "spec_sha256": "9d0f81cf395028582f2f1055582695bdd3042674e862b2318af984961a1a87f3",
       "frames": 24,
       "duration_ms": 4080,
       "methods": {
-        "geometry": "66498bc7e7377df2616b8a84d90b3752dfec0ed8cfbf1ca60264e9e082157a14"
+        "geometry": "9d0f81cf395028582f2f1055582695bdd3042674e862b2318af984961a1a87f3",
+        "gan": "f4110fa90987a3974d58f5eaa14fc916ada5a1037a827bc1411494950e531d56"
       },
       "blocked_methods": {},
       "brief": {
@@ -3751,7 +3803,8 @@
         "眨眨眼",
         "眼睛开合",
         "blinking"
-      ]
+      ],
+      "comparison_note": "补充完整 GANimation 对照，原推荐方案与审核记录保留；表情参数沿用本模板原手工曲线。"
     },
     {
       "key": "tenor_face_a78c2b39fb5ca63825bb7675",
@@ -3766,7 +3819,7 @@
       "frames": 6,
       "duration_ms": 300,
       "methods": {
-        "direct": "dcf6bd438893612e9adfcd07fb26fec50f8967d33c60457772e00041da8bac0d",
+        "direct": "8a70c0cdecf536482dd421c3bde887088e5ac2776306d2390dcd3622e07e6cf8",
         "geometry": "799e2af7425596a3e948cf48b11dcbe74716e8fb0b502c5c70a98e7c28e0777e",
         "gan": "7d59ca1a98a1a380cd497dbd52eef3ce5405252bb9fa1f880480171b5033d735"
       },
@@ -3845,7 +3898,8 @@
         "大叫",
         "呐喊",
         "嚎叫"
-      ]
+      ],
+      "comparison_note": null
     },
     {
       "key": "tenor_face_a99e7bff0dda4d40d7f480cd",
@@ -3856,11 +3910,12 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "a3791546636e54c95cb3547b2ba6bd89b51927ddf60c41f6246db4eb4843d808",
+      "spec_sha256": "f809cd190181f5d27fb31a0410c0239c2babcb5c224c2d35de8b297a27d61e0f",
       "frames": 24,
       "duration_ms": 6600,
       "methods": {
-        "geometry": "a3791546636e54c95cb3547b2ba6bd89b51927ddf60c41f6246db4eb4843d808"
+        "geometry": "f809cd190181f5d27fb31a0410c0239c2babcb5c224c2d35de8b297a27d61e0f",
+        "gan": "2f06acd60ac5a5d683043d469c13389f2db3b751efaee9addaa31a7b26e3db84"
       },
       "blocked_methods": {},
       "brief": {
@@ -3948,7 +4003,8 @@
         "cat silly",
         "cute cat images",
         "funny cat"
-      ]
+      ],
+      "comparison_note": "补充完整 GANimation 对照，原推荐方案与审核记录保留；表情参数沿用本模板原手工曲线。"
     },
     {
       "key": "tenor_face_abf185950a3eba76f7b38f8c",
@@ -3959,11 +4015,12 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "042238c6212553e4b428a5d7d9f0d2cead99a55cd026eaf3120a443fdb39ed60",
+      "spec_sha256": "14590ff580b2176554f8b13da4c7cb0ea78098af56e3a242f9403e7ee9737478",
       "frames": 24,
       "duration_ms": 3600,
       "methods": {
-        "geometry": "042238c6212553e4b428a5d7d9f0d2cead99a55cd026eaf3120a443fdb39ed60"
+        "geometry": "14590ff580b2176554f8b13da4c7cb0ea78098af56e3a242f9403e7ee9737478",
+        "gan": "86c88ce4264a1f6d724a3e266888b364f234e032069980fb36302d9ecab28fc3"
       },
       "blocked_methods": {},
       "brief": {
@@ -4107,7 +4164,8 @@
         "睁大眼",
         "大眼睛",
         "wide-eyed"
-      ]
+      ],
+      "comparison_note": "补充完整 GAN 对照；动作时序沿用原手工曲线，GAN 瞪眼幅度单独限幅标定，未改变原几何方案或原成品。"
     },
     {
       "key": "tenor_face_adf217d4c13c4f46e390ed8e",
@@ -4118,11 +4176,11 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "55cca55ff2d88b6ead9e1b7fef231dcd20a86cac47f8be9e4aa9179306b3357e",
+      "spec_sha256": "7dace9dd90fb841e374927ecb024d76e4a58dc27bbb0172eb3ca3fbd0f427fb7",
       "frames": 18,
       "duration_ms": 900,
       "methods": {
-        "geometry": "55cca55ff2d88b6ead9e1b7fef231dcd20a86cac47f8be9e4aa9179306b3357e",
+        "geometry": "7dace9dd90fb841e374927ecb024d76e4a58dc27bbb0172eb3ca3fbd0f427fb7",
         "gan": "dc790e4bd97592deb68f4a69f91c30ba58ad1e6994e6e82105737b0d69e75003",
         "hybrid": "0c7cff5c29142eb977f44a89ed83a2872045327ed3be8c3face73e14b78263c0"
       },
@@ -4213,7 +4271,8 @@
         "Beluga Cat",
         "Beluga The Kitten",
         "Kitten"
-      ]
+      ],
+      "comparison_note": null
     },
     {
       "key": "tenor_face_bb590b46026353fec8551f27",
@@ -4224,11 +4283,12 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "9153b90ee5803f3701c39ff753550adfc1fcb9c440a1b1667b4473973fdb864c",
+      "spec_sha256": "330d7fa747dad54f603a03d83d09afa8fb92133c9ecc75a31d8db23f4d7c606e",
       "frames": 16,
       "duration_ms": 1800,
       "methods": {
-        "geometry": "9153b90ee5803f3701c39ff753550adfc1fcb9c440a1b1667b4473973fdb864c"
+        "geometry": "330d7fa747dad54f603a03d83d09afa8fb92133c9ecc75a31d8db23f4d7c606e",
+        "gan": "3844233e3733885559eb675a5f47dfa2e0d2150ac37705a72d9fd52def52d1ca"
       },
       "blocked_methods": {},
       "brief": {
@@ -4403,7 +4463,8 @@
         "kenjou",
         "500x",
         "yes"
-      ]
+      ],
+      "comparison_note": "补充完整 GAN 对照；动作时序沿用原手工曲线，GAN 瞪眼幅度单独限幅标定，未改变原几何方案或原成品。"
     },
     {
       "key": "tenor_face_bd06256d1ce62e8e509ea821",
@@ -4418,7 +4479,7 @@
       "frames": 20,
       "duration_ms": 830,
       "methods": {
-        "direct": "3b4ba70bba1f9cd44c8c22246df9478d59e4259cec98ef606f624cbbe4641ac5",
+        "direct": "e29b3b8fbb30d1af02ef351faca3196cd4584c3f4b485850a8e05399dc662411",
         "geometry": "7faabe770c61d5737f52366dcd3685c4151c9b09001bee24ac118348bee9bdba",
         "gan": "dff9489de42a8a41f00059d3dc4c94e5e8ea71a6a70c2278f9ae438705647694"
       },
@@ -4490,7 +4551,8 @@
         "笑",
         "坏笑",
         "憋笑"
-      ]
+      ],
+      "comparison_note": null
     },
     {
       "key": "tenor_face_bd1570561c83d118095128ab",
@@ -4629,7 +4691,8 @@
         "shocked",
         "wink",
         "reaction"
-      ]
+      ],
+      "comparison_note": null
     },
     {
       "key": "tenor_face_c47e6cc4fd638181cbe0b98a",
@@ -4640,11 +4703,12 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "22c0f62db5b1cd5cadccceb8373734ce8f48171c5cfc1f8f9544a2c1953b8d92",
+      "spec_sha256": "4d30b27e3a856fed742be13e0401e365e1cc6fc14b30e997abd02f7ab63a4e6e",
       "frames": 24,
       "duration_ms": 5800,
       "methods": {
-        "geometry": "22c0f62db5b1cd5cadccceb8373734ce8f48171c5cfc1f8f9544a2c1953b8d92"
+        "geometry": "4d30b27e3a856fed742be13e0401e365e1cc6fc14b30e997abd02f7ab63a4e6e",
+        "gan": "abca19246d7c604f740732f04740f351a3ee0d73b4289801f7653efe2d7319ba"
       },
       "blocked_methods": {},
       "brief": {
@@ -4747,7 +4811,8 @@
         "wh",
         "white cat",
         "cute cat"
-      ]
+      ],
+      "comparison_note": "补充完整 GANimation 对照，原推荐方案与审核记录保留；表情参数沿用本模板原手工曲线。"
     },
     {
       "key": "tenor_face_c85bcfdaee9a15e3b96cfeec",
@@ -4758,11 +4823,12 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "7a613df50c30305c43904bd5254cc8d3d69c105508a99f8c0e959f869d4585a7",
+      "spec_sha256": "e37406c93f316b74dae0e939c5264b29aa626334a5efa370fb99d0b420976838",
       "frames": 24,
       "duration_ms": 3100,
       "methods": {
-        "geometry": "7a613df50c30305c43904bd5254cc8d3d69c105508a99f8c0e959f869d4585a7"
+        "geometry": "e37406c93f316b74dae0e939c5264b29aa626334a5efa370fb99d0b420976838",
+        "gan": "df2afbcb7f157a91424574990288f5afcfd12125eb23f4c7685462d382c77e2e"
       },
       "blocked_methods": {},
       "brief": {
@@ -4848,7 +4914,8 @@
         "眯起眼",
         "squint",
         "squinting"
-      ]
+      ],
+      "comparison_note": "补充完整 GANimation 对照，原推荐方案与审核记录保留；表情参数沿用本模板原手工曲线。"
     },
     {
       "key": "tenor_face_cdfa221d64201d622471784e",
@@ -4859,11 +4926,12 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "04025d1b6517d49ee97cbe133f17329293504964978624201f40aede965cf4ad",
+      "spec_sha256": "27651a8561fa962a313dbd83bdf6345567af17e87c9cabb4403a5405558c954e",
       "frames": 24,
       "duration_ms": 4590,
       "methods": {
-        "geometry": "04025d1b6517d49ee97cbe133f17329293504964978624201f40aede965cf4ad"
+        "geometry": "27651a8561fa962a313dbd83bdf6345567af17e87c9cabb4403a5405558c954e",
+        "gan": "dad82adbe078d2478bfe270b61e31fedfdbe546a4966b15e2202533081e80423"
       },
       "blocked_methods": {},
       "brief": {
@@ -4966,7 +5034,8 @@
         "boba",
         "soleilwakana",
         "soleil wakana"
-      ]
+      ],
+      "comparison_note": "补充完整 GANimation 对照，原推荐方案与审核记录保留；表情参数沿用本模板原手工曲线。"
     },
     {
       "key": "tenor_face_d1a4ef8f5b94e326f4a0ad01",
@@ -4981,8 +5050,9 @@
       "frames": 24,
       "duration_ms": 3700,
       "methods": {
-        "geometry": "907a0d80a49d5cff351d7cc7ad4f10dec20c668ebb982e611fd0c8ddff486a18",
-        "hybrid": "125e09e409ff4b7aa8453260a87b27923ff204b70d09470510a1d9f1c617b7d2"
+        "geometry": "c8da68fa6244f840930b68c28f9699372d485a7ff3b873c1cdcdaa4f07ece7da",
+        "hybrid": "125e09e409ff4b7aa8453260a87b27923ff204b70d09470510a1d9f1c617b7d2",
+        "gan": "7cefcafd36da976bf70c1a64121d9e1cb5c5dbd4b680373020db071a3bdca107"
       },
       "blocked_methods": {},
       "brief": {
@@ -5112,7 +5182,8 @@
         "哈哈哈",
         "笑到肚子疼",
         "Orange Cat Smiling"
-      ]
+      ],
+      "comparison_note": "补充完整 GANimation 对照，原推荐方案与审核记录保留；表情参数沿用本模板原手工曲线。"
     },
     {
       "key": "tenor_face_d3685f5ca3b8183a1846f6ba",
@@ -5123,11 +5194,12 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "02e76e9a42d17522988b129a75e4c8db6da0c8e618c1579721314accf239fd38",
+      "spec_sha256": "e3f36f4125f9dcd1a813e2bd4e002c1f0c101623f5b889b1289f942a73947fd7",
       "frames": 24,
       "duration_ms": 2560,
       "methods": {
-        "geometry": "02e76e9a42d17522988b129a75e4c8db6da0c8e618c1579721314accf239fd38"
+        "geometry": "e3f36f4125f9dcd1a813e2bd4e002c1f0c101623f5b889b1289f942a73947fd7",
+        "gan": "742c5811e05ec0d56116bf6d644f0e88b01aee8c42e9fdf7f8279fc688a04c1d"
       },
       "blocked_methods": {},
       "brief": {
@@ -5221,7 +5293,8 @@
         "已读不回",
         "在等你",
         "waiting-for-reply"
-      ]
+      ],
+      "comparison_note": "补充完整 GANimation 对照，原推荐方案与审核记录保留；表情参数沿用本模板原手工曲线。"
     },
     {
       "key": "tenor_face_d3f6695a1cd379ed7dd8ce44",
@@ -5232,11 +5305,11 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "155d9205f466945811b784b5c8cfda87077ec9e9601872fd328cfa0c848f0186",
+      "spec_sha256": "0482db77e333c96b1c2c1b1599e0b88e4a45b335df6401fb3f3c6de28f57cab6",
       "frames": 24,
       "duration_ms": 2640,
       "methods": {
-        "geometry": "155d9205f466945811b784b5c8cfda87077ec9e9601872fd328cfa0c848f0186",
+        "geometry": "0482db77e333c96b1c2c1b1599e0b88e4a45b335df6401fb3f3c6de28f57cab6",
         "gan": "06e7899963a7b9719b39eb3e6eee740d8cb0f307a30e12d8315d9dcbfb36b7c4",
         "hybrid": "e552bce5a89836512a36fa6b136877b93c331a6a2464a85bb1fd77ff956f2a3d"
       },
@@ -5413,7 +5486,8 @@
         "大眼睛",
         "目瞪口呆",
         "wide-eyed"
-      ]
+      ],
+      "comparison_note": null
     },
     {
       "key": "tenor_face_dad4b09b3e0ffcdf68ac0967",
@@ -5428,7 +5502,7 @@
       "frames": 24,
       "duration_ms": 1990,
       "methods": {
-        "direct": "1abfa4c1d2d8a2ac1b150b2fa2a6256998f810f41debf979b9a72b93a802e5c1",
+        "direct": "c23ee2fcd634c939c7a8851a3e453ea79b3ecb5537b103a7fd752dee50f843e3",
         "geometry": "f838e54f2fddcedf2de28c612d7f829a94f7cad89018b2cbee2c5d65b9927db9",
         "gan": "90199dc0f746d27d78d490288e8c7d6893c3c1121a97157814344b374b91c26c"
       },
@@ -5596,7 +5670,8 @@
         "表情融合",
         "闭眼",
         "盯着看"
-      ]
+      ],
+      "comparison_note": null
     },
     {
       "key": "tenor_face_dee06f745599d7938da5640f",
@@ -5611,7 +5686,7 @@
       "frames": 24,
       "duration_ms": 2540,
       "methods": {
-        "direct": "db486861e7dc8168e57fee86fa0c99acb4aeba0a44c3548ee4009cd602f15115",
+        "direct": "16addfc86f60b3d542f492388330ead1182659a063c130bab12db6468da0dc81",
         "geometry": "68ce67a7d3e8c2ea2ab15ac1d278806634b99db994771367f6c787bec8c8fbde",
         "gan": "0cf34608bd32c25968c9b0d82740625f467bf5ec72245b21b43548635ab90f1d"
       },
@@ -5681,7 +5756,8 @@
         "闭眼",
         "拒绝",
         "不愿意"
-      ]
+      ],
+      "comparison_note": null
     },
     {
       "key": "tenor_face_dfd1a1d9b674fd2923a0cb4f",
@@ -5696,8 +5772,9 @@
       "frames": 24,
       "duration_ms": 5900,
       "methods": {
-        "geometry": "c17015504b77e2cc0cf3e3780fdb25bd42e9b1ad70f2ebfb769ac20361f68630",
-        "hybrid": "371278a5106769546130a64a8e65de9f22374097d0121a233af5ed1c0d5ba687"
+        "geometry": "533409d035e429d5f4249920cca841dcd46cc0d085b6afa93b958b671b5bcb5a",
+        "hybrid": "371278a5106769546130a64a8e65de9f22374097d0121a233af5ed1c0d5ba687",
+        "gan": "f60789166b049d274202f2ad59128b13b91dcfc27a79e88e151424805f3df3fe"
       },
       "blocked_methods": {},
       "brief": {
@@ -5806,7 +5883,8 @@
         "不知道说什么",
         "说不出口",
         "犹豫"
-      ]
+      ],
+      "comparison_note": "补充完整 GANimation 对照，原推荐方案与审核记录保留；表情参数沿用本模板原手工曲线。"
     },
     {
       "key": "tenor_face_e6144cea28252eac3d572d44",
@@ -5816,13 +5894,14 @@
       "source_shares_snapshot": 198104,
       "status": "draft",
       "publication_status": "not-published",
-      "review_status": "pending",
+      "review_status": "approved",
       "spec_sha256": "4fbbd95f1392f9391e5a82a9e518987879992434002863071b1d778f90cc101e",
       "frames": 21,
       "duration_ms": 2100,
       "methods": {
-        "geometry": "bfb108a72671056b887d6ccf59cd92e4136a30b7835ce55ae14e338ff94009e3",
-        "hybrid": "4fbbd95f1392f9391e5a82a9e518987879992434002863071b1d778f90cc101e"
+        "geometry": "5d5beb2dc1548275ce4679f6179780b63f921d701bdecff01d45dd935385ce3d",
+        "hybrid": "4fbbd95f1392f9391e5a82a9e518987879992434002863071b1d778f90cc101e",
+        "gan": "fdd4341c9748ad87420aee63969bec191fefd2a6d136ac5dff11fd3c52605799"
       },
       "blocked_methods": {},
       "brief": {
@@ -5928,7 +6007,8 @@
         "懵了",
         "不知所措",
         "bewildered"
-      ]
+      ],
+      "comparison_note": "补充完整 GANimation 对照，原推荐方案与审核记录保留；表情参数沿用本模板原手工曲线。"
     },
     {
       "key": "tenor_face_eaad0bbc9ba870113245e262",
@@ -6038,7 +6118,8 @@
         "沉默",
         "不说话",
         "cat crying"
-      ]
+      ],
+      "comparison_note": null
     },
     {
       "key": "tenor_face_eb9a26aa92f4ee16522ce182",
@@ -6049,11 +6130,12 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "8e9a0fb393780ec51851b15cb7bdde71b1adb23b105324f6e040d7084f0afb4b",
+      "spec_sha256": "fa81ddf6f0f768ab984f118c67d9a58d8fa5251ba7dd945cec94defa3cfc0713",
       "frames": 24,
       "duration_ms": 3100,
       "methods": {
-        "geometry": "8e9a0fb393780ec51851b15cb7bdde71b1adb23b105324f6e040d7084f0afb4b"
+        "geometry": "fa81ddf6f0f768ab984f118c67d9a58d8fa5251ba7dd945cec94defa3cfc0713",
+        "gan": "b36414cbd5f4f5c2da337c1ce83f99a048a5a18bd5c7aa6ca871afca3ca0faf7"
       },
       "blocked_methods": {},
       "brief": {
@@ -6194,7 +6276,8 @@
         "郁闷",
         "闷闷不乐",
         "soobinsgfgifarchive"
-      ]
+      ],
+      "comparison_note": "补充完整 GANimation 对照，原推荐方案与审核记录保留；表情参数沿用本模板原手工曲线。"
     },
     {
       "key": "tenor_face_f2a33532d0e96703ad166312",
@@ -6205,11 +6288,11 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "64f034193dd0dbb2779861181527c9bfaccf35b222addd5d951bb170e3e3aeb1",
+      "spec_sha256": "505c2eb7a0408f14e69c73178234f5c7928bfe447308a72f4858467e487211e2",
       "frames": 24,
       "duration_ms": 2000,
       "methods": {
-        "geometry": "64f034193dd0dbb2779861181527c9bfaccf35b222addd5d951bb170e3e3aeb1",
+        "geometry": "505c2eb7a0408f14e69c73178234f5c7928bfe447308a72f4858467e487211e2",
         "gan": "ab3b2223a862f46420f63bbfacf54418ab0491836e9aa4523c825cd9da5a2da9",
         "hybrid": "af448c72df487e8592f24c0af892d6c1abccd1be86abfa9dae7375b59c78c41b"
       },
@@ -6368,7 +6451,8 @@
         "hands up",
         "close up",
         "heist"
-      ]
+      ],
+      "comparison_note": null
     },
     {
       "key": "tenor_face_fc87654620ce1164e13d7b29",
@@ -6379,11 +6463,12 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "745f299b0937948d25f02f5515a86db9ea6003b37d0de67bf20d0968d1a581b8",
+      "spec_sha256": "691916c54559bb6340deab94c7c197ac587b7cd31366c276da7fab8493905d61",
       "frames": 24,
       "duration_ms": 5100,
       "methods": {
-        "geometry": "745f299b0937948d25f02f5515a86db9ea6003b37d0de67bf20d0968d1a581b8"
+        "geometry": "691916c54559bb6340deab94c7c197ac587b7cd31366c276da7fab8493905d61",
+        "gan": "9539e8024623a670d02fcc0f5d41f25a0cd5231454bca63da0a7730bf89010c2"
       },
       "blocked_methods": {},
       "brief": {
@@ -6481,7 +6566,8 @@
         "眯起眼",
         "squint",
         "squinting"
-      ]
+      ],
+      "comparison_note": "补充完整 GANimation 对照，原推荐方案与审核记录保留；表情参数沿用本模板原手工曲线。"
     },
     {
       "key": "tenor_face_fe1ba4bbd9feb2e19cf65b59",
@@ -6492,11 +6578,12 @@
       "status": "draft",
       "publication_status": "not-published",
       "review_status": "pending",
-      "spec_sha256": "40126daedb135224d7a039f1745579556e55dcafc9ebe45c7200cb2656a091ed",
+      "spec_sha256": "6888f8e586b4a7f4e6d7bdba43e8891d55f37c5f6a983d265b99ab13edac9079",
       "frames": 23,
       "duration_ms": 2300,
       "methods": {
-        "geometry": "40126daedb135224d7a039f1745579556e55dcafc9ebe45c7200cb2656a091ed"
+        "geometry": "6888f8e586b4a7f4e6d7bdba43e8891d55f37c5f6a983d265b99ab13edac9079",
+        "gan": "0010423e164f9531d06af03f8b8702acb18278eadcf7852708e4d1b452737c25"
       },
       "blocked_methods": {},
       "brief": {
@@ -6593,7 +6680,8 @@
         "享受",
         "satisfied",
         "contented"
-      ]
+      ],
+      "comparison_note": "补充完整 GANimation 对照，原推荐方案与审核记录保留；表情参数沿用本模板原手工曲线。"
     },
     {
       "key": "tenor_face_ff50ab7b3f06e6def116ae7c",
@@ -6608,8 +6696,9 @@
       "frames": 24,
       "duration_ms": 3800,
       "methods": {
-        "geometry": "affa1b279cae4bfa85f37b3fe48110e38fbe83d783dea0f7d0ec5ab5782b04ce",
-        "hybrid": "30b57f34fb123c5f931c5b596acf972b677562ef6287ad530a96e7a16415399e"
+        "geometry": "d69c59b63d3282411be9a973ae4c0cbc92f741b3f1e303ed21958eabf664450c",
+        "hybrid": "30b57f34fb123c5f931c5b596acf972b677562ef6287ad530a96e7a16415399e",
+        "gan": "6af14b2095965419acd67205b82687fe28722dde7eef0b37de1dab9492362b93"
       },
       "blocked_methods": {},
       "brief": {
@@ -6761,7 +6850,8 @@
         "uhh",
         "huh",
         "huh cat"
-      ]
+      ],
+      "comparison_note": "补充完整 GANimation 对照，原推荐方案与审核记录保留；表情参数沿用本模板原手工曲线。"
     }
   ],
   "source_adoptions": {
@@ -6772,7 +6862,7 @@
       "17237565362798444368"
     ]
   },
-  "snapshot_at": "2026-10-30T06:04:30.425329+00:00",
+  "snapshot_at": "2026-10-30T06:34:43.250677+00:00",
   "release_r2": {
     "batch": "20261030-tenor-approved-r2-01.json",
     "sha256": "5464e4ab83e9e6648e8053c3853a8949ce1fafb528a0d60424a4bfdc5c37fc1c",
@@ -6807,5 +6897,21 @@
       ]
     },
     "local_full_gif_matches": 9
+  },
+  "full_gan_backfill": {
+    "templates": 28,
+    "decoded_full_gifs": 84,
+    "all_valid_drafts_have_gan": 50,
+    "previous_approvals_preserved": 9,
+    "schema_default": "stable float 0.0; 40 complete S03 GIFs byte-identical; selected approvals preserved",
+    "original_full_gifs_preserved": 297
+  },
+  "runtime_schema_fix": {
+    "production_declarative_sha256": "b8e57dd01e446b40b81c83f886c30d639848c99fda47d690557ee4dc39954dbf",
+    "catalog_unchanged": true,
+    "health_templates": 967,
+    "services_active": true,
+    "unexpected_restarts": 0,
+    "backup": "/var/backups/gensticker-serialization-default-20261030"
   }
 }

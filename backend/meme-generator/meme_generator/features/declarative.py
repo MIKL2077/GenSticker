@@ -58,7 +58,7 @@ class ExpressionDriver(BaseModel):
     model_config = ConfigDict(extra='forbid', allow_inf_nan=False)
     method: Literal['geometry-v1', 'geometry-eye-v2', 'ganimation-emotionnet-v1', 'ganimation-mouth-eye-v3']
     aus: tuple[float, ...] = Field(min_length=17, max_length=17)
-    gaze_x: float = Field(default=0,ge=-.2,le=.2)
+    gaze_x: float = Field(default=0.0,ge=-.2,le=.2)
 
     @model_serializer(mode='wrap')
     def serialize(self, handler):

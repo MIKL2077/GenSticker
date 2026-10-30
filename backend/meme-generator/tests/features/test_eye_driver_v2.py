@@ -1,4 +1,5 @@
 import unittest
+import json
 from unittest.mock import patch
 import cv2
 import numpy as np
@@ -25,6 +26,13 @@ class EyeDriverTests(unittest.TestCase):
         for value in [.21,-.21,float('nan')]:
             with self.assertRaises(ValidationError):
                 ExpressionDriver(method='geometry-eye-v2',aus=[0]*17,gaze_x=value)
+
+    def test_eye_driver_default_keeps_the_same_recipe_on_json_round_trips(self):
+        value={'method':'geometry-eye-v2','aus':[0]*17}
+        first=json.dumps(ExpressionDriver.model_validate(value).model_dump(mode='json'),sort_keys=True)
+        for _ in range(3):
+            second=json.dumps(ExpressionDriver.model_validate_json(first).model_dump(mode='json'),sort_keys=True)
+            self.assertEqual(second,first)
 
     def test_blink_closes_own_eye_texture_and_keeps_outside_and_glasses(self):
         p=np.full((478,2),64,dtype='float32');rgb=np.full((128,128,3),190,np.uint8)

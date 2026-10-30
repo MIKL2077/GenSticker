@@ -193,8 +193,9 @@ def build(directory,brief,row,neutral):
     primary=TemplateSpec.model_validate({'width':row['canvas'][0],'height':row['canvas'][1],
                         'frames':spec_frames,'defaults':[]}).model_dump()
     variants={}
-    for method,label in [('direct','面部融合，保留照片表情'),('geometry','轻微几何驱动'),('gan','GANimation 小模型'),('hybrid','局部小模型与眼部几何')]:
-        if method not in brief.get('render_methods',['direct','geometry','gan']):continue
+    comparison_methods=set(brief.get('render_methods',['direct','geometry','gan']))|{'gan'}
+    for method,label in [('direct','面部融合，保留照片表情'),('geometry','轻微几何驱动'),('gan','GANimation 全脸小模型'),('hybrid','GAN 嘴部 + 几何眼部')]:
+        if method not in comparison_methods:continue
         spec=copy.deepcopy(primary)
         for frame in spec['frames']:
             for layer in frame['layers']:
@@ -203,6 +204,11 @@ def build(directory,brief,row,neutral):
                     layer['expression']['driver']={'method':'geometry-v1','aus':[0]*17}
                 elif method=='geometry':layer['expression']['driver']['method']=brief.get('geometry_method','geometry-v1')
                 elif method=='hybrid':layer['expression']['driver']['method']='ganimation-mouth-eye-v3'
+                if method=='gan' and brief['action']=='surprise':
+                    aus=layer['expression']['driver']['aus']
+                    for action,maximum in [(1,.2),(2,.25),(5,.35)]:
+                        aus[AU_ORDER.index(action)]=min(aus[AU_ORDER.index(action)],maximum)
+        spec=TemplateSpec.model_validate(spec).model_dump()
         variants[method]={'label':label,'spec':spec,'spec_sha256':fingerprint(spec)}
     recommended=brief.get('recommended_method','geometry' if brief['action'] in {'body','surprise','angry','blink','closed','stare'} else 'gan')
     if recommended not in variants:raise ValueError('recommended method was not rendered')
