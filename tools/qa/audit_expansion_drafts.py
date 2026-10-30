@@ -34,9 +34,9 @@ def main():
         target=outputs/(row['key']+'.json')
         if target.exists():
             previous=json.loads(target.read_text())
-            if previous['spec_sha256']==row['spec_sha256']:
+            if previous['spec_sha256']==row['spec_sha256'] and previous.get('audit_revision')==2:
                 reports.append(previous);continue
-        report={'key':row['key'],'spec_sha256':row['spec_sha256'],'status':'failed',
+        report={'key':row['key'],'spec_sha256':row['spec_sha256'],'status':'failed','audit_revision':2,
                 'human_review':'required','publication':'not-published',
                 'fixed_pixel_scope':'outside declared face masks, cleaned-patch alpha and caption boxes, before GIF quantization'}
         try:
@@ -67,8 +67,13 @@ def main():
                 if frame.layers:
                     single=TemplateSpec(width=spec.width,height=spec.height,defaults=spec.defaults,
                                         background_prepared=True,layers=frame.layers)
+                    cache={}
                     result=render(single,[portrait]*row['image_slots'],row['defaults'],
-                                  _transparent=True,_base=base,_reference=base,_return_image=True).convert('RGB')
+                                  _transparent=True,_base=base,_reference=base,_return_image=True,
+                                  _fusion_inputs=cache).convert('RGB')
+                    if any(l.type=='face' and l.expression for l in frame.layers):
+                        stats=cache.get('expression_stats',[])
+                        assert stats and all(s.get('applied') for s in stats),'expression infrastructure fell back'
                     delta=np.abs(np.asarray(result,dtype='int16')-np.asarray(base.convert('RGB'),dtype='int16'))
                     error=int(delta[~support].max()) if np.any(~support) else 0
                     max_error=max(max_error,error)

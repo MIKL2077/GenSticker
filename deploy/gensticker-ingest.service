@@ -16,6 +16,7 @@ Environment=GENSTICKER_STATE_DIR=/var/lib/gensticker
 Environment=WX_APPID=wx2e3a058ed0117034
 EnvironmentFile=-/etc/gensticker.env
 EnvironmentFile=/etc/gensticker-minimax.env
+EnvironmentFile=/etc/gensticker-human-review.env
 Environment=U2NET_HOME=/var/cache/gensticker/models
 Environment=OPENBLAS_NUM_THREADS=2
 Environment=OMP_NUM_THREADS=2

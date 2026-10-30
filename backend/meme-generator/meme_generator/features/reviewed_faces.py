@@ -18,7 +18,7 @@ def validate_tenor_face(key, spec, metadata):
             or [metadata.get(n) for n in ['min_images','max_images','min_texts','max_texts']]!=[1,1,0,0]):
         raise ValueError('missing recipe-bound face approval')
     method={'direct':'geometry-v1','geometry':'geometry-v1','gan':'ganimation-emotionnet-v1',
-            'eye-v2':'geometry-eye-v2'}.get(review.get('method'))
+            'eye-v2':'geometry-eye-v2','hybrid':'ganimation-mouth-eye-v3'}.get(review.get('method'))
     layers=[l for f in spec.get('frames',[]) for l in f['layers'] if l['type']=='face']
     if not layers or not method or any((l.get('expression') or {}).get('driver',{}).get('method')!=method for l in layers):
         raise ValueError('reviewed face driver differs from approved output')

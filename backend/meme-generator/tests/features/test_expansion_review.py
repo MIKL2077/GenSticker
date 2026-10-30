@@ -19,6 +19,26 @@ def module(name, path):
 
 
 class ExpansionReviewTests(unittest.TestCase):
+    def test_frontal_source_adoption_preserves_key_and_retires_rejected_profile(self):
+        author=module('tenor_source_adoptions','tools/collect/author_tenor_faces.py')
+        with tempfile.TemporaryDirectory() as temp:
+            p=Path(temp);key='tenor_face_'+'a'*24
+            (p/'source_adoptions.json').write_text(json.dumps({'adopted':{'123':key},'retired_source_ids':['456']}))
+            self.assertEqual(author.source_adoptions(p),({'123':key},{'456'}))
+            (p/'source_adoptions.json').write_text(json.dumps({'123':'../outside'}))
+            with self.assertRaisesRegex(ValueError,'adoption'):author.source_adoptions(p)
+
+    def test_export_never_admits_stale_or_withdrawn_face_approval(self):
+        exporter=module('tenor_face_export','tools/qa/export_tenor_faces.py')
+        with tempfile.TemporaryDirectory() as temp:
+            p=Path(temp);(p/'drafts').mkdir()
+            (p/'reviews.json').write_text(json.dumps({'records':{'a':{'decision':'approved','spec_sha256':'main','method':'geometry','selected_spec_sha256':'old'}}}))
+            (p/'drafts/a.json').write_text(json.dumps({'key':'a','status':'draft','spec_sha256':'main','variants':{'geometry':{'spec_sha256':'current'}}}))
+            with self.assertRaisesRegex(ValueError,'stale/blocked'):exporter.export(p,p,p/'export')
+            self.assertEqual(list((p/'export').glob('*approved*.json')),[])
+            (p/'withdrawal.json').write_text('{}')
+            with self.assertRaisesRegex(ValueError,'withdrawn'):exporter.export(p,p,p/'export')
+
     def test_selected_face_method_is_bound_and_failed_method_cannot_be_approved(self):
         server=module('face_method_review','tools/qa/serve_expansion_review.py')
         with tempfile.TemporaryDirectory() as temp:

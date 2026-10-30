@@ -43,7 +43,7 @@ def export(directory,audit_directory,output):
         spec=TemplateSpec.model_validate(variant['spec']).model_dump()
         if fingerprint(spec)!=review['selected_spec_sha256']:raise ValueError('serialized recipe changed')
         audit=json.loads((audit_directory/'technical'/(key+'-'+review['method']+'.json')).read_text())
-        if (audit['spec_sha256']!=fingerprint(spec) or audit['status']!='passed'
+        if (audit.get('audit_revision')!=2 or audit['spec_sha256']!=fingerprint(spec) or audit['status']!='passed'
                 or audit['protected_pixel_max_error']!=0 or audit['decoded_outputs']<3):
             raise ValueError('missing bound technical checks')
         metadata=copy.deepcopy(row['metadata'])
@@ -67,7 +67,7 @@ def export(directory,audit_directory,output):
                 'review':{'source':'local-tenor-face-review','annotation_sha256':annotation}})
         validate_elements(spec,metadata);validate_tenor_face(key,spec,metadata)
         item={'key':key,'version':1,'spec':spec,'metadata':metadata};extra={}
-        for digest in asset_refs(spec):
+        for digest in sorted(asset_refs(spec)):
             path=next((directory/'state/features/template_assets').glob(digest+'.*'))
             raw=path.read_bytes()
             if hashlib.sha256(raw).hexdigest()!=digest:raise ValueError('asset checksum')

@@ -61,6 +61,9 @@ class Review:
             item['caption_inventory'] = row.get('caption_inventory',[])
             for name in ['source_shares','source_author','source_tags','limitations','recommended_method','blocked_methods']:
                 item[name]=row.get(name)
+            for name in ['revision','repair_note','previous_outputs','publication_status']:
+                item[name]=row.get(name)
+            item['has_previous_source']=bool(row.get('previous_source'))
             item['methods']={key:{'label':value['label'],'spec_sha256':value['spec_sha256']}
                              for key,value in row.get('variants',{}).items()}
             record = self.records.get(row['key'],{})
@@ -70,9 +73,14 @@ class Review:
                 current=current and chosen.get('spec_sha256')==record.get('selected_spec_sha256')
             item['review'] = record if current else {}
             if record and not current:item['previous_review']=record
+            elif row.get('previous_review_record'):item['previous_review']=row['previous_review_record']
             rows.append(item)
         rows.sort(key=lambda r:(not r.get('animated'),r.get('source_rank') or 100000,r.get('index') or 0))
-        return {'baseline':959,'target':1500,'needed':541,'rows':rows,
+        progress=self.directory/'progress.json'
+        progress=json.loads(progress.read_text()) if progress.exists() else {}
+        published=progress.get('verified_published',959)
+        return {'baseline':959,'target':1500,'needed':max(0,1500-published),'rows':rows,
+                'progress':progress,
                 'draft_count':sum(x['status']=='draft' for x in rows),
                 'animated_drafts':sum(x['status']=='draft' and bool(x['animated']) for x in rows),
                 'records':self.records,'selection':self.selection.get('counts',{}),
@@ -177,7 +185,7 @@ def main():
                 file=Path(row['path']) if row else None
             elif path.startswith('/media/'):
                 name=path.removeprefix('/media/')
-                valid=re.fullmatch(r'auto_element_[a-f0-9]{24}-(?:S03|S17|S29|blank|edited)\.(?:gif|png)',name) or re.fullmatch(r'tenor_face_[a-f0-9]{24}-S(?:03|17|29)-(?:direct|geometry|gan)\.gif',name)
+                valid=re.fullmatch(r'auto_element_[a-f0-9]{24}-(?:S03|S17|S29|blank|edited)\.(?:gif|png)',name) or re.fullmatch(r'tenor_face_[a-f0-9]{24}-S(?:03|17|29)-(?:direct|geometry|gan|hybrid)\.gif',name)
                 file=review.directory/'media'/name if valid else None
             elif path.startswith('/tracking/'):
                 row=review.rows.get(path.removeprefix('/tracking/'))
@@ -196,6 +204,15 @@ def main():
                         draw.text((col*400+4,5),f'{index+1} / {row["frames"]}',fill='black')
                 output=BytesIO();sheet.save(output,'JPEG',quality=90)
                 return self.reply(output.getvalue(),'image/jpeg')
+            elif path.startswith('/previous/'):
+                parts=path.split('/')
+                row=review.rows.get(parts[2]) if len(parts)==4 else None
+                relative=(row or {}).get('previous_outputs',{}).get(parts[-1])
+                file=review.directory/relative if relative else None
+            elif path.startswith('/previous-source/'):
+                row=review.rows.get(path.removeprefix('/previous-source/'))
+                relative=(row or {}).get('previous_source')
+                file=review.directory/relative if relative else None
             elif path.startswith('/frames/'):
                 parts=path.split('/')
                 if len(parts)!=4 or parts[2] not in review.rows:

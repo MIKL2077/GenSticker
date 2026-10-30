@@ -4,6 +4,7 @@ Read literal SSR JSON; use observed original media URLs, never execute scripts
 or infer a full-size URL. Collection is not a reuse license or publication.
 """
 import argparse
+from datetime import datetime, timezone
 from concurrent.futures import ThreadPoolExecutor
 from html.parser import HTMLParser
 import hashlib
@@ -41,16 +42,26 @@ def get(url,limit):
     return raw
 
 
-def collect(directory,limit=140):
+DEFAULT_SEARCHES=['cat','funny-cat','cat-meme','cat-blink','cat-laugh','cat-scream','cat-angry','cat-happy']
+
+
+def collect(directory,limit=140,searches=None):
     directory.mkdir(parents=True,exist_ok=True)
-    searches=['cat','funny-cat','cat-meme','cat-blink','cat-laugh','cat-scream','cat-angry','cat-happy']
-    rows={}
+    searches=searches or DEFAULT_SEARCHES
+    previous=directory/'source-inventory.json'
+    rows={r['source_id']:r for r in json.loads(previous.read_text())} if previous.exists() else {}
     for term in searches:
+        if not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+){0,8}',term):
+            raise ValueError('invalid public search term')
         url='https://tenor.com/zh-CN/search/'+term+'-gifs'
         path=directory/(term+'.html')
-        if not path.exists():path.write_bytes(get(url,3_000_000))
-        parser=State();parser.feed(path.read_text())
-        state=json.loads(''.join(parser.parts))
+        try:
+            if not path.exists():path.write_bytes(get(url,3_000_000))
+            parser=State();parser.feed(path.read_text())
+            state=json.loads(''.join(parser.parts))
+        except Exception as error:
+            print(json.dumps({'search':term,'status':'failed','reason':str(error)[:100]}),flush=True)
+            continue
         groups=state.get('universal',{}).get('search',{}).values()
         for group in groups:
             for index,item in enumerate(group.get('results',[])):
@@ -66,9 +77,10 @@ def collect(directory,limit=140):
                     'description':item.get('content_description',''),'source_tags':item.get('tags',[]),
                     'source_shares':item.get('shares'),'source_created':item.get('created'),
                     'source_author':(item.get('user') or {}).get('username'),
-                    'source_search':url,'search_position':index+1,'observed_at':'2026-10-30',
+                    'source_search':url,'search_position':index+1,'observed_at':datetime.now(timezone.utc).date().isoformat(),
                     'license':'unverified','source_use':'explicit-user-request-private-reference'}
         print(json.dumps({'search':term,'unique':len(rows)}),flush=True)
+        save(previous,list(rows.values()))
     inventory=list(rows.values())
     save(directory/'source-inventory.json',inventory)
     for name in ['originals','sources','downloads']:(directory/name).mkdir(exist_ok=True)
@@ -96,8 +108,12 @@ def collect(directory,limit=140):
         save(result,data);return data
     started=time.monotonic()
     with ThreadPoolExecutor(max_workers=4) as pool:out=list(pool.map(download,chosen))
+    # A later query/limit must never drop an already authored source.
+    out={r['source_id']:r for r in out}
+    for path in (directory/'downloads').glob('*.json'):
+        r=json.loads(path.read_text());out.setdefault(r['source_id'],r)
     seen=set();unique=[]
-    for row in out:
+    for row in out.values():
         digest=row.get('original_sha256')
         if digest and digest in seen:continue
         if digest:seen.add(digest)
@@ -110,5 +126,7 @@ def collect(directory,limit=140):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('--directory',type=Path,required=True)
-    parser.add_argument('--limit',type=int,default=140);args=parser.parse_args()
-    collect(args.directory.resolve(),max(1,min(200,args.limit)))
+    parser.add_argument('--limit',type=int,default=140)
+    parser.add_argument('--search',action='append',help='Public Tenor search slug; repeat for related cat actions')
+    args=parser.parse_args()
+    collect(args.directory.resolve(),max(1,min(1200,args.limit)),args.search)

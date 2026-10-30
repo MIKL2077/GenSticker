@@ -1,0 +1,2633 @@
+{
+  "date": "2026-10-30",
+  "progress": {
+    "verified_published": 964,
+    "target": 1500,
+    "remaining": 536,
+    "approved_this_round": 5,
+    "revisions_pending": 5,
+    "new_pending": 17,
+    "held_drafts": 2,
+    "original_profile_held": 1,
+    "indexed_sources": 2836,
+    "downloaded_sources": 1100,
+    "decoded_animated_sources_after_byte_deduplication": 727,
+    "content_deduplication": "incomplete; source inventory is not a template count",
+    "technical_variants": 71,
+    "decoded_variant_outputs": 213,
+    "checked_variant_frames": 1524
+  },
+  "technical_checks": {
+    "variants": 71,
+    "decoded_full_gifs": 213,
+    "preencoding_frames": 1524,
+    "audit_revision": 2,
+    "passed": 71,
+    "failed": 0,
+    "visual_approval": "human-required; technical checks include blocked diagnostics"
+  },
+  "tests": {
+    "targeted_backend": 52,
+    "collection_and_client_backend": 4,
+    "frontend_client_renderer": "passed",
+    "review_javascript_syntax": "passed"
+  },
+  "runtime_linux": {
+    "status": "passed",
+    "tests": 6,
+    "seconds": 0.083,
+    "peak_rss_mib": 128.5,
+    "scope": "protocol, own-eye blink, protected glasses, own-mouth-only edit, request cache, admission and repeated bootstrap; no private portraits"
+  },
+  "human_review_guard": {
+    "withdrawn": "auto_cb086b31cff48ab4f4f6ba53",
+    "published": 964,
+    "automatic_publication": "disabled; six-hour metadata collection retained",
+    "backup": "/var/backups/gensticker-human-review-20261030"
+  },
+  "templates": [
+    {
+      "key": "tenor_face_4ecbb4201a7d1b81cb476b3d",
+      "name": "橘猫笑到合不拢嘴",
+      "source_id": "9924054809890007007",
+      "source_url": "https://tenor.com/view/aww-aww-cute-love-so-cute-cat-gif-9924054809890007007",
+      "source_shares_snapshot": 1656846,
+      "status": "draft",
+      "publication_status": "published",
+      "review_status": "approved",
+      "spec_sha256": "6f47fa337bb84cb875625246ceb6a162788b22036612c67adc3ddf8b52453b9a",
+      "frames": 24,
+      "duration_ms": 4510,
+      "methods": {
+        "direct": "517191200154be71bd10ea9d3ba01e27376fb88a5d34f14df98d96b0047c0d76",
+        "geometry": "b4239ba8372c60e28a147eab20ebee8b23374dab4df1d95a3041f0763b391370",
+        "gan": "6f47fa337bb84cb875625246ceb6a162788b22036612c67adc3ddf8b52453b9a"
+      },
+      "blocked_methods": {},
+      "brief": {
+        "source_id": "9924054809890007007",
+        "name": "橘猫笑到合不拢嘴",
+        "box": [
+          110,
+          77,
+          145,
+          149
+        ],
+        "eyes": [
+          [
+            151,
+            111
+          ],
+          [
+            216,
+            113
+          ]
+        ],
+        "action": "laugh",
+        "action_keys": [
+          [
+            0,
+            0.2
+          ],
+          [
+            6,
+            0.45
+          ],
+          [
+            12,
+            0.75
+          ],
+          [
+            18,
+            0.8
+          ],
+          [
+            23,
+            0.5
+          ]
+        ],
+        "intent": "用户五官替换猫脸内部，保留猫耳、毛发边缘、身体、场景与原字幕；离线手工动作曲线。",
+        "fixed_text": true,
+        "image_slots": 1,
+        "text_slots": 0,
+        "mouth": [
+          183,
+          174
+        ]
+      },
+      "reason": null,
+      "repair_note": null
+    },
+    {
+      "key": "tenor_face_326d501a23e85e9b6fc0e66c",
+      "name": "橘猫正面开怀大笑",
+      "source_id": "292935567208914472",
+      "source_url": "https://tenor.com/view/aww-aww-cute-love-so-cute-cat-gif-292935567208914472",
+      "source_shares_snapshot": 643944,
+      "status": "draft",
+      "publication_status": "not-published",
+      "review_status": "pending-human-review",
+      "spec_sha256": "417c9983889d46a354bf560039480478bc638767cc98752b8a534726d4a6f9b4",
+      "frames": 24,
+      "duration_ms": 5010,
+      "methods": {
+        "geometry": "a3a45b4a1f16fbf6b89b91b7f9a550162cb565567093b644a9dd41a8ab089acd",
+        "gan": "417c9983889d46a354bf560039480478bc638767cc98752b8a534726d4a6f9b4",
+        "hybrid": "9da3edea44e8e0d9e68773dbd6ff6fc9f1d9ed26e8202db3cc394c6340001443"
+      },
+      "blocked_methods": {},
+      "brief": {
+        "source_id": "292935567208914472",
+        "name": "橘猫笑得合不拢嘴",
+        "box": [
+          111,
+          85,
+          130,
+          135
+        ],
+        "eyes": [
+          [
+            150,
+            125
+          ],
+          [
+            205,
+            123
+          ]
+        ],
+        "mouth": [
+          179,
+          175
+        ],
+        "action": "laugh",
+        "action_keys": [
+          [
+            0,
+            0.15
+          ],
+          [
+            12,
+            0.9
+          ],
+          [
+            23,
+            0.5
+          ]
+        ],
+        "authoring_evidence": "measured-source-pixel-grid-20261030-wave3",
+        "render_methods": [
+          "geometry",
+          "gan"
+        ],
+        "recommended_method": "gan"
+      },
+      "reason": null,
+      "repair_note": "原猫为仰头侧脸，当前不能可靠重建不可见纹理。改用正面大笑素材提供替代版本；原侧脸、旧成品和标注保留。此项不是侧脸重建成功。"
+    },
+    {
+      "key": "tenor_face_dad4b09b3e0ffcdf68ac0967",
+      "name": "猫咪眨眼盯着你",
+      "source_id": "8859604814399687515",
+      "source_url": "https://tenor.com/view/cat-blink-blinkingcat-cute-funny-gif-8859604814399687515",
+      "source_shares_snapshot": 2498872,
+      "status": "draft",
+      "publication_status": "published",
+      "review_status": "approved",
+      "spec_sha256": "90199dc0f746d27d78d490288e8c7d6893c3c1121a97157814344b374b91c26c",
+      "frames": 24,
+      "duration_ms": 1990,
+      "methods": {
+        "direct": "1abfa4c1d2d8a2ac1b150b2fa2a6256998f810f41debf979b9a72b93a802e5c1",
+        "geometry": "f838e54f2fddcedf2de28c612d7f829a94f7cad89018b2cbee2c5d65b9927db9",
+        "gan": "90199dc0f746d27d78d490288e8c7d6893c3c1121a97157814344b374b91c26c"
+      },
+      "blocked_methods": {
+        "gan": "S03 出现嘴部色块或不应有的五官变化；保留失败对照，不提供该方案的入库选择。"
+      },
+      "brief": {
+        "source_id": "8859604814399687515",
+        "name": "猫咪眨眼盯着你",
+        "box": [
+          9,
+          93,
+          346,
+          264
+        ],
+        "eyes": [
+          [
+            90,
+            166
+          ],
+          [
+            274,
+            186
+          ]
+        ],
+        "action": "blink",
+        "action_keys": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0.4
+          ],
+          [
+            2,
+            0.8
+          ],
+          [
+            3,
+            1
+          ],
+          [
+            4,
+            0.9
+          ],
+          [
+            5,
+            0.35
+          ],
+          [
+            6,
+            0
+          ],
+          [
+            23,
+            0
+          ]
+        ],
+        "intent": "用户五官替换猫脸内部，保留猫耳、毛发边缘、身体、场景与原字幕；离线手工动作曲线。",
+        "fixed_text": true,
+        "image_slots": 1,
+        "text_slots": 0,
+        "mouth": [
+          194,
+          307
+        ],
+        "pose_keys": [
+          {
+            "frame": 0,
+            "eyes": [
+              [
+                90,
+                166
+              ],
+              [
+                274,
+                186
+              ]
+            ]
+          },
+          {
+            "frame": 4,
+            "eyes": [
+              [
+                64,
+                130
+              ],
+              [
+                250,
+                145
+              ]
+            ]
+          },
+          {
+            "frame": 6,
+            "eyes": [
+              [
+                63,
+                127
+              ],
+              [
+                253,
+                146
+              ]
+            ]
+          },
+          {
+            "frame": 12,
+            "eyes": [
+              [
+                55,
+                127
+              ],
+              [
+                254,
+                148
+              ]
+            ]
+          },
+          {
+            "frame": 23,
+            "eyes": [
+              [
+                53,
+                122
+              ],
+              [
+                264,
+                140
+              ]
+            ]
+          }
+        ]
+      },
+      "reason": null,
+      "repair_note": null
+    },
+    {
+      "key": "tenor_face_dee06f745599d7938da5640f",
+      "name": "猫咪闭眼摇头",
+      "source_id": "11799631281958817330",
+      "source_url": "https://tenor.com/view/geleng-gif-11799631281958817330",
+      "source_shares_snapshot": 211954,
+      "status": "draft",
+      "publication_status": "not-published",
+      "review_status": "pending-human-review",
+      "spec_sha256": "68ce67a7d3e8c2ea2ab15ac1d278806634b99db994771367f6c787bec8c8fbde",
+      "frames": 24,
+      "duration_ms": 2540,
+      "methods": {
+        "direct": "db486861e7dc8168e57fee86fa0c99acb4aeba0a44c3548ee4009cd602f15115",
+        "geometry": "68ce67a7d3e8c2ea2ab15ac1d278806634b99db994771367f6c787bec8c8fbde",
+        "gan": "0cf34608bd32c25968c9b0d82740625f467bf5ec72245b21b43548635ab90f1d"
+      },
+      "blocked_methods": {},
+      "brief": {
+        "source_id": "11799631281958817330",
+        "name": "猫咪闭眼摇头",
+        "box": [
+          40,
+          27,
+          156,
+          122
+        ],
+        "eyes": [
+          [
+            85,
+            77
+          ],
+          [
+            151,
+            80
+          ]
+        ],
+        "action": "closed",
+        "action_keys": [
+          [
+            0,
+            0.8
+          ],
+          [
+            23,
+            0.8
+          ]
+        ],
+        "intent": "用户五官替换猫脸内部，保留猫耳、毛发边缘、身体、场景与原字幕；离线手工动作曲线。",
+        "fixed_text": true,
+        "image_slots": 1,
+        "text_slots": 0,
+        "mouth": [
+          119,
+          117
+        ]
+      },
+      "reason": null,
+      "repair_note": "需要让用户上传图片眨眼"
+    },
+    {
+      "key": "tenor_face_bd06256d1ce62e8e509ea821",
+      "name": "猫咪落日微笑",
+      "source_id": "10086598795453609558",
+      "source_url": "https://tenor.com/view/cat-smiling-cat-cute-cat-cat-meme-smiling-gif-10086598795453609558",
+      "source_shares_snapshot": 743857,
+      "status": "draft",
+      "publication_status": "published",
+      "review_status": "approved",
+      "spec_sha256": "dff9489de42a8a41f00059d3dc4c94e5e8ea71a6a70c2278f9ae438705647694",
+      "frames": 20,
+      "duration_ms": 830,
+      "methods": {
+        "direct": "3b4ba70bba1f9cd44c8c22246df9478d59e4259cec98ef606f624cbbe4641ac5",
+        "geometry": "7faabe770c61d5737f52366dcd3685c4151c9b09001bee24ac118348bee9bdba",
+        "gan": "dff9489de42a8a41f00059d3dc4c94e5e8ea71a6a70c2278f9ae438705647694"
+      },
+      "blocked_methods": {},
+      "brief": {
+        "source_id": "10086598795453609558",
+        "name": "猫咪落日微笑",
+        "box": [
+          130,
+          12,
+          123,
+          103
+        ],
+        "eyes": [
+          [
+            165,
+            39
+          ],
+          [
+            221,
+            40
+          ]
+        ],
+        "action": "smile",
+        "action_keys": [
+          [
+            0,
+            0.4
+          ],
+          [
+            10,
+            0.7
+          ],
+          [
+            19,
+            0.4
+          ]
+        ],
+        "intent": "用户五官替换猫脸内部，保留猫耳、毛发边缘、身体、场景与原字幕；离线手工动作曲线。",
+        "fixed_text": true,
+        "image_slots": 1,
+        "text_slots": 0,
+        "mouth": [
+          197,
+          80
+        ]
+      },
+      "reason": null,
+      "repair_note": null
+    },
+    {
+      "key": "tenor_face_031079e127788392e8efd1c0",
+      "name": "灰猫低头生闷气",
+      "source_id": "16754054616247640902",
+      "source_url": "https://tenor.com/view/cat-kitty-kitten-angry-mad-gif-16754054616247640902",
+      "source_shares_snapshot": 16676240,
+      "status": "draft",
+      "publication_status": "not-published",
+      "review_status": "pending-human-review",
+      "spec_sha256": "cd065f37263cd6956c14a0f5a0432ea0b8ef5d87663904a8ba44165085d57415",
+      "frames": 24,
+      "duration_ms": 2730,
+      "methods": {
+        "direct": "462ae647310aa6effbb25d73c6a09afe14ced5b31ebe928b2d8fcdda54e7e45f",
+        "geometry": "cd065f37263cd6956c14a0f5a0432ea0b8ef5d87663904a8ba44165085d57415",
+        "gan": "ec0fd607bf8db449e8a1e12d246de3cc03607b22945fc4c9f1fa7ed4b14549a1"
+      },
+      "blocked_methods": {
+        "gan": "S03 出现嘴部色块或不应有的五官变化；保留失败对照，不提供该方案的入库选择。"
+      },
+      "brief": {
+        "source_id": "16754054616247640902",
+        "name": "灰猫低头生闷气",
+        "box": [
+          46,
+          103,
+          135,
+          108
+        ],
+        "eyes": [
+          [
+            83,
+            145
+          ],
+          [
+            144,
+            149
+          ]
+        ],
+        "action": "angry",
+        "action_keys": [
+          [
+            0,
+            0.5
+          ],
+          [
+            12,
+            0.8
+          ],
+          [
+            23,
+            0.6
+          ]
+        ],
+        "intent": "用户五官替换猫脸内部，保留猫耳、毛发边缘、身体、场景与原字幕；离线手工动作曲线。",
+        "fixed_text": true,
+        "image_slots": 1,
+        "text_slots": 0,
+        "mouth": [
+          111,
+          186
+        ]
+      },
+      "reason": null,
+      "repair_note": "眼神没有模拟出生气的眼神"
+    },
+    {
+      "key": "tenor_face_2dfeb94b2e5b78a6950b7e96",
+      "name": "黑猫无语凝视",
+      "source_id": "15598151632930697671",
+      "source_url": "https://tenor.com/view/gato-gif-15598151632930697671",
+      "source_shares_snapshot": 479643,
+      "status": "draft",
+      "publication_status": "not-published",
+      "review_status": "pending-human-review",
+      "spec_sha256": "69ad40ebbd47cd5d403e9b7970e69afc0c5ff12d59ceafe15e85ea36abac6743",
+      "frames": 24,
+      "duration_ms": 3200,
+      "methods": {
+        "direct": "d864272432fe387464578856ea1a8fc3490abcee7fa64b8363fd5f30e2919287",
+        "geometry": "69ad40ebbd47cd5d403e9b7970e69afc0c5ff12d59ceafe15e85ea36abac6743",
+        "gan": "8d9d43e9fc7bb396fd5a30d359b20ad6aea6b973a1a368448baeaea1a46a0775"
+      },
+      "blocked_methods": {
+        "gan": "S03 出现嘴部色块或不应有的五官变化；保留失败对照，不提供该方案的入库选择。"
+      },
+      "brief": {
+        "source_id": "15598151632930697671",
+        "name": "黑猫无语凝视",
+        "box": [
+          14,
+          35,
+          138,
+          124
+        ],
+        "eyes": [
+          [
+            48,
+            66
+          ],
+          [
+            116,
+            64
+          ]
+        ],
+        "action": "stare",
+        "action_keys": [
+          [
+            0,
+            0
+          ],
+          [
+            5,
+            0.15
+          ],
+          [
+            9,
+            0.8
+          ],
+          [
+            12,
+            0.9
+          ],
+          [
+            15,
+            0.2
+          ],
+          [
+            20,
+            0
+          ],
+          [
+            23,
+            0
+          ]
+        ],
+        "intent": "用户五官替换猫脸内部，保留猫耳、毛发边缘、身体、场景与原字幕；离线手工动作曲线。",
+        "fixed_text": true,
+        "image_slots": 1,
+        "text_slots": 0,
+        "mouth": [
+          82,
+          117
+        ],
+        "pose_keys": [
+          {
+            "frame": 0,
+            "eyes": [
+              [
+                48,
+                66
+              ],
+              [
+                116,
+                64
+              ]
+            ]
+          },
+          {
+            "frame": 12,
+            "eyes": [
+              [
+                55,
+                63
+              ],
+              [
+                123,
+                62
+              ]
+            ]
+          },
+          {
+            "frame": 23,
+            "eyes": [
+              [
+                58,
+                66
+              ],
+              [
+                125,
+                65
+              ]
+            ]
+          }
+        ]
+      },
+      "reason": null,
+      "repair_note": "眼睛没有模拟出来"
+    },
+    {
+      "key": "tenor_face_3260fdec0faff2d1b19b58d8",
+      "name": "猫咪瞪大眼睛",
+      "source_id": "10804346947536782797",
+      "source_url": "https://tenor.com/view/happy-cat-gif-10804346947536782797",
+      "source_shares_snapshot": 9887854,
+      "status": "draft",
+      "publication_status": "not-published",
+      "review_status": "pending-human-review",
+      "spec_sha256": "6f762ae2fd88609ccc5821a45cd8274e85f360f02c5c9bd706aacac0628bd89e",
+      "frames": 24,
+      "duration_ms": 5230,
+      "methods": {
+        "direct": "394f3d6cf0d6767e68aad86f3f5b2e5f7ccb0a3c99b3d7073cae87958c7b1a29",
+        "geometry": "6f762ae2fd88609ccc5821a45cd8274e85f360f02c5c9bd706aacac0628bd89e",
+        "gan": "70c6cabd5e9b5790948c36968ba0a5c7cee1d3d2777f487e06fc6737ff52321c"
+      },
+      "blocked_methods": {
+        "gan": "S03 出现嘴部色块或不应有的五官变化；保留失败对照，不提供该方案的入库选择。"
+      },
+      "brief": {
+        "source_id": "10804346947536782797",
+        "name": "猫咪瞪大眼睛",
+        "box": [
+          -18,
+          19,
+          204,
+          168
+        ],
+        "eyes": [
+          [
+            29,
+            60
+          ],
+          [
+            148,
+            59
+          ]
+        ],
+        "action": "surprise",
+        "action_keys": [
+          [
+            0,
+            0
+          ],
+          [
+            23,
+            0
+          ]
+        ],
+        "intent": "用户五官替换猫脸内部，保留猫耳、毛发边缘、身体、场景与原字幕；离线手工动作曲线。",
+        "fixed_text": true,
+        "image_slots": 1,
+        "text_slots": 0,
+        "mouth": [
+          93,
+          135
+        ]
+      },
+      "reason": null,
+      "repair_note": "增强瞪眼幅度，修复眼睛动作过弱"
+    },
+    {
+      "key": "tenor_face_7ab53a98c0d7c3a87347d330",
+      "name": "奶牛猫张嘴惊叫",
+      "source_id": "3318508277797991758",
+      "source_url": "https://tenor.com/view/cat-meme-scream-shout-sad-gif-15786007",
+      "source_shares_snapshot": 1694938,
+      "status": "draft",
+      "publication_status": "published",
+      "review_status": "approved",
+      "spec_sha256": "3fd19d99a4a693d47a6147818f3cef0a922c9ba8e4f5d90d321d30ea042133a3",
+      "frames": 3,
+      "duration_ms": 150,
+      "methods": {
+        "direct": "ccef651c4101af749afccbd2832ddf1e24d0d43327a73ffd972c5c27db6d4b05",
+        "geometry": "85184baaed24855a85d9ef72f3255170a3c4ad604f98900c204301cccccdb9f3",
+        "gan": "3fd19d99a4a693d47a6147818f3cef0a922c9ba8e4f5d90d321d30ea042133a3"
+      },
+      "blocked_methods": {},
+      "brief": {
+        "source_id": "3318508277797991758",
+        "name": "奶牛猫张嘴惊叫",
+        "box": [
+          60,
+          65,
+          324,
+          310
+        ],
+        "eyes": [
+          [
+            143,
+            127
+          ],
+          [
+            297,
+            117
+          ]
+        ],
+        "action": "scream",
+        "action_keys": [
+          [
+            0,
+            0.7
+          ],
+          [
+            1,
+            0.8
+          ],
+          [
+            2,
+            0.65
+          ]
+        ],
+        "intent": "用户五官替换猫脸内部，保留猫耳、毛发边缘、身体、场景与原字幕；离线手工动作曲线。",
+        "fixed_text": true,
+        "image_slots": 1,
+        "text_slots": 0,
+        "mouth": [
+          236,
+          288
+        ]
+      },
+      "reason": null,
+      "repair_note": null
+    },
+    {
+      "key": "tenor_face_a78c2b39fb5ca63825bb7675",
+      "name": "白猫张嘴尖叫",
+      "source_id": "8242843334147600979",
+      "source_url": "https://tenor.com/view/screaming-cat-gif-8242843334147600979",
+      "source_shares_snapshot": 418128,
+      "status": "draft",
+      "publication_status": "published",
+      "review_status": "approved",
+      "spec_sha256": "7d59ca1a98a1a380cd497dbd52eef3ce5405252bb9fa1f880480171b5033d735",
+      "frames": 6,
+      "duration_ms": 300,
+      "methods": {
+        "direct": "dcf6bd438893612e9adfcd07fb26fec50f8967d33c60457772e00041da8bac0d",
+        "geometry": "799e2af7425596a3e948cf48b11dcbe74716e8fb0b502c5c70a98e7c28e0777e",
+        "gan": "7d59ca1a98a1a380cd497dbd52eef3ce5405252bb9fa1f880480171b5033d735"
+      },
+      "blocked_methods": {},
+      "brief": {
+        "source_id": "8242843334147600979",
+        "name": "白猫张嘴尖叫",
+        "box": [
+          0,
+          18,
+          384,
+          359
+        ],
+        "eyes": [
+          [
+            116,
+            81
+          ],
+          [
+            314,
+            133
+          ]
+        ],
+        "action": "scream",
+        "action_keys": [
+          [
+            0,
+            0.75
+          ],
+          [
+            2,
+            0.9
+          ],
+          [
+            4,
+            0.7
+          ],
+          [
+            5,
+            0.8
+          ]
+        ],
+        "intent": "用户五官替换猫脸内部，保留猫耳、毛发边缘、身体、场景与原字幕；离线手工动作曲线。",
+        "fixed_text": true,
+        "image_slots": 1,
+        "text_slots": 0,
+        "mouth": [
+          167,
+          261
+        ]
+      },
+      "reason": null,
+      "repair_note": null
+    },
+    {
+      "key": "tenor_face_8068202b965d661d27b00b69",
+      "name": "圆脸猫歪头看你",
+      "source_id": "5576245011655696514",
+      "source_url": "https://tenor.com/view/melvin-meme-cat-cat-meme-melvin-meme-meme-melvin-gif-5576245011655696514",
+      "source_shares_snapshot": 3150036,
+      "status": "draft",
+      "publication_status": "not-published",
+      "review_status": "pending-human-review",
+      "spec_sha256": "c906453860cbbeb5a504884dc33f6b5b9f1a5525e31cdb5fe091c0032e35ed03",
+      "frames": 24,
+      "duration_ms": 3200,
+      "methods": {
+        "geometry": "c906453860cbbeb5a504884dc33f6b5b9f1a5525e31cdb5fe091c0032e35ed03",
+        "gan": "bf77171b8935a9864814ffea0da7ea0941a26a773480e7ed5ff2e9512f6f0378",
+        "hybrid": "dc45ff15cc98dad1fde0b1b552e6ca8d8d010129d92803c888e57d7596ca7a23"
+      },
+      "blocked_methods": {
+        "gan": "S03 实测出现眼镜棋盘纹、鼻部变色或不应有的五官改变；仅保留诊断，不能选为可用。"
+      },
+      "brief": {
+        "source_id": "5576245011655696514",
+        "name": "圆脸猫歪头看你",
+        "box": [
+          158,
+          93,
+          220,
+          190
+        ],
+        "eyes": [
+          [
+            215,
+            155
+          ],
+          [
+            320,
+            135
+          ]
+        ],
+        "mouth": [
+          281,
+          239
+        ],
+        "action": "stare",
+        "action_keys": [
+          [
+            0,
+            0.15
+          ],
+          [
+            12,
+            0.9
+          ],
+          [
+            23,
+            0.5
+          ]
+        ],
+        "authoring_evidence": "measured-source-pixel-grid-20261030-wave2",
+        "render_methods": [
+          "geometry",
+          "gan"
+        ],
+        "recommended_method": "geometry",
+        "geometry_method": "geometry-eye-v2"
+      },
+      "reason": null,
+      "repair_note": null
+    },
+    {
+      "key": "tenor_face_bd1570561c83d118095128ab",
+      "name": "橘猫惊得张大嘴",
+      "source_id": "7986611062844672039",
+      "source_url": "https://tenor.com/view/cat-flabbergasted-shocked-wink-reaction-gif-25698054",
+      "source_shares_snapshot": 2503913,
+      "status": "held",
+      "publication_status": "not-published",
+      "review_status": "held-not-eligible",
+      "spec_sha256": "e76ae3aab2c25d367acacf4e9145c4f46880b666155e1c14365033855ef87905",
+      "frames": 24,
+      "duration_ms": 4350,
+      "methods": {
+        "geometry": "5393c2d3c4aeae07a45c069ff719f62906b89cbdc21d08d64121579fb20e0ec0",
+        "gan": "7ced9066016394488952d0108d8eacfc4a71120f8e4068ab391d958cd5723f3a",
+        "hybrid": "e76ae3aab2c25d367acacf4e9145c4f46880b666155e1c14365033855ef87905"
+      },
+      "blocked_methods": {
+        "gan": "S03 实测出现眼镜棋盘纹、鼻部变色或不应有的五官改变；仅保留诊断，不能选为可用。"
+      },
+      "brief": {
+        "source_id": "7986611062844672039",
+        "name": "橘猫惊得张大嘴",
+        "box": [
+          0,
+          70,
+          384,
+          314
+        ],
+        "eyes": [
+          [
+            25,
+            158
+          ],
+          [
+            220,
+            180
+          ]
+        ],
+        "mouth": [
+          115,
+          345
+        ],
+        "action": "scream",
+        "action_keys": [
+          [
+            0,
+            0.15
+          ],
+          [
+            12,
+            0.9
+          ],
+          [
+            23,
+            0.5
+          ]
+        ],
+        "authoring_evidence": "measured-source-pixel-grid-20261030-wave2",
+        "render_methods": [
+          "geometry",
+          "gan"
+        ],
+        "recommended_method": "gan",
+        "pose_keys": [
+          {
+            "frame": 0,
+            "eyes": [
+              [
+                25,
+                158
+              ],
+              [
+                220,
+                180
+              ]
+            ]
+          },
+          {
+            "frame": 12,
+            "eyes": [
+              [
+                103,
+                145
+              ],
+              [
+                280,
+                145
+              ]
+            ]
+          },
+          {
+            "frame": 23,
+            "eyes": [
+              [
+                130,
+                138
+              ],
+              [
+                300,
+                138
+              ]
+            ]
+          }
+        ]
+      },
+      "reason": "原脸严重放大并出画；局部学习方案仍出现明显唇部色块，几何方案张嘴不足。",
+      "repair_note": null
+    },
+    {
+      "key": "tenor_face_adf217d4c13c4f46e390ed8e",
+      "name": "白猫认真盯着你",
+      "source_id": "9806583904561612776",
+      "source_url": "https://tenor.com/view/beluga-the-cat-hakosh1307-hakosh-beluga-cat-hug-gif-22532913",
+      "source_shares_snapshot": 2259628,
+      "status": "draft",
+      "publication_status": "not-published",
+      "review_status": "pending-human-review",
+      "spec_sha256": "55cca55ff2d88b6ead9e1b7fef231dcd20a86cac47f8be9e4aa9179306b3357e",
+      "frames": 18,
+      "duration_ms": 900,
+      "methods": {
+        "geometry": "55cca55ff2d88b6ead9e1b7fef231dcd20a86cac47f8be9e4aa9179306b3357e",
+        "gan": "dc790e4bd97592deb68f4a69f91c30ba58ad1e6994e6e82105737b0d69e75003",
+        "hybrid": "0c7cff5c29142eb977f44a89ed83a2872045327ed3be8c3face73e14b78263c0"
+      },
+      "blocked_methods": {
+        "gan": "S03 实测出现眼镜棋盘纹、鼻部变色或不应有的五官改变；仅保留诊断，不能选为可用。"
+      },
+      "brief": {
+        "source_id": "9806583904561612776",
+        "name": "白猫认真盯着你",
+        "box": [
+          95,
+          35,
+          210,
+          152
+        ],
+        "eyes": [
+          [
+            150,
+            70
+          ],
+          [
+            242,
+            77
+          ]
+        ],
+        "mouth": [
+          200,
+          132
+        ],
+        "action": "stare",
+        "action_keys": [
+          [
+            0,
+            0.15
+          ],
+          [
+            9,
+            0.9
+          ],
+          [
+            17,
+            0.5
+          ]
+        ],
+        "authoring_evidence": "measured-source-pixel-grid-20261030-wave2",
+        "render_methods": [
+          "geometry",
+          "gan"
+        ],
+        "recommended_method": "geometry",
+        "geometry_method": "geometry-eye-v2"
+      },
+      "reason": null,
+      "repair_note": null
+    },
+    {
+      "key": "tenor_face_739776e8f11c0fe690662f36",
+      "name": "白猫突然震惊",
+      "source_id": "2738888983911419843",
+      "source_url": "https://tenor.com/view/shocked-cat-surprised-gif-5843462",
+      "source_shares_snapshot": 2211643,
+      "status": "draft",
+      "publication_status": "not-published",
+      "review_status": "pending-human-review",
+      "spec_sha256": "87226620f5ad24f15b88acef024b4ec0d87758b5b8ca594839dedc126fb8f787",
+      "frames": 24,
+      "duration_ms": 2160,
+      "methods": {
+        "geometry": "83abc3bc16e8a21e949a9b48934014bf8c6b291521e2cdb7b159e769b63b49c2",
+        "gan": "7d6fd157760abad950eab232119fc12a17e6ce582ddf1722a8d494bb309ba022",
+        "hybrid": "87226620f5ad24f15b88acef024b4ec0d87758b5b8ca594839dedc126fb8f787"
+      },
+      "blocked_methods": {
+        "gan": "S03 实测出现眼镜棋盘纹、鼻部变色或不应有的五官改变；仅保留诊断，不能选为可用。"
+      },
+      "brief": {
+        "source_id": "2738888983911419843",
+        "name": "白猫突然震惊",
+        "box": [
+          84,
+          55,
+          108,
+          97
+        ],
+        "eyes": [
+          [
+            119,
+            78
+          ],
+          [
+            168,
+            78
+          ]
+        ],
+        "mouth": [
+          140,
+          122
+        ],
+        "action": "scream",
+        "action_keys": [
+          [
+            0,
+            0.15
+          ],
+          [
+            12,
+            0.9
+          ],
+          [
+            23,
+            0.5
+          ]
+        ],
+        "authoring_evidence": "measured-source-pixel-grid-20261030-wave2",
+        "render_methods": [
+          "geometry",
+          "gan"
+        ],
+        "recommended_method": "gan"
+      },
+      "reason": null,
+      "repair_note": null
+    },
+    {
+      "key": "tenor_face_9a3519e782bf56ab8d08a1e8",
+      "name": "猫咪害羞歪头",
+      "source_id": "3506344065033604903",
+      "source_url": "https://tenor.com/view/cute-cat-cat-cute-cute-smile-cat-smile-gif-3506344065033604903",
+      "source_shares_snapshot": 1712806,
+      "status": "draft",
+      "publication_status": "not-published",
+      "review_status": "pending-human-review",
+      "spec_sha256": "3cd9ff7d8ecf137e82789bd1f54527f3e18a3a1f1910f792d30ee150e4eeed85",
+      "frames": 24,
+      "duration_ms": 4100,
+      "methods": {
+        "geometry": "3cd9ff7d8ecf137e82789bd1f54527f3e18a3a1f1910f792d30ee150e4eeed85"
+      },
+      "blocked_methods": {},
+      "brief": {
+        "source_id": "3506344065033604903",
+        "name": "猫咪害羞歪头",
+        "box": [
+          65,
+          80,
+          167,
+          153
+        ],
+        "eyes": [
+          [
+            110,
+            106
+          ],
+          [
+            190,
+            135
+          ]
+        ],
+        "mouth": [
+          135,
+          174
+        ],
+        "action": "body",
+        "action_keys": [
+          [
+            0,
+            0
+          ],
+          [
+            23,
+            0
+          ]
+        ],
+        "authoring_evidence": "measured-source-pixel-grid-20261030-wave2",
+        "render_methods": [
+          "geometry"
+        ],
+        "recommended_method": "geometry"
+      },
+      "reason": null,
+      "repair_note": null
+    },
+    {
+      "key": "tenor_face_572af628414054de3fb85499",
+      "name": "白猫站着打哈欠",
+      "source_id": "3234099872905202358",
+      "source_url": "https://tenor.com/view/cute-kitten-begging-attention-gif-8380139",
+      "source_shares_snapshot": 1461127,
+      "status": "draft",
+      "publication_status": "not-published",
+      "review_status": "pending-human-review",
+      "spec_sha256": "d094adbb9062c1e2ffec24f0fce90a9230d6d2e1801009f9ca38925aef9a3a83",
+      "frames": 24,
+      "duration_ms": 2150,
+      "methods": {
+        "geometry": "cfc927e3ba8a6fb87d13410b7d2419809326b762450c496c65dc8c45bc97d4ad",
+        "gan": "c61abeede11236eab481cd1ea800a40bae6567d82369402f4ca9a5b848319dbb",
+        "hybrid": "d094adbb9062c1e2ffec24f0fce90a9230d6d2e1801009f9ca38925aef9a3a83"
+      },
+      "blocked_methods": {
+        "gan": "S03 实测出现眼镜棋盘纹、鼻部变色或不应有的五官改变；仅保留诊断，不能选为可用。"
+      },
+      "brief": {
+        "source_id": "3234099872905202358",
+        "name": "白猫站着打哈欠",
+        "box": [
+          120,
+          77,
+          135,
+          110
+        ],
+        "eyes": [
+          [
+            155,
+            100
+          ],
+          [
+            211,
+            100
+          ]
+        ],
+        "mouth": [
+          182,
+          146
+        ],
+        "action": "scream",
+        "action_keys": [
+          [
+            0,
+            0.95
+          ],
+          [
+            12,
+            0.2
+          ],
+          [
+            23,
+            0.1
+          ]
+        ],
+        "authoring_evidence": "measured-source-pixel-grid-20261030-wave2",
+        "render_methods": [
+          "geometry",
+          "gan"
+        ],
+        "recommended_method": "gan",
+        "pose_keys": [
+          {
+            "frame": 0,
+            "eyes": [
+              [
+                155,
+                100
+              ],
+              [
+                211,
+                100
+              ]
+            ]
+          },
+          {
+            "frame": 12,
+            "eyes": [
+              [
+                178,
+                95
+              ],
+              [
+                223,
+                107
+              ]
+            ]
+          },
+          {
+            "frame": 23,
+            "eyes": [
+              [
+                203,
+                103
+              ],
+              [
+                250,
+                110
+              ]
+            ]
+          }
+        ]
+      },
+      "reason": null,
+      "repair_note": null
+    },
+    {
+      "key": "tenor_face_9073e1619db79f9657d78af5",
+      "name": "狸花猫歪头疑问",
+      "source_id": "12756433236776117962",
+      "source_url": "https://tenor.com/view/cat-gif-12756433236776117962",
+      "source_shares_snapshot": 1456747,
+      "status": "draft",
+      "publication_status": "not-published",
+      "review_status": "pending-human-review",
+      "spec_sha256": "cff9d8d2687da6fe0f5433c0bcabdad348867190ac9d2b2f6fa7b4f64c3ac1c6",
+      "frames": 24,
+      "duration_ms": 5400,
+      "methods": {
+        "geometry": "cff9d8d2687da6fe0f5433c0bcabdad348867190ac9d2b2f6fa7b4f64c3ac1c6"
+      },
+      "blocked_methods": {},
+      "brief": {
+        "source_id": "12756433236776117962",
+        "name": "狸花猫歪头疑问",
+        "box": [
+          38,
+          26,
+          113,
+          107
+        ],
+        "eyes": [
+          [
+            65,
+            50
+          ],
+          [
+            111,
+            63
+          ]
+        ],
+        "mouth": [
+          79,
+          105
+        ],
+        "action": "body",
+        "action_keys": [
+          [
+            0,
+            0
+          ],
+          [
+            23,
+            0
+          ]
+        ],
+        "authoring_evidence": "measured-source-pixel-grid-20261030-wave2",
+        "render_methods": [
+          "geometry"
+        ],
+        "recommended_method": "geometry",
+        "pose_keys": [
+          {
+            "frame": 0,
+            "eyes": [
+              [
+                65,
+                50
+              ],
+              [
+                111,
+                63
+              ]
+            ]
+          },
+          {
+            "frame": 12,
+            "eyes": [
+              [
+                52,
+                75
+              ],
+              [
+                106,
+                97
+              ]
+            ]
+          },
+          {
+            "frame": 23,
+            "eyes": [
+              [
+                52,
+                77
+              ],
+              [
+                110,
+                100
+              ]
+            ]
+          }
+        ]
+      },
+      "reason": null,
+      "repair_note": null
+    },
+    {
+      "key": "tenor_face_eaad0bbc9ba870113245e262",
+      "name": "白猫委屈看着你",
+      "source_id": "16491380273725326987",
+      "source_url": "https://tenor.com/view/cat-crying-gif-16491380273725326987",
+      "source_shares_snapshot": 1006300,
+      "status": "held",
+      "publication_status": "not-published",
+      "review_status": "held-not-eligible",
+      "spec_sha256": "d6d9fa555b3058a9a428c5026d06b566e6f24a9e5d48fbbefa34ef2dcb19ab28",
+      "frames": 2,
+      "duration_ms": 200,
+      "methods": {
+        "geometry": "d6d9fa555b3058a9a428c5026d06b566e6f24a9e5d48fbbefa34ef2dcb19ab28",
+        "gan": "49b7735af599d2b960c7936f7f936c52a022b0b5f3dbf9e972aff14fd3fba085",
+        "hybrid": "057aa56c39458b077ffaf97733dcfcc35c6897e50374462f550fbd93d7097bd5"
+      },
+      "blocked_methods": {
+        "gan": "S03 实测出现眼镜棋盘纹、鼻部变色或不应有的五官改变；仅保留诊断，不能选为可用。"
+      },
+      "brief": {
+        "source_id": "16491380273725326987",
+        "name": "白猫委屈看着你",
+        "box": [
+          16,
+          85,
+          250,
+          200
+        ],
+        "eyes": [
+          [
+            75,
+            136
+          ],
+          [
+            180,
+            138
+          ]
+        ],
+        "mouth": [
+          126,
+          220
+        ],
+        "action": "stare",
+        "action_keys": [
+          [
+            0,
+            0.15
+          ],
+          [
+            1,
+            0.9
+          ],
+          [
+            1,
+            0.5
+          ]
+        ],
+        "authoring_evidence": "measured-source-pixel-grid-20261030-wave2",
+        "render_methods": [
+          "geometry",
+          "gan"
+        ],
+        "recommended_method": "geometry",
+        "geometry_method": "geometry-eye-v2"
+      },
+      "reason": "委屈/哭泣眼神未可靠迁移，当前结果保留上传照片笑容，语义不符。",
+      "repair_note": null
+    },
+    {
+      "key": "tenor_face_a26451282135c8acf1d74fe3",
+      "name": "黑猫开心跳舞",
+      "source_id": "11203548432926061523",
+      "source_url": "https://tenor.com/view/cat-clapping-ai-cat-clapping-meme-trend-funny-gif-11203548432926061523",
+      "source_shares_snapshot": 920169,
+      "status": "draft",
+      "publication_status": "not-published",
+      "review_status": "pending-human-review",
+      "spec_sha256": "0113cda4c6301fe433e91d7393c994c39dd6d11f40f48dfa672b776159947966",
+      "frames": 24,
+      "duration_ms": 6800,
+      "methods": {
+        "geometry": "0113cda4c6301fe433e91d7393c994c39dd6d11f40f48dfa672b776159947966"
+      },
+      "blocked_methods": {},
+      "brief": {
+        "source_id": "11203548432926061523",
+        "name": "黑猫开心跳舞",
+        "box": [
+          100,
+          47,
+          86,
+          98
+        ],
+        "eyes": [
+          [
+            130,
+            75
+          ],
+          [
+            167,
+            78
+          ]
+        ],
+        "mouth": [
+          149,
+          114
+        ],
+        "action": "body",
+        "action_keys": [
+          [
+            0,
+            0
+          ],
+          [
+            23,
+            0
+          ]
+        ],
+        "authoring_evidence": "measured-source-pixel-grid-20261030-wave2",
+        "render_methods": [
+          "geometry"
+        ],
+        "recommended_method": "geometry",
+        "pose_keys": [
+          {
+            "frame": 0,
+            "eyes": [
+              [
+                132,
+                69
+              ],
+              [
+                161,
+                75
+              ]
+            ]
+          },
+          {
+            "frame": 12,
+            "eyes": [
+              [
+                137,
+                145
+              ],
+              [
+                169,
+                150
+              ]
+            ]
+          },
+          {
+            "frame": 23,
+            "eyes": [
+              [
+                208,
+                112
+              ],
+              [
+                241,
+                115
+              ]
+            ]
+          }
+        ]
+      },
+      "reason": null,
+      "repair_note": null
+    },
+    {
+      "key": "tenor_face_432aa67561d30c2b33b08e71",
+      "name": "黑猫趴着发呆",
+      "source_id": "14459530881087846518",
+      "source_url": "https://tenor.com/view/cat-black-cat-big-eyes-big-eyed-cat-cute-gif-14459530881087846518",
+      "source_shares_snapshot": 765063,
+      "status": "draft",
+      "publication_status": "not-published",
+      "review_status": "pending-human-review",
+      "spec_sha256": "a4a2561aa435864a23c00eea15298b1865519e24bc9520ddad1f32a7d2e3451e",
+      "frames": 24,
+      "duration_ms": 2700,
+      "methods": {
+        "geometry": "a4a2561aa435864a23c00eea15298b1865519e24bc9520ddad1f32a7d2e3451e",
+        "gan": "4dd7c7e515c78721077b01eb61cdbf793cb1af02c7e12c8ad32f86c959878a38",
+        "hybrid": "cf8d2e5c9c59c10cde447a54720d910a5916f2e1e00f6c2da3fa45331394bf24"
+      },
+      "blocked_methods": {
+        "gan": "S03 实测出现眼镜棋盘纹、鼻部变色或不应有的五官改变；仅保留诊断，不能选为可用。"
+      },
+      "brief": {
+        "source_id": "14459530881087846518",
+        "name": "黑猫趴着发呆",
+        "box": [
+          114,
+          83,
+          165,
+          130
+        ],
+        "eyes": [
+          [
+            158,
+            120
+          ],
+          [
+            235,
+            122
+          ]
+        ],
+        "mouth": [
+          200,
+          180
+        ],
+        "action": "stare",
+        "action_keys": [
+          [
+            0,
+            0.15
+          ],
+          [
+            12,
+            0.9
+          ],
+          [
+            23,
+            0.5
+          ]
+        ],
+        "authoring_evidence": "measured-source-pixel-grid-20261030-wave2",
+        "render_methods": [
+          "geometry",
+          "gan"
+        ],
+        "recommended_method": "geometry",
+        "geometry_method": "geometry-eye-v2"
+      },
+      "reason": null,
+      "repair_note": null
+    },
+    {
+      "key": "tenor_face_1c81bcedf25849f3cb551a30",
+      "name": "奶牛猫歪头发问",
+      "source_id": "112276495113776365",
+      "source_url": "https://tenor.com/view/cat-surprised-surprised-cat-stare-cat-stare-gif-112276495113776365",
+      "source_shares_snapshot": 722105,
+      "status": "draft",
+      "publication_status": "not-published",
+      "review_status": "pending-human-review",
+      "spec_sha256": "ab657ac8d66d5139c47af82d894a6a50da6a325be82d78e71d6e0508caaa31c1",
+      "frames": 24,
+      "duration_ms": 3230,
+      "methods": {
+        "geometry": "ab657ac8d66d5139c47af82d894a6a50da6a325be82d78e71d6e0508caaa31c1",
+        "gan": "0d88224091142e661a1eb05f475ea00ac5753b791c8d327db7ff713d1fcc78aa",
+        "hybrid": "0e3db65e56d979315be4e76c20fc15e1243e59e3fea54b2302f2c8bb33790a7d"
+      },
+      "blocked_methods": {
+        "gan": "S03 实测出现眼镜棋盘纹、鼻部变色或不应有的五官改变；仅保留诊断，不能选为可用。"
+      },
+      "brief": {
+        "source_id": "112276495113776365",
+        "name": "奶牛猫歪头发问",
+        "box": [
+          80,
+          40,
+          150,
+          130
+        ],
+        "eyes": [
+          [
+            121,
+            70
+          ],
+          [
+            183,
+            82
+          ]
+        ],
+        "mouth": [
+          151,
+          136
+        ],
+        "action": "stare",
+        "action_keys": [
+          [
+            0,
+            0.15
+          ],
+          [
+            12,
+            0.9
+          ],
+          [
+            23,
+            0.5
+          ]
+        ],
+        "authoring_evidence": "measured-source-pixel-grid-20261030-wave3",
+        "render_methods": [
+          "geometry",
+          "gan"
+        ],
+        "recommended_method": "geometry",
+        "geometry_method": "geometry-eye-v2",
+        "au_keys": [
+          {
+            "frame": 0,
+            "aus": [
+              0.15,
+              0.15,
+              0.0,
+              0.55,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "frame": 23,
+            "aus": [
+              0.15,
+              0.15,
+              0.0,
+              0.55,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        ]
+      },
+      "reason": null,
+      "repair_note": null
+    },
+    {
+      "key": "tenor_face_6ab17df1942d66ada5d06eca",
+      "name": "狸花猫歪头看什么",
+      "source_id": "6015094870634057654",
+      "source_url": "https://tenor.com/view/shock-cat-shock-cat-itsnotmykla-cecesrhaccc1-gif-6015094870634057654",
+      "source_shares_snapshot": 719726,
+      "status": "draft",
+      "publication_status": "not-published",
+      "review_status": "pending-human-review",
+      "spec_sha256": "59a0e5409572980e2f2b0e25835fb93d23fda0c13aa8659e4085a6579ee4fe99",
+      "frames": 24,
+      "duration_ms": 5000,
+      "methods": {
+        "geometry": "59a0e5409572980e2f2b0e25835fb93d23fda0c13aa8659e4085a6579ee4fe99",
+        "gan": "762386eed57beca464200077e5d56b0c6e10263d4a9c020c70223b49e389c2fd",
+        "hybrid": "cd476157b5494a0d7786123621c7bc1253dde7bc2cc273e2996b65d0ec5dbeba"
+      },
+      "blocked_methods": {
+        "gan": "S03 实测出现眼镜棋盘纹、鼻部变色或不应有的五官改变；仅保留诊断，不能选为可用。"
+      },
+      "brief": {
+        "source_id": "6015094870634057654",
+        "name": "狸花猫歪头看什么",
+        "box": [
+          64,
+          155,
+          200,
+          177
+        ],
+        "eyes": [
+          [
+            115,
+            209
+          ],
+          [
+            210,
+            209
+          ]
+        ],
+        "mouth": [
+          164,
+          288
+        ],
+        "action": "stare",
+        "action_keys": [
+          [
+            0,
+            0.15
+          ],
+          [
+            12,
+            0.9
+          ],
+          [
+            23,
+            0.5
+          ]
+        ],
+        "authoring_evidence": "measured-source-pixel-grid-20261030-wave3",
+        "render_methods": [
+          "geometry",
+          "gan"
+        ],
+        "recommended_method": "geometry",
+        "geometry_method": "geometry-eye-v2",
+        "au_keys": [
+          {
+            "frame": 0,
+            "aus": [
+              0.15,
+              0.15,
+              0.0,
+              0.55,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "frame": 23,
+            "aus": [
+              0.15,
+              0.15,
+              0.0,
+              0.55,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "pose_keys": [
+          {
+            "frame": 0,
+            "eyes": [
+              [
+                115,
+                209
+              ],
+              [
+                210,
+                209
+              ]
+            ]
+          },
+          {
+            "frame": 12,
+            "eyes": [
+              [
+                167,
+                235
+              ],
+              [
+                245,
+                232
+              ]
+            ]
+          },
+          {
+            "frame": 23,
+            "eyes": [
+              [
+                167,
+                237
+              ],
+              [
+                245,
+                238
+              ]
+            ]
+          }
+        ]
+      },
+      "reason": null,
+      "repair_note": null
+    },
+    {
+      "key": "tenor_face_26c7dff5fec3ab4d4d619f2c",
+      "name": "猫咪左右探头",
+      "source_id": "2051310107206130788",
+      "source_url": "https://tenor.com/view/cat-pet-petting-cat-cute-gif-26529093",
+      "source_shares_snapshot": 714683,
+      "status": "draft",
+      "publication_status": "not-published",
+      "review_status": "pending-human-review",
+      "spec_sha256": "419cd9690a8f841b3f09f9f913e40176b9b1332400643714a8d7b5c1df264fa9",
+      "frames": 24,
+      "duration_ms": 2500,
+      "methods": {
+        "geometry": "419cd9690a8f841b3f09f9f913e40176b9b1332400643714a8d7b5c1df264fa9"
+      },
+      "blocked_methods": {},
+      "brief": {
+        "source_id": "2051310107206130788",
+        "name": "猫咪左右探头",
+        "box": [
+          132,
+          130,
+          193,
+          176
+        ],
+        "eyes": [
+          [
+            179,
+            181
+          ],
+          [
+            268,
+            180
+          ]
+        ],
+        "mouth": [
+          222,
+          252
+        ],
+        "action": "body",
+        "action_keys": [
+          [
+            0,
+            0
+          ],
+          [
+            23,
+            0
+          ]
+        ],
+        "authoring_evidence": "measured-source-pixel-grid-20261030-wave3",
+        "render_methods": [
+          "geometry"
+        ],
+        "recommended_method": "geometry",
+        "pose_keys": [
+          {
+            "frame": 0,
+            "eyes": [
+              [
+                179,
+                181
+              ],
+              [
+                268,
+                180
+              ]
+            ]
+          },
+          {
+            "frame": 12,
+            "eyes": [
+              [
+                117,
+                212
+              ],
+              [
+                204,
+                210
+              ]
+            ]
+          },
+          {
+            "frame": 23,
+            "eyes": [
+              [
+                125,
+                188
+              ],
+              [
+                240,
+                187
+              ]
+            ]
+          }
+        ]
+      },
+      "reason": null,
+      "repair_note": null
+    },
+    {
+      "key": "tenor_face_21cbc78b6c702142c9061453",
+      "name": "炸毛长毛猫不高兴",
+      "source_id": "15827091140393360355",
+      "source_url": "https://tenor.com/view/funny-animals-cats-sleepy-sleepy-cat-insomia-gif-12605363",
+      "source_shares_snapshot": 709437,
+      "status": "draft",
+      "publication_status": "not-published",
+      "review_status": "pending-human-review",
+      "spec_sha256": "0434dfe4207226c93a4ce328108c0d50ffb626ffef0dcff979460ea967211a15",
+      "frames": 24,
+      "duration_ms": 4150,
+      "methods": {
+        "geometry": "0434dfe4207226c93a4ce328108c0d50ffb626ffef0dcff979460ea967211a15"
+      },
+      "blocked_methods": {},
+      "brief": {
+        "source_id": "15827091140393360355",
+        "name": "炸毛长毛猫不高兴",
+        "box": [
+          92,
+          63,
+          121,
+          98
+        ],
+        "eyes": [
+          [
+            123,
+            95
+          ],
+          [
+            177,
+            90
+          ]
+        ],
+        "mouth": [
+          147,
+          130
+        ],
+        "action": "angry",
+        "action_keys": [
+          [
+            0,
+            0.15
+          ],
+          [
+            12,
+            0.9
+          ],
+          [
+            23,
+            0.5
+          ]
+        ],
+        "authoring_evidence": "measured-source-pixel-grid-20261030-wave3",
+        "render_methods": [
+          "geometry"
+        ],
+        "recommended_method": "geometry",
+        "geometry_method": "geometry-eye-v2"
+      },
+      "reason": null,
+      "repair_note": null
+    },
+    {
+      "key": "tenor_face_4ab6ab4b9ffea525826fac29",
+      "name": "黑猫突然大叫",
+      "source_id": "4205790747075254931",
+      "source_url": "https://tenor.com/view/deaf-cat-deaf-aagghh-aagh-cross-eye-cat-gif-4205790747075254931",
+      "source_shares_snapshot": 577680,
+      "status": "draft",
+      "publication_status": "not-published",
+      "review_status": "pending-human-review",
+      "spec_sha256": "cf4d296183fe5ec1cd677f91d302ae8019d1a27c4657007e639654f4845bb5e4",
+      "frames": 24,
+      "duration_ms": 3270,
+      "methods": {
+        "geometry": "7c63fa16d732bfceeb008295b49ce4b05e7d062b8f76a61153465a21c463f06c",
+        "gan": "24045d432873733c90ec9b6dda1058b4442cc9bc100c7f0c76a44e4351facc47",
+        "hybrid": "cf4d296183fe5ec1cd677f91d302ae8019d1a27c4657007e639654f4845bb5e4"
+      },
+      "blocked_methods": {
+        "gan": "S03 实测出现眼镜棋盘纹、鼻部变色或不应有的五官改变；仅保留诊断，不能选为可用。"
+      },
+      "brief": {
+        "source_id": "4205790747075254931",
+        "name": "黑猫突然大叫",
+        "box": [
+          140,
+          100,
+          240,
+          232
+        ],
+        "eyes": [
+          [
+            205,
+            156
+          ],
+          [
+            325,
+            161
+          ]
+        ],
+        "mouth": [
+          265,
+          260
+        ],
+        "action": "scream",
+        "action_keys": [
+          [
+            0,
+            0.15
+          ],
+          [
+            12,
+            0.9
+          ],
+          [
+            23,
+            0.5
+          ]
+        ],
+        "authoring_evidence": "measured-source-pixel-grid-20261030-wave3",
+        "render_methods": [
+          "geometry",
+          "gan"
+        ],
+        "recommended_method": "gan",
+        "caption_inventory": [
+          {
+            "editable": false,
+            "original_text": "HAHHH???",
+            "box": [
+              140,
+              340,
+              180,
+              35
+            ],
+            "reason": "保留原字"
+          }
+        ]
+      },
+      "reason": null,
+      "repair_note": null
+    },
+    {
+      "key": "tenor_face_d3f6695a1cd379ed7dd8ce44",
+      "name": "粉色灯光猫咪瞪眼",
+      "source_id": "11881422141204167326",
+      "source_url": "https://tenor.com/view/cat-shocked-woah-gif-26558267",
+      "source_shares_snapshot": 553796,
+      "status": "draft",
+      "publication_status": "not-published",
+      "review_status": "pending-human-review",
+      "spec_sha256": "155d9205f466945811b784b5c8cfda87077ec9e9601872fd328cfa0c848f0186",
+      "frames": 24,
+      "duration_ms": 2640,
+      "methods": {
+        "geometry": "155d9205f466945811b784b5c8cfda87077ec9e9601872fd328cfa0c848f0186",
+        "gan": "06e7899963a7b9719b39eb3e6eee740d8cb0f307a30e12d8315d9dcbfb36b7c4",
+        "hybrid": "e552bce5a89836512a36fa6b136877b93c331a6a2464a85bb1fd77ff956f2a3d"
+      },
+      "blocked_methods": {
+        "gan": "S03 实测出现眼镜棋盘纹、鼻部变色或不应有的五官改变；仅保留诊断，不能选为可用。"
+      },
+      "brief": {
+        "source_id": "11881422141204167326",
+        "name": "粉色灯光猫咪瞪眼",
+        "box": [
+          27,
+          138,
+          185,
+          176
+        ],
+        "eyes": [
+          [
+            79,
+            199
+          ],
+          [
+            153,
+            174
+          ]
+        ],
+        "mouth": [
+          136,
+          250
+        ],
+        "action": "stare",
+        "action_keys": [
+          [
+            0,
+            0.15
+          ],
+          [
+            12,
+            0.9
+          ],
+          [
+            23,
+            0.5
+          ]
+        ],
+        "authoring_evidence": "measured-source-pixel-grid-20261030-wave3",
+        "render_methods": [
+          "geometry",
+          "gan"
+        ],
+        "recommended_method": "geometry",
+        "geometry_method": "geometry-eye-v2",
+        "au_keys": [
+          {
+            "frame": 0,
+            "aus": [
+              0.15,
+              0.15,
+              0.0,
+              0.55,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "frame": 23,
+            "aus": [
+              0.15,
+              0.15,
+              0.0,
+              0.55,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "pose_keys": [
+          {
+            "frame": 0,
+            "eyes": [
+              [
+                79,
+                199
+              ],
+              [
+                153,
+                174
+              ]
+            ]
+          },
+          {
+            "frame": 12,
+            "eyes": [
+              [
+                62,
+                189
+              ],
+              [
+                160,
+                160
+              ]
+            ]
+          },
+          {
+            "frame": 23,
+            "eyes": [
+              [
+                52,
+                190
+              ],
+              [
+                160,
+                150
+              ]
+            ]
+          }
+        ]
+      },
+      "reason": null,
+      "repair_note": null
+    },
+    {
+      "key": "tenor_face_f2a33532d0e96703ad166312",
+      "name": "猫咪拿枪警告你",
+      "source_id": "5459893182316367885",
+      "source_url": "https://tenor.com/view/cute-cat-hands-up-close-up-gun-gif-5459893182316367885",
+      "source_shares_snapshot": 533705,
+      "status": "draft",
+      "publication_status": "not-published",
+      "review_status": "pending-human-review",
+      "spec_sha256": "64f034193dd0dbb2779861181527c9bfaccf35b222addd5d951bb170e3e3aeb1",
+      "frames": 24,
+      "duration_ms": 2000,
+      "methods": {
+        "geometry": "64f034193dd0dbb2779861181527c9bfaccf35b222addd5d951bb170e3e3aeb1",
+        "gan": "ab3b2223a862f46420f63bbfacf54418ab0491836e9aa4523c825cd9da5a2da9",
+        "hybrid": "af448c72df487e8592f24c0af892d6c1abccd1be86abfa9dae7375b59c78c41b"
+      },
+      "blocked_methods": {
+        "gan": "S03 实测出现眼镜棋盘纹、鼻部变色或不应有的五官改变；仅保留诊断，不能选为可用。"
+      },
+      "brief": {
+        "source_id": "5459893182316367885",
+        "name": "猫咪拿枪警告你",
+        "box": [
+          32,
+          28,
+          240,
+          153
+        ],
+        "eyes": [
+          [
+            88,
+            77
+          ],
+          [
+            222,
+            85
+          ]
+        ],
+        "mouth": [
+          160,
+          151
+        ],
+        "action": "stare",
+        "action_keys": [
+          [
+            0,
+            0.15
+          ],
+          [
+            12,
+            0.9
+          ],
+          [
+            23,
+            0.5
+          ]
+        ],
+        "authoring_evidence": "measured-source-pixel-grid-20261030-wave3",
+        "render_methods": [
+          "geometry",
+          "gan"
+        ],
+        "recommended_method": "geometry",
+        "geometry_method": "geometry-eye-v2",
+        "au_keys": [
+          {
+            "frame": 0,
+            "aus": [
+              0.15,
+              0.15,
+              0.0,
+              0.55,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "frame": 23,
+            "aus": [
+              0.15,
+              0.15,
+              0.0,
+              0.55,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        ],
+        "protect_polygons": [
+          [
+            [
+              70,
+              175
+            ],
+            [
+              240,
+              175
+            ],
+            [
+              240,
+              383
+            ],
+            [
+              70,
+              383
+            ]
+          ]
+        ]
+      },
+      "reason": null,
+      "repair_note": null
+    },
+    {
+      "key": "tenor_face_2214ee7402f0c6d8e724edd1",
+      "name": "狸花猫张嘴咆哮",
+      "source_id": "5110955762935200988",
+      "source_url": "https://tenor.com/view/cat-meme-cat-meme-gagged-gag-gif-5110955762935200988",
+      "source_shares_snapshot": 434503,
+      "status": "draft",
+      "publication_status": "not-published",
+      "review_status": "pending-human-review",
+      "spec_sha256": "dc1a84311984a5b03b02c2e2373e77e56162f95c78fb2c0c892538400085fa1e",
+      "frames": 13,
+      "duration_ms": 1300,
+      "methods": {
+        "geometry": "721b7ef24202aef7c335eb291531c89e2078015dd90199b2648991f1f9f59b45",
+        "gan": "15934ed835bf47d5ea3714d59f6ed5c19e924e0be9171363143b473826bd0196",
+        "hybrid": "dc1a84311984a5b03b02c2e2373e77e56162f95c78fb2c0c892538400085fa1e"
+      },
+      "blocked_methods": {
+        "gan": "S03 实测出现眼镜棋盘纹、鼻部变色或不应有的五官改变；仅保留诊断，不能选为可用。"
+      },
+      "brief": {
+        "source_id": "5110955762935200988",
+        "name": "狸花猫张嘴咆哮",
+        "box": [
+          60,
+          96,
+          255,
+          235
+        ],
+        "eyes": [
+          [
+            124,
+            160
+          ],
+          [
+            248,
+            145
+          ]
+        ],
+        "mouth": [
+          180,
+          263
+        ],
+        "action": "scream",
+        "action_keys": [
+          [
+            0,
+            0.15
+          ],
+          [
+            6,
+            0.9
+          ],
+          [
+            12,
+            0.5
+          ]
+        ],
+        "authoring_evidence": "measured-source-pixel-grid-20261030-wave3",
+        "render_methods": [
+          "geometry",
+          "gan"
+        ],
+        "recommended_method": "gan"
+      },
+      "reason": null,
+      "repair_note": null
+    },
+    {
+      "key": "tenor_face_348889355a67b404b5c8c1f5",
+      "name": "白猫在床上打哈欠",
+      "source_id": "2295619231831500370",
+      "source_url": "https://tenor.com/view/gato-triste-com-sono-bocejando-cansado-gif-2295619231831500370",
+      "source_shares_snapshot": 409604,
+      "status": "draft",
+      "publication_status": "not-published",
+      "review_status": "pending-human-review",
+      "spec_sha256": "5b61cb804be2ac97db72ddcfe0d8d7364f520c7a805322e56f33e4fcb3d5ebf2",
+      "frames": 24,
+      "duration_ms": 4700,
+      "methods": {
+        "geometry": "3361e0489d0bf83bba3afa4574ee11a641f69e0adaf1b84355d7447feb4c7dfc",
+        "gan": "bca1a049ca5fbfac045a32d0a3dc8f777a96889e918f9179fd447957385e42b2",
+        "hybrid": "5b61cb804be2ac97db72ddcfe0d8d7364f520c7a805322e56f33e4fcb3d5ebf2"
+      },
+      "blocked_methods": {
+        "gan": "S03 实测出现眼镜棋盘纹、鼻部变色或不应有的五官改变；仅保留诊断，不能选为可用。"
+      },
+      "brief": {
+        "source_id": "2295619231831500370",
+        "name": "白猫在床上打哈欠",
+        "box": [
+          70,
+          78,
+          91,
+          101
+        ],
+        "eyes": [
+          [
+            101,
+            104
+          ],
+          [
+            140,
+            101
+          ]
+        ],
+        "mouth": [
+          123,
+          151
+        ],
+        "action": "scream",
+        "action_keys": [
+          [
+            0,
+            0.9
+          ],
+          [
+            12,
+            0.1
+          ],
+          [
+            23,
+            0.1
+          ]
+        ],
+        "authoring_evidence": "measured-source-pixel-grid-20261030-wave3",
+        "render_methods": [
+          "geometry",
+          "gan"
+        ],
+        "recommended_method": "gan",
+        "caption_inventory": [
+          {
+            "editable": false,
+            "original_text": "bilibili",
+            "box": [
+              155,
+              190,
+              53,
+              18
+            ],
+            "reason": "保留来源标识"
+          }
+        ]
+      },
+      "reason": null,
+      "repair_note": null
+    }
+  ],
+  "source_adoptions": {
+    "adopted": {
+      "292935567208914472": "tenor_face_326d501a23e85e9b6fc0e66c"
+    },
+    "retired_source_ids": [
+      "17237565362798444368"
+    ]
+  }
+}
