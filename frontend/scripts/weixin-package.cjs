@@ -78,6 +78,9 @@ function files(directory) {
 function auditPackage(directory) {
   const project = JSON.parse(fs.readFileSync(path.join(directory,'project.config.json'),'utf8'))
   const app = JSON.parse(fs.readFileSync(path.join(directory,'app.json'),'utf8'))
+  const sdkVersion = JSON.parse(fs.readFileSync(path.resolve(__dirname,'../src/manifest.json'),'utf8'))['mp-weixin'].libVersion
+  assert.match(sdkVersion || '', /^\d+\.\d+\.\d+$/, 'Pin the verified WeChat SDK version in manifest.json')
+  assert.equal(project.libVersion,sdkVersion,'WeChat build must use the verified SDK version')
   assert.equal(project.setting.urlCheck,true,'Keep domain validation enabled')
   for (const setting of ['minified','minifyWXML','minifyWXSS']) {
     assert.equal(project.setting[setting],true,`Enable ${setting} in manifest.json`)

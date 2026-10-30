@@ -29,11 +29,15 @@ assert.throws(()=>optimizePng(broken),/CRC/,'Reject corruption rather than rewri
 
 const fixture = fs.mkdtempSync(path.join(os.tmpdir(),'gensticker-package-test-'))
 try {
-  const project={setting:{urlCheck:true,minified:true,minifyWXML:true,minifyWXSS:true}}
+  const sdkVersion=JSON.parse(fs.readFileSync(path.join(root,'src/manifest.json'),'utf8'))['mp-weixin'].libVersion
+  const project={libVersion:sdkVersion,setting:{urlCheck:true,minified:true,minifyWXML:true,minifyWXSS:true}}
   const writeProject=()=>fs.writeFileSync(path.join(fixture,'project.config.json'),JSON.stringify(project))
   writeProject()
   fs.writeFileSync(path.join(fixture,'app.json'),JSON.stringify({lazyCodeLoading:'requiredComponents'}))
   assert.equal(auditPackage(fixture).mediaBytes,0)
+  project.libVersion='';writeProject()
+  assert.throws(()=>auditPackage(fixture),/verified SDK version/,'An unpinned build can silently switch to an unavailable SDK')
+  project.libVersion=sdkVersion;writeProject()
   project.setting.minified=false;writeProject()
   assert.throws(()=>auditPackage(fixture),/minified/,'Missing upload compression must fail')
   project.setting.minified=true;writeProject()

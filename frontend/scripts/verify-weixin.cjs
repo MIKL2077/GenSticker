@@ -75,6 +75,9 @@ async function verify() {
   }
   try {
     await waitFor(async () => !!(await currentPage()), 'initial WeChat webview')
+    const sdkVersion = await app.evaluate(() => wx.getSystemInfoSync().SDKVersion)
+    const expectedSdk = JSON.parse(fs.readFileSync(path.join(__dirname,'../src/manifest.json'),'utf8'))['mp-weixin'].libVersion
+    assert.equal(sdkVersion, expectedSdk, 'DevTools must run the verified SDK; check the project local settings')
     await app.reLaunch('/pages/index/index')
     const home = await pageReady('.live-entry', 'pages/index/index')
     assert.match(await (await home.$('.live-entry')).text(), /视频转 GIF/)
@@ -118,7 +121,7 @@ async function verify() {
       } catch (_) { return [] }
     })
     const report = { status: 'passed', templateCount: templates.count, pages: ['index', 'live', 'my', 'recommend', 'queue', 'create', 'library'], videoPickerCount: 1, liveGuidance: true, runtimeErrors: errors, domainValidation: true, screenshots, performanceScope: 'WeChat simulator entries; not physical-device or SDK-wait wall time', performanceEntries }
-    fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2) + '\n')
+    fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify({ ...report, sdkVersion }, null, 2) + '\n')
     console.log('PASS WeChat production startup, real templates, video-only entry, Live guidance and seven pages')
     console.log('Evidence:', output)
   } finally {
