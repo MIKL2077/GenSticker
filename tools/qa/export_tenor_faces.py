@@ -9,6 +9,7 @@ import copy
 import hashlib
 import json
 from pathlib import Path
+import re
 import sys
 
 REPO=Path(__file__).resolve().parents[2]
@@ -19,9 +20,14 @@ from meme_generator.features.reviewed_faces import validate_tenor_face
 from meme_generator.features.storage import asset_refs
 
 
-def export(directory,audit_directory,output):
+def export(directory,audit_directory,output,*,keys=None,batch_prefix='20261030-tenor-approved'):
     if (directory/'withdrawal.json').exists():raise ValueError('withdrawn batch')
     records=json.loads((directory/'reviews.json').read_text())['records']
+    if not re.fullmatch(r'\d{8}-tenor-[a-z0-9-]{1,80}',batch_prefix):
+        raise ValueError('invalid batch prefix')
+    selected=set(keys) if keys is not None else None
+    if selected is not None and (not selected or any(records.get(k,{}).get('decision')!='approved' for k in selected)):
+        raise ValueError('every requested key must have a current human approval')
     templates=[];assets={};batches=[]
     output.mkdir(parents=True,exist_ok=True)
     def flush():
@@ -29,10 +35,12 @@ def export(directory,audit_directory,output):
         payload={'format':'gensticker-reviewed-face-v1','templates':templates.copy(),'assets':assets.copy()}
         raw=json.dumps(payload,ensure_ascii=False,separators=(',',':')).encode()
         if len(raw)>32*1024**2:raise ValueError('batch exceeds byte bound')
-        path=output/f'20261030-tenor-approved-{len(batches)+1:02d}.json'
+        path=output/f'{batch_prefix}-{len(batches)+1:02d}.json'
+        if path.exists():raise ValueError('export already exists; use a new batch prefix or directory')
         path.write_bytes(raw);batches.append({'file':path.name,'count':len(templates),'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()})
         templates.clear();assets.clear()
     for key,review in records.items():
+        if selected is not None and key not in selected:continue
         if review.get('decision')!='approved':continue
         row=json.loads((directory/'drafts'/(key+'.json')).read_text())
         variant=row['variants'].get(review.get('method'),{})
@@ -81,5 +89,7 @@ def export(directory,audit_directory,output):
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--directory',required=True,type=Path);p.add_argument('--audit-directory',required=True,type=Path);p.add_argument('--output',required=True,type=Path);a=p.parse_args()
-    print(json.dumps(export(a.directory,a.audit_directory,a.output)))
+    p=argparse.ArgumentParser();p.add_argument('--directory',required=True,type=Path);p.add_argument('--audit-directory',required=True,type=Path);p.add_argument('--output',required=True,type=Path)
+    p.add_argument('--key',action='append',dest='keys',help='Export only these individually approved keys for an incremental release')
+    p.add_argument('--batch-prefix',default='20261030-tenor-approved');a=p.parse_args()
+    print(json.dumps(export(a.directory,a.audit_directory,a.output,keys=a.keys,batch_prefix=a.batch_prefix)))

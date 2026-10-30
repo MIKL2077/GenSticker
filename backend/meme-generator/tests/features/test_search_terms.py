@@ -33,6 +33,26 @@ class SearchTermsTests(unittest.TestCase):
         self.assertIn('自定义暗号', keywords({'name': '测试', 'keywords': ['自定义暗号']}))
         self.assertNotIn('猫咪', keywords({'name':'熊猫头','keywords':['猫咪','cat']}))
 
+    def test_cat_actions_and_chat_intent_without_inventing_a_wink(self):
+        cases = [
+            ('白猫打哈欠', ['犯困', 'yawning']),
+            ('黑猫被摸头后眨眨眼', ['blinking', '眨眼']),
+            ('奶牛猫满脸写着不耐烦', ['烦躁', 'annoyed']),
+            ('灰猫欲言又止', ['话到嘴边', '说不出口']),
+            ('小猫等你回复', ['等消息', '已读不回']),
+            ('橘猫心满意足眯眼笑', ['舒服', '惬意', 'squint']),
+            ('猫咪嘴巴合不上', ['张嘴', 'open-mouth']),
+        ]
+        for name, expected in cases:
+            words = keywords({'name': name})
+            for word in expected:
+                self.assertIn(word, words, name)
+            self.assertEqual(words, keywords({'name': name, 'keywords': words}))
+        self.assertNotIn('抛媚眼', keywords({'name': '猫咪眨眼'}))
+        self.assertNotIn('睁大眼', keywords({'name': '猫咪闭眼休息'}))
+        self.assertIn('抛媚眼', keywords({'name': 'cat wink'}))
+        self.assertNotIn('yawning', keywords({'name': 'scaryawn'}))
+
     def test_normalized_bounded_and_tolerates_legacy_values(self):
         result = keywords({'name': 'ＯＫ', 'keywords': ['ok', 'ＯＫ', None, 5],
                            'default_texts': None, 'tags': '工作'})
