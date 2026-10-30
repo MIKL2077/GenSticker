@@ -19,6 +19,62 @@ def module(name, path):
 
 
 class ExpansionReviewTests(unittest.TestCase):
+    def test_selected_face_method_is_bound_and_failed_method_cannot_be_approved(self):
+        server=module('face_method_review','tools/qa/serve_expansion_review.py')
+        with tempfile.TemporaryDirectory() as temp:
+            directory=Path(temp);(directory/'drafts').mkdir()
+            row={'key':'face','index':1,'status':'draft','spec_sha256':'primary','original_sha256':'source',
+                 'outputs':[],'variants':{'geometry':{'spec_sha256':'geo','label':'geometry'},
+                 'gan':{'spec_sha256':'bad','label':'GAN'}},'blocked_methods':{'gan':'artifact'}}
+            (directory/'drafts/face.json').write_text(json.dumps(row))
+            review=server.Review(directory)
+            request={'key':'face','spec_sha256':'primary','decision':'approved','method':'geometry','portrait':'S03','selected_spec_sha256':'stale'}
+            with self.assertRaisesRegex(ValueError,'当前版本'):review.save(request)
+            request.update(method='gan',selected_spec_sha256='bad')
+            with self.assertRaisesRegex(ValueError,'失败'):review.save(request)
+            request.update(method='geometry',selected_spec_sha256='geo')
+            saved=review.save(request)
+            self.assertEqual(saved['method'],'geometry')
+            self.assertEqual(saved['selected_spec_sha256'],'geo')
+            row['variants']['geometry']['spec_sha256']='new-geometry'
+            (directory/'drafts/face.json').write_text(json.dumps(row))
+            item=server.Review(directory).data()['rows'][0]
+            self.assertEqual(item['review'],{})
+            self.assertEqual(item['previous_review']['selected_spec_sha256'],'geo')
+
+    def test_tenor_uses_literal_state_and_rejects_unexpected_media_hosts(self):
+        collect=module('tenor_collect','tools/collect/collect_tenor_faces.py')
+        parser=collect.State();parser.feed('<script>throw Error("never run")</script><script id="store-cache">{"x":1}</script>')
+        self.assertEqual(json.loads(''.join(parser.parts)),{'x':1})
+        with self.assertRaisesRegex(ValueError,'host'):collect.get('https://attacker.example/face.gif',100)
+
+    def test_measured_pose_keys_cover_loop_and_action_curves_are_bounded(self):
+        import numpy as np
+        author=module('tenor_author','tools/collect/author_tenor_faces.py')
+        brief={'box':[10,10,50,50],'eyes':[[25,25],[45,25]],'action':'blink',
+               'action_keys':[[0,0],[1,1],[2,0]],'pose_keys':[{'frame':0,'eyes':[[25,25],[45,25]]},
+               {'frame':2,'eyes':[[29,25],[49,25]]}]}
+        rows=author.track([np.zeros((80,80,3),np.uint8)]*3,brief)
+        np.testing.assert_allclose(rows[1][1],[[27,25],[47,25]])
+        self.assertTrue(all(0<=value<=1 for value in author.actions(brief,1)))
+        self.assertNotEqual(author.actions(brief,0),author.actions(brief,1))
+        brief['pose_keys'][-1]['frame']=1
+        with self.assertRaisesRegex(ValueError,'complete loop'):author.track([np.zeros((80,80,3),np.uint8)]*3,brief)
+
+    def test_withdrawal_revokes_previous_approval_without_destroying_history(self):
+        server=module('expansion_withdrawn','tools/qa/serve_expansion_review.py')
+        with tempfile.TemporaryDirectory() as temp:
+            directory=Path(temp);(directory/'drafts').mkdir()
+            records={'a':{'decision':'approved','spec_sha256':'v1'}}
+            (directory/'reviews.json').write_text(json.dumps({'records':records}))
+            (directory/'withdrawal.json').write_text(json.dumps({'status':'withdrawn'}))
+            review=server.Review(directory)
+            self.assertEqual(review.data()['rows'],[])
+            self.assertEqual(review.data()['records'],records)
+            with self.assertRaisesRegex(ValueError,'撤销'):
+                review.save({'key':'a','spec_sha256':'v1','decision':'approved'})
+            self.assertEqual(json.loads((directory/'reviews.json').read_text())['records'],records)
+
     def test_semantic_preflight_holds_watermark_false_anchors_and_partial_captions(self):
         selector = module('expansion_select','tools/qa/select_expansion_review.py')
         row = {'defaults':['你好'],'text_slots':1,'canvas':[300,300],

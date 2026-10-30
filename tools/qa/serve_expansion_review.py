@@ -46,6 +46,11 @@ class Review:
 
     def data(self):
         self.refresh()
+        withdrawal = self.directory/'withdrawal.json'
+        if withdrawal.exists():
+            return {'baseline':959,'target':1500,'needed':541,'rows':[],
+                    'draft_count':0,'animated_drafts':0,'records':self.records,
+                    'withdrawn':json.loads(withdrawal.read_text()),'publication':'withdrawn; not-published'}
         rows = []
         for row in self.rows.values():
             item = {k:row.get(k) for k in ['key','index','name','status','reason','animated','frames',
@@ -54,17 +59,28 @@ class Review:
                 'image_slots','text_slots','defaults','warnings','spec_sha256','outputs']}
             item['keywords'] = row.get('metadata',{}).get('keywords',[])
             item['caption_inventory'] = row.get('caption_inventory',[])
+            for name in ['source_shares','source_author','source_tags','limitations','recommended_method','blocked_methods']:
+                item[name]=row.get(name)
+            item['methods']={key:{'label':value['label'],'spec_sha256':value['spec_sha256']}
+                             for key,value in row.get('variants',{}).items()}
             record = self.records.get(row['key'],{})
-            item['review'] = record if record.get('spec_sha256') == row.get('spec_sha256') else {}
+            current = record.get('spec_sha256') == row.get('spec_sha256')
+            if record and row.get('variants'):
+                chosen=row['variants'].get(record.get('method'),{})
+                current=current and chosen.get('spec_sha256')==record.get('selected_spec_sha256')
+            item['review'] = record if current else {}
+            if record and not current:item['previous_review']=record
             rows.append(item)
-        rows.sort(key=lambda r:(not r.get('animated'),r.get('source_rank') or 100000,r['index']))
+        rows.sort(key=lambda r:(not r.get('animated'),r.get('source_rank') or 100000,r.get('index') or 0))
         return {'baseline':959,'target':1500,'needed':541,'rows':rows,
                 'draft_count':sum(x['status']=='draft' for x in rows),
-                'animated_drafts':sum(x['status']=='draft' and x['animated'] for x in rows),
+                'animated_drafts':sum(x['status']=='draft' and bool(x['animated']) for x in rows),
                 'records':self.records,'selection':self.selection.get('counts',{}),
                 'publication':'none; human approval required'}
 
     def save(self, body):
+        if (self.directory/'withdrawal.json').exists():
+            raise ValueError('本批候选已按用户要求撤销，历史评价保留，不再接收入库标记')
         self.refresh()
         key = body.get('key')
         row = self.rows.get(key)
@@ -75,6 +91,15 @@ class Review:
         decision = body.get('decision','')
         if decision not in {'','approved','adjust','reject'}:
             raise ValueError('invalid decision')
+        method=body.get('method','')
+        variants=row.get('variants',{})
+        portrait=body.get('portrait')
+        if variants and (method not in variants or variants[method]['spec_sha256']!=body.get('selected_spec_sha256')):
+            raise ValueError('请选择并确认当前版本的换脸方案')
+        if variants and portrait not in {None,'S03','S17','S29'}:
+            raise ValueError('请记录当前查看的测试头像')
+        if decision=='approved' and method in row.get('blocked_methods',{}):
+            raise ValueError('已诊断失败的方案不能标为可用')
         note = str(body.get('note',''))[:1000]
         name = str(body.get('name','')).strip()[:40]
         terms = body.get('keywords',[])
@@ -85,6 +110,8 @@ class Review:
                   'keywords':list(dict.fromkeys(x.strip()[:80] for x in terms if x.strip()))[:128],
                   'samples':[x['sample'] for x in row['outputs']],
                   'updated_at':datetime.now(timezone.utc).isoformat()}
+        if variants:
+            record.update(method=method,selected_spec_sha256=variants[method]['spec_sha256'],reviewed_sample=portrait or 'unspecified')
         with self.lock:
             self.records[key] = record
             payload = {'version':1,'publication':'not-published','baseline':959,'target':1500,
@@ -135,11 +162,14 @@ def main():
         def do_GET(self):
             path=unquote(urlsplit(self.path).path)
             if path in {'/','/index.html'}:
-                return self.reply((HERE/'expansion_review.html').read_bytes(),'text/html; charset=utf-8')
+                filename='tenor_face_review.html' if (review.directory/'briefs.json').exists() else 'expansion_review.html'
+                return self.reply((HERE/filename).read_bytes(),'text/html; charset=utf-8')
             if path=='/api/data':
                 return self.reply(review.data())
             if path=='/api/export':
-                return self.reply({'version':1,'records':review.records})
+                withdrawn=(review.directory/'withdrawal.json').exists()
+                return self.reply({'version':1,'records':review.records,
+                    'publication':'withdrawn' if withdrawn else 'not-published'})
             review.refresh()
             if path.startswith('/source/'):
                 key=path.removeprefix('/source/')
@@ -147,7 +177,25 @@ def main():
                 file=Path(row['path']) if row else None
             elif path.startswith('/media/'):
                 name=path.removeprefix('/media/')
-                file=review.directory/'media'/name if re.fullmatch(r'auto_element_[a-f0-9]{24}-(?:S03|S17|S29|blank|edited)\.(?:gif|png)',name) else None
+                valid=re.fullmatch(r'auto_element_[a-f0-9]{24}-(?:S03|S17|S29|blank|edited)\.(?:gif|png)',name) or re.fullmatch(r'tenor_face_[a-f0-9]{24}-S(?:03|17|29)-(?:direct|geometry|gan)\.gif',name)
+                file=review.directory/'media'/name if valid else None
+            elif path.startswith('/tracking/'):
+                row=review.rows.get(path.removeprefix('/tracking/'))
+                if not row or not row.get('variants'):
+                    return self.reply({'error':'not found'},status=404)
+                sheet=Image.new('RGB',(1200,430),'white');draw=ImageDraw.Draw(sheet)
+                with Image.open(row['path']) as source:
+                    for col,index in enumerate([0,row['frames']//2,row['frames']-1]):
+                        source.seek(index);frame=source.convert('RGBA')
+                        face=next(l for l in row['spec']['frames'][index]['layers'] if l['type']=='face')
+                        digest=face['expression']['mask_asset']
+                        with Image.open(review.directory/'state/features/template_assets'/(digest+'.png')) as mask:
+                            tint=Image.new('RGBA',frame.size,'#e66159');tint.putalpha(mask.convert('L').point(lambda x:round(x*.28)))
+                        frame=Image.alpha_composite(frame,tint)
+                        thumb=ImageOps.contain(frame.convert('RGB'),(390,390));sheet.paste(thumb,(col*400,25))
+                        draw.text((col*400+4,5),f'{index+1} / {row["frames"]}',fill='black')
+                output=BytesIO();sheet.save(output,'JPEG',quality=90)
+                return self.reply(output.getvalue(),'image/jpeg')
             elif path.startswith('/frames/'):
                 parts=path.split('/')
                 if len(parts)!=4 or parts[2] not in review.rows:

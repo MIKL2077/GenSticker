@@ -1,6 +1,6 @@
 {
   "observed_at": "2026-10-30T02:30:53.023414+00:00",
-  "publication": "not-published; human review required",
+  "publication": "withdrawn; never published",
   "public_catalog": {
     "total": 959,
     "animated": 392,
@@ -73,5 +73,7 @@
     }
   ],
   "privacy": "portraits and generated media remain on local authoring machine; no avatar/media in git or production deployment",
-  "release_scope": "search and private review tooling only; no formal public-release approval"
+  "release_scope": "search and private review tooling only; no formal public-release approval",
+  "withdrawal_reason": "user rejected caption-heavy batch; switch to Tenor cat face-fusion references",
+  "superseded_by": "TENOR_FACE_REVIEW_2026-10-30.json"
 }

@@ -1,0 +1,249 @@
+{
+  "observed_at": "2026-10-30T03:07:45.261290+00:00",
+  "status": "pending-human-review; not-published",
+  "supersedes": "TEMPLATE_EXPANSION_REVIEW_2026-10-30.json",
+  "previous_batch": {
+    "status": "withdrawn",
+    "published": 0,
+    "historical_annotations": "retained; approval revoked for this batch"
+  },
+  "published_catalog": {
+    "total": 959,
+    "health": "ok"
+  },
+  "goal": 1500,
+  "source": {
+    "url": "https://tenor.com/zh-CN/search/cat-gifs",
+    "indexed": 330,
+    "downloaded": 140,
+    "actual_animations": 92,
+    "license": "unverified",
+    "use": "explicit-user-request-private-reference",
+    "popularity": "public Tenor shares field and search position snapshot; no invented global rank"
+  },
+  "review": {
+    "templates": 10,
+    "animated": 10,
+    "face_templates": 10,
+    "text_only": 0,
+    "test_portraits": 3,
+    "rendered_comparisons": 90,
+    "methods": [
+      "face-only neutral geometry",
+      "authored lightweight geometry",
+      "GANimation EmotionNet ONNX CPU"
+    ],
+    "blocked_gan_methods": 4,
+    "selectable_method_recipes": 26,
+    "held_sources": 4
+  },
+  "technical": {
+    "method_recipes": 30,
+    "passed": 30,
+    "failed": 0,
+    "pre_encoding_frames_checked": 591,
+    "scope": "declared face/removal support before GIF quantization; full output timeline; assets and recipe hashes; not aesthetic approval"
+  },
+  "resources": {
+    "processing": "local Mac only; no new model/runtime deployed to production",
+    "model_sha256": "e4ceefd1c354a1e13a1d46e322108aeb5024d846ee7536468d19aca3f51b6f46",
+    "inference": "CPU, sequential, one ONNX thread",
+    "median_complete_gif_seconds": 0.294,
+    "maximum_complete_gif_seconds": 1.253,
+    "timing_scope": "local render including photo preparation and GIF encoding; not a Linux capacity benchmark"
+  },
+  "tests": {
+    "expansion_review_cases": 10,
+    "status": "passed"
+  },
+  "cases": [
+    {
+      "name": "橘猫笑到合不拢嘴",
+      "key": "tenor_face_4ecbb4201a7d1b81cb476b3d",
+      "source_url": "https://tenor.com/view/aww-aww-cute-love-so-cute-cat-gif-9924054809890007007",
+      "source_id": "9924054809890007007",
+      "source_shares": 1656846,
+      "image_slots": 1,
+      "text_slots": 0,
+      "frames": 24,
+      "duration_ms": 4510,
+      "recipe_sha256": "6f47fa337bb84cb875625246ceb6a162788b22036612c67adc3ddf8b52453b9a",
+      "variant_sha256": {
+        "direct": "517191200154be71bd10ea9d3ba01e27376fb88a5d34f14df98d96b0047c0d76",
+        "geometry": "b4239ba8372c60e28a147eab20ebee8b23374dab4df1d95a3041f0763b391370",
+        "gan": "6f47fa337bb84cb875625246ceb6a162788b22036612c67adc3ddf8b52453b9a"
+      },
+      "blocked_methods": []
+    },
+    {
+      "name": "狸花猫仰头大笑",
+      "key": "tenor_face_326d501a23e85e9b6fc0e66c",
+      "source_url": "https://tenor.com/view/lol-laughing-cat-funny-gif-5670070",
+      "source_id": "17237565362798444368",
+      "source_shares": 680253,
+      "image_slots": 1,
+      "text_slots": 0,
+      "frames": 24,
+      "duration_ms": 5700,
+      "recipe_sha256": "978465470d7d2564717b68e8e6ec26b4c3555cbbf3b415445846880c7a5d74fb",
+      "variant_sha256": {
+        "direct": "2d7f11446992227faae34c046cc808b0bbdf746c19331bd63dc1acf8389f053d",
+        "geometry": "39cf1427cf35ab969d87019aead2f002a7cd8a4089acf54ff90558280d4c827c",
+        "gan": "978465470d7d2564717b68e8e6ec26b4c3555cbbf3b415445846880c7a5d74fb"
+      },
+      "blocked_methods": []
+    },
+    {
+      "name": "猫咪眨眼盯着你",
+      "key": "tenor_face_dad4b09b3e0ffcdf68ac0967",
+      "source_url": "https://tenor.com/view/cat-blink-blinkingcat-cute-funny-gif-8859604814399687515",
+      "source_id": "8859604814399687515",
+      "source_shares": 2498872,
+      "image_slots": 1,
+      "text_slots": 0,
+      "frames": 24,
+      "duration_ms": 1990,
+      "recipe_sha256": "90199dc0f746d27d78d490288e8c7d6893c3c1121a97157814344b374b91c26c",
+      "variant_sha256": {
+        "direct": "1abfa4c1d2d8a2ac1b150b2fa2a6256998f810f41debf979b9a72b93a802e5c1",
+        "geometry": "f838e54f2fddcedf2de28c612d7f829a94f7cad89018b2cbee2c5d65b9927db9",
+        "gan": "90199dc0f746d27d78d490288e8c7d6893c3c1121a97157814344b374b91c26c"
+      },
+      "blocked_methods": [
+        "gan"
+      ]
+    },
+    {
+      "name": "猫咪闭眼摇头",
+      "key": "tenor_face_dee06f745599d7938da5640f",
+      "source_url": "https://tenor.com/view/geleng-gif-11799631281958817330",
+      "source_id": "11799631281958817330",
+      "source_shares": 211954,
+      "image_slots": 1,
+      "text_slots": 0,
+      "frames": 24,
+      "duration_ms": 2540,
+      "recipe_sha256": "0cf34608bd32c25968c9b0d82740625f467bf5ec72245b21b43548635ab90f1d",
+      "variant_sha256": {
+        "direct": "db486861e7dc8168e57fee86fa0c99acb4aeba0a44c3548ee4009cd602f15115",
+        "geometry": "fc9c2d0a823e9c811cc6a4c3110460d0b226d410df9361ae03483737c77c716e",
+        "gan": "0cf34608bd32c25968c9b0d82740625f467bf5ec72245b21b43548635ab90f1d"
+      },
+      "blocked_methods": []
+    },
+    {
+      "name": "猫咪落日微笑",
+      "key": "tenor_face_bd06256d1ce62e8e509ea821",
+      "source_url": "https://tenor.com/view/cat-smiling-cat-cute-cat-cat-meme-smiling-gif-10086598795453609558",
+      "source_id": "10086598795453609558",
+      "source_shares": 743857,
+      "image_slots": 1,
+      "text_slots": 0,
+      "frames": 20,
+      "duration_ms": 830,
+      "recipe_sha256": "dff9489de42a8a41f00059d3dc4c94e5e8ea71a6a70c2278f9ae438705647694",
+      "variant_sha256": {
+        "direct": "3b4ba70bba1f9cd44c8c22246df9478d59e4259cec98ef606f624cbbe4641ac5",
+        "geometry": "7faabe770c61d5737f52366dcd3685c4151c9b09001bee24ac118348bee9bdba",
+        "gan": "dff9489de42a8a41f00059d3dc4c94e5e8ea71a6a70c2278f9ae438705647694"
+      },
+      "blocked_methods": []
+    },
+    {
+      "name": "灰猫低头生闷气",
+      "key": "tenor_face_031079e127788392e8efd1c0",
+      "source_url": "https://tenor.com/view/cat-kitty-kitten-angry-mad-gif-16754054616247640902",
+      "source_id": "16754054616247640902",
+      "source_shares": 16676240,
+      "image_slots": 1,
+      "text_slots": 0,
+      "frames": 24,
+      "duration_ms": 2730,
+      "recipe_sha256": "ec0fd607bf8db449e8a1e12d246de3cc03607b22945fc4c9f1fa7ed4b14549a1",
+      "variant_sha256": {
+        "direct": "462ae647310aa6effbb25d73c6a09afe14ced5b31ebe928b2d8fcdda54e7e45f",
+        "geometry": "34d11d37a70a5e358300d8cc13e1b3f01d308fef97cf43b887306fafebcf240f",
+        "gan": "ec0fd607bf8db449e8a1e12d246de3cc03607b22945fc4c9f1fa7ed4b14549a1"
+      },
+      "blocked_methods": [
+        "gan"
+      ]
+    },
+    {
+      "name": "黑猫无语凝视",
+      "key": "tenor_face_2dfeb94b2e5b78a6950b7e96",
+      "source_url": "https://tenor.com/view/gato-gif-15598151632930697671",
+      "source_id": "15598151632930697671",
+      "source_shares": 479643,
+      "image_slots": 1,
+      "text_slots": 0,
+      "frames": 24,
+      "duration_ms": 3200,
+      "recipe_sha256": "8d9d43e9fc7bb396fd5a30d359b20ad6aea6b973a1a368448baeaea1a46a0775",
+      "variant_sha256": {
+        "direct": "d864272432fe387464578856ea1a8fc3490abcee7fa64b8363fd5f30e2919287",
+        "geometry": "b2df5a84f81c24e679034263801436dd99b95493af45fa2e1f94b37faaaf1841",
+        "gan": "8d9d43e9fc7bb396fd5a30d359b20ad6aea6b973a1a368448baeaea1a46a0775"
+      },
+      "blocked_methods": [
+        "gan"
+      ]
+    },
+    {
+      "name": "猫咪瞪大眼睛",
+      "key": "tenor_face_3260fdec0faff2d1b19b58d8",
+      "source_url": "https://tenor.com/view/happy-cat-gif-10804346947536782797",
+      "source_id": "10804346947536782797",
+      "source_shares": 9887854,
+      "image_slots": 1,
+      "text_slots": 0,
+      "frames": 24,
+      "duration_ms": 5230,
+      "recipe_sha256": "70c6cabd5e9b5790948c36968ba0a5c7cee1d3d2777f487e06fc6737ff52321c",
+      "variant_sha256": {
+        "direct": "394f3d6cf0d6767e68aad86f3f5b2e5f7ccb0a3c99b3d7073cae87958c7b1a29",
+        "geometry": "b58b8b4c7b7056fb87ddb32abf359954bcd5980d963d6fd79d60d5fb547e3e3f",
+        "gan": "70c6cabd5e9b5790948c36968ba0a5c7cee1d3d2777f487e06fc6737ff52321c"
+      },
+      "blocked_methods": [
+        "gan"
+      ]
+    },
+    {
+      "name": "奶牛猫张嘴惊叫",
+      "key": "tenor_face_7ab53a98c0d7c3a87347d330",
+      "source_url": "https://tenor.com/view/cat-meme-scream-shout-sad-gif-15786007",
+      "source_id": "3318508277797991758",
+      "source_shares": 1694938,
+      "image_slots": 1,
+      "text_slots": 0,
+      "frames": 3,
+      "duration_ms": 150,
+      "recipe_sha256": "3fd19d99a4a693d47a6147818f3cef0a922c9ba8e4f5d90d321d30ea042133a3",
+      "variant_sha256": {
+        "direct": "ccef651c4101af749afccbd2832ddf1e24d0d43327a73ffd972c5c27db6d4b05",
+        "geometry": "85184baaed24855a85d9ef72f3255170a3c4ad604f98900c204301cccccdb9f3",
+        "gan": "3fd19d99a4a693d47a6147818f3cef0a922c9ba8e4f5d90d321d30ea042133a3"
+      },
+      "blocked_methods": []
+    },
+    {
+      "name": "白猫张嘴尖叫",
+      "key": "tenor_face_a78c2b39fb5ca63825bb7675",
+      "source_url": "https://tenor.com/view/screaming-cat-gif-8242843334147600979",
+      "source_id": "8242843334147600979",
+      "source_shares": 418128,
+      "image_slots": 1,
+      "text_slots": 0,
+      "frames": 6,
+      "duration_ms": 300,
+      "recipe_sha256": "7d59ca1a98a1a380cd497dbd52eef3ce5405252bb9fa1f880480171b5033d735",
+      "variant_sha256": {
+        "direct": "dcf6bd438893612e9adfcd07fb26fec50f8967d33c60457772e00041da8bac0d",
+        "geometry": "799e2af7425596a3e948cf48b11dcbe74716e8fb0b502c5c70a98e7c28e0777e",
+        "gan": "7d59ca1a98a1a380cd497dbd52eef3ce5405252bb9fa1f880480171b5033d735"
+      },
+      "blocked_methods": []
+    }
+  ]
+}
