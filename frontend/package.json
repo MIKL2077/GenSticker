@@ -4,6 +4,7 @@
   "scripts": {
     "check:mp-weixin-package": "node scripts/weixin-package.cjs",
     "test:mp-weixin": "node scripts/verify-weixin.cjs",
+    "test:mp-weixin-collage": "node scripts/verify-result-collage.cjs",
     "open:mp-weixin": "node scripts/preview-weixin.cjs --open-only",
     "preview:mp-weixin": "node scripts/preview-weixin.cjs",
     "dev:custom": "uni -p",
@@ -57,6 +58,7 @@
     "@dcloudio/uni-mp-xhs": "3.0.0-4070620250821001",
     "@dcloudio/uni-quickapp-webview": "3.0.0-4070620250821001",
     "gifenc": "1.0.3",
+    "omggif": "1.0.10",
     "vue": "^3.4.21",
     "vue-i18n": "^9.1.9"
   },

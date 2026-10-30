@@ -27,7 +27,7 @@
    <view v-if="historyPages>1" class="history-paging"><button :disabled="historyPage===1" @click="changeHistoryPage(-1)">上一页</button><text>{{historyPage}} / {{historyPages}}</text><button :disabled="historyPage===historyPages" @click="changeHistoryPage(1)">下一页</button></view>
   </template>
   <subject-picker class="subject-picker-host" editable :show="subjectPicker" :src="photoOriginal" :initial-rect="subjectRect" @cancel="subjectPicker=false" @confirm="confirmSubject"/>
-  <selected-results-modal :show="shareSlot!==null" :items="shareItems" :current-index="shareIndex" :busy="saving||preparingCollage||restoringEdit" :error="shareError" :allow-edit="job?.reroll_available!==false" @change="changeShare" @edit="editShared" @close="closeShare" @share="shareCurrent" @save="saveShared" @collage="shareCollage"/>
+  <selected-results-modal class="selected-results-host" :show="shareSlot!==null" :items="shareItems" :current-index="shareIndex" :busy="saving||preparingCollage||restoringEdit" :error="shareError" :allow-edit="job?.reroll_available!==false" :collage="showCollage?collage:null" :progress="collageProgress" @originals="showCollage=false;shareError=''" @change="changeShare" @edit="editShared" @close="closeShare" @share="shareCurrent" @save="saveShared" @collage="shareCollage"/>
   <view class="privacy-note"><text>放心制作，照片只用于本次处理。</text><text>原图24小时后清理，原图缩略图和结果保留7天。</text><text>每次换一批，都会保留上一组结果。</text></view>
   <bottom-tabs active="ai"/>
   <generation-notice/><first-use-guide />
@@ -60,8 +60,9 @@ export default {
     const sceneActive=ref(true),historyPage=ref(1),historyPreviews=ref({}),shareSlot=ref(null)
     const shareSlots=ref([]),shareError=ref(''),preparingCollage=ref(false),restoringEdit=ref(false)
     const shareIndex=computed(()=>Math.max(0,shareSlots.value.indexOf(shareSlot.value)))
-    const shareItems=computed(()=>shareSlots.value.map(slot=>({slot,path:fullImages.value[slot]||'',preview:previews.value[slot]||''})))
-    let collagePath='',shareEpoch=0
+    const shareItems=computed(()=>shareSlots.value.map(slot=>({slot,path:fullImages.value[slot]||'',preview:previews.value[slot]||'',animated:!!job.value?.results?.find(result=>result.slot===slot)?.animated})))
+    const collage=ref(null),showCollage=ref(false),collageProgress=ref('')
+    let shareEpoch=0,collageSavePath=''
     const originalTasks=new Map()
     const historyPages=computed(()=>Math.max(1,Math.ceil(history.value.length/5)))
     const visibleHistory=computed(()=>history.value.slice((historyPage.value-1)*5,historyPage.value*5))
@@ -208,7 +209,7 @@ export default {
       finally{saving.value=false}
     }
     const login=async()=>{if(loggingIn.value)return;error.value='';try{await account.loginWeChat();await refresh()}catch(e){error.value=e.message||'登录失败，请重试'}}
-    const closeShare=()=>{shareEpoch++;shareSlot.value=null;shareSlots.value=[];shareError.value='';if(collagePath)disposeEditedImage(collagePath);collagePath=''}
+    const closeShare=()=>{shareEpoch++;shareSlot.value=null;shareSlots.value=[];shareError.value='';if(collage.value?.path&&collage.value.path!==collageSavePath)disposeEditedImage(collage.value.path);collage.value=null;showCollage.value=false;collageProgress.value='';preparingCollage.value=false}
     const ensureOriginal=async slot=>{
       if(fullImages.value[slot])return fullImages.value[slot]
       const id=activeId.value,owner=session.value?.profile?.id,epoch=generation,key=id+':'+slot
@@ -219,7 +220,7 @@ export default {
       }).finally(()=>{if(originalTasks.get(key)===task)originalTasks.delete(key)})
       originalTasks.set(key,task);return task
     }
-    const shareCurrent=()=>{const path=fullImages.value[shareSlot.value];if(path)shareOriginalImage(path,title=>{shareError.value=title;uni.showToast({title,icon:'none'})})}
+    const shareCurrent=()=>{const epoch=shareEpoch,path=showCollage.value?collage.value?.path:fullImages.value[shareSlot.value];if(path)shareOriginalImage(path,title=>{if(epoch===shareEpoch){shareError.value=title;uni.showToast({title,icon:'none'})}})}
     const changeShare=async index=>{if(saving.value||preparingCollage.value||restoringEdit.value)return;const slot=shareSlots.value[index];if(slot===undefined)return;shareSlot.value=slot;shareError.value='';const epoch=shareEpoch;try{await ensureOriginal(slot)}catch(e){if(epoch===shareEpoch)shareError.value=e.message||'原图暂时无法读取，请重试'}}
     const shareSelected=async()=>{
       if(saving.value||preparingCollage.value||restoringEdit.value||!selected.value.length)return
@@ -232,15 +233,25 @@ export default {
         while(next<slots.length&&epoch===shareEpoch){const slot=slots[next++];try{await ensureOriginal(slot)}catch(e){if(epoch===shareEpoch)shareError.value=e.message||'部分原图暂时无法读取，点缩略图可重试'}}
       }))
     }
-    const saveShared=async()=>{await save();if(error.value)shareError.value=error.value}
+    const saveShared=async()=>{
+      if(!showCollage.value){await save();if(error.value)shareError.value=error.value;return}
+      if(saving.value||preparingCollage.value||!collage.value?.path)return
+      const epoch=shareEpoch,result=collage.value;saving.value=true;shareError.value='';collageSavePath=result.path
+      try{
+        await uni.saveImageToPhotosAlbum({filePath:result.path})
+        if(epoch===shareEpoch)uni.showToast({title:result.animated?'GIF 已保存':'拼图已保存',icon:'success'})
+      }catch(e){if(epoch===shareEpoch){const raw=String(e.errMsg||e.message||'');shareError.value=/auth|deny|denied|权限/.test(raw)?'相册权限还没开启，请在小程序设置中允许保存后重试':'拼图保存失败，请重试'}}
+      finally{collageSavePath='';if(collage.value?.path!==result.path)disposeEditedImage(result.path);saving.value=false}
+    }
     const shareCollage=async()=>{
       if(preparingCollage.value||saving.value||!shareSlots.value.length)return
       const epoch=shareEpoch,slots=[...shareSlots.value];preparingCollage.value=true;shareError.value=''
       try{
-        if(!collagePath){const paths=[];for(const slot of slots){paths.push(await ensureOriginal(slot));if(epoch!==shareEpoch)return}
-          const path=await createResultCollage(paths);if(epoch!==shareEpoch){disposeEditedImage(path);return}collagePath=path}
-        shareOriginalImage(collagePath,title=>{if(epoch===shareEpoch)shareError.value=title})
-      }catch(e){if(epoch===shareEpoch)shareError.value=e.message||'拼图未完成，请重试'}finally{preparingCollage.value=false}
+        if(!collage.value){const paths=[];for(const [index,slot] of slots.entries()){collageProgress.value=`正在读取原图 · ${index+1} / ${slots.length}`;paths.push(await ensureOriginal(slot));if(epoch!==shareEpoch)return}
+          const result=await createResultCollage(paths,{cancelled:()=>epoch!==shareEpoch,onProgress:title=>{if(epoch===shareEpoch)collageProgress.value=title}})
+          if(epoch!==shareEpoch){disposeEditedImage(result.path);return}collage.value=result}
+        showCollage.value=true
+      }catch(e){if(epoch===shareEpoch)shareError.value=e.message||'拼图未完成，请重试'}finally{if(epoch===shareEpoch){preparingCollage.value=false;collageProgress.value=''}}
     }
     const editShared=async()=>{
       if(restoringEdit.value||saving.value||preparingCollage.value||shareSlot.value===null)return
@@ -255,7 +266,7 @@ export default {
     const deleteHistory=item=>{if(uploading.value || saving.value)return;uni.showModal({title:'删除生成记录',content:'删除这组结果后无法恢复。若原照片还被其他批次使用，会继续保留至24小时到期。',success:async r=>{if(!r.confirm)return;try{await removeJob(item.job_id);if(activeId.value===item.job_id){stop();activeId.value='';job.value=null;previews.value={};uni.removeStorageSync(activeKey())}await refresh()}catch(e){error.value=e.message||'删除失败'}}})}
     const preference=async e=>{try{await setPersonalization(e.detail.value);quota.value.personalization=e.detail.value}catch(e){error.value=e.message||'设置失败'}}
     watch(()=>session.value?.profile?.id,(id,old)=>{if(id===old)return;closeShare();originalTasks.clear();stop();generation++;disconnectObserver();activeId.value='';job.value=null;previews.value={};fullImages.value={};selected.value=[];photo.value='';photoOriginal.value='';subjectRect.value=null;subjectSelected.value=false;subjectPicker.value=false;history.value=[];historyPage.value=1;historyPreviews.value={};historyInflight.clear();shareSlot.value=null;savedSlots.value=[];saveProgress.value='';quotaReady.value=false;quotaLoading.value=false;quotaError.value='';historyError.value='';inflight.clear();exposed.clear();requestKey='';rerollKey='';uploadedAsset=null;if(id && visible)refresh()})
-    return {shareItems,shareIndex,shareError,preparingCollage,restoringEdit,changeShare,closeShare,saveShared,shareCollage,editShared,subjectPicker,photoOriginal,subjectRect,confirmSubject,historyPage,historyPages,visibleHistory,historyPreviews,changeHistoryPage,shareSlot,shareImage,shareCurrent,shareSelected,sceneActive,rerollSupported,unlimited,quotaAvailable,reroll,session,loggingIn,quotaLoading,quotaReady,quotaError,historyError,resultSlots,generateHint,savedSlots,saveProgress,preview,refresh,goHome:()=>uni.switchTab({url:'/pages/index/index'}),quota,photo,job,previews,selected,error,uploading,saving,history,activeId,finished,busy,choose,generate,toggle,selectAll,save,login,open,deleteHistory,preference,resume:()=>{stop();poll()},back:()=>uni.navigateBack(),formatTime:t=>new Date(t*1000).toLocaleString(),labels:{queued:'等待中',running:'生成中',completed:'已完成',failed:'未完成'}}
+    return {collage,showCollage,collageProgress,shareItems,shareIndex,shareError,preparingCollage,restoringEdit,changeShare,closeShare,saveShared,shareCollage,editShared,subjectPicker,photoOriginal,subjectRect,confirmSubject,historyPage,historyPages,visibleHistory,historyPreviews,changeHistoryPage,shareSlot,shareImage,shareCurrent,shareSelected,sceneActive,rerollSupported,unlimited,quotaAvailable,reroll,session,loggingIn,quotaLoading,quotaReady,quotaError,historyError,resultSlots,generateHint,savedSlots,saveProgress,preview,refresh,goHome:()=>uni.switchTab({url:'/pages/index/index'}),quota,photo,job,previews,selected,error,uploading,saving,history,activeId,finished,busy,choose,generate,toggle,selectAll,save,login,open,deleteHistory,preference,resume:()=>{stop();poll()},back:()=>uni.navigateBack(),formatTime:t=>new Date(t*1000).toLocaleString(),labels:{queued:'等待中',running:'生成中',completed:'已完成',failed:'未完成'}}
   }
 }
 </script>

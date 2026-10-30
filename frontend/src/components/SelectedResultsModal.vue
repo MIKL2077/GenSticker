@@ -1,24 +1,26 @@
 <template>
  <view v-if="show" class="selected-results-modal"><view class="selected-results-sheet">
-  <view class="selected-results-heading"><view><text class="ui-kicker">MADE BY YOU</text><text class="selected-results-title">{{items.length>1?'选中的 '+items.length+' 张表情':'你的表情，出炉啦'}}</text></view><button class="ui-close" aria-label="关闭预览" @click="$emit('close')">×</button></view>
-  <scroll-view v-if="items.length>1" scroll-x class="selected-results-strip"><view class="selected-results-thumbnails"><button v-for="(item,index) in items" :key="item.slot" class="selected-results-thumbnail" :disabled="busy" :class="{current:index===currentIndex}" :aria-label="'查看第'+(index+1)+'张'" @click="$emit('change',index)"><image :src="item.preview||item.path" mode="aspectFit"/><text>{{index+1}}</text></button></view></scroll-view>
+  <view class="selected-results-heading"><view><text class="ui-kicker">MADE BY YOU</text><text class="selected-results-title">{{collage?(collage.animated?'动态拼图做好啦':'拼图做好啦'):items.length>1?'选中的 '+items.length+' 张表情':'你的表情，出炉啦'}}</text></view><button class="ui-close" aria-label="关闭预览" @click="$emit('close')">×</button></view>
+  <scroll-view v-if="items.length>1&&!collage" scroll-x class="selected-results-strip"><view class="selected-results-thumbnails"><button v-for="(item,index) in items" :key="item.slot" class="selected-results-thumbnail" :disabled="busy" :class="{current:index===currentIndex}" :aria-label="'查看第'+(index+1)+'张'" @click="$emit('change',index)"><image :src="item.preview||item.path" mode="aspectFit"/><text>{{index+1}}</text></button></view></scroll-view>
   <image v-if="current?.path||current?.preview" :src="current.path||current.preview" class="selected-result-image" mode="aspectFit" @click="preview"/>
-  <view class="selected-results-navigation"><button v-if="items.length>1" :disabled="busy||currentIndex===0" @click="$emit('change',currentIndex-1)">‹ 上一张</button><text>{{current?.path?'点击图片放大':'正在读取原图…'}}{{items.length>1?' · '+(currentIndex+1)+' / '+items.length:''}}</text><button v-if="items.length>1" :disabled="busy||currentIndex===items.length-1" @click="$emit('change',currentIndex+1)">下一张 ›</button></view>
+  <view class="selected-results-navigation"><button v-if="items.length>1&&!collage" :disabled="busy||currentIndex===0" @click="$emit('change',currentIndex-1)">‹ 上一张</button><text>{{collage?(collage.animated?'GIF 循环播放 · '+items.length+' 张同框':'静态拼图 · '+items.length+' 张同框'):current?.path?'点击图片放大':'正在读取原图…'}}{{items.length>1&&!collage?' · '+(currentIndex+1)+' / '+items.length:''}}</text><button v-if="items.length>1&&!collage" :disabled="busy||currentIndex===items.length-1" @click="$emit('change',currentIndex+1)">下一张 ›</button></view>
+  <text v-if="progress" class="selected-results-hint" role="status">{{progress}}</text>
   <text v-if="error" class="selected-results-error">{{error}}</text>
-  <view class="selected-results-actions"><button class="ui-secondary" :disabled="busy||!current?.path" @click="$emit('share')"><ui-icon name="share" tone="accent" :size="28"/>{{items.length>1?'发当前原图':'发原图给好友'}}</button><button class="ui-primary" :disabled="busy" @click="$emit('save')"><ui-icon name="download" tone="white" :size="28"/>{{busy?'正在处理…':items.length>1?'保存这 '+items.length+' 张':'保存相册'}}</button></view>
-  <button v-if="items.length>1" class="selected-results-collage ui-secondary" :disabled="busy" @click="$emit('collage')">{{busy?'正在处理…':'拼成一张分享 · '+items.length+' 张'}}</button>
-  <text v-if="items.length>1" class="selected-results-hint">微信每次只能分享 1 张原图，默认首张勾选；切换后发送当前这张。拼图为静态图，动图也可整组保存后在微信选图发送。</text>
-  <button v-if="allowEdit" class="selected-results-edit ui-secondary" :disabled="busy" @click="$emit('edit')">{{items.length>1?'重新编辑当前表情':'重新编辑'}}</button>
+  <view class="selected-results-actions"><button class="ui-secondary" :disabled="busy||!current?.path" @click="$emit('share')"><ui-icon name="share" tone="accent" :size="28"/>{{collage?'分享拼图':items.length>1?'发当前原图':'发原图给好友'}}</button><button class="ui-primary" :disabled="busy" @click="$emit('save')"><ui-icon name="download" tone="white" :size="28"/>{{busy?'正在处理…':collage?(collage.animated?'保存 GIF':'保存拼图'):items.length>1?'保存这 '+items.length+' 张':'保存相册'}}</button></view>
+  <button v-if="items.length>1&&!collage" class="selected-results-collage ui-secondary" :disabled="busy" @click="$emit('collage')">{{busy?'正在处理…':(hasAnimation?'拼成动态 GIF':'拼成一张分享')+' · '+items.length+' 张'}}</button>
+  <button v-if="collage" class="selected-results-collage ui-secondary" :disabled="busy" @click="$emit('originals')">返回所选表情</button>
+  <text v-if="items.length>1" class="selected-results-hint">{{collage?(collage.animated?'动图各自循环，静态图保持不动。分享受微信支持情况限制；若发送失败，可保存 GIF 后在微信中选择发送。':'已将所选表情拼成一张图，可直接分享或保存。'):'选中动图时，拼图会保留动画并生成 GIF；全选静态图则生成静态拼图。微信每次只能分享 1 张原图，也可切换后逐张发送。'}}</text>
+  <button v-if="allowEdit&&!collage" class="selected-results-edit ui-secondary" :disabled="busy" @click="$emit('edit')">{{items.length>1?'重新编辑当前表情':'重新编辑'}}</button>
  </view></view>
 </template>
 <script>
 import UiIcon from '@/components/UiIcon.vue'
 export default {
  components:{UiIcon},
- props:{show:Boolean,items:{type:Array,default:()=>[]},currentIndex:{type:Number,default:0},busy:Boolean,error:String,allowEdit:Boolean},
- emits:['close','change','share','save','collage','edit'],
- computed:{current(){return this.items[this.currentIndex]}},
- methods:{preview(){const paths=this.items.map(item=>item.path||item.preview).filter(Boolean);if(this.current?.path||this.current?.preview)uni.previewImage({urls:paths,current:this.current.path||this.current.preview})}},
+ props:{show:Boolean,items:{type:Array,default:()=>[]},currentIndex:{type:Number,default:0},busy:Boolean,error:String,allowEdit:Boolean,collage:{type:Object,default:null},progress:String},
+ emits:['close','change','share','save','collage','edit','originals'],
+ computed:{current(){return this.collage||this.items[this.currentIndex]},hasAnimation(){return this.items.some(item=>item.animated)}},
+ methods:{preview(){const paths=this.collage?[this.collage.path]:this.items.map(item=>item.path||item.preview).filter(Boolean);if(this.current?.path||this.current?.preview)uni.previewImage({urls:paths,current:this.current.path||this.current.preview})}},
 }
 </script>
 <style scoped>
