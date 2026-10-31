@@ -16,6 +16,7 @@ def restore(*, include_batches=True):
 
     manifest = json.loads(Path(__file__).with_name("template_seed.json").read_text())
     withdrawals = []
+    asset_batches = {}
     if include_batches:
         for path in sorted(Path(__file__).with_name('template_batches').glob('*.json')):
             batch = json.loads(path.read_text())
@@ -42,10 +43,17 @@ def restore(*, include_batches=True):
                 if story:
                     from .reaction_templates import validate_story
                     validate_story(item['spec'],m)
-            manifest['templates'].extend(batch['templates']); manifest['assets'].update(batch['assets'])
+            manifest['templates'].extend(batch['templates'])
+            # Keep source locations, not every batch's base64 image bytes.
+            # Large reviewed libraries otherwise inflate both API and worker
+            # startup by hundreds of MB even when every row already exists.
+            asset_batches.update((digest,path) for digest in batch['assets'])
+            del batch
     retired = set(json.loads(Path(__file__).with_name("template_policy.json").read_text())["retired_keys"])
     db = connect()
     restored = 0
+    cached_batch = None
+    cached_assets = {}
     try:
         with db:
             for item in withdrawals:
@@ -84,8 +92,18 @@ def restore(*, include_batches=True):
                 continue
             spec = TemplateSpec.model_validate(item["spec"]).model_dump()
             for digest in asset_refs(spec):
-                if digest in manifest['assets']:
-                    raw = base64.b64decode(manifest["assets"][digest], validate=True)
+                if digest in manifest['assets'] or digest in asset_batches:
+                    # Batch assets override seed assets, matching the original
+                    # manifest merge order; at most one image batch stays live.
+                    if digest in asset_batches:
+                        if cached_batch != asset_batches[digest]:
+                            cached_assets.clear()
+                            cached_batch = asset_batches[digest]
+                            cached_assets = json.loads(cached_batch.read_text())['assets']
+                        encoded = cached_assets[digest]
+                    else:
+                        encoded = manifest['assets'][digest]
+                    raw = base64.b64decode(encoded, validate=True)
                     if hashlib.sha256(raw).hexdigest() != digest:
                         raise ValueError("seed asset checksum mismatch")
                     directory = root() / "template_assets"

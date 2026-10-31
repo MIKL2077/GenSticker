@@ -51,7 +51,7 @@ import {createResultCollage} from '@/services/resultCollage'
 import {disposeEditedImage} from '@/services/imageEditing'
 import {loadRecommendationEdit,openEditDraft,disposeEditDraft} from '@/services/editSession'
 import {shareOriginalImage} from '@/services/wechatSharing'
-import { getQuota,listJobs,getJob,createJob,uploadPhoto,downloadResult,selectResults,removeJob,setPersonalization } from '@/services/recommendService'
+import { getQuota,listJobs,getJob,createJob,uploadPhoto,downloadResult,selectResults,removeJob,setPersonalization,createRecommendationCollage } from '@/services/recommendService'
 export default {
   components: { GenerationNotice, FirstUseGuide, BottomTabs, MoodToy, UiIcon, SelectedResultsModal, SubjectPicker },
   setup() {
@@ -248,7 +248,8 @@ export default {
       const epoch=shareEpoch,slots=[...shareSlots.value];preparingCollage.value=true;shareError.value=''
       try{
         if(!collage.value){const paths=[];for(const [index,slot] of slots.entries()){collageProgress.value=`正在读取原图 · ${index+1} / ${slots.length}`;paths.push(await ensureOriginal(slot));if(epoch!==shareEpoch)return}
-          const result=await createResultCollage(paths,{cancelled:()=>epoch!==shareEpoch,onProgress:title=>{if(epoch===shareEpoch)collageProgress.value=title}})
+          const result=await createResultCollage(paths,{cancelled:()=>epoch!==shareEpoch,onProgress:title=>{if(epoch===shareEpoch)collageProgress.value=title},
+            remote:slots.some(slot=>job.value?.results?.find(r=>r.slot===slot)?.animated)?()=>createRecommendationCollage(activeId.value,slots,()=>epoch!==shareEpoch):undefined})
           if(epoch!==shareEpoch){disposeEditedImage(result.path);return}collage.value=result}
         showCollage.value=true
       }catch(e){if(epoch===shareEpoch)shareError.value=e.message||'拼图未完成，请重试'}finally{if(epoch===shareEpoch){preparingCollage.value=false;collageProgress.value=''}}

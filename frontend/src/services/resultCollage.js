@@ -1,6 +1,6 @@
-import { GIFEncoder, quantize, applyPalette } from 'gifenc'
+import { GIFEncoder } from 'gifenc'
 import {registerTemporary,releaseTemporary,writeOwnedFile,withStorageRecovery} from '@/services/ownedFiles'
-import {isGif,openCollageGif,collageTimeline} from '@/services/collageGif'
+import {isGif,openCollageGif,collageTimeline,collagePalette} from '@/services/collageGif'
 
 const MAX_INPUT_BYTES=8*1024*1024, MAX_TOTAL_BYTES=24*1024*1024
 export const MAX_COLLAGE_BYTES=2*1024*1024
@@ -70,7 +70,7 @@ async function exportStill(canvas) {
   const result=await withStorageRecovery(()=>new Promise((resolve,reject)=>wx.canvasToTempFilePath({canvas,fileType:'jpg',quality:.9,success:resolve,fail:reject})))
   return registerTemporary(result.tempFilePath)
 }
-async function exportGif(bytes) {
+export async function exportGif(bytes) {
   if (typeof document!=='undefined') return registerTemporary(URL.createObjectURL(new Blob([bytes],{type:'image/gif'})))
   const path=`${uni.env.USER_DATA_PATH}/gensticker_edit_collage_${Date.now()}_${Math.random().toString(36).slice(2,8)}.gif`
   // Register first so cancellation/quota errors also clean partial files.
@@ -79,12 +79,23 @@ async function exportGif(bytes) {
   catch (error) {releaseTemporary(path);throw error}
 }
 
-export async function createResultCollage(paths,{onProgress=()=>{},cancelled=()=>false}={}) {
+export async function createResultCollage(paths,{onProgress=()=>{},cancelled=()=>false,remote}={}) {
   if (!paths.length || paths.length>9) throw Error('请选择 1 至 9 张表情')
-  const expires=Date.now()+60000
   const check=()=>{
     if (cancelled()) throw Error('拼图制作已取消')
-    if (Date.now()>expires) throw Error('这组动图制作耗时较长，请减少所选图片后重试')
+  }
+  check()
+  if(remote){
+    onProgress('正在合成动态拼图…')
+    try{
+      const result=await remote()
+      if(cancelled()){releaseTemporary(result.path);check()}
+      onProgress('动态拼图已完成');return result
+    }catch(error){
+      check()
+      if([401,403,409,410].includes(error.statusCode))throw error
+      onProgress('正在本机制作动态拼图…')
+    }
   }
   const output=makeCanvas(),sources=[]
   let totalBytes=0,totalPixels=0,resultPath=''
@@ -107,7 +118,7 @@ export async function createResultCollage(paths,{onProgress=()=>{},cancelled=()=
       await pause()
     }
     const gifs=sources.filter(source=>source.gif).map(source=>source.gif)
-    const animated=gifs.some(gif=>gif.animated),timeline=collageTimeline(gifs),duration=animated?timeline[timeline.length-1]:0
+    const animated=gifs.some(gif=>gif.animated),timeline=collageTimeline(gifs,150),duration=animated?timeline[timeline.length-1]:0
     if (gifs.reduce((sum,gif)=>sum+Math.ceil((duration||gif.duration)/gif.duration)*gif.framePixels,0)>150000000)
       throw Error('这组动图画面较多，请减少所选图片后重试')
     if (!animated) {
@@ -116,26 +127,21 @@ export async function createResultCollage(paths,{onProgress=()=>{},cancelled=()=
       resultPath=await exportStill(output);check();onProgress('拼图已完成')
       return {path:resultPath,animated:false,width:layout.width,height:layout.height,duration:0}
     }
-    // Retry size/color only. Every attempt retains the same full timeline.
-    const attempts=[[240,128],[192,96],[144,64],[112,48],[96,32]]
+    // Retry size/color and, last, frame sampling; retain the full loop duration.
+    const dense=timeline.length*collageLayout(paths.length,true).width*collageLayout(paths.length,true).height>16000000
+    const attempts=dense?[[paths.length>4?112:160,256],[112,128],[96,64],[64,32],[48,16]]:[[240,256],[192,128],[144,64],[112,32],[48,16]]
     for (const [attempt,[edge,colors]] of attempts.entries()) {
-      check();const layout=collageLayout(paths.length,true,edge),encoder=GIFEncoder()
+      check();const layout=collageLayout(paths.length,true,edge),encoder=GIFEncoder(),mapper=collagePalette(colors)
+      const steps=attempt===attempts.length-1?collageTimeline(gifs,60):timeline
       output.width=layout.width;output.height=layout.height
       let oversized=false,previous=null
-      for (let frame=0;frame<timeline.length-1;frame++) {
-        check();drawSources(output,sources,layout,timeline[frame])
+      for (let frame=0;frame<steps.length-1;frame++) {
+        check();drawSources(output,sources,layout,steps[frame])
         const rgba=output.getContext('2d').getImageData(0,0,layout.width,layout.height).data
-        const palette=quantize(rgba,previous?colors-1:colors),indices=applyPalette(rgba,palette)
-        const pixels=new Uint32Array(rgba.buffer,rgba.byteOffset,indices.length)
-        if (previous) {
-          // Preserve unchanged pixels from the prior displayed frame. This
-          // avoids re-encoding static tiles/backgrounds and prevents flicker.
-          palette.unshift([0,0,0])
-          for (let pixel=0;pixel<indices.length;pixel++) indices[pixel]=pixels[pixel]===previous[pixel]?0:indices[pixel]+1
-        }
-        encoder.writeFrame(indices,layout.width,layout.height,{palette,delay:timeline[frame+1]-timeline[frame],repeat:0,dispose:1,transparent:!!previous,transparentIndex:0})
+        const {indices,pixels}=mapper.map(rgba,previous)
+        encoder.writeFrame(indices,layout.width,layout.height,{palette:previous?null:mapper.palette,delay:steps[frame+1]-steps[frame],repeat:0,dispose:1,transparent:!!previous,transparentIndex:0})
         previous=pixels
-        onProgress(`${attempt?'正在压缩动态拼图':'正在制作动态拼图'} · ${Math.round(100*(frame+1)/(timeline.length-1))}%`)
+        onProgress(`${attempt?'正在压缩动态拼图':'正在制作动态拼图'} · ${Math.round(100*(frame+1)/(steps.length-1))}%`)
         if (encoder.bytesView().length>MAX_COLLAGE_BYTES) {oversized=true;break}
         await pause()
       }

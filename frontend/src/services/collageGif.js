@@ -69,7 +69,7 @@ export function openCollageGif(bytes) {
 
 // Every GIF keeps its own timing. Shorter GIFs repeat until the longest has
 // completed a cycle. Bound dense timelines without shortening their duration.
-export function collageTimeline(sources) {
+export function collageTimeline(sources,maxFrames=MAX_COLLAGE_FRAMES) {
   const animated=sources.filter(source=>source.animated)
   const duration=Math.max(0,...animated.map(source=>source.duration))
   if (!duration) return [0]
@@ -81,7 +81,47 @@ export function collageTimeline(sources) {
     }
   }
   const ordered=[...times].sort((a,b)=>a-b)
-  if (ordered.length<=MAX_COLLAGE_FRAMES+1) return ordered
-  const step=Math.ceil(duration/MAX_COLLAGE_FRAMES/10)*10
-  return [...Array.from({length:Math.ceil(duration/step)},(_,index)=>index*step),duration]
+  // Combining valid timelines can introduce 10 ms gaps, which our decoder
+  // normalizes to 100 ms. Keep output timing consistent with its playback rules.
+  const playable=times=>{
+    const result=[0]
+    for(const time of times.slice(1,-1))if(time-result[result.length-1]>=20&&duration-time>=20)result.push(time)
+    result.push(duration);return result
+  }
+  if (ordered.length<=maxFrames+1) return playable(ordered)
+  const step=Math.ceil(duration/maxFrames/10)*10
+  return playable([...Array.from({length:Math.ceil(duration/step)},(_,index)=>index*step),duration])
+}
+
+// A shared color cube covers later scene changes too. Cache the nearest index
+// per RGB555 bucket across ALL frames, rather than clustering every frame.
+export function collagePalette(colors=256) {
+  const palette=[[0,0,0]],levels=Math.max(2,Math.floor(Math.cbrt(colors-2)))
+  for(let r=0;r<levels;r++)for(let g=0;g<levels;g++)for(let b=0;b<levels;b++)
+    palette.push([r,g,b].map(v=>Math.round(v*255/(levels-1))))
+  const paper=palette.length;palette.push([255,250,244])
+  const grayStart=palette.length,grays=colors-grayStart
+  for(let i=0;i<grays;i++){const v=Math.round(i*255/Math.max(1,grays-1));palette.push([v,v,v])}
+  const cache=new Uint16Array(32768);cache.fill(65535)
+  return {palette,map(rgba,previous){
+    const indices=new Uint8Array(rgba.length/4),pixels=new Uint32Array(rgba.buffer,rgba.byteOffset,indices.length)
+    for(let i=0;i<indices.length;i++){
+      if(previous&&pixels[i]===previous[i])continue
+      const p=i*4,r=rgba[p],g=rgba[p+1],b=rgba[p+2]
+      if(r===255&&g===250&&b===244){indices[i]=paper;continue}
+      const key=(r>>3)<<10|(g>>3)<<5|b>>3
+      let index=cache[key]
+      if(index===65535){
+        const rr=(r&248)+4,gg=(g&248)+4,bb=(b&248)+4
+        index=1+Math.round(rr*(levels-1)/255)*levels*levels+Math.round(gg*(levels-1)/255)*levels+Math.round(bb*(levels-1)/255)
+        if(grays){
+          const gray=grayStart+Math.round(((rr+gg+bb)/3)*(grays-1)/255),c=palette[index],v=palette[gray][0]
+          if((rr-v)**2+(gg-v)**2+(bb-v)**2<(rr-c[0])**2+(gg-c[1])**2+(bb-c[2])**2)index=gray
+        }
+        cache[key]=index
+      }
+      indices[i]=index
+    }
+    return {indices,pixels}
+  }}
 }

@@ -24,7 +24,8 @@ async function verify(){
   fs.mkdirSync(output,{recursive:true})
   let project=options.project||path.resolve(__dirname,'../dist/build/mp-weixin')
   let buildMarker=''
-  const buildFingerprint=crypto.createHash('sha256').update(fs.readFileSync(path.join(project,'services/resultCollage.js'))).digest('hex')
+  const fingerprintedFiles=['services/resultCollage.js','services/collageGif.js','services/recommendService.js']
+  const buildFingerprint=crypto.createHash('sha256').update(Buffer.concat(fingerprintedFiles.map(file=>fs.readFileSync(path.join(project,file))))).digest('hex')
   if(!options.project){
     const copy=fs.mkdtempSync(path.join(os.tmpdir(),'gensticker-collage-project-'))
     fs.cpSync(project,copy,{recursive:true,filter:file=>path.basename(file)!=='project.private.config.json'})
@@ -64,6 +65,11 @@ async function verify(){
     await waitFor(()=>app.evaluate(()=>getCurrentPages().slice(-1)[0]?.route==='pages/recommend/index'&&!!getCurrentPages().slice(-1)[0]?.$vm),'recommend page')
     await app.evaluate(()=>{
       const service=require('services/resultCollage.js'),run=service.createResultCollage
+      const remote=require('services/recommendService.js')
+      getApp().__collageRemoteRun=remote.createRecommendationCollage
+      // Exercise the local fallback with real canvas/filesystem and no network
+      // request containing private fixtures. The HTTP path has separate tests.
+      remote.createRecommendationCollage=async()=>{throw Error('local fallback verification')}
       getApp().__collageSmokeRun=run
       service.createResultCollage=async function(...args){
         try{return await run(...args)}catch(error){getApp().__collageSmokeError={message:error?.message,errMsg:error?.errMsg,description:String(error)};throw error}
@@ -110,6 +116,8 @@ async function verify(){
     assert.ok(reader.numFrames()>1);assert.ok(bytes.length<=2*1024*1024);assert.equal(reader.loopCount(),0)
     const duration=Array.from({length:reader.numFrames()},(_,index)=>reader.frameInfo(index).delay*10).reduce((a,b)=>a+b,0)
     assert.equal(duration,expectedDuration)
+    const minFrameDelayMs=Math.min(...Array.from({length:reader.numFrames()},(_,index)=>reader.frameInfo(index).delay*10))
+    assert.ok(minFrameDelayMs>=20,'combined timelines must not trigger browser/WeChat short-frame clamping')
     fs.writeFileSync(path.join(output,'collage.gif'),bytes)
     await app.screenshot({path:path.join(output,'animated-preview.png')})
     await pause(350);await app.screenshot({path:path.join(output,'animated-preview-later.png')})
@@ -124,13 +132,13 @@ async function verify(){
     assert.equal(await app.evaluate(()=>getCurrentPages().slice(-1)[0].$vm.collage.path),result.collage.path,'return to cached GIF without rendering again')
     await app.evaluate(()=>getCurrentPages().slice(-1)[0].$vm.closeShare())
     await waitFor(()=>app.evaluate(file=>{try{wx.getFileSystemManager().accessSync(file);return false}catch(_){return true}},result.collage.path),'temporary GIF cleanup')
-    const report={status:'passed',buildFingerprint,loadedBuildVerified:!!buildMarker,sdkVersion:await app.evaluate(()=>wx.getSystemInfoSync().SDKVersion),selected:files.length,frames:reader.numFrames(),durationMs:duration,width:reader.width,height:reader.height,bytes:bytes.length,elapsedMs:Date.now()-started,realCanvasAndFilesystem:true,shareAndAlbum:'mocked to avoid sending or saving test content',originalOrder:true,preview:true,cachedReuse:true,cleanup:true,runtimeErrors:errors}
+    const report={status:'passed',buildFingerprint,fingerprintedFiles,minFrameDelayMs,loadedBuildVerified:!!buildMarker,sdkVersion:await app.evaluate(()=>wx.getSystemInfoSync().SDKVersion),selected:files.length,frames:reader.numFrames(),durationMs:duration,width:reader.width,height:reader.height,bytes:bytes.length,elapsedMs:Date.now()-started,realCanvasAndFilesystem:true,shareAndAlbum:'mocked to avoid sending or saving test content',originalOrder:true,preview:true,cachedReuse:true,cleanup:true,runtimeErrors:errors}
     fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2)+'\n')
     console.log('PASS native animated collage:',JSON.stringify(report));console.log('Evidence:',output)
   }finally{
     await app.evaluate(()=>{const vm=getCurrentPages().slice(-1)[0]?.$vm;vm?.closeShare?.()}).catch(()=>{})
     for(const method of mocked)await app.restoreWxMethod(method).catch(()=>{})
-    await app.evaluate(paths=>{for(const file of paths)try{wx.getFileSystemManager().unlinkSync(file)}catch(_){};if(getApp().__collageSmokeRun)require('services/resultCollage.js').createResultCollage=getApp().__collageSmokeRun;delete getApp().__collageSmokeRun;delete getApp().__collageSmokeError;delete getApp().__collageSmokeShare;delete getApp().__collageSmokeSave},created).catch(()=>{})
+    await app.evaluate(paths=>{for(const file of paths)try{wx.getFileSystemManager().unlinkSync(file)}catch(_){};if(getApp().__collageSmokeRun)require('services/resultCollage.js').createResultCollage=getApp().__collageSmokeRun;if(getApp().__collageRemoteRun)require('services/recommendService.js').createRecommendationCollage=getApp().__collageRemoteRun;delete getApp().__collageRemoteRun;delete getApp().__collageSmokeRun;delete getApp().__collageSmokeError;delete getApp().__collageSmokeShare;delete getApp().__collageSmokeSave},created).catch(()=>{})
     await app.disconnect()
     if(!options.project){
       const closed=require('node:child_process').spawnSync(process.env.WECHAT_DEVTOOLS_CLI_PATH||'/Applications/wechatwebdevtools.app/Contents/MacOS/cli',['close','--project',project],{encoding:'utf8',timeout:10000})

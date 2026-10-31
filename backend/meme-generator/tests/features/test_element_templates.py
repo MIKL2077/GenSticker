@@ -144,6 +144,11 @@ class ElementTemplateTests(unittest.TestCase):
         batch={'templates':[{'key':'auto_upgrade','version':2,'metadata':meta,'spec':spec}],'assets':assets,
                'withdrawals':[{'key':key,'original_hash':'a'*64} for key in ['auto_pending','auto_operator']]}
         (folder/'template_batches'/'reviewed.json').write_text(json.dumps(batch))
+        # Assets may be in a later batch. Bounded loading must retain the
+        # original cross-batch lookup and withdrawal/upgrade semantics.
+        assets=batch.pop('assets');batch['assets']={}
+        (folder/'template_batches'/'reviewed.json').write_text(json.dumps(batch))
+        (folder/'template_batches'/'z-assets.json').write_text(json.dumps({'templates':[],'assets':assets}))
         # Exercise importing every nested asset, including the compressed GIF.
         for path in (root()/'template_assets').iterdir():path.unlink()
         with patch.object(seed,'Path',lambda _:folder/'seed.py'):

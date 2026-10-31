@@ -60,6 +60,8 @@ def exhausted():
 
 def new_work(method, path):
     return method == "POST" and (
+        (path.startswith('/recommend/jobs/') and path.endswith('/collage'))
+        or
         path
         in {
             "/studio/jobs",

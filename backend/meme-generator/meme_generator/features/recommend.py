@@ -604,3 +604,7 @@ def delete(identifier: str, user=Depends(current_user)):
     finally:
         db.close()
     return Response(status_code=204)
+
+
+from .result_collage import router as collage_router
+router.include_router(collage_router)

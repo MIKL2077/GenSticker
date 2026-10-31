@@ -1,0 +1,380 @@
+{
+  "date": "2026-10-31",
+  "status": "published-and-verified",
+  "templates": {
+    "before": 967,
+    "added": 27,
+    "after": 994,
+    "target": 1500,
+    "remaining": 506,
+    "approved_total_this_round": 35,
+    "approved_waiting_publication": 0,
+    "rejected": 15,
+    "held": 2,
+    "existing_catalog_rows_unchanged": 1034,
+    "approved_full_gifs_reproduced_byte_identically": 81,
+    "preview_and_info_routes_checked": 54,
+    "choices": [
+      {
+        "key": "tenor_face_08be037d5075197ad7722331",
+        "name": "小狸花猫歪头喵喵叫",
+        "method": "gan",
+        "spec_sha256": "9da17dd937788a1c10e899afacb6ee1383b90334f8f3e669ed686ac2c9878282",
+        "annotation_sha256": "b3ae1d9719b07d66fddf10b678b2c2467598737e48c8c7c930c5f7d685a5f6a1"
+      },
+      {
+        "key": "tenor_face_135c55a3ca1b7a4e20922d24",
+        "name": "橘猫心满意足眯眼笑",
+        "method": "geometry",
+        "spec_sha256": "fc565755baa6ff23c581f0cf093272c2e4bd5f24e7018e1e241b6663ef5bc66d",
+        "annotation_sha256": "8bcb1382897ade0b83690d66047419a7dbc234e087d497bb4b1dbbf631702e65"
+      },
+      {
+        "key": "tenor_face_21cbc78b6c702142c9061453",
+        "name": "炸毛长毛猫不高兴",
+        "method": "gan",
+        "spec_sha256": "52453d637a906183f161295fa79ac74881015859484ab0eb0bedc26b24d41d6a",
+        "annotation_sha256": "5d70aec692ffe5d47b42d695a0e3cedd4e9ac837db090ce6a746e647839f50d0"
+      },
+      {
+        "key": "tenor_face_2214ee7402f0c6d8e724edd1",
+        "name": "狸花猫张嘴咆哮",
+        "method": "hybrid",
+        "spec_sha256": "9db350351eb9712abc5bebab46213a92105e71a5cea8fe68436e2b1e07819fec",
+        "annotation_sha256": "f00709d8628b39fbd7e8573c2672424231d336e897863abf1b72bb79375cae9e"
+      },
+      {
+        "key": "tenor_face_348889355a67b404b5c8c1f5",
+        "name": "白猫在床上打哈欠",
+        "method": "geometry",
+        "spec_sha256": "8ac83e54887b1eabc200e30c11f290099f70fe3c939ec5bf38d4b90e22c67859",
+        "annotation_sha256": "101e855015d76e8e3c9b4ab1a1bce6e3a27f4a05ce969b532ee46634de252ecc"
+      },
+      {
+        "key": "tenor_face_43f9ec2fdd363a654340c01a",
+        "name": "黑猫顶着罐头盒发呆",
+        "method": "geometry",
+        "spec_sha256": "70910d8e2e31b445ef7797d9410a4975942e49c67e29fa6e91a15b56a281cfba",
+        "annotation_sha256": "24d6294e67008cecf241352452a9c4220e2f2b3c846849b28050a6391af7c294"
+      },
+      {
+        "key": "tenor_face_4ab6ab4b9ffea525826fac29",
+        "name": "黑猫突然大叫",
+        "method": "hybrid",
+        "spec_sha256": "cf4d296183fe5ec1cd677f91d302ae8019d1a27c4657007e639654f4845bb5e4",
+        "annotation_sha256": "4583373408fa376f331354fa6400797e9b23a7bf0bdc222e2b2b623652823d13"
+      },
+      {
+        "key": "tenor_face_572af628414054de3fb85499",
+        "name": "白猫站着打哈欠",
+        "method": "hybrid",
+        "spec_sha256": "7400184a73b1fc0ae72f27519b3228887f815e59ea5f3f89a74649bd51140b91",
+        "annotation_sha256": "ac370732297ecd699c0fda60fff8e2f7cf880742f387cb74dbd3a96fb3d316fd"
+      },
+      {
+        "key": "tenor_face_6267e9fb8a6c475ffa377910",
+        "name": "白猫一脸茫然看着你",
+        "method": "geometry",
+        "spec_sha256": "0cb06f8129acd9a1f1903be4d999b833f6fd82ca1bcf28e950aa667f9d759940",
+        "annotation_sha256": "4408ea4ce9ae5245ccfc7a44176d0e5a0ee7668e56cf7bf045b89c35f520a7e2"
+      },
+      {
+        "key": "tenor_face_66a929495e13c50c21de75bf",
+        "name": "奶牛猫侧目不高兴",
+        "method": "gan",
+        "spec_sha256": "828dd74c9e863deb7af393dd99d0faa6b6384e7df7a9525803e056ed7fe6eec9",
+        "annotation_sha256": "ff273149ecc92a40cc63717c10269baabc1fef3abcf07927daa7e860fa1480c5"
+      },
+      {
+        "key": "tenor_face_70a150aa598c852c6ef7001c",
+        "name": "狸花猫一边抖一边瞪眼",
+        "method": "geometry",
+        "spec_sha256": "bd4f82a33dc19100087cf8a514a4195169a06e8a35b77e6114e5b4f3ec2e1a0c",
+        "annotation_sha256": "2ec5846e1d5e1d5f22e1e1a11e36200a481fa757a27324e794e05a1ffcd79641"
+      },
+      {
+        "key": "tenor_face_739776e8f11c0fe690662f36",
+        "name": "白猫突然震惊",
+        "method": "hybrid",
+        "spec_sha256": "87226620f5ad24f15b88acef024b4ec0d87758b5b8ca594839dedc126fb8f787",
+        "annotation_sha256": "29abf591bcb8fb347464bd4890e7b7ff048163c4527e14191d8bddfe2cd989eb"
+      },
+      {
+        "key": "tenor_face_8068202b965d661d27b00b69",
+        "name": "圆脸猫歪头看你",
+        "method": "geometry",
+        "spec_sha256": "a67cfeaf47f4ff1a72d7c275d6fb3f5fee1c22a822a3e24141b02b78e750802f",
+        "annotation_sha256": "cb9c3837e02f11afdb228e13f69cb210bceef5e2a0263d586bed3dfc91578cb2"
+      },
+      {
+        "key": "tenor_face_8aef48a8bff849ce917dc715",
+        "name": "奶牛猫满脸写着不耐烦",
+        "method": "geometry",
+        "spec_sha256": "1033bc5dc88ab8abf49af2ad6fb85e4aa80a57abe9a08dac32d91ccbfc0a8287",
+        "annotation_sha256": "11a8725f35824e5caa01c2a22611798b58804d993e59a7d81fec848861ee90c7"
+      },
+      {
+        "key": "tenor_face_9073e1619db79f9657d78af5",
+        "name": "狸花猫歪头疑问",
+        "method": "geometry",
+        "spec_sha256": "1ad0e7aeb21bdbf22ccbf7e96f9e4aef2278a7065e85a03972b453b2c45370b3",
+        "annotation_sha256": "bfb4006a692b08df92767312bc0312edc6549280acc5179997d75d138fb47c6a"
+      },
+      {
+        "key": "tenor_face_9a3519e782bf56ab8d08a1e8",
+        "name": "猫咪害羞歪头",
+        "method": "gan",
+        "spec_sha256": "a570b5af490505ee07566f9c1027c4fbe1044280fec9373df257a308db32acd4",
+        "annotation_sha256": "73e46347f5914b933867ddf6b74de9f735cfa4f56b783cd1c6dd1ef893921588"
+      },
+      {
+        "key": "tenor_face_a99e7bff0dda4d40d7f480cd",
+        "name": "狸花猫从桌下探头看你",
+        "method": "geometry",
+        "spec_sha256": "f809cd190181f5d27fb31a0410c0239c2babcb5c224c2d35de8b297a27d61e0f",
+        "annotation_sha256": "d2bf1ada050579855757d404bae508ca8b4554104236e98d80d215170d58c5cc"
+      },
+      {
+        "key": "tenor_face_abf185950a3eba76f7b38f8c",
+        "name": "小狸花猫抬头瞪大眼",
+        "method": "gan",
+        "spec_sha256": "86c88ce4264a1f6d724a3e266888b364f234e032069980fb36302d9ecab28fc3",
+        "annotation_sha256": "7b442773299144f423cca3a5cb0de79d27e3934fb36af2578e5a774c716719e9"
+      },
+      {
+        "key": "tenor_face_bb590b46026353fec8551f27",
+        "name": "长毛猫抬头认真听",
+        "method": "geometry",
+        "spec_sha256": "8f09a1cb20961efd6a9d811b9e8cf7f3b46a7db0c636dd84157d497b15c4d634",
+        "annotation_sha256": "d7a7cce23fdaa9d1569b419dae6d7be1b783eee03f7608e655988a8748cdff20"
+      },
+      {
+        "key": "tenor_face_c85bcfdaee9a15e3b96cfeec",
+        "name": "小猫靠着胳膊闭眼休息",
+        "method": "geometry",
+        "spec_sha256": "e37406c93f316b74dae0e939c5264b29aa626334a5efa370fb99d0b420976838",
+        "annotation_sha256": "b5e7d8fcce875907d55cf19d324615046ac98970b82a63fd1d7fcfaf6d9c991d"
+      },
+      {
+        "key": "tenor_face_cdfa221d64201d622471784e",
+        "name": "小奶猫在楼梯上歪头看你",
+        "method": "gan",
+        "spec_sha256": "dad82adbe078d2478bfe270b61e31fedfdbe546a4966b15e2202533081e80423",
+        "annotation_sha256": "bac865e2d77e66d7982d6e8a32185562cd31f45f3726986ab80900336d0a8ec9"
+      },
+      {
+        "key": "tenor_face_d3685f5ca3b8183a1846f6ba",
+        "name": "奶牛猫蹲坐等你回复",
+        "method": "gan",
+        "spec_sha256": "742c5811e05ec0d56116bf6d644f0e88b01aee8c42e9fdf7f8279fc688a04c1d",
+        "annotation_sha256": "7d58377b0545ecc10e2a203854ef0194826213c132ac0cbc46ce4b6605a07f2e"
+      },
+      {
+        "key": "tenor_face_e6144cea28252eac3d572d44",
+        "name": "白猫吓得张嘴愣住",
+        "method": "hybrid",
+        "spec_sha256": "4fbbd95f1392f9391e5a82a9e518987879992434002863071b1d778f90cc101e",
+        "annotation_sha256": "d0e9a0db2a27e1db2766a49f170e7a0e5aa41b87d5b48887b7a72d5f5231ff42"
+      },
+      {
+        "key": "tenor_face_eb9a26aa92f4ee16522ce182",
+        "name": "灰猫凶巴巴盯着你",
+        "method": "hybrid",
+        "spec_sha256": "2c14dc03cfe0814f0c9c94a502e58d8135f2bd3166e1068036d79ea8d356a21e",
+        "annotation_sha256": "458335d69ec918cbf0c43a4e237e732bb092f16ba1db4a7df619ebbcbf0001e6"
+      },
+      {
+        "key": "tenor_face_f2a33532d0e96703ad166312",
+        "name": "猫咪拿枪警告你",
+        "method": "geometry",
+        "spec_sha256": "505c2eb7a0408f14e69c73178234f5c7928bfe447308a72f4858467e487211e2",
+        "annotation_sha256": "5a641ff8d0888d60b8749ab9aecfd03c52972a4817a3c7281d6133c982883a3a"
+      },
+      {
+        "key": "tenor_face_fe1ba4bbd9feb2e19cf65b59",
+        "name": "橘猫舒服得眯起眼",
+        "method": "geometry",
+        "spec_sha256": "6888f8e586b4a7f4e6d7bdba43e8891d55f37c5f6a983d265b99ab13edac9079",
+        "annotation_sha256": "a514ba215e39493828262f234a365efd2a98c077e5fe4c360f12d4bffc6b11a4"
+      },
+      {
+        "key": "tenor_face_ff50ab7b3f06e6def116ae7c",
+        "name": "灰猫惊讶得嘴巴合不上",
+        "method": "gan",
+        "spec_sha256": "034579a7a0ae7ca8042ca624ee739092ed8922841c3923893889a30dc34c57f9",
+        "annotation_sha256": "a08485103e88d512b2555ab3900a1ed191176a3130cf42fe04bbbd6f49e54eac"
+      }
+    ],
+    "batches": [
+      {
+        "file": "20261030-tenor-approved-r3-01.json",
+        "count": 4,
+        "bytes": 25548191,
+        "sha256": "7d7fea543480abb29b8fea8d086b4dd96337c635d5df04eda694d8262f175a61"
+      },
+      {
+        "file": "20261030-tenor-approved-r3-02.json",
+        "count": 2,
+        "bytes": 22693233,
+        "sha256": "512107f2ece180789709194cc4ecf5b537868c2d01807a2b09b846b931d0e0a6"
+      },
+      {
+        "file": "20261030-tenor-approved-r3-03.json",
+        "count": 3,
+        "bytes": 27245264,
+        "sha256": "3232173dd6916f6e1bade2dc49312d0015ec476935b54507afadf71e8de96eed"
+      },
+      {
+        "file": "20261030-tenor-approved-r3-04.json",
+        "count": 4,
+        "bytes": 30883037,
+        "sha256": "4c15133dc6471249948a4642923074975d35234c1e208939ef220e4ee6b7835b"
+      },
+      {
+        "file": "20261030-tenor-approved-r3-05.json",
+        "count": 3,
+        "bytes": 24118429,
+        "sha256": "fd74c56f763512d5d98ef8889265d977fa289964f7f82d79c55ab648679069a9"
+      },
+      {
+        "file": "20261030-tenor-approved-r3-06.json",
+        "count": 1,
+        "bytes": 13806855,
+        "sha256": "0849f7159b7781a9ce1395c858c1226dfe4a6fdbf1efe03eadb415e4f37cd4cd"
+      },
+      {
+        "file": "20261030-tenor-approved-r3-07.json",
+        "count": 3,
+        "bytes": 32293286,
+        "sha256": "72096b211ae787557f955e26b5046cb2db93f8bf74c7d996887ec49daedeb284"
+      },
+      {
+        "file": "20261030-tenor-approved-r3-08.json",
+        "count": 2,
+        "bytes": 24734213,
+        "sha256": "0263af070536a4e08f8d776e22b0a533e3854dea0e127937d6028e73c60c2950"
+      },
+      {
+        "file": "20261030-tenor-approved-r3-09.json",
+        "count": 3,
+        "bytes": 32114783,
+        "sha256": "75768f1b2c96fe9c01acc139705532833b750b10b40c7e36066bcefa3841f6aa"
+      },
+      {
+        "file": "20261030-tenor-approved-r3-10.json",
+        "count": 2,
+        "bytes": 12959271,
+        "sha256": "3a311cd3d5d6c472276445e0bdcf14ddc55ccf1016681af4f16e34f113d2c5e2"
+      }
+    ]
+  },
+  "collage": {
+    "server_composition": [
+      {
+        "selected": 4,
+        "frames": 62,
+        "duration_ms": 3100,
+        "size": [
+          292,
+          292
+        ],
+        "bytes": 1543974,
+        "seconds": 1.459
+      },
+      {
+        "selected": 9,
+        "frames": 41,
+        "duration_ms": 4050,
+        "size": [
+          336,
+          336
+        ],
+        "bytes": 1300460,
+        "seconds": 4.904
+      }
+    ],
+    "linux_peak_rss_mib": 509.1,
+    "native_local_fallback": [
+      {
+        "status": "passed",
+        "buildFingerprint": "761585aa2fc257d739d25e01270a8892a21da319900d6c283fbd7843caf42fcc",
+        "fingerprintedFiles": [
+          "services/resultCollage.js",
+          "services/collageGif.js",
+          "services/recommendService.js"
+        ],
+        "minFrameDelayMs": 50,
+        "loadedBuildVerified": true,
+        "sdkVersion": "3.17.5",
+        "selected": 4,
+        "frames": 62,
+        "durationMs": 3100,
+        "width": 356,
+        "height": 356,
+        "bytes": 1344173,
+        "elapsedMs": 4091,
+        "realCanvasAndFilesystem": true,
+        "shareAndAlbum": "mocked to avoid sending or saving test content",
+        "originalOrder": true,
+        "preview": true,
+        "cachedReuse": true,
+        "cleanup": true,
+        "runtimeErrors": []
+      },
+      {
+        "status": "passed",
+        "buildFingerprint": "761585aa2fc257d739d25e01270a8892a21da319900d6c283fbd7843caf42fcc",
+        "fingerprintedFiles": [
+          "services/resultCollage.js",
+          "services/collageGif.js",
+          "services/recommendService.js"
+        ],
+        "minFrameDelayMs": 20,
+        "loadedBuildVerified": true,
+        "sdkVersion": "3.17.5",
+        "selected": 9,
+        "frames": 112,
+        "durationMs": 4050,
+        "width": 384,
+        "height": 384,
+        "bytes": 1813288,
+        "elapsedMs": 5035,
+        "realCanvasAndFilesystem": true,
+        "shareAndAlbum": "mocked to avoid sending or saving test content",
+        "originalOrder": true,
+        "preview": true,
+        "cachedReuse": true,
+        "cleanup": true,
+        "runtimeErrors": []
+      }
+    ],
+    "server_authentication_required": true,
+    "real_device_send_and_album_validation": "pending-new-preview; simulator share and save were mocked",
+    "test_portraits_uploaded": false,
+    "linux_idempotent_peak_rss_mib": 473.1,
+    "short_frame_clamping_prevented": true,
+    "minimum_output_delay_ms": 20
+  },
+  "runtime_sha256": {
+    "declarative.py": "3ea71a04ad494805394d3b6ea4ce80775259d51b832b390bf72fadb1dab1f3f1",
+    "expression_driver.py": "196e64a7f4ebf02181c58c627db71e7d7e42a84c835760ec1ea0e5f2fb2552a7",
+    "reviewed_faces.py": "bfc459e9dc59cfa69f24e1eeba7506214ba031fdd9c8764e4b5fef01bcb254af",
+    "seed.py": "78dd772688e2d963668bedd1f8d2ccab9e392af83ad8b25f29bf2aa506fc1e27",
+    "result_collage.py": "86bb3fab5111b1ee8b57a610cc32a2e082cb540f9c1c12ded3f08be4aac23b56",
+    "recommend.py": "af995d4133e662b5933dbcd9b833b04e340f8efe1847f7ee2ca0a6d8d9633490",
+    "traffic.py": "c8054f7d096f6dde32bf456214be36af0ebd88cf97959b099fbb3ec366b1d5db"
+  },
+  "backend_regressions_passed": 36,
+  "frontend_regression_scripts_passed": [
+    "result-collage",
+    "server-collage",
+    "ui-flows",
+    "recommend-service"
+  ],
+  "builds_passed": [
+    "mp-weixin",
+    "h5"
+  ],
+  "services_active": true,
+  "service_restarts_due_to_failure": 0
+}

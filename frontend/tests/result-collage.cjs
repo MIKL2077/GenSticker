@@ -84,6 +84,8 @@ async function verify(){
  const timeline=Array.from(c.collageTimeline([{animated:true,duration:15000,delays:Array(750).fill(20)}]))
  assert.ok(timeline.length<=301);assert.equal(timeline[0],0);assert.equal(timeline.at(-1),15000)
  assert.ok(timeline.every((t,i)=>!i||t>timeline[i-1]))
+ const shortGaps=Array.from(c.collageTimeline([{animated:true,duration:60,delays:[30,30]},{animated:true,duration:80,delays:[40,40]}]))
+ assert.equal(shortGaps.at(-1),80);assert.ok(shortGaps.every((t,i)=>!i||t-shortGaps[i-1]>=20),'combined timelines never introduce browser-clamped 10ms frames')
  assert.throws(()=>c.openCollageGif(a.slice(0,-1)),/无法读取/)
  assert.throws(()=>c.openCollageGif(gif([{pixels:[1,1],delay:1000},{pixels:[2,2],delay:1000}])),/15 秒/)
  const huge=a.slice();huge[6]=255;huge[7]=255;huge[8]=255;huge[9]=255
@@ -104,6 +106,19 @@ async function verify(){
  await assert.rejects(noCanvas.c.createResultCollage(['/opaque-temp']),/暂不支持拼图/)
  const failed=context();failed.c.writeOwnedFile=async()=>{throw Error('quota exceeded')}
  await assert.rejects(failed.c.createResultCollage(['/opaque-temp']),/quota/);assert.equal(failed.released.length,1)
+ const server=context();server.c.wx.createOffscreenCanvas=undefined
+ const remoteResult={path:'/server.gif',animated:true,duration:600}
+ assert.equal(await server.c.createResultCollage(['/opaque-temp'],{remote:async()=>remoteResult}),remoteResult,'server output needs no phone canvas')
+ const unavailable=context();const fallback=await unavailable.c.createResultCollage(['/opaque-temp'],{remote:async()=>{throw Object.assign(Error('offline'),{statusCode:503})}})
+ assert.equal(fallback.animated,true);assert.equal(unavailable.written.length,1,'server failure transparently uses the bounded local encoder')
+ const unauthorized=context()
+ await assert.rejects(unauthorized.c.createResultCollage(['/opaque-temp'],{remote:async()=>{throw Object.assign(Error('login'),{statusCode:401})}}),/login/)
+ assert.equal(unauthorized.written.length,0,'account errors do not reuse another account or local copy')
+ const slow=context();let clock=0;slow.c.Date={now:()=>clock+=70000}
+ assert.equal((await slow.c.createResultCollage(['/opaque-temp','/b.gif'])).animated,true,'elapsed wall time alone must not reject a valid collage')
+ const remoteCancelled=context();let closed=false
+ await assert.rejects(remoteCancelled.c.createResultCollage(['/opaque-temp'],{cancelled:()=>closed,remote:async()=>{closed=true;return remoteResult}}),/取消/)
+ assert.deepEqual(remoteCancelled.released,['/server.gif'],'a late remote result is discarded after closing')
  // An oversized first attempt must retry with the same complete duration.
  const retry=context();let attempts=0
  retry.c.GIFEncoder=()=>{const real=gifenc.GIFEncoder(),oversized=++attempts===1;return {...real,bytesView:()=>oversized?new Uint8Array(2*1024*1024+1):real.bytesView()}}
