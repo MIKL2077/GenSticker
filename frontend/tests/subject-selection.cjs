@@ -9,14 +9,11 @@ async function verify(){
  assert.equal(calls[0].filePath,'/photo-small');assert.equal(calls[0].formData.fast,'true');assert.equal(edits[0].maxEdge,640);assert.ok(disposed.includes('/photo-small'))
  await c.detectSubjects('/photo');assert.equal(calls.length,1,'reopening the same photo reuses coordinates without another upload')
  c.wx={createOffscreenCanvas:()=>({width:1,height:1,createImage:()=>({width:640,height:480,set src(_){this.onload()}}),getContext:()=>({drawImage:()=>{},getImageData:()=>({data:new Uint8Array(640*480*4)})})}),initFaceDetect:options=>options.success({}),faceDetect:options=>{assert.equal(options.enableMultiFace,true);options.success({faceInfo:[{detectRect:{originX:80,originY:40,width:80,height:100}}]})},stopFaceDetect:()=>{}}
- const local=await c.detectSubjects('/local-photo');assert.equal(local.method,'device-wechat');assert.equal(local.candidates.length,1);assert.equal(calls.length,1,'successful device detection does not upload or compress the original');assert.equal(edits.length,1)
- c.uni.getDeviceInfo=()=>({platform:'devtools'});await c.detectSubjects('/photo',{force:true,extended:true});assert.equal(calls.length,2,'DevTools skips deprecated face API and uses the server immediately');assert.equal(calls.at(-1).formData.fast,'false','expensive foreground search is explicit')
- c.uni.getStorageSync=()=>null;await c.detectSubjects('/guest-photo');assert.equal(calls.length,3,'visitors can detect subjects without a login');assert.ok(calls.at(-1).header['X-Gensticker-Visitor'])
- let owner='alice';c.uni.getStorageSync=()=>({access_token:owner+'-token',profile:{id:owner}});c.editImage=async path=>{owner='bob';return path+'-small'};await c.detectSubjects('/previous-owner-photo');assert.equal(calls.length,3,'account switching must not upload the previous photo under the new account');assert.ok(disposed.includes('/previous-owner-photo-small'))
- let now=10000,expire,lateInit,stops=0;c.Date={now:()=>now};c.setTimeout=fn=>{expire=fn;return 1};c.clearTimeout=()=>{};c.uni.getDeviceInfo=()=>({platform:'ios'})
- c.wx.initFaceDetect=options=>{lateInit=options.success};c.wx.stopFaceDetect=()=>{stops++}
- const pending=c.nativeDetect('/slow-init',()=>true);await new Promise(resolve=>setImmediate(resolve));assert.equal(typeof lateInit,'function')
- now+=1000;expire();await assert.rejects(pending,/本机检测/);lateInit({});assert.equal(stops,1,'late native initialization releases the face engine after the total deadline')
- console.log('PASS bounded face boxes, manual/server fallback, authenticated transient upload and device detection without photo upload')
+ let nativeStarts=0;c.wx.initFaceDetect=()=>{nativeStarts++;throw Error('native initialization freezes UI')}
+ const local=await c.detectSubjects('/local-photo');assert.equal(local.candidates.length,1);assert.equal(nativeStarts,0);assert.equal(calls.length,2)
+ c.uni.getDeviceInfo=()=>({platform:'devtools'});await c.detectSubjects('/photo',{force:true,extended:true});assert.equal(calls.length,3);assert.equal(calls.at(-1).formData.fast,'false')
+ c.uni.getStorageSync=()=>null;await c.detectSubjects('/guest-photo');assert.equal(calls.length,4);assert.ok(calls.at(-1).header['X-Gensticker-Visitor'])
+ let owner='alice';c.uni.getStorageSync=()=>({access_token:owner+'-token',profile:{id:owner}});c.editImage=async path=>{owner='bob';return path+'-small'};await c.detectSubjects('/previous-owner-photo');assert.equal(calls.length,4,'account switching must not upload the previous photo under the new account');assert.ok(disposed.includes('/previous-owner-photo-small'))
+ console.log('PASS bounded face boxes, manual/server fallback, authenticated transient upload and no native detector initialization')
 }
 verify().catch(error=>{console.error(error);process.exitCode=1})

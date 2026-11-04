@@ -12,7 +12,7 @@ from unittest.mock import patch
 
 import numpy as np
 from PIL import Image
-from meme_generator.features import catalog, expression_runtime as rt
+from meme_generator.features import catalog, expression_runtime as rt, expression_controls as controls
 from meme_generator.features.declarative import render
 from meme_generator.features.store import connect
 from meme_generator.manager import get_meme
@@ -63,7 +63,7 @@ def main():
            'adapter':policy.get('adapter','declarative' if row['spec'] else 'native-input'),
            'supported_regions':policy.get('supported_regions',0),'regions':policy.get('regions',0),
            'reasons':policy.get('reasons',[]),'base_version':row['version'],'version':versions[key]['version'],
-           'previous_rating':rating,'changed':key in updates,'texts':texts,'image_slots':count,
+           'previous_rating':rating,'previous_note':decisions.get(key,{}).get('note',''),'changed':key in updates,'texts':texts,'image_slots':count,
            'calibration':policy.get('calibration'),'fingerprint':versions[key]['fingerprint'],
            'baseline_fingerprint':row['fingerprint']}
         try:
@@ -98,13 +98,15 @@ def main():
                     baseline=old(images=images,texts=texts,args=args).getvalue()
                 c['baseline_ms']=round((time.perf_counter()-start)*1000,1)
                 c['baseline']=helper.inspect(baseline,media/(tid+'-'+a.sample+'-before'))
-                prepare=rt.prepare;frame=rt.math.render_frame
+                prepare=rt.prepare;frame=rt.math.render_frame;controlled_frame=controls.render_frame
                 def observe_prepare(image):
                     c['source_prepare_calls']+=1;v=prepare(image);c['supported_sources']+=v is not None;return v
                 def observe_frame(*args,**kwargs):
                     image,metric=frame(*args,**kwargs);c['metrics'].append(metric);return image,metric
+                def observe_controlled(*args,**kwargs):
+                    image,metric=controlled_frame(*args,**kwargs);c['metrics'].append(metric);return image,metric
                 random.seed(seed);np.random.seed(seed);start=time.perf_counter()
-                with patch.object(rt,'prepare',side_effect=observe_prepare),patch.object(rt.math,'render_frame',side_effect=observe_frame):
+                with patch.object(rt,'prepare',side_effect=observe_prepare),patch.object(rt.math,'render_frame',side_effect=observe_frame),patch.object(controls,'render_frame',side_effect=observe_controlled):
                     result=current(images=images,texts=texts,args=args).getvalue()
                 c['render_ms']=round((time.perf_counter()-start)*1000,1)
                 c['result']=helper.inspect(result,media/(tid+'-'+a.sample+'-after'))
@@ -115,7 +117,7 @@ def main():
                 if c['source_prepare_calls']>count:raise ValueError('source inference repeated')
             except Exception as exc:c.update(status='failed',error=type(exc).__name__+': '+str(exc)[:300])
         c['previous_rating']=rating;c['changed']=key in updates
-        if rating=='可用' and c.get('result') and c.get('baseline'):
+        if rating=='可用' and key not in updates and c.get('result') and c.get('baseline'):
             c['accepted_output_unchanged']=c['result']['frame_hashes']==c['baseline']['frame_hashes']
         report['cases'].append(c)
         print(n,len(order),tid,meta['name'],c['status'],c.get('render_ms'),flush=True)

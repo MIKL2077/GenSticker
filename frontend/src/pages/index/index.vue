@@ -54,6 +54,7 @@
       :active-image-index="activeImageIndex"
       :editor-open="showImageEditor"
       :editor-busy="editorBusy"
+      :example-sharing="exampleSharing"
       :editor-error="editorError"
       :editor-can-undo="editorCanUndo"
       :text-range="getTextInputRange()"
@@ -66,6 +67,7 @@
       :fusion-experiments="enableFusionLab"
       @blend="faceBlend=$event"
       @favorite="favoriteTemplate"
+      @share-example="shareTemplateExample"
       @chooseImages="chooseImagesForTemplate"
       @removeImage="removeTemplateImage"
       @editImage="openImageEditor"
@@ -102,6 +104,9 @@ import FirstUseGuide from '@/components/FirstUseGuide.vue'
 import { onMounted, onUnmounted, watch, ref, computed } from 'vue'
 import { onShow, onHide, onShareAppMessage, onLoad } from '@dcloudio/uni-app'
 import {shareCard} from '@/services/shareCard'
+import {loadTemplateExample} from '@/services/templateExample'
+import {shareOriginalImage} from '@/services/wechatSharing'
+import {releaseTemporary,retainFile} from '@/services/ownedFiles'
 import UiIcon from '@/components/UiIcon.vue'
 import MoodToy from '@/components/MoodToy.vue'
 import PopularityStage from '@/components/PopularityStage.vue'
@@ -187,7 +192,22 @@ export default {
     const selectedTemplate = ref('')
     const faceBlend=ref('replace'),enableFusionLab=ref(false)
     onShareAppMessage(()=>shareCard({image:generatedMeme.value,template:selectedTemplate.value && (!selectedTemplateDetail.value?.ownPreview || selectedTemplateDetail.value?.status==='published')?selectedTemplate.value:''}))
-    const showTemplateDetail = ref(false)
+    const showTemplateDetail = ref(false),exampleSharing=ref(false)
+    let exampleEpoch=0
+    const shareTemplateExample=async()=>{
+      if(exampleSharing.value||!selectedTemplateDetail.value)return
+      const epoch=++exampleEpoch,detail={...selectedTemplateDetail.value},owner=account.session.value?.access_token
+      const current=()=>epoch===exampleEpoch&&sceneActive.value&&showTemplateDetail.value&&selectedTemplate.value===detail.key&&owner===account.session.value?.access_token
+      let path,unpin
+      exampleSharing.value=true
+      try{
+        path=await loadTemplateExample(detail,current)
+        if(!current())return
+        unpin=retainFile(path)
+        await shareOriginalImage(path,message=>{if(current())showStatusMessage(message)})
+      }catch(error){if(current())showStatusMessage(error.message||'示例暂时无法分享，请重试')}
+      finally{unpin?.();if(path)releaseTemporary(path);if(epoch===exampleEpoch)exampleSharing.value=false}
+    }
 
     const onSelectCategory = async (key) => {
       await selectCategory(key)
@@ -227,6 +247,7 @@ export default {
     const continueEditing = () => { closePreview(); showTemplateDetail.value = true }
 
     const closeTemplateDetail = () => {
+      exampleEpoch++;exampleSharing.value=false
       templateRequest++
       showTemplateDetail.value = false
       selectedTemplateDetail.value = null
@@ -320,7 +341,7 @@ export default {
       // 模板选择
       trialTemplate,faceBlend,enableFusionLab,
       selectedTemplate,
-      showTemplateDetail,
+      showTemplateDetail,exampleSharing,shareTemplateExample,
       selectedTemplateDetail,
       onSelectCategory,
       onSelectTemplate,

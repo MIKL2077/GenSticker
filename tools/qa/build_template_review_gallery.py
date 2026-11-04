@@ -16,7 +16,7 @@ def main():
     a=p.parse_args();report=json.loads((a.evaluation/'report.json').read_text())
     if report['status']!='completed':raise ValueError('evaluation still running')
     updates={i['key']:i for i in json.loads((a.updates/'compiled.json').read_text())}
-    annotations=json.loads(a.annotations.read_text());old_templates={t['id']:t for t in annotations['templates']}
+    annotations=json.loads(a.annotations.read_text());old_templates={t['id']:t for t in annotations.get('templates',[])}
     a.output.mkdir(parents=True,exist_ok=True)
     for name in ['sources','thumbs','contacts','regions']:(a.output/name).mkdir(exist_ok=True)
     if not (a.output/'media').exists():(a.output/'media').symlink_to((a.evaluation/'media').resolve(),target_is_directory=True)
@@ -25,7 +25,6 @@ def main():
     cases={c['key']:c for c in report['cases']};loop_mismatches=0
     for t in report['templates']:
         c=cases[t['key']]
-        if int(t['id'][1:])>100:t['previous_rating']='新增测试'
         if t.get('preview'):first_image(a.evaluation/'media'/t['preview'],(350,270)).save(a.output/'thumbs'/(t['id']+'-template.jpg'),quality=86)
         else:
             empty=Image.new('RGB',(320,240),'#eef2f6');ImageDraw.Draw(empty).text((20,100),'无原生示例',font=font,fill='#71849a');empty.save(a.output/'thumbs'/(t['id']+'-template.jpg'))
@@ -48,21 +47,25 @@ def main():
                         sheet.paste(small,(x+(cell-small.width)//2,y+20+(cell-small.height)//2));draw.text((x+4,y),str(index+1),font=font,fill='#20384f')
             sheet.save(a.output/'contacts'/(t['id']+'.jpg'),quality=87)
         item=updates.get(t['key'])
-        if item and item['metadata']['expression_policy'].get('calibration',{}).get('action')=='region-repair':
+        if item and item['spec'] and any(l.get('expression') for f in item['spec'].get('frames') or [item['spec']] for l in f['layers']):
             frames=item['spec'].get('frames') or [item['spec']];cols=6;cell=180
             sheet=Image.new('RGB',(cols*cell,math.ceil(len(frames)/cols)*210+30),'#eef2f6');draw=ImageDraw.Draw(sheet)
             draw.text((8,5),t['id']+' · 绿色为可替换范围；其余区域保持原图',font=font,fill='#20384f')
             for index,frame in enumerate(frames):
-                layer=next(l for l in frame['layers'] if l['type']=='face');recipe=layer['expression']
+                layers=[l for l in frame['layers'] if l.get('expression')]
+                if not layers:continue
+                layer=layers[0];recipe=layer['expression']
                 ext='.'+recipe.get('reference_format','png');path=a.assets/(recipe['reference_asset']+ext)
                 with Image.open(path) as im:im.seek(recipe.get('reference_index',0));source=im.convert('RGB')
                 with Image.open(a.assets/(recipe['mask_asset']+'.png')) as mask:
                     overlay=Image.new('RGB',source.size,'#22ca7a');opacity=mask.convert('L').point(lambda x:round(x*.35));source=Image.composite(overlay,source,opacity)
+                for other in layers[1:]:
+                    with Image.open(a.assets/(other['expression']['mask_asset']+'.png')) as mask:source=Image.composite(overlay,source,mask.convert('L').point(lambda x:round(x*.35)))
                 source=ImageOps.contain(source,(174,174));x=(index%cols)*cell;y=(index//cols)*210+30
                 sheet.paste(source,(x+(cell-source.width)//2,y+24));draw.text((x+5,y),f'帧 {index+1} / 源 {frame.get("source_index",0)}',font=font,fill='#20384f')
             t['region_sheet']=t['id']+'.jpg';sheet.save(a.output/'regions'/t['region_sheet'],quality=90)
-            t['change_note']='已重新测量替换范围与五官位置，保留原场景、道具和文字。请复核完整脸部与动画。'
-        elif item and t['previous_rating']=='需调整':t['change_note']='上传图位于标志牌内，已恢复直接贴图，不再借用背景人物的表情。'
+            t['change_note']=(t.get('calibration') or {}).get('reason','已重测范围和五官，请复核完整动画。')
+        elif item:t['change_note']=(t.get('calibration') or {}).get('reason','已处理本轮反馈。')
         else:t['change_note']='本轮实际生成结果；可点击大图查看完整动画。'
     report['loop_mismatches']=loop_mismatches
     (a.evaluation/'report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
@@ -73,8 +76,8 @@ def main():
     (a.output/'data.json').write_text(json.dumps(browser,ensure_ascii=False))
     shutil.copy2(Path(__file__).with_name('template_review_gallery.html'),a.output/'index.html')
     if not a.review_file.exists():
-        records={}
-        for oldkey,label in annotations['ratings'].items():
+        records=copy.deepcopy(annotations.get('records',{}))
+        for oldkey,label in annotations.get('ratings',{}).items():
             tid,sample=oldkey.rsplit('-',1);t=old_templates[tid]
             key=f"{t['key']}@{t['version']}:{sample}"
             records[key]={'key':t['key'],'version':t['version'],'sample':sample,'rating':label,'note':'','origin':'previous-round','updated_at':0}

@@ -315,6 +315,7 @@ class RemediationTests(unittest.TestCase):
         app.add_middleware(TrafficBudget)
 
         @app.post("/images/subject")
+        @app.post("/studio/jobs/collage")
         def new_work():
             return {"ok": True}
 
@@ -334,6 +335,7 @@ class RemediationTests(unittest.TestCase):
             record_bytes(86)
             with TestClient(app) as client:
                 self.assertEqual(client.post("/images/subject").status_code, 503)
+                self.assertEqual(client.post("/studio/jobs/collage").status_code, 503)
                 self.assertEqual(client.get("/existing-result").status_code, 200)
                 record_bytes(100)
                 self.assertEqual(client.get("/existing-result").status_code, 503)

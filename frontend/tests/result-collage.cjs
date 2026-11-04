@@ -134,7 +134,8 @@ async function verify(){
  browser.c.fetch=async file=>({ok:true,blob:async()=>new Blob([file==='/opaque-temp'?a:Uint8Array.of(137,80,78,71)])})
  const web=await browser.c.createResultCollage(['/opaque-temp','/still.png'])
  assert.equal(web.animated,true);assert.equal(web.path,'blob:collage-1');assert.equal(blobs[0].type,'image/gif');assert.ok(new GifReader(new Uint8Array(await blobs[0].arrayBuffer())).numFrames()>1)
- const webStill=await browser.c.createResultCollage(['/still.png'])
+ const webStill=await browser.c.createResultCollage(['/still.png'],{remote:async()=>({path:'/server-still.gif',animated:false})})
+ assert.ok(browser.released.includes('/server-still.gif'),'all-still server result is released before the higher-resolution JPEG export')
  assert.equal(webStill.animated,false);assert.equal(blobs[1].type,'image/jpeg');assert.ok(browser.canvases.every(canvas=>canvas.width===1&&canvas.height===1))
  console.log('PASS real GIF composition: independent timing, looping, mixed stills, aspect ratio, disposal 2/3, bounded timeline, full-duration compression, cancellation, cleanup and corrupt-input refusal')
 }

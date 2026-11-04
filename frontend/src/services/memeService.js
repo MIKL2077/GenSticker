@@ -18,7 +18,18 @@ const CATALOG_CACHE='gensticker.public-catalog.v4'
 const PREVIEW_CACHE='gensticker.public-previews.v4'
 let diskPreviews={}
 try{diskPreviews=uni.getStorageSync?.(PREVIEW_CACHE)||{}}catch(_){}
-function savePreviewIndex(){try{uni.setStorageSync?.(PREVIEW_CACHE,diskPreviews)}catch(_){}}
+let indexWriting=false,indexDirty=false
+function savePreviewIndex(){
+ if(!uni.setStorage){try{uni.setStorageSync?.(PREVIEW_CACHE,{...diskPreviews})}catch(_){}return}
+ indexDirty=true
+ if(indexWriting)return
+ indexWriting=true
+ const write=()=>{
+  indexDirty=false
+  uni.setStorage({key:PREVIEW_CACHE,data:{...diskPreviews},complete:()=>{if(indexDirty)setTimeout(write,0);else indexWriting=false}})
+ }
+ setTimeout(write,0)
+}
 function forgetDiskPreview(key){
   const old=diskPreviews[key]
   if(old)uni.getFileSystemManager?.().unlink({filePath:old.path,fail:()=>{}})
@@ -86,18 +97,18 @@ function catalogVersions(data) {
   }
   return data
 }
-export function getCategories(force=false,onRefresh) {
+export async function getCategories(force=false,onRefresh) {
   const refresh=()=>{
     if(force)cached.delete('categories')
     return memo('categories',()=>apiRequest('/memes/categories?compact=true',{timeout:25000},2),300000).then(data=>{
       catalogVersions(data)
-      try{uni.setStorageSync?.(CATALOG_CACHE,{at:Date.now(),data})}catch(_){}
+      try{const value={at:Date.now(),data};if(uni.setStorage)uni.setStorage({key:CATALOG_CACHE,data:value,fail:()=>{}});else uni.setStorageSync?.(CATALOG_CACHE,value)}catch(_){}
       return data
     })
   }
   if(!force){
     let saved
-    try{saved=uni.getStorageSync?.(CATALOG_CACHE)}catch(_){}
+    try{saved=uni.getStorage?await new Promise(resolve=>uni.getStorage({key:CATALOG_CACHE,success:r=>resolve(r.data),fail:()=>resolve(null)})):uni.getStorageSync?.(CATALOG_CACHE)}catch(_){}
     if(saved?.data?.cards?.length && Date.now()-saved.at<86400000){
       // Reopen instantly; reconcile new/withdrawn/versioned templates quietly.
       refresh().then(data=>onRefresh?.(data)).catch(()=>{})

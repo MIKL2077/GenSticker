@@ -41,6 +41,14 @@ export function downloadResult(url,timeout=20000) {
 }
 
 export async function createRecommendationCollage(id,slots,cancelled=()=>false) {
+  return requestResultCollage(`/recommend/jobs/${encodeURIComponent(id)}/collage`,{slots},cancelled)
+}
+
+export async function createStudioCollage(jobIds,cancelled=()=>false) {
+  return requestResultCollage('/studio/jobs/collage',{job_ids:jobIds},cancelled)
+}
+
+async function requestResultCollage(url,data,cancelled) {
   const session=uni.getStorageSync('gensticker.session.v1'),owner=session?.profile?.id
   const check=()=>{if(cancelled()||owner!==uni.getStorageSync('gensticker.session.v1')?.profile?.id)throw Error('拼图制作已取消')}
   check()
@@ -48,8 +56,8 @@ export async function createRecommendationCollage(id,slots,cancelled=()=>false) 
     let timer,task,settled=false
     const finish=(error,result)=>{if(settled)return;settled=true;clearTimeout(timer);error?reject(error):resolve(result)}
     const watch=()=>{try{check();timer=setTimeout(watch,200)}catch(error){finish(error);task?.abort?.()}}
-    task=uni.request({url:`${API_BASE_URL}/recommend/jobs/${encodeURIComponent(id)}/collage`,method:'POST',
-      data:{slots},responseType:'arraybuffer',timeout:60000,header:{Authorization:`Bearer ${session?.access_token}`},
+    task=uni.request({url:`${API_BASE_URL}${url}`,method:'POST',
+      data,responseType:'arraybuffer',timeout:60000,header:{Authorization:`Bearer ${session?.access_token}`},
       success:r=>finish(null,r),fail:error=>finish(error)})
     if(!settled)watch()
   })

@@ -41,9 +41,10 @@ async function create(initial={}){
  detected({candidates:[{id:'late',kind:'person',box:[.3,.3,.2,.2]}]});await flush()
  assert.deepEqual(Array.from(instant.c.state.rect.value),manualBox,'late detection never overwrites the user crop')
  const speculative=await create({editable:true});let inferenceCalls=0
- speculative.c.removeImageBackground=async(path,options)=>{assert.equal(options.localOnly,true);inferenceCalls++;return '/precomputed.png'}
+ speculative.c.removeImageBackground=async(path,options)=>{assert.equal(options.localOnly,undefined);inferenceCalls++;return '/explicit-cutout.png'}
  await new Promise(resolve=>setTimeout(resolve,280));await flush()
- await speculative.c.actions.apply('background');assert.equal(speculative.c.state.workingSrc.value,'/precomputed.png');assert.equal(inferenceCalls,1,'click reuses the completed device cutout')
+ assert.equal(inferenceCalls,0,'dragging/idle selection must never start a model or upload')
+ await speculative.c.actions.apply('background');assert.equal(speculative.c.state.workingSrc.value,'/explicit-cutout.png');assert.equal(inferenceCalls,1,'cutout begins only after the explicit tap')
  speculative.c.unmount();instant.c.unmount()
  const bundled=await create({show:false,editable:true});let compositions=0,requests=0
  bundled.c.detectSubjects=async()=>({candidates:[{id:'primary',kind:'person',box:[.2,.1,.4,.7]}],preview:{mask:'mask',box:[.2,.1,.4,.7]}})

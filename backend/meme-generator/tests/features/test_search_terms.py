@@ -4,6 +4,21 @@ from meme_generator.features.search_terms import keywords
 
 
 class SearchTermsTests(unittest.TestCase):
+    def test_themed_chinese_and_traditional_aliases_keep_religious_scope(self):
+        self.assertIn('奶龙', keywords({'name': '奶龍收到'}))
+        self.assertIn('nailoong', keywords({'name': '奶龙开心'}))
+        self.assertIn('主内', keywords({'name': '教會團契'}))
+        self.assertIn('阿们', keywords({'name': '阿們'}))
+        self.assertIn('代祷', keywords({'name': '代禱'}))
+        self.assertIn('感谢主', keywords({'name': '感謝主'}))
+        self.assertNotIn('基督徒', keywords({'name': '谢谢老板'}))
+        self.assertNotIn('基督徒', keywords({'name': '小猫祈祷'}))
+        self.assertNotIn('基督徒', keywords({'name': '平安夜'}))
+        self.assertNotIn('奶龙', keywords({'name': 'dragon dinosaur'}))
+        for name in ['奶龍收到', '主內平安', '阿們感謝主', '教會團契代禱']:
+            words = keywords({'name': name})
+            self.assertEqual(words, keywords({'name': name, 'keywords': words}))
+
     def test_subject_action_and_scenario_aliases(self):
         words = keywords({'name': '柴犬摇摆打工', 'tags': ['动图']})
         for value in ['狗狗', 'doge', '蹦迪', '社畜', '职场']:

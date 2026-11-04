@@ -1,4 +1,4 @@
-"""Private GIF collages of existing, account-owned recommendation results.
+"""Private GIF collages of existing, account-owned generation results.
 
 No photo upload, remote URL fetching, persistent file or model inference.
 One compositor runs at a time; decoding, memory, duration and output are bounded.
@@ -22,6 +22,7 @@ from meme_generator.safe_images import open_image
 from .store import connect, root
 
 router=APIRouter()
+studio_router=APIRouter()
 slots=threading.BoundedSemaphore(1)
 MAX_BYTES=2*1024*1024
 PAPER=(255,250,244)
@@ -30,6 +31,44 @@ PAPER=(255,250,244)
 class CollageSelection(BaseModel):
     model_config=ConfigDict(extra='forbid')
     slots:list[Annotated[int,Field(strict=True,ge=0,le=8)]]=Field(min_length=1,max_length=9)
+
+
+class StudioCollageSelection(BaseModel):
+    model_config=ConfigDict(extra='forbid')
+    job_ids:list[Annotated[str,Field(strict=True,pattern=r'^[a-f0-9]{32}$')]]=Field(min_length=2,max_length=9)
+
+
+@studio_router.post('/jobs/collage')
+async def create_studio_collage(selection:StudioCollageSelection,user=Depends(current_user)):
+    if len(set(selection.job_ids))!=len(selection.job_ids):raise HTTPException(422,'不能重复选择同一张表情')
+    def owned_paths(admit=False):
+        from .studio import init,TTL
+        from .recommend import admit_generation
+        db=init()
+        try:
+            directory=(root()/'studio_results').resolve();paths=[]
+            for identifier in selection.job_ids:
+                row=db.execute('SELECT * FROM studio_jobs WHERE id=? AND user_id=?',(identifier,user['id'])).fetchone()
+                if not row:raise HTTPException(404,'所选作品不存在')
+                if row['created']<time.time()-TTL:raise HTTPException(410,'所选作品已过期')
+                if row['status']!='completed' or row['kind'] not in ('manual','livegif'):raise HTTPException(409,'请选择已经完成的图片')
+                path=(directory/identifier).resolve()
+                if not path.is_relative_to(directory) or not path.is_file():raise HTTPException(410,'所选作品已过期')
+                paths.append(path)
+            if admit:
+                with db:
+                    db.execute('BEGIN IMMEDIATE')
+                    import uuid
+                    admit_generation(db,user['id'],'collage:'+uuid.uuid4().hex,time.time())
+            return paths
+        finally:db.close()
+    paths=await asyncio.to_thread(owned_paths,True)
+    try:
+        raw=await asyncio.to_thread(compose_serial,paths)
+        await asyncio.to_thread(owned_paths)
+        return Response(raw,media_type='image/gif',headers={'Cache-Control':'private, no-store'})
+    except (OSError,ValueError,Image.DecompressionBombError) as error:
+        raise HTTPException(422,str(error) or '这组图片暂时无法读取')
 
 
 def compose_serial(paths):

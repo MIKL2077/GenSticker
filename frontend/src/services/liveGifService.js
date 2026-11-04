@@ -54,7 +54,7 @@ async function frameReader(path, sequential=false, cancelled) {
     if(!sequential||!started){if(seconds>0)await decoderEvent(decoder,'seek',()=>decoder.seek(Math.round(seconds*1000)));started=true}
     const end=Date.now()+3000;let frame
     while(!(frame=decoder.getFrameData())){checkCancelled(cancelled);if(ended&&lastFrame)return lastFrame;if(Date.now()>end)throw Error('本地解码暂时不可用');await pause(10)}
-    if(frame.width*frame.height>12_000_000)throw Error('这段视频分辨率过高，请从相册导出 1080p 版本')
+    if(frame.width*frame.height>4_000_000)throw Error('这段视频分辨率过高，请从相册导出 1080p 版本')
     rawCanvas.width=frame.width;rawCanvas.height=frame.height
     const ctx=rawCanvas.getContext('2d'),image=ctx.createImageData(frame.width,frame.height)
     image.data.set(new Uint8Array(frame.data));ctx.putImageData(image,0,0)
@@ -89,12 +89,21 @@ export async function encodeGifFrames(frames,width,height,onProgress=()=>{},canc
   for(const [stride,colors,edge] of attempts) {
     const scale=Math.min(1,edge/Math.max(width,height)),outWidth=Math.max(2,Math.round(width*scale)),outHeight=Math.max(2,Math.round(height*scale))
     const encoder=GIFEncoder()
+    // Quantize a bounded sample once per attempt. Re-quantizing every frame
+    // stalls weak phones and can make static colours flicker between frames.
+    const count=Math.min(8,frames.length),sample=new Uint8Array(count*32*32*4)
+    for(let n=0;n<count;n++){
+      sample.set(resizeRgba(frames[Math.floor(n*frames.length/count)],width,height,32,32),n*32*32*4)
+      await pause(0);checkCancelled(cancelled)
+    }
+    const palette=quantize(sample,colors)
+    await pause(0)
     for(let i=0;i<frames.length;i+=stride){
       checkCancelled(cancelled)
-      const original=frames[i],rgba=outWidth===width&&outHeight===height?original:resizeRgba(original,width,height,outWidth,outHeight),palette=quantize(rgba,colors),indices=applyPalette(rgba,palette)
+      const original=frames[i],rgba=outWidth===width&&outHeight===height?original:resizeRgba(original,width,height,outWidth,outHeight),indices=applyPalette(rgba,palette)
       encoder.writeFrame(indices,outWidth,outHeight,{palette,delay:Math.min(stride,frames.length-i)*100,repeat:0,dispose:1})
       onProgress(Math.round(65+30*Math.min(1,(i+stride)/frames.length)))
-      if(i%4===0)await pause(0)
+      await pause(0)
     }
     encoder.finish();const bytes=encoder.bytes()
     if(bytes.length<=MAX_GIF_BYTES)return {bytes,fps:10/stride,colors,width:outWidth,height:outHeight}
@@ -134,13 +143,16 @@ export async function albumMotion(path) {
     bytes=new Uint8Array(await new Promise((resolve,reject)=>fs.readFile({filePath:path,success:r=>resolve(r.data),fail:reject})))
   }
   if(bytes.length>30*1024*1024)throw Error('Live 原图最多 30 MB，请选择较小的动态原图或视频')
-  for(let i=4;i<bytes.length-8;i++)if(bytes[i]===102 && bytes[i+1]===116 && bytes[i+2]===121 && bytes[i+3]===112){
+  for(let i=4;i<bytes.length-8;i++){
+   if(i%262144===0)await pause(0)
+   if(bytes[i]===102 && bytes[i+1]===116 && bytes[i+2]===121 && bytes[i+3]===112){
     const brand=String.fromCharCode(...bytes.slice(i+4,i+8)),size=new DataView(bytes.buffer,bytes.byteOffset+i-4,4).getUint32(0)
     if(['heic','heix','hevc','hevx','mif1','avif'].includes(brand)||size<8||size>256)continue
     const motion=bytes.slice(i-4)
     if(typeof document!=='undefined')return registerTemporary(URL.createObjectURL(new Blob([motion],{type:'video/mp4'})))
     const destination=`${uni.env.USER_DATA_PATH}/gensticker_edit_motion_${Date.now()}.mp4`
     await writeOwnedFile(destination,motion.buffer);return registerTemporary(destination)
+  }
   }
   throw Error('微信本次只提供了静态照片，未提供配对视频，暂时无法还原动态。可改选带视频片段的动态原图或相册视频。')
 }

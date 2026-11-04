@@ -13,8 +13,17 @@ function loadIndex(){
  loaded=true
  try{const value=uni.getStorageSync?.(INDEX);if(value?.version===1&&Array.isArray(value.files))for(const item of value.files)if(localPath(item.path)&&!item.path.startsWith('blob:')&&['temporary','cache','result'].includes(item.kind)&&Number.isFinite(item.at))owned.set(item.path,{path:item.path,kind:item.kind,at:item.at,bytes:Number(item.bytes)||0})}catch(_){}
 }
+let indexWriting=false,indexDirty=false
 function saveIndex(){
- try{uni.setStorageSync?.(INDEX,{version:1,files:[...owned.values()].filter(item=>!item.path.startsWith('blob:'))})}catch(_){}
+ if(!uni.setStorage){try{uni.setStorageSync?.(INDEX,{version:1,files:[...owned.values()].filter(item=>!item.path.startsWith('blob:'))})}catch(_){}return}
+ indexDirty=true
+ if(indexWriting)return
+ indexWriting=true
+ const write=()=>{
+  indexDirty=false
+  uni.setStorage({key:INDEX,data:{version:1,files:[...owned.values()].filter(item=>!item.path.startsWith('blob:'))},complete:()=>{if(indexDirty)setTimeout(write,0);else indexWriting=false}})
+ }
+ setTimeout(write,0)
 }
 function remember(path,kind='temporary',bytes=0){
  loadIndex()
@@ -30,13 +39,25 @@ function savedPaths(){
  }}catch(_){return null} // An unreadable result index is not permission to delete.
  return paths
 }
+async function savedPathsAsync(){
+ if(!uni.getStorageInfo||!uni.getStorage)return savedPaths()
+ try{
+  const info=await new Promise((resolve,reject)=>uni.getStorageInfo({success:resolve,fail:reject})),paths=new Set()
+  for(const key of info.keys||[]){
+   if(!key.startsWith('gensticker.manual.local.'))continue
+   const data=await new Promise((resolve,reject)=>uni.getStorage({key,success:r=>resolve(r.data),fail:reject}))
+   for(const item of data||[])if(Date.now()/1000-item.created_at<7*86400)for(const path of [item.localPath,item.mediaPath,...(item.editDraft?.paths||[]),item.editDraft?.mediaPath])if(typeof path==='string')paths.add(path)
+  }
+  return paths
+ }catch(_){return null}
+}
 function protectedFile(path,paths=savedPaths()){
  return active.has(path)||leases.has(path)||!paths||paths.has(path)||!!caches.get(path)?.protectedFile()
 }
 async function remove(path){
  if(!localPath(path))return false
  if(deleting.has(path))return deleting.get(path)
- if(protectedFile(path))return false
+ if(protectedFile(path,await savedPathsAsync()))return false
  const item=owned.get(path),cache=caches.get(path)
  const task=(async()=>{
   const ok=path.startsWith('blob:')?(URL.revokeObjectURL(path),'removed'):await new Promise(resolve=>{
@@ -76,15 +97,19 @@ export async function trimOwnedFiles(options={}){
  try{return await cleanup}finally{cleanup=null}
 }
 const ownedName=name=>/^(gensticker_(edit_|material_|draft_)|generated_meme_|meme_\d)/.test(name)
-function adoptReferences(){
- try{for(const key of uni.getStorageInfoSync?.().keys||[]){
-  if(/^gensticker\.public-previews\./.test(key))for(const item of Object.values(uni.getStorageSync(key)||{}))if(localPath(item?.path)&&!owned.has(item.path))owned.set(item.path,{path:item.path,kind:'cache',at:Number(item.at)||0,bytes:Number(item.bytes)||0})
-  if(key.startsWith('gensticker.manual.local.'))for(const item of uni.getStorageSync(key)||[])for(const path of [item.localPath,...(item.editDraft?.paths||[])])if(localPath(path)&&!owned.has(path))owned.set(path,{path,kind:'result',at:item.created_at*1000||0,bytes:0})
+async function adoptReferences(){
+ try{
+ const info=uni.getStorageInfo?await new Promise((resolve,reject)=>uni.getStorageInfo({success:resolve,fail:reject})):uni.getStorageInfoSync?.()
+ for(const key of info?.keys||[]){
+  if(!/^gensticker\.public-previews\./.test(key)&&!key.startsWith('gensticker.manual.local.'))continue
+  const data=uni.getStorage?await new Promise((resolve,reject)=>uni.getStorage({key,success:r=>resolve(r.data),fail:reject})):uni.getStorageSync(key)
+  if(/^gensticker\.public-previews\./.test(key))for(const item of Object.values(data||{}))if(localPath(item?.path)&&!owned.has(item.path))owned.set(item.path,{path:item.path,kind:'cache',at:Number(item.at)||0,bytes:Number(item.bytes)||0})
+  if(key.startsWith('gensticker.manual.local.'))for(const item of data||[])for(const path of [item.localPath,...(item.editDraft?.paths||[])])if(localPath(path)&&!owned.has(path))owned.set(path,{path,kind:'result',at:item.created_at*1000||0,bytes:0})
  }}catch(_){}
 }
 async function cleanOwnedFiles({materials=false,cacheOnly=false,canContinue=()=>true}={}){
  if(!uni.getFileSystemManager||!uni.env?.USER_DATA_PATH)return {removed:0,bytes:0}
- loadIndex();adoptReferences()
+ loadIndex();await adoptReferences()
  const fs=uni.getFileSystemManager(),base=uni.env.USER_DATA_PATH
  if(!cacheOnly&&canContinue()){
   // Migrate older named exports. Never enumerate/delete the anonymous tmp pool:
@@ -100,17 +125,20 @@ async function cleanOwnedFiles({materials=false,cacheOnly=false,canContinue=()=>
  }
  saveIndex()
  const candidates=[...owned.values()].sort((a,b)=>a.at-b.at),report={removed:0,bytes:0,missing:0}
+ const saved=await savedPathsAsync()
+ let scanned=0
  let cacheCount=candidates.filter(item=>item.kind==='cache').length,cacheBytes=candidates.reduce((sum,item)=>sum+(item.kind==='cache'?item.bytes:0),0),processed=0
  for(const item of candidates){
+  if(++scanned%16===0)await new Promise(resolve=>setTimeout(resolve,0))
   if(!canContinue())break
   const {path,kind,at,bytes}=item
-  if(protectedFile(path))continue
+  if(protectedFile(path,saved))continue
   if(kind==='cache'){
    if(!materials&&cacheCount<=(cacheOnly?48:64)&&cacheBytes<=(cacheOnly?12:16)*1024*1024)continue
   }else if(cacheOnly||Date.now()-at<GRACE)continue
   // Re-check after previous asynchronous removals: a queue write or editor
   // activation may have started since the sweep began.
-  if(owned.get(path)!==item||protectedFile(path)||!canContinue())continue
+  if(owned.get(path)!==item||protectedFile(path,saved)||!canContinue())continue
   const result=await remove(path)
   if(result){if(result==='missing')report.missing++;else{report.removed++;report.bytes+=bytes}if(kind==='cache'){cacheCount--;cacheBytes-=bytes}}
   if(++processed%20===0)await new Promise(resolve=>setTimeout(resolve,0))

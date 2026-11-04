@@ -10,7 +10,9 @@ async function verify(){
  const geo=c.cropPixels(1080,1920,[.2,.1,.5,.25]);assert.equal(geo.width,240);assert.equal(geo.height,213)
  const frames=[]
  for(let i=0;i<90;i++){const rgba=new Uint8Array(80*60*4);for(let y=0;y<60;y++)for(let x=0;x<80;x++){const at=(y*80+x)*4;rgba[at]=(x+i)%80<20?255:40;rgba[at+1]=80;rgba[at+2]=y*3;rgba[at+3]=255}frames.push(rgba)}
+ let quantizations=0;c.quantize=(...args)=>{quantizations++;return gifenc.quantize(...args)}
  const encoded=await c.encodeGifFrames(frames,80,60)
+ assert.equal(quantizations,1,'one bounded shared palette replaces per-frame quantization')
  assert.ok(encoded.bytes.length<=500*1024);assert.equal(Buffer.from(encoded.bytes.slice(0,6)).toString(),'GIF89a')
  fs.writeFileSync('/tmp/gensticker-local-test.gif',encoded.bytes)
  await assert.rejects(c.encodeGifFrames(frames,80,60,()=>{},()=>true),/取消/)

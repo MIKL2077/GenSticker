@@ -90,7 +90,9 @@ export async function createResultCollage(paths,{onProgress=()=>{},cancelled=()=
     try{
       const result=await remote()
       if(cancelled()){releaseTemporary(result.path);check()}
-      onProgress('动态拼图已完成');return result
+      if(result.animated){onProgress('动态拼图已完成');return result}
+      // Keep the existing higher-resolution JPEG layout for all-still selections.
+      releaseTemporary(result.path)
     }catch(error){
       check()
       if([401,403,409,410].includes(error.statusCode))throw error

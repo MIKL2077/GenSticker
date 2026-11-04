@@ -439,52 +439,8 @@ def register_routers():
 
     @app.get("/memes/{key}/example")
     def _(key: str):
-        """获取表情模版的示例图片"""
-        try:
-            meme = get_meme(key)
-        except NoSuchMeme as e:
-            raise HTTPException(status_code=e.status_code, detail=e.message)
-        
-        # 查找示例图片文件
-        meme_dir = Path(__file__).parent / "memes" / key
-        example_files = []
-        
-        # 检查可能的示例文件扩展名
-        for ext in ['.gif', '.jpg', '.jpeg', '.png']:
-            example_file = meme_dir / f"example{ext}"
-            if example_file.exists():
-                example_files.append(example_file)
-        
-        if not example_files:
-            raise HTTPException(
-                status_code=404, 
-                detail=f"表情模版 '{key}' 没有找到示例图片"
-            )
-        
-        # 返回第一个找到的示例图片
-        example_file = example_files[0]
-        
-        try:
-            with open(example_file, 'rb') as f:
-                content = f.read()
-            
-            # 根据文件扩展名确定媒体类型
-            if example_file.suffix.lower() in ['.jpg', '.jpeg']:
-                media_type = "image/jpeg"
-            elif example_file.suffix.lower() == '.png':
-                media_type = "image/png"
-            elif example_file.suffix.lower() == '.gif':
-                media_type = "image/gif"
-            else:
-                media_type = str(filetype.guess_mime(content)) or "application/octet-stream"
-            
-            return Response(content=content, media_type=media_type)
-            
-        except Exception as e:
-            raise HTTPException(
-                status_code=500,
-                detail=f"读取示例图片失败: {str(e)}"
-            )
+        from meme_generator.features.template_examples import example_response
+        return example_response(key)
 
     @app.get("/memes/categories")
     def _(compact: bool = False):

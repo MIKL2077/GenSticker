@@ -65,6 +65,7 @@ def new_work(method, path):
         path
         in {
             "/studio/jobs",
+            "/studio/jobs/collage",
             "/studio/templates",
             "/studio/templates/ai",
             "/studio/live/jobs",

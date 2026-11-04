@@ -7,7 +7,7 @@ PAGINATION:{templatesPerPage:9},CATEGORY_UI_TO_API:{all:'all',text:'text_only',i
 seedClientRecipes:()=>{},onThumbnailEvict:()=>()=>{},setThumbnailWindow:()=>{},getCategories:async()=>({all:keys,text_only:[],image_only:keys,mixed:[],cards:keys.map(key=>({key,name:'模板'+key,heat:key==='key00'?100:key==='key01'?90:key==='key02'?80:0,tags:[],params_type:{min_images:1,max_images:1,min_texts:0,max_texts:0,default_texts:[]},attribution:{source_url:'https://example.test/source'}}))}),
 getTemplateInfo:async key=>{infoCalls++;return {key,keywords:['详情']}},getTemplatePreviewPath:key=>{previews++;return new Promise(resolve=>pending.set(key,resolve))}}
 vm.createContext(context)
-vm.runInContext(fs.readFileSync(path.join(__dirname,'../src/composables/useTemplateData.js'),'utf8').replace(/^import .*$/gm,'').replace(/export /g,''),context)
+vm.runInContext(fs.readFileSync(path.join(__dirname,'../src/composables/useTemplateData.js'),'utf8').replace(/^import .*$/gm,'').replace(/export /g,'').replace(/^/, 'const yieldToUI=()=>Promise.resolve();\n'),context)
 const timeout=setTimeout(()=>{console.error("FAIL paging promise did not settle");process.exitCode=1},3000)
 ;(async()=>{
 const app=context.useTemplateData();await app.fetchMemeCategories()

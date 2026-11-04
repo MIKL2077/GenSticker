@@ -1,5 +1,5 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm')
-const source=fs.readFileSync(path.join(__dirname,'../src/services/generationUpload.js'),'utf8').replace(/^import .*$/gm,'').replace(/export /g,'')
+const source=fs.readFileSync(path.join(__dirname,'../src/services/generationUpload.js'),'utf8').replace(/^import .*$/gm,'').replace(/export /g,'').replace(/^/, 'const yieldToUI=()=>Promise.resolve();\n')
 ;(async()=>{
  const original=new Uint8ClampedArray([200,90,40,0,120,60,30,64,80,50,20,200,100,70,30,255]),exports=[],released=[],files=new Map()
  let animated=false,opaque=false,failMask=false,lastCanvas

@@ -8,6 +8,7 @@ from pydantic import ValidationError
 from meme_generator.features import expression_math as m, expression_controls as c, expression_runtime as rt
 from meme_generator.features.declarative import ExpressionControls,ExpressionRecipe
 from meme_generator.features.storage import asset_refs
+from meme_generator.memes.charpic import ascii_rows
 
 
 def portrait():
@@ -55,3 +56,10 @@ class ReviewedExpressionTests(unittest.TestCase):
             rt.composite(canvas,canvas,ExpressionRecipe.model_validate(recipe()),0,{})
             rt.composite(canvas,canvas,ExpressionRecipe.model_validate(recipe()|{'controls':{'mouth':'source'}}),0,{})
             self.assertEqual(old.call_count,1);self.assertEqual(new.call_count,1)
+
+    def test_ascii_alpha_composition_equals_white_background(self):
+        image=Image.new('RGBA',(60,60),(0,0,0,0));image.paste((0,0,0,255),(15,10,45,50))
+        white=Image.new('RGBA',image.size,'white');white.alpha_composite(image)
+        self.assertEqual(ascii_rows(image),ascii_rows(white))
+        self.assertEqual(set(''.join(ascii_rows(Image.new('RGB',(20,20),'black')))),{'@'})
+        self.assertEqual(set(''.join(ascii_rows(Image.new('RGB',(20,20),'white')))),{' '})

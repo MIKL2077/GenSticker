@@ -1,3 +1,4 @@
+import {yieldToUI} from '@/services/uiYield'
 import {registerTemporary,releaseTemporary,withStorageRecovery} from '@/services/ownedFiles'
 
 // Editing keeps the original PNG. Only the generation upload uses JPEG colour
@@ -38,12 +39,12 @@ export async function encodeGenerationImage(path) {
     ctx.drawImage(image,0,0,canvas.width,canvas.height)
     const pixels=ctx.getImageData(0,0,canvas.width,canvas.height),alpha=new Uint8Array(canvas.width*canvas.height)
     let transparent=false
-    for(let i=0;i<alpha.length;i++){alpha[i]=pixels.data[i*4+3];if(alpha[i]!==255)transparent=true;pixels.data[i*4+3]=255}
+    for(let i=0;i<alpha.length;i++){alpha[i]=pixels.data[i*4+3];if(alpha[i]!==255)transparent=true;pixels.data[i*4+3]=255;if(i%32768===32767)await yieldToUI()}
     ctx.putImageData(pixels,0,0)
     colourPath=await exportImage(canvas,'jpg')
     const encoded=await readImage(colourPath)
     if(!transparent)return {image:encoded,mask:''}
-    for(let i=0;i<alpha.length;i++)pixels.data[i*4]=pixels.data[i*4+1]=pixels.data[i*4+2]=alpha[i]
+    for(let i=0;i<alpha.length;i++){pixels.data[i*4]=pixels.data[i*4+1]=pixels.data[i*4+2]=alpha[i];if(i%32768===32767)await yieldToUI()}
     ctx.putImageData(pixels,0,0)
     maskPath=await exportImage(canvas,'png')
     return {image:encoded,mask:await readImage(maskPath)}

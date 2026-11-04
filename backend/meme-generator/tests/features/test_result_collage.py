@@ -11,7 +11,7 @@ from fastapi.testclient import TestClient
 from PIL import Image
 
 from meme_generator.account import current_user
-from meme_generator.features import recommend, result_collage as c
+from meme_generator.features import recommend, studio, result_collage as c
 from meme_generator.features.store import connect, root
 
 
@@ -33,7 +33,7 @@ class ResultCollageTests(unittest.TestCase):
                        (self.identifier,'alice','collage-test','photo','today','completed',time.time(),time.time()))
             for i,path in enumerate(self.paths):db.execute('INSERT INTO results VALUES(?,?,?,?,?,?,?,?)',(self.identifier,i,'template',1,'cat','[]',str(path),str(path)))
         db.close()
-        app=FastAPI();app.include_router(recommend.router)
+        app=FastAPI();app.include_router(recommend.router);app.include_router(studio.router)
         app.dependency_overrides[current_user]=lambda:{'id':self.who}
         self.client=TestClient(app);self.url='/recommend/jobs/'+self.identifier+'/collage'
 
@@ -111,3 +111,75 @@ class ResultCollageTests(unittest.TestCase):
             for i in range(image.n_frames):
                 image.seek(i);self.assertGreaterEqual(image.info['duration'],20);duration+=image.info['duration']
             self.assertEqual(duration,80)
+
+
+class StudioCollageTests(unittest.TestCase):
+    tearDown=ResultCollageTests.tearDown
+
+    def setUp(self):
+        ResultCollageTests.setUp(self)
+        self.ids=[format(i+1,'032x') for i in range(3)]
+        directory=root()/'studio_results';directory.mkdir()
+        db=studio.init()
+        with db:
+            for identifier,path in zip(self.ids,self.paths):
+                (directory/identifier).write_bytes(path.read_bytes())
+                db.execute("INSERT INTO studio_jobs(id,user_id,kind,idem,digest,payload,status,created,updated) VALUES(?,?,'manual',?,'digest','{}','completed',?,?)",(identifier,'alice',identifier,time.time(),time.time()))
+        db.close();self.studio_url='/studio/jobs/collage'
+
+    def test_queue_selection_order_and_animation(self):
+        response=self.client.post(self.studio_url,json={'job_ids':[self.ids[1],self.ids[0],self.ids[2]]})
+        self.assertEqual(response.status_code,200,response.text[:100])
+        self.assertEqual(response.headers['cache-control'],'private, no-store')
+        with Image.open(BytesIO(response.content)) as image:
+            self.assertEqual(image.info['loop'],0);self.assertGreater(image.n_frames,1)
+            self.assertEqual(image.convert('RGB').getpixel((92,92)),(0,255,0))
+            duration=0
+            for i in range(image.n_frames):image.seek(i);duration+=image.info['duration']
+            self.assertEqual(duration,600)
+
+    def test_queue_rejects_foreign_pending_expired_and_unsafe_ids(self):
+        payload={'job_ids':self.ids[:2]}
+        self.who='bob';self.assertEqual(self.client.post(self.studio_url,json=payload).status_code,404)
+        self.who='alice'
+        for ids in [[self.ids[0]],[self.ids[0]]*2,['../etc/passwd',self.ids[0]],self.ids*4,[True,self.ids[0]]]:
+            self.assertEqual(self.client.post(self.studio_url,json={'job_ids':ids}).status_code,422)
+        self.assertEqual(self.client.post(self.studio_url,json={**payload,'url':'https://example.test'}).status_code,422)
+        db=studio.init()
+        with db:db.execute("UPDATE studio_jobs SET status='running' WHERE id=?",(self.ids[0],))
+        db.close();self.assertEqual(self.client.post(self.studio_url,json=payload).status_code,409)
+        db=studio.init()
+        with db:db.execute("UPDATE studio_jobs SET status='completed',created=? WHERE id=?",(time.time()-8*86400,self.ids[0]))
+        db.close();self.assertEqual(self.client.post(self.studio_url,json=payload).status_code,410)
+
+    def test_queue_missing_symlink_corrupt_and_deleted_during_composition(self):
+        payload={'job_ids':self.ids[:2]};path=root()/'studio_results'/self.ids[0]
+        path.unlink();self.assertEqual(self.client.post(self.studio_url,json=payload).status_code,410)
+        path.symlink_to(self.paths[0]);self.assertEqual(self.client.post(self.studio_url,json=payload).status_code,410)
+        path.unlink();path.write_bytes(b'bad');self.assertEqual(self.client.post(self.studio_url,json=payload).status_code,422)
+        path.write_bytes(self.paths[0].read_bytes())
+        original=c.compose_serial
+        def delete_during_compose(paths):
+            raw=original(paths);db=studio.init()
+            with db:db.execute('DELETE FROM studio_jobs WHERE id=?',(self.ids[0],))
+            db.close();return raw
+        with patch.object(c,'compose_serial',side_effect=delete_during_compose):
+            self.assertEqual(self.client.post(self.studio_url,json=payload).status_code,404)
+
+    def test_queue_requires_login(self):
+        self.client.app.dependency_overrides.clear()
+        self.assertEqual(self.client.post(self.studio_url,json={'job_ids':self.ids[:2]}).status_code,401)
+
+    def test_queue_all_stills_and_shared_generation_rate_limit(self):
+        for identifier in self.ids:
+            Image.new('RGB',(20,40),'red').save(root()/'studio_results'/identifier,'PNG')
+        response=self.client.post(self.studio_url,json={'job_ids':self.ids})
+        self.assertEqual(response.status_code,200)
+        with Image.open(BytesIO(response.content)) as image:self.assertEqual(image.n_frames,1)
+        from meme_generator.features.recommend import admit_generation
+        db=studio.init()
+        with db:
+            db.execute('BEGIN IMMEDIATE')
+            for i in range(7):admit_generation(db,'alice','other-generation-'+str(i),time.time())
+        db.close()
+        self.assertEqual(self.client.post(self.studio_url,json={'job_ids':self.ids}).status_code,429)

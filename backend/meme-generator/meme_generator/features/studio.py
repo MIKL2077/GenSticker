@@ -23,6 +23,8 @@ from .storage import write_bytes
 from .declarative import TemplateSpec, render
 
 router = APIRouter(prefix='/studio')
+from .result_collage import studio_router as collage_router
+router.include_router(collage_router)
 TTL = 7 * 86400
 normalization_slots=threading.BoundedSemaphore(2)
 

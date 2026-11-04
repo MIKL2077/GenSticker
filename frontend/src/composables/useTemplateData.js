@@ -1,3 +1,4 @@
+import {yieldToUI} from '@/services/uiYield'
 import { ref, computed, onUnmounted } from 'vue'
 import { PAGINATION, CATEGORY_UI_TO_API } from '@/constants'
 import { getCategories, getTemplateInfo, getTemplatePreviewPath, setThumbnailWindow, onThumbnailEvict } from '@/services/memeService'
@@ -24,6 +25,8 @@ export function useTemplateData(showStatusMessage) {
   const currentPage = ref(1)
   const sortMode = ref('hot')
   const searchQuery=ref('')
+  let catalogEpoch=0
+  const searchIndex=new Map()
   const normalizeSearch=value=>String(value||'').normalize('NFKC').toLowerCase().replace(/\s+/g,' ').trim()
   const searchStopwords=new Set(['的','表情','表情包','模板'])
   let searchVocabulary=[]
@@ -61,7 +64,7 @@ export function useTemplateData(showStatusMessage) {
     const terms=normalizeSearch(searchQuery.value).split(/[\s,，、;；]+/).filter(Boolean).map(term=>({term,parts:joinedSearchTerms(term)}))
     if(terms.length)keys=keys.filter(key=>{
       const d=templateDetails.value.get(key)||{}
-      const text=normalizeSearch([key,d.templateId,d.name,...(d.keywords||[]),...(d.tags||[]),d.animated?'动图 GIF 动态':'静图 静态'].join(' '))
+      const text=searchIndex.get(key)||normalizeSearch([key,d.templateId,d.name,...(d.keywords||[]),...(d.tags||[]),d.animated?'动图 GIF 动态':'静图 静态'].join(' '))
       return terms.every(({term,parts})=>text.includes(term)||(parts.length>0&&parts.every(part=>text.includes(part))))
     })
     return [...keys].sort((a,b)=>{
@@ -109,29 +112,35 @@ export function useTemplateData(showStatusMessage) {
     }
   }))
 
-  const applyCatalog = data => {
+  const applyCatalog = async data => {
+      const epoch=++catalogEpoch,nextDetails=new Map(templateDetails.value),nextSearch=new Map()
+      let processed=0
+      const vocabulary=new Set(['动图','动态','gif','静图','静态','猫','狗','哭','笑',...searchStopwords])
       seedClientRecipes(data.client)
       const localKeys=new Set((data.client?.recipes || []).map(r=>r.key))
-      categoryKeys.value = {
-        all: Array.isArray(data.all) ? data.all : [],
-        text_only: Array.isArray(data.text_only) ? data.text_only : [],
-        image_only: Array.isArray(data.image_only) ? data.image_only : [],
-        mixed: Array.isArray(data.mixed) ? data.mixed : [],
-      }
       for (const card of data.cards || []) {
-        const existing = templateDetails.value.get(card.key) || { key: card.key, previewImage: null, isLoadingPreview: true }
+        const existing = { ...(nextDetails.get(card.key) || { key: card.key, previewImage: null, isLoadingPreview: true }) }
         if(existing.version!==undefined && existing.version!==card.version) {
           previewImageCache.value.delete(card.key);loadingStates.value.delete(card.key)
           existing.previewImage=null;existing.isLoadingPreview=true
           existing.attribution=null;existing.metadataLoaded=false
         }
         const params=card.params_type
-        templateDetails.value.set(card.key, { ...existing, name:card.name, animated:!!card.animated, faceBlend:!!card.face_blend, featuredTrial:!!card.featured_trial, inputHint:card.input_hint || '', keywords:card.keywords || [], tags:card.tags || [], heat:card.heat || 0, createdAt:card.created_at || 0, creator:card.creator, counts:card.counts || {}, localCapable:localKeys.has(card.key), ...(params ? {metadataLoaded:!!card.attribution || !!existing.attribution?.source_url, templateId:card.template_id, version:card.version, attribution:card.attribution || existing.attribution || {}, imageCount:`${params.min_images}-${params.max_images}`, textCount:`${params.min_texts}-${params.max_texts}`, defaultTexts:params.default_texts || []} : {}) })
+        nextDetails.set(card.key, { ...existing, name:card.name, animated:!!card.animated, faceBlend:!!card.face_blend, featuredTrial:!!card.featured_trial, inputHint:card.input_hint || '', keywords:card.keywords || [], tags:card.tags || [], heat:card.heat || 0, createdAt:card.created_at || 0, creator:card.creator, counts:card.counts || {}, localCapable:localKeys.has(card.key), ...(params ? {metadataLoaded:!!card.attribution || !!existing.attribution?.source_url, templateId:card.template_id, version:card.version, attribution:card.attribution || existing.attribution || {}, imageCount:`${params.min_images}-${params.max_images}`, textCount:`${params.min_texts}-${params.max_texts}`, defaultTexts:params.default_texts || []} : {}) })
+        for(const word of [card.name,...(card.keywords||[]),...(card.tags||[])]){const value=normalizeSearch(word);if((value.length>=2&&value.length<=40)||['猫','狗','哭','笑','的'].includes(value))vocabulary.add(value)}
+        nextSearch.set(card.key,normalizeSearch([card.key,card.template_id,card.name,...(card.keywords||[]),...(card.tags||[]),card.animated?'动图 GIF 动态':'静图 静态'].join(' ')))
+        if(++processed%32===0){await yieldToUI();if(epoch!==catalogEpoch)return false}
       }
-      searchVocabulary=[...new Set(['动图','动态','gif','静图','静态','猫','狗','哭','笑',...searchStopwords,
-        ...(data.cards||[]).flatMap(card=>[card.name,...(card.keywords||[]),...(card.tags||[])])]
-        .map(normalizeSearch).filter(word=>word.length>=2&&word.length<=40||['猫','狗','哭','笑','的'].includes(word)))]
-        .sort((a,b)=>b.length-a.length||a.localeCompare(b))
+      if(epoch!==catalogEpoch)return false
+      categoryKeys.value = {
+        all: Array.isArray(data.all) ? data.all : [],
+        text_only: Array.isArray(data.text_only) ? data.text_only : [],
+        image_only: Array.isArray(data.image_only) ? data.image_only : [],
+        mixed: Array.isArray(data.mixed) ? data.mixed : [],
+      }
+      templateDetails.value=nextDetails
+      searchIndex.clear();for(const [key,value] of nextSearch)searchIndex.set(key,value)
+      searchVocabulary=[...vocabulary].sort((a,b)=>b.length-a.length||(a<b?-1:a>b?1:0))
       categoryLoadedPages.value.clear()
       categories.value = categories.value.map(c => {
         const apiKey = CATEGORY_UI_TO_API[c.key]
@@ -141,14 +150,15 @@ export function useTemplateData(showStatusMessage) {
       const publicKeys=new Set(data.all || [])
       for(const [key,detail] of templateDetails.value)if(!detail.ownPreview && !publicKeys.has(key)){templateDetails.value.delete(key);previewImageCache.value.delete(key)}
       currentPage.value=Math.min(currentPage.value,totalPages.value)
+      return true
   }
 
   const fetchMemeCategories = async (force=false) => {
     try {
       isLoadingTemplates.value = true
       loadError.value = ''
-      const data = await getCategories(force, data=>{applyCatalog(data);ensurePageLoaded(selectedCategory.value,currentPage.value).then(()=>prefetchAdjacent(selectedCategory.value,currentPage.value))})
-      applyCatalog(data)
+      const data = await getCategories(force, async data=>{if(await applyCatalog(data))await ensurePageLoaded(selectedCategory.value,currentPage.value);prefetchAdjacent(selectedCategory.value,currentPage.value)})
+      await applyCatalog(data)
     } catch (error) {
       console.error('获取分类失败:', error)
       loadError.value = `${error.message || error.errMsg || '模板暂时无法加载，请检查网络后重试'}${error.code ? '（'+error.code+'）' : ''}`

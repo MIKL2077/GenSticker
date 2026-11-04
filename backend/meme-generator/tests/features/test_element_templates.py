@@ -17,6 +17,31 @@ from meme_generator.features.store import root
 
 
 class ElementTemplateTests(unittest.TestCase):
+    def test_thick_caption_outlines_are_removed_with_an_explicit_offline_margin(self):
+        image = Image.new('RGB', (240, 100), '#efc78b')
+        ImageDraw.Draw(image).text((25, 20), '阿们', font=font(40), fill='white',
+                                   stroke_width=6, stroke_fill='black')
+        data = BytesIO()
+        image.save(data, 'PNG')
+        plan = [[{'type': 'text', 'slot': 0, 'box': [10, 10, 170, 80],
+                  'value': '阿们', 'font_size': 40, 'color': '#ffffff', 'text_mask': 'glyph'}]]
+        spec, assets, _ = compile_elements(data.getvalue(), plan, ['阿们'],
+                                           caption_margin=8, caption_tolerance=60)
+        directory = root() / 'template_assets'
+        directory.mkdir(exist_ok=True)
+        for digest, raw in assets.items():
+            (directory / (digest+'.png')).write_bytes(raw)
+        with Image.open(render(spec, [], [''])) as blank:
+            pixels = np.array(blank.convert('RGB'))
+            self.assertEqual(int((pixels.max(axis=2) < 100).sum()), 0,
+                             'no black source outline survives the blank-caption check')
+            self.assertTrue(np.array_equal(pixels[:, 190:], np.array(image)[:, 190:]))
+        with Image.open(render(spec, [], ['阿们'])) as default:
+            self.assertTrue(np.array_equal(np.array(default.convert('RGB')), np.array(image)))
+        for margin in [-1, 20, 2.5]:
+            with self.assertRaises(ValueError):
+                compile_elements(data.getvalue(), plan, ['阿们'], caption_margin=margin)
+
     def setUp(self):
         self.directory=tempfile.TemporaryDirectory()
         self.env=patch.dict(os.environ,{'GENSTICKER_STATE_DIR':self.directory.name})

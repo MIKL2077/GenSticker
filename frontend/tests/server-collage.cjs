@@ -14,6 +14,8 @@ for(const name of ['collageGif.js','recommendService.js'])vm.runInContext(fs.rea
  assert.equal(result.path,'/server.gif');assert.equal(result.animated,true);assert.equal(result.duration,300)
  assert.equal(requests[0].header.Authorization,'Bearer token');assert.equal(requests[0].responseType,'arraybuffer')
  assert.deepEqual(Array.from(requests[0].data.slots),[3,0]);assert.equal(requests[0].timeout,60000)
+ const queue=await context.createStudioCollage(['b'.repeat(32),'a'.repeat(32)])
+ assert.equal(queue.path,'/server.gif');assert.equal(requests[1].url,'https://example.test/api/studio/jobs/collage');assert.deepEqual(Array.from(requests[1].data.job_ids),['b'.repeat(32),'a'.repeat(32)])
  context.uni.request=o=>{o.success({statusCode:401,data:new ArrayBuffer(0)});return {}}
  await assert.rejects(context.createRecommendationCollage('job-id',[0]),error=>error.statusCode===401)
  context.uni.request=o=>{o.success({statusCode:200,data:Uint8Array.of(71,73,70).buffer});return {}}

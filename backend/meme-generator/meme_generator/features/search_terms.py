@@ -5,6 +5,15 @@ import unicodedata
 # Search equivalents and source signals. Do not recursively expand generated
 # metadata keywords: a work template must not drift into every nearby emotion.
 GROUPS = [
+    ('奶龙 奶龍 小七和奶龙 奶龙与小七 nailong nailoong', ('奶龙','奶龍','nailong','nailoong','nai loong')),
+    ('主内 主內 基督徒 基督教 教会 教會 团契 團契 christian church', ('主内','主內','基督徒','基督教','教会','教會','团契','團契','christian','church')),
+    ('耶稣 耶穌 主耶稣 主耶穌 jesus', ('耶稣','耶穌','jesus')),
+    ('阿们 阿門 阿們 amen', ('阿们','阿門','阿們','amen')),
+    ('感谢主 感謝主 感恩主 赞美主 讚美主 哈利路亚 哈利路亞 hallelujah', ('感谢主','感謝主','感恩主','赞美主','讚美主','哈利路亚','哈利路亞','hallelujah')),
+    ('祷告 禱告 代祷 代禱 prayer pray', ('祷告','禱告','代祷','代禱','prayer','pray')),
+    ('主日 主日崇拜 礼拜 禮拜 sunday worship', ('主日','主日崇拜','sunday worship')),
+    ('平安 主内平安 主內平安 peace', ('主内平安','主內平安')),
+    ('中文 汉字 漢字 汉语 漢語 chinese', ('中文','汉字','漢字','汉语','漢語','chinese')),
     ('开心 快乐 高兴 欢乐 哈哈 大笑 笑死 乐呵 happy laugh', ('开心','快乐','高兴','哈哈','大笑','欢呼','狂喜','happy','laugh','笑死')),
     ('晚安 睡觉 困了 好梦 安睡 犯困 瞌睡 睡眠 night sleep', ('晚安','睡觉','困了','好梦','睡了','瞌睡','犯困','sleep')),
     ('你好 嗨 哈喽 hello hi 打招呼 问好 挥手 招手', ('你好','哈喽','hello','招手','挥手','打招呼')),

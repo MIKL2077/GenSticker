@@ -19,8 +19,14 @@ def fingerprint(spec):
     return hashlib.sha256(json.dumps(spec,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()).hexdigest()
 
 
-def compile_elements(raw, plans, defaults):
+def compile_elements(raw, plans, defaults, *, caption_margin=2, caption_tolerance=110):
     """plans contains one list of face/text layers per decoded source frame."""
+    # Offline controls only: compiled patches retain their hashes and existing
+    # runtime recipes are unchanged. Thick outlines need more than two pixels.
+    if type(caption_margin) is not int or not 2 <= caption_margin <= 12:
+        raise ValueError('caption removal margin must be between 2 and 12 pixels')
+    if type(caption_tolerance) is not int or not 10 <= caption_tolerance <= 110:
+        raise ValueError('caption color tolerance must be between 10 and 110')
     assets={}
     def add(image):
         output=BytesIO();image.save(output,'PNG');data=output.getvalue()
@@ -64,8 +70,9 @@ def compile_elements(raw, plans, defaults):
                     if layer.text_mask=='glyph':
                         region=pixels[y:y+h,x:x+w]
                         target=np.array([int(layer.color[k:k+2],16) for k in (1,3,5)])
-                        ink=np.linalg.norm(region.astype(float)-target,axis=2)<110
-                        local=cv2.dilate(ink.astype('uint8')*255,np.ones((5,5),dtype='uint8'))
+                        ink=np.linalg.norm(region.astype(float)-target,axis=2)<caption_tolerance
+                        edge=2*caption_margin+1
+                        local=cv2.dilate(ink.astype('uint8')*255,np.ones((edge,edge),dtype='uint8'))
                         if np.mean(local>0)<.005:raise ValueError('source caption ink not found; review its color')
                         mask[y:y+h,x:x+w]=local
                     layer=layer.model_copy(update={'original_asset':add(image.crop((x,y,x+w,y+h)))})
