@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-10-30T17:35:51+08:00",
+  "scope": "Read-only environment observation and upstream release metadata; no InSwapper inference benchmark",
+  "repository": {
+    "directory": "source",
+    "branch": "codex/rebuild-meme-slots",
+    "head": "ed6dcfb",
+    "preexisting_uncommitted_changes": true
+  },
+  "local": {
+    "platform": "Darwin arm64",
+    "cpu": "Apple M4",
+    "memory_bytes": 34359738368,
+    "python": "3.12.14",
+    "node": "24.13.0",
+    "onnxruntime": "1.31.0",
+    "opencv_python": "4.14.0.94",
+    "numpy": "2.3.5",
+    "pillow": "12.3.0",
+    "insightface_installed": false,
+    "torch_in_application_venv": false
+  },
+  "server": {
+    "platform": "Linux-6.8.0-124-generic-x86_64-with-glibc2.39",
+    "cpu_count": 4,
+    "cpu": "Intel(R) Xeon(R) Gold 6148 CPU @ 2.40GHz",
+    "memory_total_kib": 16372872,
+    "memory_available_kib": 11342436,
+    "swap_total_kib": 0,
+    "load_average": [0.25, 0.10, 0.02],
+    "nvidia_device_nodes": [],
+    "pci_display": "VGA compatible controller: Device 1234:1111 (rev 02)",
+    "root_disk_available_human": "50G",
+    "runtime_python": "3.12.3",
+    "runtime_packages_api_and_worker": {
+      "onnxruntime": "1.31.0",
+      "opencv_python": "4.14.0.94",
+      "numpy": "2.5.4",
+      "pillow": "12.3.0",
+      "insightface": null,
+      "onnxruntime_gpu": null,
+      "torch": null
+    },
+    "slice": {
+      "cpu_quota_percent": 200,
+      "memory_current_bytes": 2809237504,
+      "memory_peak_bytes": 3161022464,
+      "memory_high_bytes": 3221225472,
+      "memory_max_bytes": 4294967296,
+      "tasks_max": 192
+    },
+    "api": {
+      "active_state": "active",
+      "sub_state": "running",
+      "abnormal_restarts": 0,
+      "memory_current_bytes": 1127911424,
+      "memory_peak_bytes": 1205264384,
+      "memory_max_bytes": 2147483648
+    },
+    "worker": {
+      "active_state": "active",
+      "sub_state": "running",
+      "abnormal_restarts": 0,
+      "memory_current_bytes": 1283399680,
+      "memory_peak_bytes": 1284341760,
+      "memory_max_bytes": 2147483648
+    },
+    "health": {"status": "ok", "templates": 967}
+  },
+  "review_state": {
+    "published": 967,
+    "target": 1500,
+    "approved_this_round": 24,
+    "published_this_round": 8,
+    "approved_waiting_publication": 16,
+    "revisions_pending": 14,
+    "rejected": 12,
+    "held": 2,
+    "valid_drafts_including_published": 50,
+    "valid_draft_recipe_frames": {"min": 3, "median": 24, "max": 40, "sum": 1294}
+  },
+  "upstream": {
+    "repository": "https://github.com/deepinsight/insightface",
+    "master_sha": "c6c3af7bd2d0a0bf4b78c78437357f3521aa5d52",
+    "master_commit_at": "2026-10-19T07:54:01Z",
+    "release_api": "https://api.github.com/repos/deepinsight/insightface/releases/tags/model-zoo",
+    "assets": [
+      {
+        "name": "inswapper_128.onnx",
+        "size_bytes": 554253681,
+        "release_declared_sha256": "e4a3f08c753cb72d04e10aa0f7dbe3deebbf39567d4ead6dce08e98aa49e16af",
+        "url": "https://github.com/deepinsight/insightface/releases/download/model-zoo/inswapper_128.onnx"
+      },
+      {
+        "name": "buffalo_l.zip",
+        "size_bytes": 288621354,
+        "release_declared_sha256": "80ffe37d8a5940d59a7384c201a2a38d4741f2f3c51eef46ebb28218a7b0ca2f",
+        "url": "https://github.com/deepinsight/insightface/releases/download/model-zoo/buffalo_l.zip"
+      }
+    ],
+    "assets_downloaded_and_locally_hashed": false
+  },
+  "limitations": [
+    "MemoryCurrent includes cgroup-accounted cache and is not process RSS.",
+    "Resource values are point-in-time observations, not reserved inference capacity.",
+    "No InSwapper outputs, runtime latency, peak inference memory or concurrency measurements were produced.",
+    "Release-declared digests were read from GitHub metadata; no model file hash was calculated locally.",
+    "No server configuration, dependency, service, production data or application code was changed."
+  ]
+}
