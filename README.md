@@ -2,12 +2,12 @@
 
 GenSticker 的微信小程序线上名称为 **损友表情生成器**。你可以套用模板制作表情包、上传照片自动搭配九张表情、把视频转成 GIF，也可以制作、私藏和发布自己的模板。
 
-本文按 **2026-11-04** 的源码和线上接口整理。线上已有可使用的小程序；当前开发分支为 `codex/rebuild-meme-slots`，分支中的新功能仍需构建、真机验证和上传微信后才会进入线上前端。
+本文按 **2026-11-04** 的源码和线上接口整理。线上已有可使用的小程序；最新代码及 GitHub 默认分支为 `main`，`template-archive` 单独保存模板归档。本轮新功能已构建并通过开发者工具验证，仍需真机验收和上传微信后才会进入线上前端。
 
 - 线上模板库：**1,010 个**，仅图片 355、图文混合 163、仅文字 492，其中 433 个支持动画；照片推荐可用池为 460 个。数量以 `/memes/categories` 和 `/recommend/catalog` 实时返回为准。
 - 最近入库：奶龙动图 6 项、中文日常 7 项、主内梗图 3 项；本批 16 项按逐项评审通过后发布，4 项否决未发布。
 - 后端已部署完整示例图接口和搜索别名扩充。模板示例直接分享、停止小程序本机模型初始化等前端改动已在源码中实现，尚待本轮新包真机验收。
-- 当前微信开发者工具受本机 Reqable 代理证书链问题影响，无法生成本轮新预览码；此前的预览码不代表当前源码。初始验收与整改记录见 [测试报告](docs/testing/REPORT_2026-10-20.md)和[整改报告](docs/testing/REMEDIATION_2026-10-20.md)。
+- 当前微信开发者工具的网络证书问题已恢复，已成功授权 AppID、生成本轮预览码，并在基础库 3.17.5、合法域名校验开启的环境下完成七个页面及搜索、示例分享、编辑、拼图验证。实体手机的帧率、真实保存／分享仍待验收。逐项覆盖及性能优化顺序见 [功能与性能报告](docs/testing/FUNCTION_AND_PERFORMANCE_2026-11-04.md)。
 
 本文先介绍前端用户功能，再列出后端能力、开发测试、部署和数据规则。历史试验、已撤销模板批次与待审核草稿均不计入已上线数量。
 
@@ -200,7 +200,7 @@ skills/meme-to-template/      模板作者工作流和配方约束
 安装 Node.js、npm 和微信开发者工具，并登录微信开发者工具，开启官方 CLI 服务端口。
 
 ```sh
-git clone --branch codex/rebuild-meme-slots git@github.com:MIKL2077/GenSticker.git
+git clone --branch main git@github.com:MIKL2077/GenSticker.git
 cd GenSticker/frontend
 npm ci
 npm run open:mp-weixin
@@ -225,6 +225,7 @@ npm run build:mp-weixin
 npm run test:mp-weixin-collage -- --output-dir /tmp/gensticker-collage-proof
 npm run test:mp-weixin-queue-collage -- /tmp/gensticker-queue-collage-proof
 npm run test:mp-weixin-template-features -- /tmp/gensticker-template-features-proof
+npm run test:mp-weixin-performance -- /tmp/gensticker-performance-proof
 ```
 
 拼图验收脚本使用真实微信画布和文件系统，校验 GIF 帧数、完整时长、预览、缓存复用和临时文件清理；输入下载、服务器调用、相册保存和分享接口使用测试替身。模板示例验收脚本真实下载已部署接口的 GIF／PNG，检查文件格式、按钮、搜索和页面切换，并统计原生模型初始化次数及计时器间隔；分享菜单使用替身。脚本不向好友发送测试图片，也不写入真实相册。实体 iPhone／Android 的流畅度、实际保存和接收效果需另做真机验收。历史结果见[发布与 GIF 拼图验收](docs/testing/REVIEWED_TEMPLATES_AND_COLLAGE_2026-10-31.md)和[示例分享记录](docs/testing/TEMPLATE_FEATURES_2026-11-03.md)。
@@ -264,7 +265,7 @@ npm run dev:h5
 
 ## 测试
 
-2026-11-04 整理推送前的完整隔离回归已通过：41 个前端测试脚本、237 个后端测试（账号 6 项、功能 231 项），以及微信小程序、H5 构建。微信新功能运行时与实体手机验收仍受前述本机工具问题影响，不包含在该通过结论中。
+2026-11-04 完整隔离回归已通过：41 个前端测试脚本、237 个后端测试（账号 6 项、功能 231 项），以及微信小程序、H5 构建。补齐 Linux Skia 所需的 EGL 运行库后，GitHub Actions 的 regression 任务也通过；dependency-security 任务仍因依赖公告失败，不能将整个工作流视为全绿。微信开发者工具的七个页面、搜索、示例、编辑、两处拼图及交互计时验证通过，实体手机验收不包含在此结论中。详见 [逐项覆盖与实测数据](docs/testing/FUNCTION_AND_PERFORMANCE_2026-11-04.md)。
 
 在仓库根目录，使用装有后端依赖的 Python 运行：
 

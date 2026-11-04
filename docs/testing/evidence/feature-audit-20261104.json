@@ -1,0 +1,600 @@
+{
+  "date": "2026-11-04",
+  "product": "损友表情生成器",
+  "branch": "main",
+  "retainedDataBranch": "template-archive",
+  "applicationBaseline": "7be0e462f4370b8172f7aa9ebb31a7d46b5f2fca",
+  "regression": {
+    "status": "passed",
+    "revision": "be3137238fdd72f972a6506c1017d1e67a36b667",
+    "time_utc": "2026-11-04T03:44:35.704713+00:00",
+    "python": "3.12.15",
+    "frontendScripts": 41,
+    "backendCases": 237,
+    "accountCases": 6,
+    "featureCases": 231,
+    "builds": [
+      "mp-weixin",
+      "h5"
+    ],
+    "steps": 45,
+    "workflow": "https://github.com/MIKL2077/GenSticker/actions/runs/41768553890"
+  },
+  "native": {
+    "startup": {
+      "status": "passed",
+      "templateCount": 9,
+      "pages": [
+        "index",
+        "live",
+        "my",
+        "recommend",
+        "queue",
+        "create",
+        "library"
+      ],
+      "videoPickerCount": 1,
+      "liveGuidance": true,
+      "runtimeErrors": [],
+      "domainValidation": true,
+      "performanceScope": "WeChat simulator entries; not physical-device or SDK-wait wall time",
+      "performanceEntries": [
+        {
+          "name": "firstRender",
+          "type": "render",
+          "startTime": 1793763012121,
+          "duration": 110
+        },
+        {
+          "name": "firstPaint",
+          "type": "render",
+          "startTime": 1793763012132
+        },
+        {
+          "name": "firstContentfulPaint",
+          "type": "render",
+          "startTime": 1793763012264
+        },
+        {
+          "name": "largestContentfulPaint",
+          "type": "render",
+          "startTime": 1793763012284
+        }
+      ],
+      "sdkVersion": "3.17.5"
+    },
+    "examples": {
+      "status": "passed",
+      "cases": [
+        {
+          "key": "auto_story_17614d3aefdd49fe5dbd7c0a",
+          "bytes": 349182,
+          "frames": 24,
+          "width": 240,
+          "height": 240
+        },
+        {
+          "key": "erised_mirror",
+          "bytes": 521251
+        }
+      ],
+      "timing": {
+        "nativeModelInitializations": 0,
+        "samples": 428,
+        "maxTimerGapMs": 100,
+        "p95TimerGapMs": 52
+      },
+      "runtimeErrors": [],
+      "sharing": "native menu mocked; full images downloaded from deployed API",
+      "scope": "WeChat simulator; physical-device frame rates still require phone verification"
+    },
+    "editor": {
+      "status": "passed",
+      "domainValidation": true,
+      "source": "packaged public logo; picker fixture only",
+      "sharedSubjectStage": true,
+      "tools": [
+        "flip",
+        "rotate",
+        "background"
+      ],
+      "undo": true,
+      "restore": true,
+      "pngSubjectConfirmation": true,
+      "physicalDeviceInference": false,
+      "runtimeErrors": []
+    },
+    "search": {
+      "status": "passed",
+      "sdk": "3.17.5",
+      "baseline": 1010,
+      "queries": [
+        {
+          "query": "哈基米",
+          "count": 117,
+          "visible": [
+            {
+              "name": "白猫捂脸热舞",
+              "animated": true,
+              "key": "auto_story_17614d3aefdd49fe5dbd7c0a"
+            },
+            {
+              "name": "白猫抖动肚子",
+              "animated": true,
+              "key": "auto_story_b93490c179db01e736f90945"
+            },
+            {
+              "name": "猫咪躲在角落",
+              "animated": true,
+              "key": "auto_story_953a9d204656d2ef4d3b7f12"
+            },
+            {
+              "name": "猫咪大口嚎叫",
+              "animated": true,
+              "key": "auto_story_dd74fcdfab46087c6cf93df7"
+            },
+            {
+              "name": "狸花猫一边抖一边瞪眼",
+              "animated": true,
+              "key": "tenor_face_70a150aa598c852c6ef7001c"
+            },
+            {
+              "name": "猫咪摇头晃脑",
+              "animated": true,
+              "key": "auto_story_01bc058249d9f12b1d905336"
+            },
+            {
+              "name": "猫咪打领带",
+              "animated": false,
+              "key": "auto_story_42515fb0da8cebb5925f4192"
+            },
+            {
+              "name": "猫咪揉脸惊讶",
+              "animated": true,
+              "key": "auto_story_833921d81e1695da8cec5aa6"
+            },
+            {
+              "name": "中文猫猫懂了",
+              "animated": false,
+              "key": "auto_theme_z01_0e63fe77a271"
+            }
+          ]
+        },
+        {
+          "query": "ASCII",
+          "count": 1,
+          "visible": [
+            {
+              "name": "字符画",
+              "animated": false,
+              "key": "charpic"
+            }
+          ]
+        },
+        {
+          "query": "社畜",
+          "count": 12,
+          "visible": [
+            {
+              "name": "假期结束上班喝茶",
+              "animated": false,
+              "key": "auto_story_c47c6e676a9c5823e862039a"
+            },
+            {
+              "name": "无心工作不存在",
+              "animated": true,
+              "key": "auto_story_a3f5e9a3cb9a16e1c8b5e054"
+            },
+            {
+              "name": "怎么明天还要上班啊",
+              "animated": false,
+              "key": "auto_0e403816507d6da75fe3fbf2"
+            },
+            {
+              "name": "打工人续命",
+              "animated": false,
+              "key": "auto_scene_work"
+            },
+            {
+              "name": "扶我起来还能工作",
+              "animated": true,
+              "key": "auto_story_0e2075e560e9600dcca925c2"
+            },
+            {
+              "name": "只想工作不想放假",
+              "animated": true,
+              "key": "auto_story_5985d4ed6a781e7e036a503c"
+            },
+            {
+              "name": "好好工作才有钱玩",
+              "animated": true,
+              "key": "auto_story_71b57827847ecf6f19f1a7fb"
+            },
+            {
+              "name": "小女孩不想上班",
+              "animated": true,
+              "key": "auto_story_8d2081e5d6f15c62c180c78f"
+            },
+            {
+              "name": "你们聊我要工作了",
+              "animated": true,
+              "key": "auto_story_ab518a92e38b514de1938297"
+            }
+          ]
+        },
+        {
+          "query": "猫咪快乐动图",
+          "count": 3,
+          "visible": [
+            {
+              "name": "橘猫笑到合不拢嘴",
+              "animated": true,
+              "key": "tenor_face_4ecbb4201a7d1b81cb476b3d"
+            },
+            {
+              "name": "熊猫抱头大笑",
+              "animated": true,
+              "key": "auto_story_b2a91be6315dd6b262bbeded"
+            },
+            {
+              "name": "橘猫正面开怀大笑",
+              "animated": true,
+              "key": "tenor_face_326d501a23e85e9b6fc0e66c"
+            }
+          ]
+        },
+        {
+          "query": "狗，动图",
+          "count": 34,
+          "visible": [
+            {
+              "name": "汪蛋手舞足蹈",
+              "animated": true,
+              "key": "auto_story_30c804cb091cf9f0f0df9f2d"
+            },
+            {
+              "name": "汪蛋冰棒舔舔",
+              "animated": true,
+              "key": "auto_story_7808d6e64c84395b35e977b4"
+            },
+            {
+              "name": "柴犬手绘害羞",
+              "animated": true,
+              "key": "auto_story_9967284a70219e69fa30828d"
+            },
+            {
+              "name": "汪蛋趴桌生闷气",
+              "animated": true,
+              "key": "auto_story_d734157008313c89acce28ac"
+            },
+            {
+              "name": "汪蛋吃番茄",
+              "animated": true,
+              "key": "auto_story_0dd9d695a6cd0234df990009"
+            },
+            {
+              "name": "汪蛋仰天叹气",
+              "animated": true,
+              "key": "auto_story_39204a5853d3578cfbd506b8"
+            },
+            {
+              "name": "汪蛋左右看",
+              "animated": true,
+              "key": "auto_story_22a6b3805881fb5a35a335c0"
+            },
+            {
+              "name": "柴犬爱心发射",
+              "animated": true,
+              "key": "auto_story_c900a27f6ab3bdd502f49758"
+            },
+            {
+              "name": "汪蛋献花",
+              "animated": true,
+              "key": "auto_story_8060429b61bea0ad088f8d42"
+            }
+          ]
+        },
+        {
+          "query": "ikun",
+          "count": 2,
+          "visible": [
+            {
+              "name": "老公蔡徐坤自我介绍",
+              "animated": false,
+              "key": "auto_story_5d05f08a358a8525c5248d02"
+            },
+            {
+              "name": "蔡徐坤满脸写着开心",
+              "animated": false,
+              "key": "auto_story_9e3b54d5fb9375b647cf3279"
+            }
+          ]
+        },
+        {
+          "query": "不开心",
+          "count": 11,
+          "visible": [
+            {
+              "name": "无语",
+              "animated": false,
+              "key": "speechless"
+            },
+            {
+              "name": "柯南无奈眼神",
+              "animated": false,
+              "key": "auto_story_9ac9eea582e5e1e045281055"
+            },
+            {
+              "name": "美少女战士尴尬笑",
+              "animated": false,
+              "key": "auto_story_b6752484dd2f8b4040d23d6b"
+            },
+            {
+              "name": "炸毛长毛猫不高兴",
+              "animated": true,
+              "key": "tenor_face_21cbc78b6c702142c9061453"
+            },
+            {
+              "name": "奶牛猫侧目不高兴",
+              "animated": true,
+              "key": "tenor_face_66a929495e13c50c21de75bf"
+            },
+            {
+              "name": "笑不出来",
+              "animated": false,
+              "key": "auto_94a791fdabf54599f5f89bbd"
+            },
+            {
+              "name": "有够无语的",
+              "animated": false,
+              "key": "auto_cd19b5a091145ad0d1fb8775"
+            },
+            {
+              "name": "笑不出来",
+              "animated": false,
+              "key": "auto_ef333301c4ff56a63d1674ac"
+            },
+            {
+              "name": "阿尼亚你好厉害",
+              "animated": false,
+              "key": "auto_story_3eedb3e4bbf19d848cbaede9"
+            }
+          ]
+        }
+      ],
+      "checks": [
+        "pagination reset",
+        "empty state",
+        "native clear button",
+        "multiline in both independent text slots"
+      ],
+      "runtimeErrors": [],
+      "scope": "WeChat simulator; live public catalog; native input events"
+    },
+    "queueCollage": {
+      "status": "passed",
+      "sdkVersion": "3.17.5",
+      "selected": 3,
+      "mixedStaticAndGif": true,
+      "selectionOrder": true,
+      "incompleteJobRefused": true,
+      "frames": 12,
+      "durationMs": 1200,
+      "bytes": 25110,
+      "realCanvasAndFilesystem": true,
+      "actualQueueTaps": true,
+      "shareAndAlbum": "mocked",
+      "staticJpegWidth": 688,
+      "cachedReuse": true,
+      "cleanup": true,
+      "runtimeErrors": []
+    },
+    "resultCollage": {
+      "status": "passed",
+      "buildFingerprint": "2d15c4434629bd91bab33c373cd0f59a67dec04c4b6b368ef7bd91ffb105d521",
+      "fingerprintedFiles": [
+        "services/resultCollage.js",
+        "services/collageGif.js",
+        "services/recommendService.js"
+      ],
+      "minFrameDelayMs": 100,
+      "loadedBuildVerified": true,
+      "sdkVersion": "3.17.5",
+      "selected": 2,
+      "frames": 12,
+      "durationMs": 1200,
+      "width": 516,
+      "height": 264,
+      "bytes": 20495,
+      "elapsedMs": 2752,
+      "realCanvasAndFilesystem": true,
+      "shareAndAlbum": "mocked to avoid sending or saving test content",
+      "originalOrder": true,
+      "preview": true,
+      "cachedReuse": true,
+      "cleanup": true,
+      "runtimeErrors": []
+    },
+    "interactions": {
+      "scope": "WeChat DevTools SDK 3.17.5; elapsed inside logic thread through Vue nextTick and wx.nextTick; instrumentation overhead included; no physical-device FPS",
+      "rows": [
+        {
+          "name": "search:奶龙",
+          "elapsedMs": 10,
+          "setDataCalls": 1,
+          "maxSetDataCharacters": 530
+        },
+        {
+          "name": "search:主内",
+          "elapsedMs": 8,
+          "setDataCalls": 1,
+          "maxSetDataCharacters": 199
+        },
+        {
+          "name": "search:中文",
+          "elapsedMs": 9,
+          "setDataCalls": 1,
+          "maxSetDataCharacters": 449
+        },
+        {
+          "name": "search:猫咪快乐动图",
+          "elapsedMs": 7,
+          "setDataCalls": 1,
+          "maxSetDataCharacters": 447
+        },
+        {
+          "name": "search:ASCII",
+          "elapsedMs": 6,
+          "setDataCalls": 1,
+          "maxSetDataCharacters": 208
+        },
+        {
+          "name": "search:不存在XYZ987",
+          "elapsedMs": 5,
+          "setDataCalls": 1,
+          "maxSetDataCharacters": 401
+        },
+        {
+          "name": "search:",
+          "elapsedMs": 12,
+          "setDataCalls": 1,
+          "maxSetDataCharacters": 640
+        },
+        {
+          "name": "page:next",
+          "elapsedMs": 10,
+          "setDataCalls": 1,
+          "maxSetDataCharacters": 478
+        },
+        {
+          "name": "page:previous",
+          "elapsedMs": 12,
+          "setDataCalls": 1,
+          "maxSetDataCharacters": 459
+        },
+        {
+          "name": "category:text",
+          "elapsedMs": 1245,
+          "setDataCalls": 1,
+          "maxSetDataCharacters": 155
+        },
+        {
+          "name": "category:all",
+          "elapsedMs": 10,
+          "setDataCalls": 1,
+          "maxSetDataCharacters": 157
+        },
+        {
+          "name": "detail:first",
+          "elapsedMs": 1636,
+          "setDataCalls": 3,
+          "maxSetDataCharacters": 148
+        },
+        {
+          "name": "detail:close",
+          "elapsedMs": 6,
+          "setDataCalls": 1,
+          "maxSetDataCharacters": 138
+        },
+        {
+          "name": "detail:cached",
+          "elapsedMs": 23,
+          "setDataCalls": 1,
+          "maxSetDataCharacters": 138
+        },
+        {
+          "name": "image:flip",
+          "elapsedMs": 43,
+          "setDataCalls": 1,
+          "maxSetDataCharacters": 138
+        },
+        {
+          "name": "image:rotate",
+          "elapsedMs": 12,
+          "setDataCalls": 0,
+          "maxSetDataCharacters": 0
+        },
+        {
+          "name": "image:encode-upload",
+          "elapsedMs": 63,
+          "setDataCalls": 1,
+          "maxSetDataCharacters": 138
+        }
+      ],
+      "timer": {
+        "intervalMs": 16,
+        "samples": 222,
+        "maxGapMs": 41,
+        "p95GapMs": 21
+      },
+      "bridge": {
+        "calls": 19,
+        "maxCharacters": 640,
+        "note": "JSON character count, not UTF-8 byte count"
+      },
+      "catalogCount": 1010,
+      "status": "passed",
+      "runtimeErrors": []
+    }
+  },
+  "productionLoopback": {
+    "scope": "5 sequential read-only HTTP samples on production host; no user network/TLS and no load test",
+    "rows": [
+      {
+        "route": "/healthz",
+        "status": 200,
+        "elapsedMs": 38,
+        "bytes": 32
+      },
+      {
+        "route": "/memes/categories?compact=true",
+        "status": 200,
+        "samplesMs": [
+          983,
+          1273,
+          1829
+        ],
+        "bytes": 635731,
+        "catalogCount": 1010,
+        "etag": null,
+        "cacheControl": null
+      },
+      {
+        "route": "/recommend/catalog",
+        "status": 200,
+        "elapsedMs": 169,
+        "bytes": 112
+      }
+    ]
+  },
+  "dependencyAudit": {
+    "status": "failed",
+    "workflow": "https://github.com/MIKL2077/GenSticker/actions/runs/41768553890",
+    "python": {
+      "package": "pillow",
+      "version": "12.3.0",
+      "advisories": 39,
+      "reportedFixedVersion": "13.0.0"
+    },
+    "npmProduction": {
+      "high": 23,
+      "moderate": 31,
+      "low": 2,
+      "critical": 0,
+      "total": 56
+    },
+    "scope": "Dependency scanner reports, not proof of application exploitability"
+  },
+  "physicalDevice": {
+    "status": "not_verified",
+    "reason": "iPhone Mirroring observation works; automated click/scroll cannot find controllable window"
+  },
+  "preview": {
+    "status": "generated",
+    "sdk": "3.17.5",
+    "urlCheck": true,
+    "packageDirectoryBytes": 905246,
+    "mediaBytes": 199585,
+    "cliUploadTotalBytes": 892243
+  }
+}

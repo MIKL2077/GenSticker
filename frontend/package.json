@@ -7,6 +7,7 @@
     "test:mp-weixin-collage": "node scripts/verify-result-collage.cjs",
     "test:mp-weixin-template-features": "node scripts/verify-template-features.cjs",
     "test:mp-weixin-queue-collage": "node scripts/verify-queue-collage.cjs",
+    "test:mp-weixin-performance": "node scripts/verify-interaction-performance.cjs",
     "open:mp-weixin": "node scripts/preview-weixin.cjs --open-only",
     "preview:mp-weixin": "node scripts/preview-weixin.cjs",
     "dev:custom": "uni -p",
